@@ -75,7 +75,13 @@ export default function BookingFormClient({
     setIsLoading(true);
     setError(null);
 
-    const result = await createPublicBookingAction(formData, hotelToken);
+    // Castear el tripType al union type que espera el schema
+    const dataToSend = {
+      ...formData,
+      tripType: formData.tripType as "ONE_WAY" | "ROUND_TRIP" | "HOURLY"
+    };
+
+    const result = await createPublicBookingAction(dataToSend, hotelToken);
     
     if (result.error) {
       setError(result.error);

@@ -56,5 +56,27 @@ export const redsysService = {
   decodeResponse(base64Params: string) {
     const decoded = Buffer.from(base64Params, 'base64').toString('utf8');
     return JSON.parse(decoded);
+  },
+
+  generateHtmlForm(booking: any) {
+    const amountInCents = Math.round(Number(booking.finalPrice) * 100).toString();
+    const cleanOrder = booking.publicCode.replace(/[^A-Za-z0-9]/g, '').substring(0, 12).padStart(4, '0');
+    
+    const merchantParams = this.createMerchantParameters(booking);
+    const signature = this.createSignature(merchantParams, cleanOrder);
+    
+    // URL oficial de pruebas por defecto, debería cambiarse por entorno
+    const redsysUrl = process.env.REDSYS_URL || 'https://sis-t.redsys.es:25443/sis/realizarPago';
+
+    return `
+      <form id="redsys_form" action="${redsysUrl}" method="POST">
+        <input type="hidden" name="Ds_SignatureVersion" value="HMAC_SHA256_V1" />
+        <input type="hidden" name="Ds_MerchantParameters" value="${merchantParams}" />
+        <input type="hidden" name="Ds_Signature" value="${signature}" />
+      </form>
+      <script>
+        document.getElementById('redsys_form').submit();
+      </script>
+    `;
   }
 };

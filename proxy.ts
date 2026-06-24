@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { decrypt } from './lib/auth';
 
@@ -18,7 +18,7 @@ const hotelOnlyRoutes = [
   '/hotel/dashboard'
 ];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   const isAdminRoute = adminOnlyRoutes.some(route => pathname.startsWith(route));

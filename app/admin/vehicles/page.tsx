@@ -1,12 +1,8 @@
 import Link from "next/link";
 import { vehiclesQueries } from "@/modules/vehicles/vehicles.queries";
-import { seedCategoriesAction } from "@/modules/vehicles/vehicles.actions";
 import { Button } from "@/components/ui/button";
 
 export default async function VehiclesPage() {
-  // Aseguramos que haya categorías (Para entorno de desarrollo)
-  await seedCategoriesAction();
-  
   const vehicles = await vehiclesQueries.getAllVehicles();
 
   return (
