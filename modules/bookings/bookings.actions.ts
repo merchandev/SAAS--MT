@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { adminBookingSchema, AdminBookingInput } from "./bookings.schemas";
 import { pricingService } from "../pricing/pricing.service";
+import { generateUniquePublicCode } from "./public-code";
 
 export async function createAdminBookingAction(data: AdminBookingInput) {
   const parsed = adminBookingSchema.safeParse(data);
@@ -37,8 +38,8 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
         create: { email: customerEmail, fullName: customerName, phone: customerPhone },
       });
 
-      // Generar código único temporal
-      const publicCode = `MT-${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+      // Generar código público único para seguimiento y pagos
+      const publicCode = await generateUniquePublicCode(tx);
 
       // Crear Booking
       const newBooking = await tx.booking.create({
@@ -135,7 +136,7 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
         create: { email: customerEmail, fullName: customerName, phone: customerPhone },
       });
 
-      const publicCode = `MT-${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+      const publicCode = await generateUniquePublicCode(tx);
 
       const newBooking = await tx.booking.create({
         data: {
