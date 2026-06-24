@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 const DEFAULT_REDSYS_TEST_KEY = "sq7HjrUOBfKmC576ILgskD5srU870gJ7";
-const SIGNATURE_VERSION = "HMAC_SHA512_V2";
+const SIGNATURE_VERSION = "HMAC_SHA256_V1";
 
 type RedsysBooking = {
   id?: string;
@@ -36,7 +36,7 @@ function getRedsysSecretKey(): string {
     throw new Error("FATAL: REDSYS_SECRET_KEY environment variable is not set.");
   }
 
-  return secretKey.slice(0, 16).padEnd(16, "\0");
+  return secretKey;
 }
 
 function escapeHtml(value: string): string {
@@ -82,14 +82,24 @@ export const redsysService = {
   },
 
   createSignature(merchantParamsBase64: string, orderId: string) {
-    const secretKey = Buffer.from(getRedsysSecretKey(), "utf8");
-    const cipher = crypto.createCipheriv("aes-128-cbc", secretKey, Buffer.alloc(16, 0));
-    const derivedKey = Buffer.concat([cipher.update(orderId, "utf8"), cipher.final()]);
-    const hmacKey = Buffer.from(derivedKey.toString("base64"), "utf8");
-
-    return toBase64Url(
-      crypto.createHmac("sha512", hmacKey).update(merchantParamsBase64).digest()
-    );
+    // 1. Decodificar la clave secreta
+    const decodedSecret = Buffer.from(getRedsysSecretKey(), "base64");
+    
+    // 2. Cifrar el orderId con 3DES usando la clave decodificada
+    const cipher = crypto.createCipheriv("des-ede3-cbc", decodedSecret, Buffer.alloc(8, 0));
+    cipher.setAutoPadding(false);
+    
+    // El orderId debe rellenarse con ceros (\0) hasta ser múltiplo de 8
+    const paddedOrderId = Buffer.alloc(Math.ceil(orderId.length / 8) * 8, 0);
+    paddedOrderId.write(orderId, "utf8");
+    
+    const derivedKey = Buffer.concat([cipher.update(paddedOrderId), cipher.final()]);
+    
+    // 3. Crear HMAC-SHA256 con la clave derivada
+    const hmac = crypto.createHmac("sha256", derivedKey);
+    hmac.update(merchantParamsBase64);
+    
+    return toBase64Url(hmac.digest());
   },
 
   signaturesMatch(receivedSignature: string, expectedSignature: string) {

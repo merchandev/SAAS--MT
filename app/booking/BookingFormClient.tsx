@@ -220,7 +220,7 @@ export default function BookingFormClient({
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Precio final desde</p>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Estimación desde</p>
                       <p className="text-2xl font-black text-gray-900">€{calculateEstimation(v)}</p>
                     </div>
                   </div>

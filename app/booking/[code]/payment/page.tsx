@@ -38,11 +38,15 @@ export default async function PaymentPage({ params }: { params: Promise<{ code: 
     );
   }
 
-  let payment = booking.payments.find((currentPayment) => currentPayment.status === "PENDING");
-  const orderId = payment?.providerOrderId || redsysService.createOrderId(booking);
+  const payment = await prisma.$transaction(async (tx) => {
+    let existing = await tx.payment.findFirst({
+      where: { bookingId: booking.id, status: "PENDING" },
+    });
 
-  if (!payment) {
-    payment = await prisma.payment.create({
+    if (existing) return existing;
+
+    const orderId = redsysService.createOrderId(booking);
+    return tx.payment.create({
       data: {
         bookingId: booking.id,
         provider: "REDSYS",
@@ -52,9 +56,9 @@ export default async function PaymentPage({ params }: { params: Promise<{ code: 
         providerOrderId: orderId,
       }
     });
-  }
+  });
 
-  const redsysFormHtml = redsysService.generateHtmlForm(booking, payment.providerOrderId || orderId);
+  const redsysFormHtml = redsysService.generateHtmlForm(booking, payment.providerOrderId || undefined);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

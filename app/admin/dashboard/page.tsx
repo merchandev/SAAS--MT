@@ -2,10 +2,13 @@ import { reportsQueries } from "@/modules/reports/reports.queries";
 import { RevenueChart } from "@/components/charts/RevenueChart";
 import { StatusChart } from "@/components/charts/StatusChart";
 import Link from "next/link";
+import { requireRole } from "@/modules/auth/permissions";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
+  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+
   const kpis = await reportsQueries.getGlobalKPIs();
   const recentBookings = await reportsQueries.getRecentBookings(10);
   const revenueData = await reportsQueries.getRevenueByMonth();
