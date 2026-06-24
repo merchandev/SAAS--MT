@@ -1,7 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
+import { prisma } from "@/lib/prisma";
 export const b2bQueries = {
   async getAllHotels() {
     return prisma.hotel.findMany({

@@ -1,11 +1,9 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { hotelCreationSchema, HotelCreationInput } from "./b2b.schemas";
 import crypto from "crypto";
-
-const prisma = new PrismaClient();
 
 export async function createHotelAction(data: HotelCreationInput) {
   const parsed = hotelCreationSchema.safeParse(data);

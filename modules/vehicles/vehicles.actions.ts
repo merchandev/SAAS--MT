@@ -1,8 +1,6 @@
 import { revalidatePath } from "next/cache";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { vehicleSchema, type VehicleInput } from "./vehicles.schemas";
-
-const prisma = new PrismaClient();
 
 export async function createVehicleAction(data: VehicleInput) {
   const parsed = vehicleSchema.safeParse(data);

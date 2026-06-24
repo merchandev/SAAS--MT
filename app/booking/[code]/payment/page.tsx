@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { redsysService } from "@/modules/payments/redsys.service";
-
-const prisma = new PrismaClient();
 
 export default async function PaymentRedirectPage({ params }: { params: { code: string } }) {
   const booking = await prisma.booking.findUnique({

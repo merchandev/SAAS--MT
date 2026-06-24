@@ -1,11 +1,9 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { adminBookingSchema, AdminBookingInput } from "./bookings.schemas";
 import { pricingService } from "../pricing/pricing.service";
-
-const prisma = new PrismaClient();
 
 export async function createAdminBookingAction(data: AdminBookingInput) {
   const parsed = adminBookingSchema.safeParse(data);

@@ -2,8 +2,6 @@ import { PrismaClient, Vehicle } from "@prisma/client";
 import { PricingCalculationInput } from "./pricing.schemas";
 import { Decimal } from "@prisma/client/runtime/library";
 
-const prisma = new PrismaClient();
-
 export interface PricingResult {
   basePrice: number;
   surcharges: {

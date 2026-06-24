@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export default async function EditVehiclePage({ params }: { params: { id: string } }) {
   const vehicle = await prisma.vehicle.findUnique({

@@ -2,10 +2,8 @@
 
 import { loginSchema, LoginInput } from "./auth.schemas";
 import { authService } from "./auth.service";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-
-const prisma = new PrismaClient();
 
 export async function loginAction(data: LoginInput) {
   // 1. Validar input
