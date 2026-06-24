@@ -53,7 +53,7 @@ export default function AdminLayout({
         </nav>
         <div className="p-4 border-t border-gray-200">
           <form action={logoutAction}>
-            <Button variant="outline" className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50">
+            <Button type="submit" variant="outline" className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50">
               Cerrar Sesión
             </Button>
           </form>

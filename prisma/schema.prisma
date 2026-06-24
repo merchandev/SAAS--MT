@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
   engineType = "library"
 }
 
@@ -21,130 +21,130 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  passwordHash  String
-  fullName      String
-  role          Role      @default(CUSTOMER)
-  phone         String?
-  isActive      Boolean   @default(true)
-  
+  id           String  @id @default(uuid())
+  email        String  @unique
+  passwordHash String
+  fullName     String
+  role         Role    @default(CUSTOMER)
+  phone        String?
+  isActive     Boolean @default(true)
+
   // Relaciones
-  driverProfile Driver?
+  driverProfile   Driver?
   customerProfile Customer?
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ==========================================
 // 2. CLIENTES (Usuarios Finales)
 // ==========================================
 model Customer {
-  id            String    @id @default(uuid())
-  userId        String?   @unique
-  user          User?     @relation(fields: [userId], references: [id])
-  
-  email         String    @unique
-  fullName      String
-  phone         String?
-  country       String?
+  id     String  @id @default(uuid())
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
+  email             String  @unique
+  fullName          String
+  phone             String?
+  country           String?
   preferredLanguage String? @default("en")
-  
-  bookings      Booking[]
-  invoices      Invoice[]
-  reviews       Review[]
-  
-  totalSpent    Decimal   @default(0) @db.Decimal(10, 2)
-  totalBookings Int       @default(0)
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+
+  bookings Booking[]
+  invoices Invoice[]
+  reviews  Review[]
+
+  totalSpent    Decimal @default(0) @db.Decimal(10, 2)
+  totalBookings Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ==========================================
 // 3. FLOTA Y VEHÍCULOS
 // ==========================================
 model VehicleCategory {
-  id            String    @id @default(uuid())
-  name          String
-  slug          String    @unique
-  description   String?
-  vehicles      Vehicle[]
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  vehicles    Vehicle[]
 }
 
 model Vehicle {
-  id                  String    @id @default(uuid())
-  categoryId          String
-  category            VehicleCategory @relation(fields: [categoryId], references: [id])
-  
-  name                String
-  slug                String    @unique
-  imageUrl            String?
-  
-  passengerCapacity   Int
-  luggageCapacity     Int
-  
-  pricePerKmOneWay    Decimal   @db.Decimal(10, 2)
-  pricePerKmRoundTrip Decimal   @db.Decimal(10, 2)
-  pricePerHour        Decimal   @db.Decimal(10, 2)
-  minimumPrice        Decimal   @db.Decimal(10, 2)
-  
-  airportSurcharge    Decimal   @default(0) @db.Decimal(10, 2)
-  nightSurcharge      Decimal   @default(0) @db.Decimal(10, 2)
-  
-  isActive            Boolean   @default(true)
-  sortOrder           Int       @default(0)
-  
-  bookings            Booking[]
-  
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id         String          @id @default(uuid())
+  categoryId String
+  category   VehicleCategory @relation(fields: [categoryId], references: [id])
+
+  name     String
+  slug     String  @unique
+  imageUrl String?
+
+  passengerCapacity Int
+  luggageCapacity   Int
+
+  pricePerKmOneWay    Decimal @db.Decimal(10, 2)
+  pricePerKmRoundTrip Decimal @db.Decimal(10, 2)
+  pricePerHour        Decimal @db.Decimal(10, 2)
+  minimumPrice        Decimal @db.Decimal(10, 2)
+
+  airportSurcharge Decimal @default(0) @db.Decimal(10, 2)
+  nightSurcharge   Decimal @default(0) @db.Decimal(10, 2)
+
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ==========================================
 // 4. B2B: HOTELES Y AGENCIAS
 // ==========================================
 model Hotel {
-  id                  String    @id @default(uuid())
-  name                String
-  slug                String    @unique
-  token               String    @unique
-  
-  contactName         String?
-  email               String?
-  phone               String?
-  
-  commissionValue     Decimal   @default(0) @db.Decimal(10, 2)
-  discountValue       Decimal   @default(0) @db.Decimal(10, 2)
-  
-  isActive            Boolean   @default(true)
-  
-  bookings            Booking[]
-  
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id    String @id @default(uuid())
+  name  String
+  slug  String @unique
+  token String @unique
+
+  contactName String?
+  email       String?
+  phone       String?
+
+  commissionValue Decimal @default(0) @db.Decimal(10, 2)
+  discountValue   Decimal @default(0) @db.Decimal(10, 2)
+
+  isActive Boolean @default(true)
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Agency {
-  id              String   @id @default(uuid())
-  name            String
-  slug            String   @unique
-  token           String   @unique
-  
-  contactName     String?
-  email           String?
-  phone           String?
-  
-  commissionValue Decimal  @default(0) @db.Decimal(10, 2)
-  discountValue   Decimal  @default(0) @db.Decimal(10, 2)
-  
-  isActive        Boolean  @default(true)
-  
-  bookings        Booking[]
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id    String @id @default(uuid())
+  name  String
+  slug  String @unique
+  token String @unique
+
+  contactName String?
+  email       String?
+  phone       String?
+
+  commissionValue Decimal @default(0) @db.Decimal(10, 2)
+  discountValue   Decimal @default(0) @db.Decimal(10, 2)
+
+  isActive Boolean @default(true)
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ==========================================
@@ -160,47 +160,47 @@ enum DriverAssignmentStatus {
 }
 
 model Driver {
-  id                  String    @id @default(uuid())
-  userId              String    @unique
-  user                User      @relation(fields: [userId], references: [id])
-  
-  licenseNumber       String?
-  status              String    @default("ACTIVE")
-  
-  bookings            Booking[]
-  
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  licenseNumber String?
+  status        String  @default("ACTIVE")
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ==========================================
 // 6. MOTOR DE PRECIOS Y REGLAS
 // ==========================================
 model PriceRule {
-  id                  String   @id @default(uuid())
-  name                String
-  description         String?
-  type                String   // Ejemplo: NIGHT_SURCHARGE, WEEKEND_SURCHARGE, AIRPORT_FEE
-  valueType           String   // PERCENTAGE, FIXED
-  value               Decimal  @db.Decimal(10, 2)
-  isActive            Boolean  @default(true)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  type        String // Ejemplo: NIGHT_SURCHARGE, WEEKEND_SURCHARGE, AIRPORT_FEE
+  valueType   String // PERCENTAGE, FIXED
+  value       Decimal  @db.Decimal(10, 2)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model DiscountCode {
-  id                  String   @id @default(uuid())
-  code                String   @unique
-  description         String?
-  valueType           String   // PERCENTAGE, FIXED
-  value               Decimal  @db.Decimal(10, 2)
-  maxUses             Int?
-  usedCount           Int      @default(0)
-  validFrom           DateTime?
-  validUntil          DateTime?
-  isActive            Boolean  @default(true)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id          String    @id @default(uuid())
+  code        String    @unique
+  description String?
+  valueType   String // PERCENTAGE, FIXED
+  value       Decimal   @db.Decimal(10, 2)
+  maxUses     Int?
+  usedCount   Int       @default(0)
+  validFrom   DateTime?
+  validUntil  DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 // ==========================================
@@ -244,118 +244,118 @@ enum TripType {
 }
 
 model Booking {
-  id                  String    @id @default(uuid())
-  publicCode          String    @unique
-  
-  customerId          String
-  customer            Customer  @relation(fields: [customerId], references: [id])
-  
-  vehicleId           String
-  vehicle             Vehicle   @relation(fields: [vehicleId], references: [id])
-  
-  originAddress       String
-  destinationAddress  String
-  distanceKm          Decimal   @db.Decimal(10, 2)
-  durationMinutes     Int
-  
-  serviceDate         DateTime
-  serviceTime         String
-  tripType            TripType  @default(ONE_WAY)
-  
-  passengers          Int
-  luggage             Int
-  flightNumber        String?
-  
-  basePrice           Decimal   @db.Decimal(10, 2)
-  discountAmount      Decimal   @default(0) @db.Decimal(10, 2)
-  surchargeAmount     Decimal   @default(0) @db.Decimal(10, 2)
-  finalPrice          Decimal   @db.Decimal(10, 2)
-  currency            String    @default("EUR")
-  
-  sourceType          SourceType @default(WEB_DIRECT)
-  hotelId             String?
-  hotel               Hotel?    @relation(fields: [hotelId], references: [id])
-  agencyId            String?
-  agency              Agency?   @relation(fields: [agencyId], references: [id])
-  
-  driverId            String?
-  driver              Driver?   @relation(fields: [driverId], references: [id])
-  driverStatus        DriverAssignmentStatus?
-  
-  bookingStatus       BookingStatus @default(PENDING_PAYMENT)
-  paymentStatus       PaymentStatus @default(PENDING)
-  
-  customerNotes       String?   @db.Text
-  internalNotes       String?   @db.Text
-  
-  payments            Payment[]
-  statusHistory       BookingStatusHistory[]
-  invoice             Invoice?
-  review              Review?
-  
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id         String @id @default(uuid())
+  publicCode String @unique
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  originAddress      String
+  destinationAddress String
+  distanceKm         Decimal @db.Decimal(10, 2)
+  durationMinutes    Int
+
+  serviceDate DateTime
+  serviceTime String
+  tripType    TripType @default(ONE_WAY)
+
+  passengers   Int
+  luggage      Int
+  flightNumber String?
+
+  basePrice       Decimal @db.Decimal(10, 2)
+  discountAmount  Decimal @default(0) @db.Decimal(10, 2)
+  surchargeAmount Decimal @default(0) @db.Decimal(10, 2)
+  finalPrice      Decimal @db.Decimal(10, 2)
+  currency        String  @default("EUR")
+
+  sourceType SourceType @default(WEB_DIRECT)
+  hotelId    String?
+  hotel      Hotel?     @relation(fields: [hotelId], references: [id])
+  agencyId   String?
+  agency     Agency?    @relation(fields: [agencyId], references: [id])
+
+  driverId     String?
+  driver       Driver?                 @relation(fields: [driverId], references: [id])
+  driverStatus DriverAssignmentStatus?
+
+  bookingStatus BookingStatus @default(PENDING_PAYMENT)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  customerNotes String? @db.Text
+  internalNotes String? @db.Text
+
+  payments      Payment[]
+  statusHistory BookingStatusHistory[]
+  invoice       Invoice?
+  review        Review?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ==========================================
 // 8. PAGOS (Redsys)
 // ==========================================
 model Payment {
-  id                  String    @id @default(uuid())
-  bookingId           String
-  booking             Booking   @relation(fields: [bookingId], references: [id])
-  
-  provider            String    @default("REDSYS")
-  providerOrderId     String?   @unique
-  
-  amount              Decimal   @db.Decimal(10, 2)
-  currency            String    @default("EUR")
-  
-  status              PaymentStatus @default(PENDING)
-  responseCode        String?
-  signatureValid      Boolean   @default(false)
-  
-  rawRequest          String?   @db.Text
-  rawResponse         String?   @db.Text
-  
-  paidAt              DateTime?
-  
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id        String  @id @default(uuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+
+  provider        String  @default("REDSYS")
+  providerOrderId String? @unique
+
+  amount   Decimal @db.Decimal(10, 2)
+  currency String  @default("EUR")
+
+  status         PaymentStatus @default(PENDING)
+  responseCode   String?
+  signatureValid Boolean       @default(false)
+
+  rawRequest  String? @db.Text
+  rawResponse String? @db.Text
+
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ==========================================
 // 9. AUDITORÍA Y NOTIFICACIONES
 // ==========================================
 model AuditLog {
-  id          String   @id @default(uuid())
-  userId      String?  // UUID del administrador o sistema
-  entityType  String   // Ejemplo: Booking, Vehicle
-  entityId    String   // ID del registro modificado
-  action      String   // CREATE, UPDATE, DELETE
-  oldValue    String?  @db.Text // JSON stringificado
-  newValue    String?  @db.Text // JSON stringificado
-  ipAddress   String?
-  createdAt   DateTime @default(now())
+  id         String   @id @default(uuid())
+  userId     String? // UUID del administrador o sistema
+  entityType String // Ejemplo: Booking, Vehicle
+  entityId   String // ID del registro modificado
+  action     String // CREATE, UPDATE, DELETE
+  oldValue   String?  @db.Text // JSON stringificado
+  newValue   String?  @db.Text // JSON stringificado
+  ipAddress  String?
+  createdAt  DateTime @default(now())
 }
 
 model NotificationTemplate {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  subject     String
-  body        String   @db.Text
-  type        String   // EMAIL, WHATSAPP
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  name      String   @unique
+  subject   String
+  body      String   @db.Text
+  type      String // EMAIL, WHATSAPP
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model NotificationLog {
   id          String   @id @default(uuid())
   bookingId   String?
-  recipient   String   // Email o Teléfono
-  type        String   // EMAIL, WHATSAPP
-  status      String   // SENT, FAILED
+  recipient   String // Email o Teléfono
+  type        String // EMAIL, WHATSAPP
+  status      String // SENT, FAILED
   errorReason String?  @db.Text
   sentAt      DateTime @default(now())
 }
@@ -376,70 +376,70 @@ model SystemSetting {
 // ==========================================
 
 model BookingStatusHistory {
-  id          String   @id @default(uuid())
-  bookingId   String
-  booking     Booking  @relation(fields: [bookingId], references: [id])
-  oldStatus   BookingStatus
-  newStatus   BookingStatus
-  changedBy   String?  // userId del admin/sistema
-  notes       String?  @db.Text
-  createdAt   DateTime @default(now())
+  id        String        @id @default(uuid())
+  bookingId String
+  booking   Booking       @relation(fields: [bookingId], references: [id])
+  oldStatus BookingStatus
+  newStatus BookingStatus
+  changedBy String? // userId del admin/sistema
+  notes     String?       @db.Text
+  createdAt DateTime      @default(now())
 }
 
 model RedsysLog {
-  id              String   @id @default(uuid())
-  bookingId       String?
-  orderId         String?
-  transactionType String   // NOTIFICATION, SUCCESS, ERROR
-  rawPayload      String   @db.Text
-  responseCode    String?
-  isSignatureValid Boolean @default(false)
-  createdAt       DateTime @default(now())
+  id               String   @id @default(uuid())
+  bookingId        String?
+  orderId          String?
+  transactionType  String // NOTIFICATION, SUCCESS, ERROR
+  rawPayload       String   @db.Text
+  responseCode     String?
+  isSignatureValid Boolean  @default(false)
+  createdAt        DateTime @default(now())
 }
 
 model Invoice {
-  id              String   @id @default(uuid())
-  invoiceNumber   String   @unique
-  bookingId       String   @unique
-  booking         Booking  @relation(fields: [bookingId], references: [id])
-  customerId      String
-  customer        Customer @relation(fields: [customerId], references: [id])
-  
-  subtotal        Decimal  @db.Decimal(10, 2)
-  taxAmount       Decimal  @default(0) @db.Decimal(10, 2)
-  totalAmount     Decimal  @db.Decimal(10, 2)
-  currency        String   @default("EUR")
-  
-  issuedAt        DateTime @default(now())
-  pdfUrl          String?
+  id            String   @id @default(uuid())
+  invoiceNumber String   @unique
+  bookingId     String   @unique
+  booking       Booking  @relation(fields: [bookingId], references: [id])
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id])
+
+  subtotal    Decimal @db.Decimal(10, 2)
+  taxAmount   Decimal @default(0) @db.Decimal(10, 2)
+  totalAmount Decimal @db.Decimal(10, 2)
+  currency    String  @default("EUR")
+
+  issuedAt DateTime @default(now())
+  pdfUrl   String?
 }
 
 model Review {
-  id          String   @id @default(uuid())
-  bookingId   String   @unique
-  booking     Booking  @relation(fields: [bookingId], references: [id])
-  customerId  String
-  customer    Customer @relation(fields: [customerId], references: [id])
-  
-  rating      Int      // 1-5
-  comment     String?  @db.Text
-  isPublished Boolean  @default(false)
-  
-  createdAt   DateTime @default(now())
+  id         String   @id @default(uuid())
+  bookingId  String   @unique
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  rating      Int // 1-5
+  comment     String? @db.Text
+  isPublished Boolean @default(false)
+
+  createdAt DateTime @default(now())
 }
 
 model RoutePage {
-  id              String   @id @default(uuid())
-  slug            String   @unique // Ejemplo: traslados-aeropuerto-mallorca-alcudia
+  id              String  @id @default(uuid())
+  slug            String  @unique // Ejemplo: traslados-aeropuerto-mallorca-alcudia
   originName      String
   destinationName String
   h1Title         String
-  metaDescription String?  @db.Text
-  contentHtml     String?  @db.Text
-  
-  basePriceCache  Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X €" rápido
-  
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  metaDescription String? @db.Text
+  contentHtml     String? @db.Text
+
+  basePriceCache Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X €" rápido
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

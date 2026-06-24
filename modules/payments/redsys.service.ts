@@ -110,13 +110,16 @@ export const redsysService = {
     const redsysUrl = process.env.REDSYS_URL || "https://sis-t.redsys.es:25443/sis/realizarPago";
 
     return `
-      <form id="redsys_form" action="${escapeHtml(redsysUrl)}" method="POST">
+      <form id="redsys-form" action="${escapeHtml(redsysUrl)}" method="POST">
         <input type="hidden" name="Ds_SignatureVersion" value="${SIGNATURE_VERSION}" />
         <input type="hidden" name="Ds_MerchantParameters" value="${escapeHtml(merchantParams)}" />
         <input type="hidden" name="Ds_Signature" value="${escapeHtml(signature)}" />
+        <noscript>
+          <button type="submit">Continuar al pago</button>
+        </noscript>
       </form>
       <script>
-        document.getElementById('redsys_form').submit();
+        document.getElementById("redsys-form").submit();
       </script>
     `;
   }
