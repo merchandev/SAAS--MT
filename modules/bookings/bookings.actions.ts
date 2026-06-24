@@ -21,11 +21,19 @@ function isAirportTrip(origin: string, destination: string) {
 }
 
 export async function getDistanceEstimationAction(origin: string, destination: string) {
-  if (!origin || !destination) return { distanceKm: 0, durationMinutes: 0 };
+  if (!origin || !destination) {
+    return { success: false as const, error: "Origen y destino son obligatorios." };
+  }
+
   try {
-    return await mapsService.calculateDistanceAndDuration(origin, destination);
+    const estimation = await mapsService.calculateDistanceAndDuration(origin, destination);
+    return { success: true as const, ...estimation };
   } catch (error) {
-    return { distanceKm: 30, durationMinutes: 45 }; // Fallback
+    console.error("Distance estimation error:", error);
+    return {
+      success: false as const,
+      error: "No se pudo calcular la ruta real. Revisa las direcciones o la configuración de Google Maps.",
+    };
   }
 }
 

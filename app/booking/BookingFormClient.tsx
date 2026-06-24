@@ -25,8 +25,8 @@ export default function BookingFormClient({
   const [formData, setFormData] = useState({
     originAddress: "",
     destinationAddress: "",
-    distanceKm: 25, // Mock distance for MVP
-    durationMinutes: 45, // Mock duration
+    distanceKm: 0,
+    durationMinutes: 0,
     serviceDate: "",
     serviceTime: "",
     tripType: "ONE_WAY",
@@ -46,6 +46,7 @@ export default function BookingFormClient({
 
   const calculateEstimation = (vehicle: Vehicle) => {
     // Cálculo aproximado puro frontend para UI, la verdad absoluta será el backend
+    if (!formData.distanceKm) return Number(vehicle.minimumPrice).toFixed(2);
     const base = formData.distanceKm * Number(vehicle.pricePerKmOneWay);
     return Math.max(base, Number(vehicle.minimumPrice)).toFixed(2);
   };
@@ -59,13 +60,20 @@ export default function BookingFormClient({
       setIsLoading(true);
       try {
         const estimation = await getDistanceEstimationAction(formData.originAddress, formData.destinationAddress);
+        if (!estimation.success) {
+          setError(estimation.error ?? "No se pudo calcular la ruta real.");
+          setIsLoading(false);
+          return;
+        }
         setFormData(prev => ({ 
           ...prev, 
           distanceKm: estimation.distanceKm, 
           durationMinutes: estimation.durationMinutes 
         }));
       } catch (err) {
-        // Silently fail to fallback values if network issue
+        setError("No se pudo calcular la ruta real. Intenta de nuevo.");
+        setIsLoading(false);
+        return;
       }
       setIsLoading(false);
     }

@@ -3,50 +3,48 @@ export interface DistanceDurationResult {
   durationMinutes: number;
 }
 
+type GoogleDistanceMatrixResponse = {
+  status: string;
+  error_message?: string;
+  rows?: Array<{
+    elements?: Array<{
+      status: string;
+      distance?: { value: number };
+      duration?: { value: number };
+    }>;
+  }>;
+};
+
 export const mapsService = {
-  /**
-   * Calcula la distancia real y el tiempo estimado usando Google Maps API.
-   * Si no hay API KEY, hace un fallback mock para no romper MVP.
-   */
   async calculateDistanceAndDuration(origin: string, destination: string): Promise<DistanceDurationResult> {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-    
+
     if (!apiKey) {
-      console.warn("GOOGLE_MAPS_API_KEY not found. Using mock distance calculation.");
-      // Fake logic para propósitos de dev
-      const baseDistance = 25;
-      const calculatedDistance = baseDistance + (Math.abs(origin.length - destination.length));
-      return {
-        distanceKm: Number(calculatedDistance.toFixed(2)),
-        durationMinutes: Math.floor(calculatedDistance * 1.5)
-      };
+      throw new Error("GOOGLE_MAPS_API_KEY is required to calculate real route distance.");
     }
 
-    try {
-      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(origin)}&destinations=${encodeURIComponent(destination)}&key=${apiKey}`;
-      const response = await fetch(url);
-      const data = await response.json();
+    const searchParams = new URLSearchParams({
+      origins: origin,
+      destinations: destination,
+      key: apiKey,
+    });
 
-      if (data.status === "OK" && data.rows[0]?.elements[0]?.status === "OK") {
-        const element = data.rows[0].elements[0];
-        const distanceMeters = element.distance.value;
-        const durationSeconds = element.duration.value;
+    const response = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?${searchParams}`);
 
-        return {
-          distanceKm: Number((distanceMeters / 1000).toFixed(2)),
-          durationMinutes: Math.ceil(durationSeconds / 60)
-        };
-      } else {
-        console.warn("Google Maps API couldn't find route:", data);
-        throw new Error("Google Maps API returned an error or no route found.");
-      }
-    } catch (error) {
-      console.error("Error calculating distance with Google Maps:", error);
-      // Fallback para evitar romper la reserva si Maps API falla
-      return {
-        distanceKm: 30,
-        durationMinutes: 45
-      };
+    if (!response.ok) {
+      throw new Error(`Google Maps request failed with status ${response.status}.`);
     }
+
+    const data = (await response.json()) as GoogleDistanceMatrixResponse;
+    const element = data.rows?.[0]?.elements?.[0];
+
+    if (data.status !== "OK" || element?.status !== "OK" || !element.distance || !element.duration) {
+      throw new Error(data.error_message || "Google Maps could not calculate a valid route.");
+    }
+
+    return {
+      distanceKm: Number((element.distance.value / 1000).toFixed(2)),
+      durationMinutes: Math.ceil(element.duration.value / 60),
+    };
   }
 };
