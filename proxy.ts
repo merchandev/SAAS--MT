@@ -44,7 +44,9 @@ export async function proxy(request: NextRequest) {
   const token = request.cookies.get('auth_token')?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL('/admin/login', request.url));
+    const response = NextResponse.redirect(new URL('/admin/login', request.url));
+    response.cookies.delete('session');
+    return response;
   }
 
   const session = await getSessionPayload(token);
@@ -52,6 +54,7 @@ export async function proxy(request: NextRequest) {
   if (!session) {
     const response = NextResponse.redirect(new URL('/admin/login', request.url));
     response.cookies.delete('auth_token');
+    response.cookies.delete('session');
     return response;
   }
 

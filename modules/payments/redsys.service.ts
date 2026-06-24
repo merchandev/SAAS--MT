@@ -1,78 +1,124 @@
-import crypto from 'crypto';
+import crypto from "crypto";
 
-/**
- * Servicio criptográfico oficial para la pasarela Redsys (MAC256)
- */
+const DEFAULT_REDSYS_TEST_KEY = "sq7HjrUOBfKmC576ILgskD5srU870gJ7";
+const SIGNATURE_VERSION = "HMAC_SHA512_V2";
+
+type RedsysBooking = {
+  id?: string;
+  publicCode: string;
+  finalPrice: unknown;
+  createdAt?: Date | string;
+  payments?: Array<{
+    providerOrderId: string | null;
+    status: string;
+  }>;
+};
+
+function toBase64Url(value: Buffer): string {
+  return value
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
+}
+
+function fromBase64Url(value: string): string {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  return normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+}
+
+function zeroPadToBlockSize(value: string, blockSize: number): string {
+  const padLength = blockSize - (value.length % blockSize);
+  return padLength === blockSize ? value : value + "\0".repeat(padLength);
+}
+
+function getRedsysSecretKey(): Buffer {
+  const secretKey = process.env.REDSYS_SECRET_KEY || DEFAULT_REDSYS_TEST_KEY;
+
+  if (!process.env.REDSYS_SECRET_KEY && process.env.NODE_ENV === "production") {
+    throw new Error("FATAL: REDSYS_SECRET_KEY environment variable is not set.");
+  }
+
+  return Buffer.from(secretKey, "base64");
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function createOrderId(booking: RedsysBooking): string {
+  const year = new Date(booking.createdAt ?? Date.now()).getUTCFullYear().toString();
+  const source = (booking.id || booking.publicCode).replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+  const uniquePart = source.slice(-6).padStart(6, "0");
+  const attemptCount = (booking.payments?.filter((payment) => payment.providerOrderId).length ?? 0) + 1;
+  const attemptPart = attemptCount.toString(36).toUpperCase().padStart(2, "0").slice(-2);
+  return `${year}${uniquePart}${attemptPart}`;
+}
+
 export const redsysService = {
-  createMerchantParameters(booking: any) {
-    // Redsys espera el total en céntimos (ej. 10.50 EUR -> 1050)
+  signatureVersion: SIGNATURE_VERSION,
+  createOrderId,
+
+  createMerchantParameters(booking: RedsysBooking, orderId?: string) {
+    const merchantOrderId = orderId ?? createOrderId(booking);
     const amountInCents = Math.round(Number(booking.finalPrice) * 100).toString();
-    
-    // OrderID debe ser único, 4 dígitos numéricos seguidos de alfanuméricos.
-    // Usaremos parte del publicCode (MT-2026-ABCD) limpio.
-    const cleanOrder = booking.publicCode.replace(/[^A-Za-z0-9]/g, '').substring(0, 12).padStart(4, '0');
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
     const params = {
       DS_MERCHANT_AMOUNT: amountInCents,
-      DS_MERCHANT_ORDER: cleanOrder,
-      DS_MERCHANT_MERCHANTCODE: process.env.REDSYS_MERCHANT_CODE || '999008881',
-      DS_MERCHANT_CURRENCY: '978', // EUR
-      DS_MERCHANT_TRANSACTIONTYPE: '0', // Autorización
-      DS_MERCHANT_TERMINAL: process.env.REDSYS_TERMINAL || '1',
-      DS_MERCHANT_MERCHANTURL: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/redsys/callback`,
-      DS_MERCHANT_URLOK: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/booking/success?paid=true`,
-      DS_MERCHANT_URLKO: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/booking/error`,
+      DS_MERCHANT_ORDER: merchantOrderId,
+      DS_MERCHANT_MERCHANTCODE: process.env.REDSYS_MERCHANT_CODE || "999008881",
+      DS_MERCHANT_CURRENCY: "978",
+      DS_MERCHANT_TRANSACTIONTYPE: "0",
+      DS_MERCHANT_TERMINAL: process.env.REDSYS_TERMINAL || "1",
+      DS_MERCHANT_MERCHANTURL: `${appUrl}/api/redsys/callback`,
+      DS_MERCHANT_URLOK: `${appUrl}/booking/success?paid=true`,
+      DS_MERCHANT_URLKO: `${appUrl}/booking/error`,
+      DS_MERCHANT_MERCHANTDATA: booking.publicCode,
     };
 
-    const jsonParams = JSON.stringify(params);
-    return Buffer.from(jsonParams).toString('base64');
+    return Buffer.from(JSON.stringify(params)).toString("base64");
   },
 
   createSignature(merchantParamsBase64: string, orderId: string) {
-    const secretKey = process.env.REDSYS_SECRET_KEY || 'sq7HjrUOBfKmC576ILgskD5srU870gJ7'; // Clave de test por defecto
-    const decodedSecret = Buffer.from(secretKey, 'base64');
-
-    // 1. 3DES Cipher (IV nulo)
-    const cipher = crypto.createCipheriv('des-ede3-cbc', decodedSecret, Buffer.alloc(8, 0));
+    const decodedSecret = getRedsysSecretKey();
+    const cipher = crypto.createCipheriv("des-ede3-cbc", decodedSecret, Buffer.alloc(8, 0));
     cipher.setAutoPadding(false);
 
-    // Padding de nulos para que orderId sea múltiplo de 8
-    let paddedOrderId = orderId;
-    const padLength = 8 - (paddedOrderId.length % 8);
-    if (padLength !== 8) {
-      paddedOrderId += '\0'.repeat(padLength);
-    }
+    const paddedOrderId = zeroPadToBlockSize(orderId, 8);
+    const derivedKey = Buffer.concat([cipher.update(paddedOrderId, "utf8"), cipher.final()]);
 
-    let derivedKey = cipher.update(paddedOrderId, 'utf8');
-    derivedKey = Buffer.concat([derivedKey, cipher.final()]);
+    return toBase64Url(
+      crypto.createHmac("sha512", derivedKey).update(merchantParamsBase64).digest()
+    );
+  },
 
-    // 2. HMAC SHA256
-    const hmac = crypto.createHmac('sha256', derivedKey);
-    hmac.update(merchantParamsBase64);
-    
-    return hmac.digest('base64');
+  signaturesMatch(receivedSignature: string, expectedSignature: string) {
+    const received = Buffer.from(receivedSignature);
+    const expected = Buffer.from(expectedSignature);
+    return received.length === expected.length && crypto.timingSafeEqual(received, expected);
   },
 
   decodeResponse(base64Params: string) {
-    const decoded = Buffer.from(base64Params, 'base64').toString('utf8');
+    const decoded = Buffer.from(fromBase64Url(base64Params), "base64").toString("utf8");
     return JSON.parse(decoded);
   },
 
-  generateHtmlForm(booking: any) {
-    const amountInCents = Math.round(Number(booking.finalPrice) * 100).toString();
-    const cleanOrder = booking.publicCode.replace(/[^A-Za-z0-9]/g, '').substring(0, 12).padStart(4, '0');
-    
-    const merchantParams = this.createMerchantParameters(booking);
-    const signature = this.createSignature(merchantParams, cleanOrder);
-    
-    // URL oficial de pruebas por defecto, debería cambiarse por entorno
-    const redsysUrl = process.env.REDSYS_URL || 'https://sis-t.redsys.es:25443/sis/realizarPago';
+  generateHtmlForm(booking: RedsysBooking, orderId?: string) {
+    const merchantOrderId = orderId ?? createOrderId(booking);
+    const merchantParams = this.createMerchantParameters(booking, merchantOrderId);
+    const signature = this.createSignature(merchantParams, merchantOrderId);
+    const redsysUrl = process.env.REDSYS_URL || "https://sis-t.redsys.es:25443/sis/realizarPago";
 
     return `
-      <form id="redsys_form" action="${redsysUrl}" method="POST">
-        <input type="hidden" name="Ds_SignatureVersion" value="HMAC_SHA256_V1" />
-        <input type="hidden" name="Ds_MerchantParameters" value="${merchantParams}" />
-        <input type="hidden" name="Ds_Signature" value="${signature}" />
+      <form id="redsys_form" action="${escapeHtml(redsysUrl)}" method="POST">
+        <input type="hidden" name="Ds_SignatureVersion" value="${SIGNATURE_VERSION}" />
+        <input type="hidden" name="Ds_MerchantParameters" value="${escapeHtml(merchantParams)}" />
+        <input type="hidden" name="Ds_Signature" value="${escapeHtml(signature)}" />
       </form>
       <script>
         document.getElementById('redsys_form').submit();

@@ -47,6 +47,7 @@ export const authService = {
   // --- SESSION MANAGEMENT (Cookies) ---
   async setSessionCookie(token: string) {
     const cookieStore = await cookies();
+    cookieStore.delete("session");
     cookieStore.set("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -59,6 +60,7 @@ export const authService = {
   async deleteSessionCookie() {
     const cookieStore = await cookies();
     cookieStore.delete("auth_token");
+    cookieStore.delete("session");
   },
 
   async getSession(): Promise<SessionPayload | null> {

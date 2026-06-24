@@ -1,57 +1,72 @@
-import { describe, it, expect } from 'vitest';
-import { redsysService } from '../modules/payments/redsys.service';
+import { describe, it, expect, beforeEach } from "vitest";
+import { redsysService } from "../modules/payments/redsys.service";
 
-describe('Redsys Service', () => {
-  // Vector oficial de Redsys para pruebas de firma
-  // (Valores usados comúnmente en la documentación para verificar MAC256)
-  const testSecretKey = 'sq7HjrUOBfKmC576ILgskD5srU870gJ7'; // Clave en Base64
-  
-  it('creates merchant parameters in Base64 encoding', () => {
-    const booking = {
-      finalPrice: 150.25,
-      publicCode: 'MT-2026-X9Y8'
-    };
+const booking = {
+  id: "booking-abcdef1234",
+  finalPrice: 150.25,
+  publicCode: "MT-2026-X9Y8",
+  createdAt: "2026-06-23T00:00:00.000Z",
+  payments: [],
+};
 
-    // Forzar entorno de variables de entorno para la prueba
-    process.env.REDSYS_MERCHANT_CODE = '999008881';
-    process.env.REDSYS_TERMINAL = '1';
-    process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
+function toBase64Url(value: string) {
+  return Buffer.from(value)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
+}
 
-    const base64Params = redsysService.createMerchantParameters(booking);
-    
-    // Decodificar y comprobar que es un JSON válido y correcto
-    const decoded = Buffer.from(base64Params, 'base64').toString('utf8');
-    const parsed = JSON.parse(decoded);
-
-    expect(parsed.DS_MERCHANT_AMOUNT).toBe('15025'); // 150.25 * 100
-    // "MT-2026-X9Y8" se limpia a MT2026X9Y8 (hasta 12 chars: MT2026X9Y8 -> MT2026X9Y8)
-    // El orden espera tener 4 primeros numéricos, la lógica actual hace un padStart y reemplazos.
-    expect(parsed.DS_MERCHANT_ORDER).toBe('MT2026X9Y8');
-    expect(parsed.DS_MERCHANT_CURRENCY).toBe('978');
+describe("Redsys Service", () => {
+  beforeEach(() => {
+    process.env.REDSYS_SECRET_KEY = "sq7HjrUOBfKmC576ILgskD5srU870gJ7";
+    process.env.REDSYS_MERCHANT_CODE = "999008881";
+    process.env.REDSYS_TERMINAL = "1";
+    process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
   });
 
-  it('generates the correct HMAC SHA256 signature using 3DES derived key', () => {
-    // Escenario oficial de Redsys manual
-    process.env.REDSYS_SECRET_KEY = testSecretKey;
+  it("creates Redsys-compatible merchant parameters", () => {
+    const orderId = redsysService.createOrderId(booking);
+    const base64Params = redsysService.createMerchantParameters(booking, orderId);
+    const parsed = JSON.parse(Buffer.from(base64Params, "base64").toString("utf8"));
 
-    // Supongamos que los parámetros codificados son "eyJEU19NRVJDSEFOVF9BTU9VTlQiOiIxNTAyNSJ9"
-    // y la orden es "1234Order"
-    const orderId = '1234Order';
-    const paramsBase64 = 'eyJEU19NRVJDSEFOVF9BTU9VTlQiOiIxNTAyNSJ9'; 
+    expect(orderId).toBe("2026EF123401");
+    expect(orderId).toMatch(/^\d{4}[A-Z0-9]{8}$/);
+    expect(parsed.DS_MERCHANT_AMOUNT).toBe("15025");
+    expect(parsed.DS_MERCHANT_ORDER).toBe(orderId);
+    expect(parsed.DS_MERCHANT_CURRENCY).toBe("978");
+    expect(parsed.DS_MERCHANT_MERCHANTDATA).toBe("MT-2026-X9Y8");
+  });
+
+  it("generates deterministic HMAC_SHA512_V2 URL-safe signatures", () => {
+    const orderId = "2026EF123401";
+    const paramsBase64 = redsysService.createMerchantParameters(booking, orderId);
 
     const signature = redsysService.createSignature(paramsBase64, orderId);
+    const repeatedSignature = redsysService.createSignature(paramsBase64, orderId);
 
-    // Si pasamos el mismo orderId y mismos parametros, la firma siempre será determinista
-    expect(signature).toBeTypeOf('string');
-    expect(signature.length).toBeGreaterThan(20);
+    expect(redsysService.signatureVersion).toBe("HMAC_SHA512_V2");
+    expect(signature).toBe(repeatedSignature);
+    expect(signature).toMatch(/^[A-Za-z0-9_-]+$/);
+    expect(signature.length).toBeGreaterThan(80);
+    expect(redsysService.signaturesMatch(signature, repeatedSignature)).toBe(true);
   });
 
-  it('decodes response correctly', () => {
-    const obj = { Ds_Response: '0000', Ds_Order: '1234Order' };
-    const base64Str = Buffer.from(JSON.stringify(obj)).toString('base64');
+  it("generates an auto-submit form using Redsys V2 fields", () => {
+    const form = redsysService.generateHtmlForm(booking, "2026EF123401");
 
-    const result = redsysService.decodeResponse(base64Str);
-    expect(result.Ds_Response).toBe('0000');
-    expect(result.Ds_Order).toBe('1234Order');
+    expect(form).toContain('name="Ds_SignatureVersion" value="HMAC_SHA512_V2"');
+    expect(form).toContain('name="Ds_MerchantParameters"');
+    expect(form).toContain('name="Ds_Signature"');
+    expect(form).not.toContain("HMAC_SHA256_V1");
+  });
+
+  it("decodes standard Base64 and Base64URL Redsys responses", () => {
+    const json = JSON.stringify({ Ds_Response: "0000", Ds_Order: "2026EF123401" });
+    const standardResult = redsysService.decodeResponse(Buffer.from(json).toString("base64"));
+    const urlSafeResult = redsysService.decodeResponse(toBase64Url(json));
+
+    expect(standardResult.Ds_Response).toBe("0000");
+    expect(urlSafeResult.Ds_Order).toBe("2026EF123401");
   });
 });
