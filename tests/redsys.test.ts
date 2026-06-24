@@ -25,10 +25,19 @@ describe("Redsys Service", () => {
     process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
   });
 
+  it("matches the official HMAC_SHA512_V2 signature vector", () => {
+    const merchantParameters =
+      "eyJEU19NRVJDSEFOVF9BTU9VTlQiOiI5OTkiLCJEU19NRVJDSEFOVF9PUkRFUiI6IjEyMzQ1Njc4OTAiLCJEU19NRVJDSEFOVF9NRVJDSEFOVENPREUiOiI5OTkwMDg4ODEiLCJEU19NRVJDSEFOVF9DVVJSRU5DWSI6Ijk3OCIsIkRTX01FUkNIQU5UX1RSQU5TQUNUSU9OVFlQRSI6IjAiLCJEU19NRVJDSEFOVF9URVJNSU5BTCI6IjEiLCJEU19NRVJDSEFOVF9NRVJDSEFOVFVSTCI6Imh0dHA6XC9cL3d3dy5wcnVlYmEuY29tXC91cmxOb3RpZmljYWNpb24ucGhwIiwiRFNfTUVSQ0hBTlRfVVJMT0siOiJodHRwOlwvXC93d3cucHJ1ZWJhLmNvbVwvdXJsT0sucGhwIiwiRFNfTUVSQ0hBTlRfVVJMS08iOiJodHRwOlwvXC93d3cucHJ1ZWJhLmNvbVwvdXJsS08ucGhwIn0";
+    const expectedSignature =
+      "Vjo02eSWq249IeZZp3R-ArFnGLhKY0OuzDDlx1BuVtZDC2yhczA7_11uZhsYzLZBCMFAz8u8uzGDX3AErHKmmw";
+
+    expect(redsysService.createSignature(merchantParameters, "1234567890")).toBe(expectedSignature);
+  });
+
   it("creates Redsys-compatible merchant parameters", () => {
     const orderId = redsysService.createOrderId(booking);
     const base64Params = redsysService.createMerchantParameters(booking, orderId);
-    const parsed = JSON.parse(Buffer.from(base64Params, "base64").toString("utf8"));
+    const parsed = redsysService.decodeResponse(base64Params);
 
     expect(orderId).toBe("2026EF123401");
     expect(orderId).toMatch(/^\d{4}[A-Z0-9]{8}$/);

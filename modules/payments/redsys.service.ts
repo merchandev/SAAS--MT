@@ -14,8 +14,10 @@ type RedsysBooking = {
   }>;
 };
 
-function toBase64Url(value: Buffer): string {
-  return value
+function toBase64Url(value: Buffer | string): string {
+  const buffer = typeof value === "string" ? Buffer.from(value) : value;
+
+  return buffer
     .toString("base64")
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
@@ -27,19 +29,14 @@ function fromBase64Url(value: string): string {
   return normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
 }
 
-function zeroPadToBlockSize(value: string, blockSize: number): string {
-  const padLength = blockSize - (value.length % blockSize);
-  return padLength === blockSize ? value : value + "\0".repeat(padLength);
-}
-
-function getRedsysSecretKey(): Buffer {
+function getRedsysSecretKey(): string {
   const secretKey = process.env.REDSYS_SECRET_KEY || DEFAULT_REDSYS_TEST_KEY;
 
   if (!process.env.REDSYS_SECRET_KEY && process.env.NODE_ENV === "production") {
     throw new Error("FATAL: REDSYS_SECRET_KEY environment variable is not set.");
   }
 
-  return Buffer.from(secretKey, "base64");
+  return secretKey.slice(0, 16).padEnd(16, "\0");
 }
 
 function escapeHtml(value: string): string {
@@ -81,19 +78,17 @@ export const redsysService = {
       DS_MERCHANT_MERCHANTDATA: booking.publicCode,
     };
 
-    return Buffer.from(JSON.stringify(params)).toString("base64");
+    return toBase64Url(JSON.stringify(params));
   },
 
   createSignature(merchantParamsBase64: string, orderId: string) {
-    const decodedSecret = getRedsysSecretKey();
-    const cipher = crypto.createCipheriv("des-ede3-cbc", decodedSecret, Buffer.alloc(8, 0));
-    cipher.setAutoPadding(false);
-
-    const paddedOrderId = zeroPadToBlockSize(orderId, 8);
-    const derivedKey = Buffer.concat([cipher.update(paddedOrderId, "utf8"), cipher.final()]);
+    const secretKey = Buffer.from(getRedsysSecretKey(), "utf8");
+    const cipher = crypto.createCipheriv("aes-128-cbc", secretKey, Buffer.alloc(16, 0));
+    const derivedKey = Buffer.concat([cipher.update(orderId, "utf8"), cipher.final()]);
+    const hmacKey = Buffer.from(derivedKey.toString("base64"), "utf8");
 
     return toBase64Url(
-      crypto.createHmac("sha512", derivedKey).update(merchantParamsBase64).digest()
+      crypto.createHmac("sha512", hmacKey).update(merchantParamsBase64).digest()
     );
   },
 
