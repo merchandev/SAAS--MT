@@ -2,7 +2,10 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = process.env.JWT_SECRET || "metransfers-super-secret-key-2026-fallback";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error("FATAL: JWT_SECRET environment variable is not set.");
+}
 const key = new TextEncoder().encode(JWT_SECRET);
 
 export interface SessionPayload {

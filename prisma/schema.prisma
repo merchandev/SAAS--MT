@@ -306,7 +306,7 @@ model Payment {
   booking             Booking   @relation(fields: [bookingId], references: [id])
   
   provider            String    @default("REDSYS")
-  providerOrderId     String?
+  providerOrderId     String?   @unique
   
   amount              Decimal   @db.Decimal(10, 2)
   currency            String    @default("EUR")

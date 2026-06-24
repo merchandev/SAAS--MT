@@ -1,9 +1,9 @@
-# MeTransfers SaaS Platform
+﻿# MeTransfers SaaS Platform
 
 SaaS B2B/B2C Platform for Private Transfer Bookings, Vehicle Fleet, Hotel QR Referrals, and Payment Management.
 
 ## Stack Overview
-- **Framework**: Next.js 14+ (App Router)
+- **Framework**: Next.js 16.2.9 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4, shadcn/ui
 - **Database**: PostgreSQL

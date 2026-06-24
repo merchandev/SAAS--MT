@@ -1,69 +1,78 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { decrypt } from './lib/auth';
+import { jwtVerify } from 'jose';
 
-const adminOnlyRoutes = [
-  '/admin/dashboard', 
-  '/admin/bookings', 
-  '/admin/vehicles', 
-  '/admin/hotels', 
-  '/admin/agencies', 
-  '/admin/payments', 
-  '/admin/pricing', 
-  '/admin/reports', 
-  '/admin/settings'
+const adminRoutes = [
+  '/admin/dashboard',
+  '/admin/bookings',
+  '/admin/vehicles',
+  '/admin/hotels',
+  '/admin/agencies',
+  '/admin/drivers',
+  '/admin/customers',
+  '/admin/payments',
+  '/admin/pricing',
+  '/admin/reports',
+  '/admin/settings',
 ];
 
-const hotelOnlyRoutes = [
-  '/hotel/dashboard'
-];
+const hotelRoutes = ['/hotel/dashboard'];
+
+async function getSessionPayload(token: string) {
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) return null;
+    const key = new TextEncoder().encode(secret);
+    const { payload } = await jwtVerify(token, key, { algorithms: ['HS256'] });
+    return payload as { userId: string; role: string; email: string };
+  } catch {
+    return null;
+  }
+}
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
-  const isAdminRoute = adminOnlyRoutes.some(route => pathname.startsWith(route));
-  const isHotelRoute = hotelOnlyRoutes.some(route => pathname.startsWith(route));
-  const isPrivateRoute = isAdminRoute || isHotelRoute || pathname.startsWith('/api/private');
-  
-  if (isPrivateRoute) {
-    const session = request.cookies.get('session')?.value;
-    
-    // 1. Si no hay sesión, al login
-    if (!session) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+
+  const isAdminRoute = adminRoutes.some((r) => pathname.startsWith(r));
+  const isHotelRoute = hotelRoutes.some((r) => pathname.startsWith(r));
+
+  if (!isAdminRoute && !isHotelRoute) {
+    return NextResponse.next();
+  }
+
+  // Leer la cookie unificada auth_token (escrita por authService)
+  const token = request.cookies.get('auth_token')?.value;
+
+  if (!token) {
+    return NextResponse.redirect(new URL('/admin/login', request.url));
+  }
+
+  const session = await getSessionPayload(token);
+
+  if (!session) {
+    const response = NextResponse.redirect(new URL('/admin/login', request.url));
+    response.cookies.delete('auth_token');
+    return response;
+  }
+
+  const { role } = session;
+
+  // RBAC: rutas de admin solo para SUPER_ADMIN, ADMIN, OPERATOR
+  if (isAdminRoute) {
+    const isAdminRole = role === 'SUPER_ADMIN' || role === 'ADMIN' || role === 'OPERATOR';
+    if (!isAdminRole) {
+      if (role === 'HOTEL' || role === 'AGENCY') {
+        return NextResponse.redirect(new URL('/hotel/dashboard', request.url));
+      }
+      return NextResponse.redirect(new URL('/', request.url));
     }
-    
-    try {
-      const parsed = await decrypt(session);
-      
-      // 2. Si la sesión expiró o es inválida, al login
-      if (!parsed || parsed.expires < Date.now()) {
-        const response = NextResponse.redirect(new URL('/admin/login', request.url));
-        response.cookies.delete('session');
-        return response;
-      }
+  }
 
-      const userRole = parsed.role;
-
-      // 3. Control de Acceso por Roles (RBAC)
-      // Si un Hotel intenta entrar al panel de Admin
-      if (isAdminRoute && userRole !== 'SUPER_ADMIN' && userRole !== 'ADMIN') {
-        if (userRole === 'HOTEL' || userRole === 'AGENCY') {
-          return NextResponse.redirect(new URL('/hotel/dashboard', request.url));
-        }
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-
-      // Si un Admin intenta entrar al panel de Hotel, se lo permitimos o lo mandamos a su dashboard (lo mandamos a su dashboard por simplicidad)
-      if (isHotelRoute && (userRole === 'SUPER_ADMIN' || userRole === 'ADMIN')) {
-        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
-      }
-
-    } catch (error) {
-      // Si desencriptar falla, limpiar y salir
-      const response = NextResponse.redirect(new URL('/admin/login', request.url));
-      response.cookies.delete('session');
-      return response;
+  // RBAC: rutas de hotel para HOTEL, AGENCY y admins
+  if (isHotelRoute) {
+    const allowed = ['HOTEL', 'AGENCY', 'SUPER_ADMIN', 'ADMIN'];
+    if (!allowed.includes(role)) {
+      return NextResponse.redirect(new URL('/', request.url));
     }
   }
 
@@ -71,5 +80,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api/).*)'],
 };

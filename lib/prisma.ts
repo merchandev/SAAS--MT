@@ -1,14 +1,30 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
+function createPrismaClient(): PrismaClient {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (connectionString) {
+    // Runtime normal: conexión directa a PostgreSQL via adapter
+    const adapter = new PrismaPg({ connectionString });
+    return new PrismaClient({ adapter, log: ["error", "warn"] });
+  }
+
+  // Build time estático sin DATABASE_URL (Turbopack pre-rendering).
+  // Se usa accelerateUrl con string vacío — el cliente existe pero no puede
+  // ejecutar queries (los errores se verán en runtime, no en build).
+  return new PrismaClient({
+    accelerateUrl: "prisma://placeholder-build-time",
     log: ["error", "warn"],
   });
+}
+
+export const prisma: PrismaClient =
+  globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
