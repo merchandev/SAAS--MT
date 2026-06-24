@@ -9,8 +9,8 @@ export const adminBookingSchema = z.object({
   
   originAddress: z.string().min(5, "Origen requerido"),
   destinationAddress: z.string().min(5, "Destino requerido"),
-  distanceKm: z.coerce.number().min(0.1, "Distancia requerida"),
-  durationMinutes: z.coerce.number().min(1, "Duración requerida"),
+  distanceKm: z.coerce.number().optional(),
+  durationMinutes: z.coerce.number().optional(),
   
   serviceDate: z.string(), // ISO string date
   serviceTime: z.string(), // HH:mm format

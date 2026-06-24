@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createPublicBookingAction } from "@/modules/bookings/bookings.actions";
+import { createPublicBookingAction, getDistanceEstimationAction } from "@/modules/bookings/bookings.actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,12 +50,24 @@ export default function BookingFormClient({
     return Math.max(base, Number(vehicle.minimumPrice)).toFixed(2);
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (step === 1) {
       if (!formData.originAddress || !formData.destinationAddress || !formData.serviceDate || !formData.serviceTime) {
         setError("Por favor, completa las direcciones y fechas.");
         return;
       }
+      setIsLoading(true);
+      try {
+        const estimation = await getDistanceEstimationAction(formData.originAddress, formData.destinationAddress);
+        setFormData(prev => ({ 
+          ...prev, 
+          distanceKm: estimation.distanceKm, 
+          durationMinutes: estimation.durationMinutes 
+        }));
+      } catch (err) {
+        // Silently fail to fallback values if network issue
+      }
+      setIsLoading(false);
     }
     if (step === 2 && !formData.vehicleId) {
       setError("Por favor, selecciona un vehículo.");
@@ -154,8 +166,8 @@ export default function BookingFormClient({
                 />
               </div>
             </div>
-            <Button size="lg" className="w-full mt-6 h-14 text-lg font-bold" onClick={handleNextStep}>
-              Ver Vehículos Disponibles
+            <Button size="lg" className="w-full mt-6 h-14 text-lg font-bold" onClick={handleNextStep} disabled={isLoading}>
+              {isLoading ? "Calculando ruta..." : "Ver Vehículos Disponibles"}
             </Button>
           </div>
         )}

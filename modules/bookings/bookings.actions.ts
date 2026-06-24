@@ -5,6 +5,29 @@ import { revalidatePath } from "next/cache";
 import { adminBookingSchema, AdminBookingInput } from "./bookings.schemas";
 import { pricingService } from "../pricing/pricing.service";
 import { generateUniquePublicCode } from "./public-code";
+import { mapsService } from "../maps/maps.service";
+
+function isNightTime(timeStr: string) {
+  if (!timeStr) return false;
+  const [hours] = timeStr.split(':').map(Number);
+  return hours >= 22 || hours < 6;
+}
+
+function isAirportTrip(origin: string, destination: string) {
+  const keywords = ["aeropuerto", "airport", "aeroport", "terminal", "el prat", "bcn", "aeropuerto de palma"];
+  const o = origin.toLowerCase();
+  const d = destination.toLowerCase();
+  return keywords.some(kw => o.includes(kw) || d.includes(kw));
+}
+
+export async function getDistanceEstimationAction(origin: string, destination: string) {
+  if (!origin || !destination) return { distanceKm: 0, durationMinutes: 0 };
+  try {
+    return await mapsService.calculateDistanceAndDuration(origin, destination);
+  } catch (error) {
+    return { distanceKm: 30, durationMinutes: 45 }; // Fallback
+  }
+}
 
 export async function createAdminBookingAction(data: AdminBookingInput) {
   const parsed = adminBookingSchema.safeParse(data);
@@ -20,13 +43,17 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
   } = parsed.data;
 
   try {
+    const mapResult = await mapsService.calculateDistanceAndDuration(originAddress, destinationAddress);
+    const finalDistanceKm = mapResult.distanceKm;
+    const finalDurationMinutes = mapResult.durationMinutes;
+
     // 1. Usar el motor de precios (Principio de Responsabilidad Única)
     const pricingResult = await pricingService.calculateBookingPrice({
       vehicleId,
-      distanceKm,
+      distanceKm: finalDistanceKm,
       tripType,
-      isNightTrip: false, // Lógica a mejorar (detectar si serviceTime es de noche)
-      isAirportTrip: originAddress.toLowerCase().includes("aeropuerto") || destinationAddress.toLowerCase().includes("aeropuerto"),
+      isNightTrip: isNightTime(serviceTime),
+      isAirportTrip: isAirportTrip(originAddress, destinationAddress),
     });
 
     // 2. Transacción de creación (Cliente + Reserva + Auditoría)
@@ -49,8 +76,8 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
           vehicleId,
           originAddress,
           destinationAddress,
-          distanceKm,
-          durationMinutes,
+          distanceKm: finalDistanceKm,
+          durationMinutes: finalDurationMinutes,
           serviceDate: new Date(serviceDate),
           serviceTime,
           tripType,
@@ -120,12 +147,16 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
       }
     }
 
+    const mapResult = await mapsService.calculateDistanceAndDuration(originAddress, destinationAddress);
+    const finalDistanceKm = mapResult.distanceKm;
+    const finalDurationMinutes = mapResult.durationMinutes;
+
     const pricingResult = await pricingService.calculateBookingPrice({
       vehicleId,
-      distanceKm,
+      distanceKm: finalDistanceKm,
       tripType,
-      isNightTrip: false, // Mejorar lógica
-      isAirportTrip: originAddress.toLowerCase().includes("aeropuerto") || destinationAddress.toLowerCase().includes("aeropuerto"),
+      isNightTrip: isNightTime(serviceTime),
+      isAirportTrip: isAirportTrip(originAddress, destinationAddress),
       discountCode
     });
 
@@ -146,8 +177,8 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
           hotelId, // B2B
           originAddress,
           destinationAddress,
-          distanceKm,
-          durationMinutes,
+          distanceKm: finalDistanceKm,
+          durationMinutes: finalDurationMinutes,
           serviceDate: new Date(serviceDate),
           serviceTime,
           tripType,

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { redsysService } from "@/modules/payments/redsys.service";
+import { emailsService } from "@/modules/notifications/emails.service";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     const payment = await prisma.payment.findUnique({
       where: { providerOrderId: orderId },
-      include: { booking: true }
+      include: { booking: { include: { customer: true } } }
     });
 
     if (!payment) {
@@ -84,6 +85,15 @@ export async function POST(req: NextRequest) {
         });
       }
     });
+
+    if (isSuccess && payment.booking.customer) {
+       await emailsService.sendBookingConfirmation(
+         payment.booking.customer.email, 
+         payment.booking.publicCode, 
+         payment.booking.customer.fullName
+       );
+       await emailsService.sendAdminNotification(payment.booking.publicCode);
+    }
 
     return new NextResponse("OK", { status: 200 });
   } catch (error) {

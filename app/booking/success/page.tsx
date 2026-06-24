@@ -17,17 +17,17 @@ export default function BookingSuccessPage({
           </svg>
         </div>
         
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">¡Reserva Pre-Confirmada!</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">¡Pago Confirmado!</h1>
         <p className="text-gray-500 mb-6">
-          Hemos recibido tu solicitud. Tu código de reserva es:
+          Hemos recibido el pago exitosamente. Tu código de reserva es:
         </p>
         
         <div className="bg-gray-50 border border-dashed border-gray-300 rounded-lg py-4 px-6 mb-8 inline-block">
-          <span className="text-3xl font-black tracking-widest text-blue-600">{code || 'PENDIENTE'}</span>
+          <span className="text-3xl font-black tracking-widest text-blue-600">{code || 'CONFIRMADA'}</span>
         </div>
 
         <p className="text-sm text-gray-500 mb-8">
-          Te hemos enviado un correo con las instrucciones para completar el pago mediante tarjeta (Redsys). Tu conductor se asignará tan pronto recibamos la confirmación.
+          Te hemos enviado un correo con el resumen de la reserva. Tu conductor se asignará en breve.
         </p>
 
         <Link href="/">

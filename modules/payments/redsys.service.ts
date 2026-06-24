@@ -73,8 +73,8 @@ export const redsysService = {
       DS_MERCHANT_TRANSACTIONTYPE: "0",
       DS_MERCHANT_TERMINAL: process.env.REDSYS_TERMINAL || "1",
       DS_MERCHANT_MERCHANTURL: `${appUrl}/api/redsys/callback`,
-      DS_MERCHANT_URLOK: `${appUrl}/booking/success?paid=true`,
-      DS_MERCHANT_URLKO: `${appUrl}/booking/error`,
+      DS_MERCHANT_URLOK: `${appUrl}/booking/success?code=${booking.publicCode}&paid=true`,
+      DS_MERCHANT_URLKO: `${appUrl}/booking/error?code=${booking.publicCode}`,
       DS_MERCHANT_MERCHANTDATA: booking.publicCode,
     };
 
