@@ -18,6 +18,10 @@ export default async function AdminLayout({
   const session = await authService.getSession();
   const role = session?.role || "OPERATOR"; // Default fallback para no quebrar UI si falla algo rápido
 
+  // Add explicit server-side role verification
+  const { requireRole } = await import("@/modules/auth/permissions");
+  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+
   return (
     <div className="flex min-h-screen flex-col md:flex-row bg-gray-50">
       {/* Sidebar - Componente Cliente */}

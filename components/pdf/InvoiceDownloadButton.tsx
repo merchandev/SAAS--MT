@@ -17,7 +17,7 @@ export function InvoiceDownloadButton({ booking, customer, settings }: Props) {
 
   // Solucionar problemas de SSR de react-pdf (se debe renderizar solo en cliente)
   useEffect(() => {
-    setIsClient(true);
+    setTimeout(() => setIsClient(true), 0);
   }, []);
 
   if (!isClient) {

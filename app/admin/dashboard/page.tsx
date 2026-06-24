@@ -1,6 +1,7 @@
 import { reportsQueries } from "@/modules/reports/reports.queries";
 import { RevenueChart } from "@/components/charts/RevenueChart";
 import { StatusChart } from "@/components/charts/StatusChart";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +61,7 @@ export default async function DashboardPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
           <h3 className="text-lg font-bold text-gray-900">Últimas Reservas Ingresadas</h3>
-          <a href="/admin/bookings" className="text-sm text-blue-600 font-medium hover:underline cursor-pointer">Ver todas</a>
+          <Link href="/admin/bookings" className="text-sm text-blue-600 font-medium hover:underline cursor-pointer">Ver todas</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">

@@ -266,7 +266,6 @@ enum SourceType {
 enum TripType {
   ONE_WAY
   ROUND_TRIP
-  HOURLY
 }
 
 model Booking {

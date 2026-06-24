@@ -6,6 +6,7 @@ import { createPublicBookingAction, getDistanceEstimationAction } from "@/module
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import PlaceAutocompleteInput from "@/components/maps/PlaceAutocompleteInput";
 
 type Vehicle = any; // Tipado simple para el MVP
 
@@ -106,7 +107,7 @@ export default function BookingFormClient({
     const { distanceKm, durationMinutes, ...bookingPayload } = formData;
     const dataToSend = {
       ...bookingPayload,
-      tripType: formData.tripType as "ONE_WAY" | "ROUND_TRIP" | "HOURLY"
+      tripType: formData.tripType as "ONE_WAY" | "ROUND_TRIP"
     };
 
     const result = await createPublicBookingAction(dataToSend, hotelToken);
@@ -147,19 +148,27 @@ export default function BookingFormClient({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <Label className="text-gray-700 font-semibold">Lugar de Recogida</Label>
-                <Input 
+                <PlaceAutocompleteInput 
                   placeholder="Aeropuerto, Hotel o Dirección..." 
                   value={formData.originAddress}
-                  onChange={(e) => updateForm('originAddress', e.target.value)}
+                  onChange={(address) => updateForm('originAddress', address)}
+                  onSelectPlace={(place) => {
+                    updateForm('originAddress', place.address);
+                    updateForm('originPlaceId', place.placeId);
+                  }}
                   className="h-12 bg-gray-50"
                 />
               </div>
               <div className="space-y-3">
                 <Label className="text-gray-700 font-semibold">Destino</Label>
-                <Input 
+                <PlaceAutocompleteInput 
                   placeholder="Hotel, Ciudad o Dirección..." 
                   value={formData.destinationAddress}
-                  onChange={(e) => updateForm('destinationAddress', e.target.value)}
+                  onChange={(address) => updateForm('destinationAddress', address)}
+                  onSelectPlace={(place) => {
+                    updateForm('destinationAddress', place.address);
+                    updateForm('destinationPlaceId', place.placeId);
+                  }}
                   className="h-12 bg-gray-50"
                 />
               </div>

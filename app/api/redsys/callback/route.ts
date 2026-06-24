@@ -75,15 +75,13 @@ export async function POST(req: NextRequest) {
         }
       });
 
-      if (isSuccess) {
-        await tx.booking.update({
-          where: { id: payment.bookingId },
-          data: {
-            paymentStatus: "PAID",
-            bookingStatus: "CONFIRMADA",
-          }
-        });
-      }
+      await tx.booking.update({
+        where: { id: payment.bookingId },
+        data: {
+          paymentStatus: isSuccess ? "PAID" : "FAILED",
+          bookingStatus: isSuccess ? "CONFIRMADA" : "FALLIDA",
+        }
+      });
     });
 
     if (isSuccess && payment.booking.customer) {

@@ -30,7 +30,7 @@ export default function NewAdminBookingPage() {
       destinationPlaceId: formData.get("destinationPlaceId") as string,
       serviceDate: formData.get("serviceDate") as string,
       serviceTime: formData.get("serviceTime") as string,
-      tripType: formData.get("tripType") as "ONE_WAY" | "ROUND_TRIP" | "HOURLY",
+      tripType: formData.get("tripType") as "ONE_WAY" | "ROUND_TRIP",
       passengers: Number(formData.get("passengers")),
       luggage: Number(formData.get("luggage")),
       flightNumber: formData.get("flightNumber") as string,
@@ -119,10 +119,9 @@ export default function NewAdminBookingPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="tripType">Tipo de viaje</Label>
-                <select id="tripType" name="tripType" className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <option value="ONE_WAY">Solo ida</option>
-                  <option value="ROUND_TRIP">Ida y vuelta</option>
-                  <option value="HOURLY">Disposición por horas</option>
+                <select name="tripType" className="w-full border rounded p-2" required>
+                  <option value="ONE_WAY">Solo Ida</option>
+                  <option value="ROUND_TRIP">Ida y Vuelta</option>
                 </select>
               </div>
               <div className="space-y-2">

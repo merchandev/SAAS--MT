@@ -8,11 +8,11 @@ export const metadata = {
   description: "Reserva tu traslado privado con conductores profesionales. Viaje cómodo, seguro y al mejor precio garantizado.",
 };
 
-export default async function PublicBookingPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
+export default async function PublicBookingPage(props: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const searchParams = await props.searchParams;
+
   // Recuperar todos los vehículos activos
   const activeVehicles = await vehiclesQueries.getActiveVehicles();
   
@@ -44,8 +44,8 @@ export default async function PublicBookingPage({
             <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl mb-4">
               Reserva tu traslado privado
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl">
-              Disfruta de un viaje premium, seguro y sin sorpresas. Precios fijos y conductores profesionales.
+            <p className="mt-4 text-gray-500">
+              Usa nuestro sistema para cotizar al instante. Si necesitas viajes especiales, o &quot;Disposición por horas&quot;, contacta a soporte.
             </p>
             {hotelToken && (
               <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full font-medium text-sm">
@@ -99,7 +99,7 @@ export default async function PublicBookingPage({
 
             <div className="mt-8 pt-6 border-t">
               <p className="text-sm text-center text-gray-500 italic">
-                "El mejor servicio de traslados que he probado. El conductor llegó 10 minutos antes y el vehículo estaba impecable."
+                &quot;El mejor servicio de traslados que he probado. El conductor llegó 10 minutos antes y el vehículo estaba impecable.&quot;
               </p>
               <div className="flex justify-center text-yellow-400 mt-2">
                 ★★★★★

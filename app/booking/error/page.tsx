@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function BookingPaymentErrorPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
+export default async function BookingPaymentErrorPage(props: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const searchParams = await props.searchParams;
   const code = searchParams.code as string;
 
   return (

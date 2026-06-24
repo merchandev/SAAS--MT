@@ -327,8 +327,21 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
   }
 }
 
+import { BookingStatus } from "@prisma/client";
+import { z } from "zod";
+
+const updateStatusSchema = z.nativeEnum(BookingStatus);
+
 export async function updateBookingStatusAction(id: string, newStatus: any) {
   await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  
+  const parsedStatus = updateStatusSchema.safeParse(newStatus);
+  if (!parsedStatus.success) {
+    return { error: "Estado inválido" };
+  }
+  
+  const validatedStatus = parsedStatus.data;
+
   try {
     const booking = await prisma.booking.findUnique({ 
       where: { id },
@@ -337,19 +350,19 @@ export async function updateBookingStatusAction(id: string, newStatus: any) {
     if (!booking) return { error: "Reserva no encontrada" };
 
     await prisma.$transaction(async (tx) => {
-      await tx.booking.update({ where: { id }, data: { bookingStatus: newStatus } });
+      await tx.booking.update({ where: { id }, data: { bookingStatus: validatedStatus } });
       await tx.bookingStatusHistory.create({
         data: {
           bookingId: id,
           oldStatus: booking.bookingStatus,
-          newStatus,
+          newStatus: validatedStatus,
           changedBy: "ADMIN_SYSTEM",
         }
       });
     });
 
     // Send email notification if status changed to CONFIRMADA
-    if (newStatus === "CONFIRMADA" && booking.bookingStatus !== "CONFIRMADA") {
+    if (validatedStatus === "CONFIRMADA" && booking.bookingStatus !== "CONFIRMADA") {
       try {
         const { emailsService } = await import("../notifications/emails.service");
         await emailsService.sendBookingConfirmation(

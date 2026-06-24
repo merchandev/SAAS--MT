@@ -16,7 +16,7 @@ export const adminBookingSchema = z.object({
   
   serviceDate: z.string(), // ISO string date
   serviceTime: z.string(), // HH:mm format
-  tripType: z.enum(["ONE_WAY", "ROUND_TRIP", "HOURLY"]),
+  tripType: z.enum(["ONE_WAY", "ROUND_TRIP"]),
   
   passengers: z.coerce.number().min(1),
   luggage: z.coerce.number().min(0),

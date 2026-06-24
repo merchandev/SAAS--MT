@@ -6,7 +6,8 @@ import { ChevronLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewHotelUserPage({ params }: { params: { id: string } }) {
+export default async function NewHotelUserPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const hotel = await prisma.hotel.findUnique({
     where: { id: params.id }
   });
