@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { BookingStatusForm } from "./BookingStatusForm";
 import { BookingNotesForm } from "./BookingNotesForm";
 import { DriverAssignmentForm } from "./DriverAssignmentForm";
+import { settingsQueries } from "@/modules/settings/settings.queries";
+import { InvoiceDownloadButton } from "@/components/pdf/InvoiceDownloadButton";
 
 export const dynamic = "force-dynamic";
 
@@ -25,17 +27,19 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
     where: { user: { isActive: true } },
     include: { user: true }
   });
+  
+  const settings = await settingsQueries.getAllSettings();
 
   return (
     <div className="space-y-6 max-w-5xl">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h3 className="text-2xl font-bold tracking-tight">Reserva {booking.publicCode}</h3>
           <p className="text-gray-500">
             Creada el {new Date(booking.createdAt).toLocaleString()} | Origen: {booking.sourceType}
           </p>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
             {booking.bookingStatus}
           </span>
@@ -44,6 +48,9 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
           }`}>
             Pago: {booking.paymentStatus}
           </span>
+          {booking.paymentStatus === "PAID" && (
+            <InvoiceDownloadButton booking={booking} customer={booking.customer} settings={settings} />
+          )}
         </div>
       </div>
 
