@@ -51,3 +51,39 @@ export async function regenerateHotelTokenAction(hotelId: string) {
     return { error: "Error al regenerar token" };
   }
 }
+
+export async function createHotelUserAction(data: import("./b2b.schemas").HotelUserCreationInput) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+
+  // Need to import bcryptjs inside or at top, better to require it here to avoid changing top imports just for this
+  const bcrypt = require("bcryptjs");
+  const { hotelUserCreationSchema } = require("./b2b.schemas");
+
+  const parsed = hotelUserCreationSchema.safeParse(data);
+  if (!parsed.success) {
+    return { error: "Datos inválidos", details: parsed.error.flatten() };
+  }
+
+  try {
+    const passwordHash = await bcrypt.hash(parsed.data.password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        email: parsed.data.email,
+        passwordHash,
+        fullName: parsed.data.fullName,
+        role: "HOTEL",
+        hotelId: parsed.data.hotelId,
+      }
+    });
+
+    revalidatePath("/admin/hotels");
+    return { success: true, userId: user.id };
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      return { error: "El correo ya está en uso." };
+    }
+    return { error: "Error al crear el usuario B2B" };
+  }
+}
+

@@ -52,9 +52,12 @@ export default async function HotelsPage() {
                     {h.isActive ? 'Activo' : 'Inactivo'}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                   <Link href={`/hotel/${h.token}`} target="_blank">
-                    <Button variant="outline" size="sm">Ver Portal</Button>
+                    <Button variant="outline" size="sm">Portal</Button>
+                  </Link>
+                  <Link href={`/admin/hotels/${h.id}/user/new`}>
+                    <Button variant="secondary" size="sm">+ Usuario</Button>
                   </Link>
                 </td>
               </tr>

@@ -32,6 +32,11 @@ model User {
   // Relaciones
   driverProfile   Driver?
   customerProfile Customer?
+  
+  hotelId         String?
+  hotel           Hotel?   @relation(fields: [hotelId], references: [id])
+  agencyId        String?
+  agency          Agency?  @relation(fields: [agencyId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -121,6 +126,7 @@ model Hotel {
   isActive Boolean @default(true)
 
   bookings Booking[]
+  users    User[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,6 +148,7 @@ model Agency {
   isActive Boolean @default(true)
 
   bookings Booking[]
+  users    User[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -10,3 +10,13 @@ export const hotelCreationSchema = z.object({
 });
 
 export type HotelCreationInput = z.infer<typeof hotelCreationSchema>;
+
+export const hotelUserCreationSchema = z.object({
+  hotelId: z.string().uuid("ID de hotel inválido"),
+  fullName: z.string().min(3, "El nombre completo es requerido"),
+  email: z.string().email("Correo inválido"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+});
+
+export type HotelUserCreationInput = z.infer<typeof hotelUserCreationSchema>;
+
