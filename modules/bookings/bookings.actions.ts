@@ -9,10 +9,27 @@ import { mapsService } from "../maps/maps.service";
 import { requireRole } from "../auth/permissions";
 import { distanceInputSchema, type DistanceInput } from "../maps/maps.schemas";
 
-function isNightTime(timeStr: string) {
+import { settingsQueries } from "../settings/settings.queries";
+
+async function isNightTime(timeStr: string) {
   if (!timeStr) return false;
-  const [hours] = timeStr.split(':').map(Number);
-  return hours >= 22 || hours < 6;
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  const currentTime = hours * 60 + minutes;
+
+  const startStr = await settingsQueries.getSettingValue("NIGHT_START_TIME", "22:00");
+  const endStr = await settingsQueries.getSettingValue("NIGHT_END_TIME", "06:00");
+
+  const [startH, startM] = startStr.split(':').map(Number);
+  const [endH, endM] = endStr.split(':').map(Number);
+
+  const startTime = startH * 60 + startM;
+  const endTime = endH * 60 + endM;
+
+  if (startTime > endTime) {
+    return currentTime >= startTime || currentTime <= endTime;
+  } else {
+    return currentTime >= startTime && currentTime <= endTime;
+  }
 }
 
 function isAirportTrip(origin: string, destination: string) {
@@ -121,7 +138,7 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
       vehicleId,
       distanceKm: finalDistanceKm,
       tripType,
-      isNightTrip: isNightTime(serviceTime),
+      isNightTrip: await isNightTime(serviceTime),
       isAirportTrip: tripContext.isAirportTrip,
     });
 
@@ -241,7 +258,7 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
       vehicleId,
       distanceKm: finalDistanceKm,
       tripType,
-      isNightTrip: isNightTime(serviceTime),
+      isNightTrip: await isNightTime(serviceTime),
       isAirportTrip: tripContext.isAirportTrip,
       discountCode
     });
