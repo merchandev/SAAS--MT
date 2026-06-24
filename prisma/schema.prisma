@@ -364,3 +364,76 @@ model SystemSetting {
   description String?
   updatedAt   DateTime @updatedAt
 }
+
+// ==========================================
+// 11. MODELOS ADICIONALES (Facturación, Reseñas, Logs)
+// ==========================================
+
+model BookingStatusHistory {
+  id          String   @id @default(uuid())
+  bookingId   String
+  booking     Booking  @relation(fields: [bookingId], references: [id])
+  oldStatus   BookingStatus
+  newStatus   BookingStatus
+  changedBy   String?  // userId del admin/sistema
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+}
+
+model RedsysLog {
+  id              String   @id @default(uuid())
+  bookingId       String?
+  orderId         String?
+  transactionType String   // NOTIFICATION, SUCCESS, ERROR
+  rawPayload      String   @db.Text
+  responseCode    String?
+  isSignatureValid Boolean @default(false)
+  createdAt       DateTime @default(now())
+}
+
+model Invoice {
+  id              String   @id @default(uuid())
+  invoiceNumber   String   @unique
+  bookingId       String   @unique
+  booking         Booking  @relation(fields: [bookingId], references: [id])
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id])
+  
+  subtotal        Decimal  @db.Decimal(10, 2)
+  taxAmount       Decimal  @default(0) @db.Decimal(10, 2)
+  totalAmount     Decimal  @db.Decimal(10, 2)
+  currency        String   @default("EUR")
+  
+  issuedAt        DateTime @default(now())
+  pdfUrl          String?
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  bookingId   String   @unique
+  booking     Booking  @relation(fields: [bookingId], references: [id])
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  
+  rating      Int      // 1-5
+  comment     String?  @db.Text
+  isPublished Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+}
+
+model RoutePage {
+  id              String   @id @default(uuid())
+  slug            String   @unique // Ej: traslados-aeropuerto-mallorca-alcudia
+  originName      String
+  destinationName String
+  h1Title         String
+  metaDescription String?  @db.Text
+  contentHtml     String?  @db.Text
+  
+  basePriceCache  Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X €" rápido
+  
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
