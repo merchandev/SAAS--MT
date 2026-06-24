@@ -40,4 +40,35 @@ describe("Maps Service", () => {
 
     expect(result).toEqual({ distanceKm: 12.35, durationMinutes: 30 });
   });
+
+  it("prefers Google place IDs when provided", async () => {
+    process.env.GOOGLE_MAPS_API_KEY = "test-key";
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        status: "OK",
+        rows: [
+          {
+            elements: [
+              {
+                status: "OK",
+                distance: { value: 1000 },
+                duration: { value: 120 },
+              },
+            ],
+          },
+        ],
+      }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await mapsService.calculateDistanceAndDuration(
+      { address: "Fallback origin", placeId: "origin-place" },
+      { address: "Fallback destination", placeId: "destination-place" }
+    );
+
+    const url = fetchMock.mock.calls[0][0] as string;
+    expect(url).toContain("origins=place_id%3Aorigin-place");
+    expect(url).toContain("destinations=place_id%3Adestination-place");
+  });
 });

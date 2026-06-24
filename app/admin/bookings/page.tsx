@@ -2,6 +2,8 @@ import Link from "next/link";
 import { bookingsQueries } from "@/modules/bookings/bookings.queries";
 import { Button } from "@/components/ui/button";
 
+export const dynamic = "force-dynamic";
+
 export default async function BookingsPage() {
   const bookings = await bookingsQueries.getAllBookings();
 

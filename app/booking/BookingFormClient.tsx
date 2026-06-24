@@ -24,7 +24,9 @@ export default function BookingFormClient({
   // Form State
   const [formData, setFormData] = useState({
     originAddress: "",
+    originPlaceId: "",
     destinationAddress: "",
+    destinationPlaceId: "",
     distanceKm: 0,
     durationMinutes: 0,
     serviceDate: "",
@@ -59,7 +61,12 @@ export default function BookingFormClient({
       }
       setIsLoading(true);
       try {
-        const estimation = await getDistanceEstimationAction(formData.originAddress, formData.destinationAddress);
+        const estimation = await getDistanceEstimationAction({
+          originAddress: formData.originAddress,
+          originPlaceId: formData.originPlaceId,
+          destinationAddress: formData.destinationAddress,
+          destinationPlaceId: formData.destinationPlaceId,
+        });
         if (!estimation.success) {
           setError(estimation.error ?? "No se pudo calcular la ruta real.");
           setIsLoading(false);
@@ -96,8 +103,9 @@ export default function BookingFormClient({
     setError(null);
 
     // Castear el tripType al union type que espera el schema
+    const { distanceKm, durationMinutes, ...bookingPayload } = formData;
     const dataToSend = {
-      ...formData,
+      ...bookingPayload,
       tripType: formData.tripType as "ONE_WAY" | "ROUND_TRIP" | "HOURLY"
     };
 

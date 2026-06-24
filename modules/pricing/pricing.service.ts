@@ -14,6 +14,11 @@ export interface PricingResult {
   discounts: number;
   finalPrice: number;
   currency: string;
+  breakdown: Array<{
+    label: string;
+    type: "BASE" | "SURCHARGE" | "DISCOUNT";
+    amount: number;
+  }>;
 }
 
 export const pricingService = {
@@ -79,17 +84,39 @@ export const pricingService = {
 
     // 4. Final
     const finalPrice = basePrice + totalSurcharges - totalDiscounts;
+    const roundedBasePrice = Number(basePrice.toFixed(2));
+    const roundedNightSurcharge = Number(nightSurcharge.toFixed(2));
+    const roundedAirportSurcharge = Number(airportSurcharge.toFixed(2));
+    const roundedTotalSurcharges = Number(totalSurcharges.toFixed(2));
+    const roundedDiscounts = Number(totalDiscounts.toFixed(2));
+    const roundedFinalPrice = Number(Math.max(0, finalPrice).toFixed(2));
+    const breakdown: PricingResult["breakdown"] = [
+      { label: "Precio base", type: "BASE", amount: roundedBasePrice },
+    ];
+
+    if (roundedNightSurcharge > 0) {
+      breakdown.push({ label: "Recargo nocturno", type: "SURCHARGE", amount: roundedNightSurcharge });
+    }
+
+    if (roundedAirportSurcharge > 0) {
+      breakdown.push({ label: "Recargo aeropuerto/zona", type: "SURCHARGE", amount: roundedAirportSurcharge });
+    }
+
+    if (roundedDiscounts > 0) {
+      breakdown.push({ label: "Descuento aplicado", type: "DISCOUNT", amount: roundedDiscounts });
+    }
 
     return {
-      basePrice: Number(basePrice.toFixed(2)),
+      basePrice: roundedBasePrice,
       surcharges: {
-        night: Number(nightSurcharge.toFixed(2)),
-        airport: Number(airportSurcharge.toFixed(2)),
-        total: Number(totalSurcharges.toFixed(2)),
+        night: roundedNightSurcharge,
+        airport: roundedAirportSurcharge,
+        total: roundedTotalSurcharges,
       },
-      discounts: Number(totalDiscounts.toFixed(2)),
-      finalPrice: Number(Math.max(0, finalPrice).toFixed(2)), // Nunca menor a 0
-      currency: "EUR"
+      discounts: roundedDiscounts,
+      finalPrice: roundedFinalPrice, // Nunca menor a 0
+      currency: "EUR",
+      breakdown,
     };
   }
 };

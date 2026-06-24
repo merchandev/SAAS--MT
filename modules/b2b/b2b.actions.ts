@@ -4,8 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { hotelCreationSchema, HotelCreationInput } from "./b2b.schemas";
 import crypto from "crypto";
+import { requireRole } from "../auth/permissions";
 
 export async function createHotelAction(data: HotelCreationInput) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+
   const parsed = hotelCreationSchema.safeParse(data);
   if (!parsed.success) {
     return { error: "Datos inválidos", details: parsed.error.flatten() };
@@ -34,6 +37,8 @@ export async function createHotelAction(data: HotelCreationInput) {
 }
 
 export async function regenerateHotelTokenAction(hotelId: string) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+
   try {
     const newToken = crypto.randomBytes(16).toString('hex');
     await prisma.hotel.update({

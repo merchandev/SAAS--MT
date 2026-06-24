@@ -1,6 +1,8 @@
 import { vehiclesQueries } from "@/modules/vehicles/vehicles.queries";
 import BookingFormClient from "./BookingFormClient";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Reservar Traslado | MeTransfers",
   description: "Reserva tu traslado privado con conductores profesionales. Viaje cómodo, seguro y al mejor precio garantizado.",

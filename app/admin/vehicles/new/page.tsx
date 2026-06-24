@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { createVehicleAction } from "@/modules/vehicles/vehicles.actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function NewVehiclePage() {
   const categories = await prisma.vehicleCategory.findMany();
 

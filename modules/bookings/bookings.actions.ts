@@ -6,6 +6,8 @@ import { adminBookingSchema, AdminBookingInput } from "./bookings.schemas";
 import { pricingService } from "../pricing/pricing.service";
 import { generateUniquePublicCode } from "./public-code";
 import { mapsService } from "../maps/maps.service";
+import { requireRole } from "../auth/permissions";
+import { distanceInputSchema, type DistanceInput } from "../maps/maps.schemas";
 
 function isNightTime(timeStr: string) {
   if (!timeStr) return false;
@@ -20,13 +22,61 @@ function isAirportTrip(origin: string, destination: string) {
   return keywords.some(kw => o.includes(kw) || d.includes(kw));
 }
 
-export async function getDistanceEstimationAction(origin: string, destination: string) {
-  if (!origin || !destination) {
+async function getZoneType(address: string, placeId?: string) {
+  if (placeId) {
+    const zone = await prisma.zone.findUnique({
+      where: { placeId },
+      select: { type: true },
+    });
+
+    if (zone) {
+      return zone.type;
+    }
+  }
+
+  const normalizedAddress = address.toLowerCase();
+  const zones = await prisma.zone.findMany({
+    where: { isActive: true },
+    select: { type: true, keywords: true },
+  });
+
+  return zones.find((zone) =>
+    zone.keywords.some((keyword) => normalizedAddress.includes(keyword.toLowerCase()))
+  )?.type;
+}
+
+async function detectTripContext(
+  originAddress: string,
+  destinationAddress: string,
+  originPlaceId?: string,
+  destinationPlaceId?: string
+) {
+  const [originZoneType, destinationZoneType] = await Promise.all([
+    getZoneType(originAddress, originPlaceId),
+    getZoneType(destinationAddress, destinationPlaceId),
+  ]);
+
+  return {
+    originZoneType,
+    destinationZoneType,
+    isAirportTrip:
+      originZoneType === "AIRPORT" ||
+      destinationZoneType === "AIRPORT" ||
+      isAirportTrip(originAddress, destinationAddress),
+  };
+}
+
+export async function getDistanceEstimationAction(input: DistanceInput) {
+  const parsed = distanceInputSchema.safeParse(input);
+  if (!parsed.success) {
     return { success: false as const, error: "Origen y destino son obligatorios." };
   }
 
   try {
-    const estimation = await mapsService.calculateDistanceAndDuration(origin, destination);
+    const estimation = await mapsService.calculateDistanceAndDuration(
+      { address: parsed.data.originAddress, placeId: parsed.data.originPlaceId },
+      { address: parsed.data.destinationAddress, placeId: parsed.data.destinationPlaceId }
+    );
     return { success: true as const, ...estimation };
   } catch (error) {
     console.error("Distance estimation error:", error);
@@ -38,6 +88,8 @@ export async function getDistanceEstimationAction(origin: string, destination: s
 }
 
 export async function createAdminBookingAction(data: AdminBookingInput) {
+  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+
   const parsed = adminBookingSchema.safeParse(data);
   if (!parsed.success) {
     return { error: "Datos inválidos", details: parsed.error.flatten() };
@@ -45,15 +97,24 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
 
   const {
     customerName, customerEmail, customerPhone,
-    vehicleId, originAddress, destinationAddress,
-    distanceKm, durationMinutes, serviceDate, serviceTime,
+    vehicleId, originAddress, originPlaceId, destinationAddress, destinationPlaceId,
+    serviceDate, serviceTime,
     tripType, passengers, luggage, flightNumber, internalNotes, customerNotes
   } = parsed.data;
 
   try {
-    const mapResult = await mapsService.calculateDistanceAndDuration(originAddress, destinationAddress);
+    const mapResult = await mapsService.calculateDistanceAndDuration(
+      { address: originAddress, placeId: originPlaceId },
+      { address: destinationAddress, placeId: destinationPlaceId }
+    );
     const finalDistanceKm = mapResult.distanceKm;
     const finalDurationMinutes = mapResult.durationMinutes;
+    const tripContext = await detectTripContext(
+      originAddress,
+      destinationAddress,
+      originPlaceId,
+      destinationPlaceId
+    );
 
     // 1. Usar el motor de precios (Principio de Responsabilidad Única)
     const pricingResult = await pricingService.calculateBookingPrice({
@@ -61,7 +122,7 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
       distanceKm: finalDistanceKm,
       tripType,
       isNightTrip: isNightTime(serviceTime),
-      isAirportTrip: isAirportTrip(originAddress, destinationAddress),
+      isAirportTrip: tripContext.isAirportTrip,
     });
 
     // 2. Transacción de creación (Cliente + Reserva + Auditoría)
@@ -83,7 +144,9 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
           customerId: customer.id,
           vehicleId,
           originAddress,
+          originPlaceId,
           destinationAddress,
+          destinationPlaceId,
           distanceKm: finalDistanceKm,
           durationMinutes: finalDurationMinutes,
           serviceDate: new Date(serviceDate),
@@ -97,6 +160,7 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
           discountAmount: pricingResult.discounts,
           finalPrice: pricingResult.finalPrice,
           currency: pricingResult.currency,
+          priceBreakdown: pricingResult.breakdown,
           sourceType: "MANUAL_ADMIN",
           bookingStatus: "DRAFT", // Creado manualmente
           paymentStatus: "PENDING",
@@ -111,7 +175,12 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
           entityType: "Booking",
           entityId: newBooking.id,
           action: "CREATE",
-          newValue: JSON.stringify({ source: "MANUAL_ADMIN", finalPrice: pricingResult.finalPrice }),
+          newValue: JSON.stringify({
+            source: "MANUAL_ADMIN",
+            finalPrice: pricingResult.finalPrice,
+            originZoneType: tripContext.originZoneType,
+            destinationZoneType: tripContext.destinationZoneType,
+          }),
         }
       });
 
@@ -135,8 +204,8 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
 
   const {
     customerName, customerEmail, customerPhone,
-    vehicleId, originAddress, destinationAddress,
-    distanceKm, durationMinutes, serviceDate, serviceTime,
+    vehicleId, originAddress, originPlaceId, destinationAddress, destinationPlaceId,
+    serviceDate, serviceTime,
     tripType, passengers, luggage, flightNumber, customerNotes
   } = parsed.data;
 
@@ -155,16 +224,25 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
       }
     }
 
-    const mapResult = await mapsService.calculateDistanceAndDuration(originAddress, destinationAddress);
+    const mapResult = await mapsService.calculateDistanceAndDuration(
+      { address: originAddress, placeId: originPlaceId },
+      { address: destinationAddress, placeId: destinationPlaceId }
+    );
     const finalDistanceKm = mapResult.distanceKm;
     const finalDurationMinutes = mapResult.durationMinutes;
+    const tripContext = await detectTripContext(
+      originAddress,
+      destinationAddress,
+      originPlaceId,
+      destinationPlaceId
+    );
 
     const pricingResult = await pricingService.calculateBookingPrice({
       vehicleId,
       distanceKm: finalDistanceKm,
       tripType,
       isNightTrip: isNightTime(serviceTime),
-      isAirportTrip: isAirportTrip(originAddress, destinationAddress),
+      isAirportTrip: tripContext.isAirportTrip,
       discountCode
     });
 
@@ -184,7 +262,9 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
           vehicleId,
           hotelId, // B2B
           originAddress,
+          originPlaceId,
           destinationAddress,
+          destinationPlaceId,
           distanceKm: finalDistanceKm,
           durationMinutes: finalDurationMinutes,
           serviceDate: new Date(serviceDate),
@@ -198,6 +278,7 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
           discountAmount: pricingResult.discounts,
           finalPrice: pricingResult.finalPrice,
           currency: pricingResult.currency,
+          priceBreakdown: pricingResult.breakdown,
           sourceType: sourceType as any,
           bookingStatus: "PENDING_PAYMENT", 
           paymentStatus: "PENDING",
@@ -210,7 +291,12 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
           entityType: "Booking",
           entityId: newBooking.id,
           action: "CREATE_PUBLIC",
-          newValue: JSON.stringify({ source: sourceType, finalPrice: pricingResult.finalPrice }),
+          newValue: JSON.stringify({
+            source: sourceType,
+            finalPrice: pricingResult.finalPrice,
+            originZoneType: tripContext.originZoneType,
+            destinationZoneType: tripContext.destinationZoneType,
+          }),
         }
       });
 

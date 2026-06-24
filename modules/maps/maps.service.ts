@@ -3,6 +3,11 @@ export interface DistanceDurationResult {
   durationMinutes: number;
 }
 
+type RouteLocation = string | {
+  address?: string | null;
+  placeId?: string | null;
+};
+
 type GoogleDistanceMatrixResponse = {
   status: string;
   error_message?: string;
@@ -15,8 +20,24 @@ type GoogleDistanceMatrixResponse = {
   }>;
 };
 
+function normalizeLocation(location: RouteLocation): string {
+  if (typeof location === "string") {
+    return location;
+  }
+
+  if (location.placeId) {
+    return `place_id:${location.placeId}`;
+  }
+
+  if (location.address) {
+    return location.address;
+  }
+
+  throw new Error("Route location requires an address or placeId.");
+}
+
 export const mapsService = {
-  async calculateDistanceAndDuration(origin: string, destination: string): Promise<DistanceDurationResult> {
+  async calculateDistanceAndDuration(origin: RouteLocation, destination: RouteLocation): Promise<DistanceDurationResult> {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
     if (!apiKey) {
@@ -24,8 +45,8 @@ export const mapsService = {
     }
 
     const searchParams = new URLSearchParams({
-      origins: origin,
-      destinations: destination,
+      origins: normalizeLocation(origin),
+      destinations: normalizeLocation(destination),
       key: apiKey,
     });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createAdminBookingAction } from "@/modules/bookings/bookings.actions";
 import { Button } from "@/components/ui/button";
@@ -25,9 +25,9 @@ export default function NewAdminBookingPage() {
       customerPhone: formData.get("customerPhone") as string,
       vehicleId: formData.get("vehicleId") as string,
       originAddress: formData.get("originAddress") as string,
+      originPlaceId: formData.get("originPlaceId") as string,
       destinationAddress: formData.get("destinationAddress") as string,
-      distanceKm: Number(formData.get("distanceKm")),
-      durationMinutes: Number(formData.get("durationMinutes")),
+      destinationPlaceId: formData.get("destinationPlaceId") as string,
       serviceDate: formData.get("serviceDate") as string,
       serviceTime: formData.get("serviceTime") as string,
       tripType: formData.get("tripType") as "ONE_WAY" | "ROUND_TRIP" | "HOURLY",
@@ -45,7 +45,7 @@ export default function NewAdminBookingPage() {
       } else {
         router.push("/admin/bookings");
       }
-    } catch (err) {
+    } catch {
       setError("Error al procesar la reserva manual.");
       setIsLoading(false);
     }
@@ -62,15 +62,15 @@ export default function NewAdminBookingPage() {
         <Card>
           <CardContent className="pt-6 space-y-6">
             {error && <div className="text-red-500 text-sm">{error}</div>}
-            
+
             <h4 className="font-semibold pt-4 border-t">Datos del Cliente</h4>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="customerName">Nombre Completo</Label>
+                <Label htmlFor="customerName">Nombre completo</Label>
                 <Input id="customerName" name="customerName" required placeholder="Ej. Juan Pérez" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="customerEmail">Correo Electrónico</Label>
+                <Label htmlFor="customerEmail">Correo electrónico</Label>
                 <Input id="customerEmail" name="customerEmail" type="email" required placeholder="juan@ejemplo.com" />
               </div>
               <div className="space-y-2">
@@ -79,46 +79,50 @@ export default function NewAdminBookingPage() {
               </div>
             </div>
 
-            <h4 className="font-semibold pt-4 border-t">Ruta y Fechas</h4>
+            <h4 className="font-semibold pt-4 border-t">Ruta y fechas</h4>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="originAddress">Origen</Label>
-                <Input id="originAddress" name="originAddress" required placeholder="Aeropuerto, Hotel, Dirección..." />
+                <Input id="originAddress" name="originAddress" required placeholder="Aeropuerto, hotel o dirección" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="originPlaceId">Google Place ID origen opcional</Label>
+                <Input id="originPlaceId" name="originPlaceId" placeholder="place_id opcional" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="destinationAddress">Destino</Label>
-                <Input id="destinationAddress" name="destinationAddress" required placeholder="Aeropuerto, Hotel, Dirección..." />
+                <Input id="destinationAddress" name="destinationAddress" required placeholder="Hotel, ciudad o dirección" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="distanceKm">Distancia Aproximada (Km)</Label>
-                <Input id="distanceKm" name="distanceKm" type="number" step="0.1" required />
+                <Label htmlFor="destinationPlaceId">Google Place ID destino opcional</Label>
+                <Input id="destinationPlaceId" name="destinationPlaceId" placeholder="place_id opcional" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="durationMinutes">Duración Estimada (Minutos)</Label>
-                <Input id="durationMinutes" name="durationMinutes" type="number" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="serviceDate">Fecha del Servicio</Label>
+                <Label htmlFor="serviceDate">Fecha del servicio</Label>
                 <Input id="serviceDate" name="serviceDate" type="date" required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="serviceTime">Hora del Servicio</Label>
+                <Label htmlFor="serviceTime">Hora del servicio</Label>
                 <Input id="serviceTime" name="serviceTime" type="time" required />
               </div>
             </div>
 
-            <h4 className="font-semibold pt-4 border-t">Detalles del Traslado</h4>
+            <p className="text-sm text-gray-500">
+              La distancia, duración y precio se recalculan en servidor con Google Maps antes de crear la reserva.
+            </p>
+
+            <h4 className="font-semibold pt-4 border-t">Detalles del traslado</h4>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="vehicleId">ID Vehículo (UUID por UI MVP)</Label>
+                <Label htmlFor="vehicleId">ID vehículo</Label>
                 <Input id="vehicleId" name="vehicleId" required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="tripType">Tipo de Viaje</Label>
+                <Label htmlFor="tripType">Tipo de viaje</Label>
                 <select id="tripType" name="tripType" className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <option value="ONE_WAY">Solo Ida</option>
-                  <option value="ROUND_TRIP">Ida y Vuelta</option>
-                  <option value="HOURLY">Disposición por Horas</option>
+                  <option value="ONE_WAY">Solo ida</option>
+                  <option value="ROUND_TRIP">Ida y vuelta</option>
+                  <option value="HOURLY">Disposición por horas</option>
                 </select>
               </div>
               <div className="space-y-2">
@@ -132,9 +136,11 @@ export default function NewAdminBookingPage() {
             </div>
 
             <div className="flex justify-end pt-6 border-t mt-6">
-              <Button type="button" variant="outline" className="mr-4" onClick={() => router.back()}>Cancelar</Button>
+              <Button type="button" variant="outline" className="mr-4" onClick={() => router.back()}>
+                Cancelar
+              </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Calculando y Guardando..." : "Crear Reserva"}
+                {isLoading ? "Calculando y guardando..." : "Crear reserva"}
               </Button>
             </div>
           </CardContent>

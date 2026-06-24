@@ -1,8 +1,11 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { vehicleSchema, type VehicleInput } from "./vehicles.schemas";
+import { requireRole } from "@/modules/auth/permissions";
 
 export async function createVehicleAction(data: VehicleInput) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+
   const parsed = vehicleSchema.safeParse(data);
   if (!parsed.success) {
     return { error: "Datos de vehículo inválidos", details: parsed.error.flatten() };
@@ -21,6 +24,8 @@ export async function createVehicleAction(data: VehicleInput) {
 }
 
 export async function updateVehicleAction(id: string, data: VehicleInput) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+
   const parsed = vehicleSchema.safeParse(data);
   if (!parsed.success) {
     return { error: "Datos de vehículo inválidos", details: parsed.error.flatten() };
@@ -41,6 +46,8 @@ export async function updateVehicleAction(id: string, data: VehicleInput) {
 }
 
 export async function toggleVehicleStatusAction(id: string, currentStatus: boolean) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+
   try {
     const vehicle = await prisma.vehicle.update({
       where: { id },

@@ -203,6 +203,25 @@ model DiscountCode {
   updatedAt   DateTime  @updatedAt
 }
 
+enum ZoneType {
+  AIRPORT
+  PORT
+  TRAIN_STATION
+  CITY
+  HOTEL_AREA
+}
+
+model Zone {
+  id        String   @id @default(uuid())
+  name      String
+  type      ZoneType
+  placeId   String?  @unique
+  keywords  String[]
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // ==========================================
 // 7. MOTOR DE RESERVAS
 // ==========================================
@@ -254,7 +273,9 @@ model Booking {
   vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
 
   originAddress      String
+  originPlaceId      String?
   destinationAddress String
+  destinationPlaceId String?
   distanceKm         Decimal @db.Decimal(10, 2)
   durationMinutes    Int
 
@@ -271,6 +292,7 @@ model Booking {
   surchargeAmount Decimal @default(0) @db.Decimal(10, 2)
   finalPrice      Decimal @db.Decimal(10, 2)
   currency        String  @default("EUR")
+  priceBreakdown  Json?
 
   sourceType SourceType @default(WEB_DIRECT)
   hotelId    String?

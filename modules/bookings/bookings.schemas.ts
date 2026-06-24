@@ -8,7 +8,9 @@ export const adminBookingSchema = z.object({
   vehicleId: z.string().uuid("Vehículo inválido"),
   
   originAddress: z.string().min(5, "Origen requerido"),
+  originPlaceId: z.string().optional(),
   destinationAddress: z.string().min(5, "Destino requerido"),
+  destinationPlaceId: z.string().optional(),
   distanceKm: z.coerce.number().optional(),
   durationMinutes: z.coerce.number().optional(),
   

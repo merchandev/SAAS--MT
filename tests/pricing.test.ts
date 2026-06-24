@@ -45,6 +45,9 @@ describe('Pricing Service', () => {
     // 50 km * 1.5 = 75
     expect(result.basePrice).toBe(75);
     expect(result.finalPrice).toBe(75);
+    expect(result.breakdown).toEqual([
+      { label: 'Precio base', type: 'BASE', amount: 75 }
+    ]);
   });
 
   it('applies minimum price when calculated price is lower', async () => {
@@ -80,6 +83,8 @@ describe('Pricing Service', () => {
     expect(result.surcharges.airport).toBe(10);
     expect(result.surcharges.total).toBe(25);
     expect(result.finalPrice).toBe(121);
+    expect(result.breakdown).toContainEqual({ label: 'Recargo nocturno', type: 'SURCHARGE', amount: 15 });
+    expect(result.breakdown).toContainEqual({ label: 'Recargo aeropuerto/zona', type: 'SURCHARGE', amount: 10 });
   });
 
   it('applies fixed discounts correctly', async () => {
@@ -102,5 +107,6 @@ describe('Pricing Service', () => {
     // Base: 75. Discount: 10. Total: 65.
     expect(result.discounts).toBe(10);
     expect(result.finalPrice).toBe(65);
+    expect(result.breakdown).toContainEqual({ label: 'Descuento aplicado', type: 'DISCOUNT', amount: 10 });
   });
 });

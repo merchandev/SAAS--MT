@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/metransfers?schema=public
+      JWT_SECRET: ci-only-jwt-secret-change-in-real-environments
+      GOOGLE_MAPS_API_KEY: ci-google-maps-key
+      REDSYS_SECRET_KEY: sq7HjrUOBfKmC576ILgskD5srU870gJ7
+      REDSYS_MERCHANT_CODE: "999008881"
+      REDSYS_TERMINAL: "1"
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npx prisma validate
+      - run: npx prisma generate
+      - run: npm run build
+      - run: npm run test

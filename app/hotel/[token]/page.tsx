@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { b2bQueries } from "@/modules/b2b/b2b.queries";
 import { Button } from "@/components/ui/button";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{
     token: string;
