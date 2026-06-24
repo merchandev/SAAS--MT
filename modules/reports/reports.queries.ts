@@ -54,5 +54,57 @@ export const reportsQueries = {
         vehicle: true
       }
     });
+  },
+
+  /**
+   * Obtiene los ingresos por mes de los últimos 6 meses (reservas PAGADAS)
+   */
+  async getRevenueByMonth() {
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+    sixMonthsAgo.setDate(1);
+
+    const bookings = await prisma.booking.findMany({
+      where: {
+        paymentStatus: 'PAID',
+        createdAt: { gte: sixMonthsAgo }
+      },
+      select: { finalPrice: true, createdAt: true }
+    });
+
+    const monthsMap = new Map<string, number>();
+    
+    // Inicializar los últimos 6 meses a 0
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const monthStr = d.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' });
+      monthsMap.set(monthStr, 0);
+    }
+
+    // Sumar ingresos
+    bookings.forEach(b => {
+      const monthStr = b.createdAt.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' });
+      if (monthsMap.has(monthStr)) {
+        monthsMap.set(monthStr, monthsMap.get(monthStr)! + Number(b.finalPrice));
+      }
+    });
+
+    return Array.from(monthsMap.entries()).map(([name, total]) => ({ name, total }));
+  },
+
+  /**
+   * Obtiene la distribución de reservas por estado
+   */
+  async getBookingsByStatus() {
+    const grouped = await prisma.booking.groupBy({
+      by: ['bookingStatus'],
+      _count: { _all: true }
+    });
+
+    return grouped.map(g => ({
+      name: g.bookingStatus,
+      value: g._count._all
+    }));
   }
 };
