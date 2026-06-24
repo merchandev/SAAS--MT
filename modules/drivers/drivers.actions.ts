@@ -66,3 +66,51 @@ export async function toggleDriverStatusAction(driverId: string, currentStatus: 
     return { error: "Error al cambiar estado" };
   }
 }
+
+export async function updateDriverBookingStatusAction(bookingId: string, driverId: string, newDriverStatus: any) {
+  await requireRole(["SUPER_ADMIN", "ADMIN", "DRIVER"]);
+
+  try {
+    const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+    if (!booking) return { error: "Reserva no encontrada" };
+
+    if (booking.driverId !== driverId) {
+      return { error: "No tienes permisos para actualizar esta reserva." };
+    }
+
+    let newBookingStatus = booking.bookingStatus;
+    if (newDriverStatus === "EN_CAMINO" || newDriverStatus === "EN_PUNTO_DE_RECOGIDA" || newDriverStatus === "CLIENTE_RECOGIDO") {
+      newBookingStatus = "EN_CURSO" as any;
+    } else if (newDriverStatus === "SERVICIO_FINALIZADO") {
+      newBookingStatus = "COMPLETADA" as any;
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id: bookingId },
+        data: {
+          driverStatus: newDriverStatus,
+          bookingStatus: newBookingStatus
+        }
+      });
+      
+      await tx.bookingStatusHistory.create({
+        data: {
+          bookingId,
+          oldStatus: booking.bookingStatus,
+          newStatus: newBookingStatus,
+          changedBy: "DRIVER_SYSTEM",
+        }
+      });
+    });
+
+    revalidatePath("/driver/dashboard");
+    revalidatePath(`/admin/bookings/${bookingId}`);
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating driver status:", error);
+    return { error: "Error al actualizar el estado de la reserva" };
+  }
+}
+
