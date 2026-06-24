@@ -119,7 +119,7 @@ export const redsysService = {
         </noscript>
       </form>
       <script>
-        document.getElementById("redsys-form").submit();
+        document.getElementById("redsys-form")?.submit();
       </script>
     `;
   }

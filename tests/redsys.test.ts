@@ -68,7 +68,7 @@ describe("Redsys Service", () => {
     expect(form).toContain('name="Ds_MerchantParameters"');
     expect(form).toContain('name="Ds_Signature"');
     expect(form).toContain("<noscript>");
-    expect(form).toContain('document.getElementById("redsys-form").submit()');
+    expect(form).toContain('document.getElementById("redsys-form")?.submit()');
     expect(form).not.toContain("HMAC_SHA256_V1");
   });
 
