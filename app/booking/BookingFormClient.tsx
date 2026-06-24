@@ -81,8 +81,8 @@ export default function BookingFormClient({
       setError(result.error);
       setIsLoading(false);
     } else {
-      // Redirigir a pasarela de pago o confirmación (Fase 7)
-      router.push(`/booking/success?code=${result.publicCode}`);
+      // Redirigir a pasarela de pago (Redsys)
+      router.push(`/booking/${result.publicCode}/payment`);
     }
   };
 
