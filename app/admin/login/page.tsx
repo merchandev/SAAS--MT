@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import { loginAction } from "@/modules/auth/auth.actions"; // Asumimos que esta action existe o se creará luego
+import { loginAction } from "@/modules/auth/auth.actions";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,16 +17,13 @@ export default function AdminLoginPage() {
     setIsLoading(true);
     setError("");
 
-    // MVP Simple fake login para satisfacer el prompt, pero el auth backend se haría en la Action real.
-    // Esto se reemplazará por la acción de servidor real.
-    if (email === "admin@metransfers.com" && password === "admin") {
-      // Set session mock (el backend real usará createSession)
-      document.cookie = `session=mock_session_token; path=/; max-age=86400`;
-      router.push("/admin/dashboard");
-    } else {
-      setError("Credenciales inválidas");
+    const result = await loginAction({ email, password });
+    
+    if (result && result.error) {
+      setError(result.error);
       setIsLoading(false);
     }
+    // Si es exitoso, loginAction maneja el redirect internamente.
   };
 
   return (
@@ -86,26 +81,6 @@ export default function AdminLoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                  Recordarme
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                  ¿Olvidaste tu contraseña?
-                </a>
               </div>
             </div>
 
