@@ -122,32 +122,32 @@ export default function BookingFormClient({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-[#13151A] rounded-sm shadow-xl border border-white/5 overflow-hidden">
       {/* Progress Bar */}
-      <div className="flex border-b bg-gray-50/50">
+      <div className="flex border-b border-white/5 bg-[#0B0C10]/50">
         {[1, 2, 3].map((num) => (
-          <div key={num} className={`flex-1 text-center py-4 text-sm font-semibold border-b-2 transition-colors ${
-            step === num ? 'border-black text-black' : step > num ? 'border-gray-300 text-gray-500' : 'border-transparent text-gray-400'
+          <div key={num} className={`flex-1 text-center py-5 text-sm uppercase tracking-widest font-semibold border-b-2 transition-colors ${
+            step === num ? 'border-[#D4AF37] text-[#D4AF37]' : step > num ? 'border-white/20 text-gray-400' : 'border-transparent text-gray-600'
           }`}>
-            Paso {num}
+            Etapa {num}
           </div>
         ))}
       </div>
 
-      <div className="p-6 sm:p-8">
+      <div className="p-8 sm:p-10">
         {error && (
-          <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg text-sm font-medium border border-red-100">
+          <div className="mb-8 p-4 bg-red-950/50 text-red-400 rounded-sm text-sm font-medium border border-red-900/50">
             {error}
           </div>
         )}
 
         {/* STEP 1: Ruta y Fechas */}
         {step === 1 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-2xl font-bold text-gray-900">Detalles del Viaje</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <Label className="text-gray-700 font-semibold">Lugar de Recogida</Label>
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h2 className="text-3xl font-serif font-bold text-white">Detalles del Trayecto</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <Label className="text-gray-400 font-medium tracking-wide uppercase text-xs">Lugar de Recogida</Label>
                 <PlaceAutocompleteInput 
                   placeholder="Aeropuerto, Hotel o Dirección..." 
                   value={formData.originAddress}
@@ -156,11 +156,11 @@ export default function BookingFormClient({
                     updateForm('originAddress', place.address);
                     updateForm('originPlaceId', place.placeId);
                   }}
-                  className="h-12 bg-gray-50"
+                  className="h-14 bg-[#0B0C10] border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] rounded-sm"
                 />
               </div>
-              <div className="space-y-3">
-                <Label className="text-gray-700 font-semibold">Destino</Label>
+              <div className="space-y-4">
+                <Label className="text-gray-400 font-medium tracking-wide uppercase text-xs">Lugar de Destino</Label>
                 <PlaceAutocompleteInput 
                   placeholder="Hotel, Ciudad o Dirección..." 
                   value={formData.destinationAddress}
@@ -169,71 +169,75 @@ export default function BookingFormClient({
                     updateForm('destinationAddress', place.address);
                     updateForm('destinationPlaceId', place.placeId);
                   }}
-                  className="h-12 bg-gray-50"
+                  className="h-14 bg-[#0B0C10] border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] rounded-sm"
                 />
               </div>
-              <div className="space-y-3">
-                <Label className="text-gray-700 font-semibold">Fecha de Recogida</Label>
+              <div className="space-y-4">
+                <Label className="text-gray-400 font-medium tracking-wide uppercase text-xs">Fecha de Servicio</Label>
                 <Input 
                   type="date" 
                   value={formData.serviceDate}
                   onChange={(e) => updateForm('serviceDate', e.target.value)}
-                  className="h-12 bg-gray-50"
+                  className="h-14 bg-[#0B0C10] border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] rounded-sm [color-scheme:dark]"
                 />
               </div>
-              <div className="space-y-3">
-                <Label className="text-gray-700 font-semibold">Hora (Formato 24h)</Label>
+              <div className="space-y-4">
+                <Label className="text-gray-400 font-medium tracking-wide uppercase text-xs">Hora de Recogida (24h)</Label>
                 <Input 
                   type="time" 
                   value={formData.serviceTime}
                   onChange={(e) => updateForm('serviceTime', e.target.value)}
-                  className="h-12 bg-gray-50"
+                  className="h-14 bg-[#0B0C10] border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] rounded-sm [color-scheme:dark]"
                 />
               </div>
             </div>
-            <Button size="lg" className="w-full mt-6 h-14 text-lg font-bold" onClick={handleNextStep} disabled={isLoading}>
-              {isLoading ? "Calculando ruta..." : "Ver Vehículos Disponibles"}
+            <Button size="lg" className="w-full mt-8 h-16 text-lg font-medium bg-[#D4AF37] text-[#0B0C10] hover:bg-[#C5A059] rounded-sm transition-all" onClick={handleNextStep} disabled={isLoading}>
+              {isLoading ? "Validando Ruta..." : "Descubrir Flota Disponible"}
             </Button>
           </div>
         )}
 
         {/* STEP 2: Selección de Vehículo */}
         {step === 2 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
-            <h2 className="text-2xl font-bold text-gray-900">Selecciona tu Vehículo</h2>
-            <p className="text-gray-500 mb-6">Precios estimados basados en la distancia.</p>
+          <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
+            <h2 className="text-3xl font-serif font-bold text-white">Seleccione su Clase</h2>
+            <p className="text-gray-400 font-light text-lg">Estimaciones cotizadas para su trayecto específico.</p>
             
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-5">
               {vehicles.map(v => (
                 <div 
                   key={v.id} 
                   onClick={() => updateForm('vehicleId', v.id)}
-                  className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${
-                    formData.vehicleId === v.id ? 'border-black bg-gray-50 ring-2 ring-black/5' : 'border-gray-200 hover:border-gray-300'
+                  className={`p-6 rounded-sm border cursor-pointer transition-all duration-300 ${
+                    formData.vehicleId === v.id 
+                      ? 'border-[#D4AF37] bg-[#D4AF37]/5 shadow-[0_0_15px_rgba(212,175,55,0.1)]' 
+                      : 'border-white/10 bg-[#0B0C10] hover:border-white/30'
                   }`}
                 >
                   <div className="flex justify-between items-center">
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900">{v.name}</h4>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Hasta {v.passengerCapacity} Pasajeros • {v.luggageCapacity} Maletas
-                      </p>
+                      <h4 className="text-xl font-serif font-bold text-white tracking-wide">{v.name}</h4>
+                      <div className="flex items-center gap-3 mt-2 text-sm text-gray-400 font-light">
+                        <span>Hasta {v.passengerCapacity} Pax</span>
+                        <span className="w-1 h-1 rounded-full bg-gray-600"></span>
+                        <span>{v.luggageCapacity} Maletas</span>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Estimación desde</p>
-                      <p className="text-2xl font-black text-gray-900">€{calculateEstimation(v)}</p>
+                      <p className="text-[10px] text-[#D4AF37] uppercase tracking-[0.2em] font-medium mb-1">Estimación desde</p>
+                      <p className="text-3xl font-serif font-bold text-white">€{calculateEstimation(v)}</p>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className="flex gap-4 mt-8 pt-6 border-t">
-              <Button variant="outline" size="lg" className="h-14 w-1/3" onClick={() => setStep(1)}>
-                Volver
+            <div className="flex gap-4 mt-10 pt-8 border-t border-white/5">
+              <Button variant="outline" size="lg" className="h-16 w-1/3 border-gray-600 text-gray-300 hover:text-white hover:border-[#D4AF37] hover:bg-transparent rounded-sm transition-all font-medium" onClick={() => setStep(1)}>
+                Retroceder
               </Button>
-              <Button size="lg" className="h-14 w-2/3 text-lg font-bold" onClick={handleNextStep}>
-                Continuar
+              <Button size="lg" className="h-16 w-2/3 text-lg font-medium bg-[#D4AF37] text-[#0B0C10] hover:bg-[#C5A059] rounded-sm transition-all" onClick={handleNextStep}>
+                Proceder al Registro
               </Button>
             </div>
           </div>
@@ -241,64 +245,65 @@ export default function BookingFormClient({
 
         {/* STEP 3: Datos Finales */}
         {step === 3 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
-            <h2 className="text-2xl font-bold text-gray-900">Datos del Pasajero</h2>
+          <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
+            <h2 className="text-3xl font-serif font-bold text-white">Información del Pasajero VIP</h2>
             
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <Label className="text-gray-700 font-semibold">Nombre y Apellidos</Label>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <Label className="text-gray-400 font-medium tracking-wide uppercase text-xs">Nombre Completo</Label>
                   <Input 
                     required 
                     value={formData.customerName}
                     onChange={(e) => updateForm('customerName', e.target.value)}
-                    className="h-12 bg-gray-50"
+                    className="h-14 bg-[#0B0C10] border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] rounded-sm"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label className="text-gray-700 font-semibold">Email de Contacto</Label>
+                <div className="space-y-4">
+                  <Label className="text-gray-400 font-medium tracking-wide uppercase text-xs">Email Personal / Ejecutivo</Label>
                   <Input 
                     type="email" required 
                     value={formData.customerEmail}
                     onChange={(e) => updateForm('customerEmail', e.target.value)}
-                    className="h-12 bg-gray-50"
+                    className="h-14 bg-[#0B0C10] border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] rounded-sm"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label className="text-gray-700 font-semibold">Teléfono / WhatsApp</Label>
+                <div className="space-y-4">
+                  <Label className="text-gray-400 font-medium tracking-wide uppercase text-xs">Teléfono Móvil (Con Prefijo)</Label>
                   <Input 
                     required 
                     value={formData.customerPhone}
                     onChange={(e) => updateForm('customerPhone', e.target.value)}
-                    className="h-12 bg-gray-50"
+                    className="h-14 bg-[#0B0C10] border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] rounded-sm"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label className="text-gray-700 font-semibold">Número de Vuelo (Opcional)</Label>
+                <div className="space-y-4">
+                  <Label className="text-gray-400 font-medium tracking-wide uppercase text-xs">Número de Vuelo (Si aplica)</Label>
                   <Input 
                     value={formData.flightNumber}
                     onChange={(e) => updateForm('flightNumber', e.target.value)}
-                    className="h-12 bg-gray-50"
+                    className="h-14 bg-[#0B0C10] border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] rounded-sm uppercase"
                   />
                 </div>
               </div>
               
-              <div className="space-y-3">
-                <Label className="text-gray-700 font-semibold">Peticiones Especiales (Sillas de bebé, etc.)</Label>
+              <div className="space-y-4">
+                <Label className="text-gray-400 font-medium tracking-wide uppercase text-xs">Requerimientos Especiales</Label>
                 <textarea 
                   rows={3}
-                  className="w-full rounded-md border border-input bg-gray-50 px-3 py-2 text-sm"
+                  className="w-full rounded-sm border border-white/10 bg-[#0B0C10] text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] px-4 py-3 text-base outline-none transition-all"
                   value={formData.customerNotes}
                   onChange={(e) => updateForm('customerNotes', e.target.value)}
+                  placeholder="Ej. Silla para infante, equipaje voluminoso..."
                 />
               </div>
 
-              <div className="flex gap-4 pt-6 border-t mt-8">
-                <Button type="button" variant="outline" size="lg" className="h-14 w-1/3" onClick={() => setStep(2)} disabled={isLoading}>
-                  Volver
+              <div className="flex gap-4 pt-8 border-t border-white/5 mt-10">
+                <Button type="button" variant="outline" size="lg" className="h-16 w-1/3 border-gray-600 text-gray-300 hover:text-white hover:border-[#D4AF37] hover:bg-transparent rounded-sm transition-all font-medium" onClick={() => setStep(2)} disabled={isLoading}>
+                  Retroceder
                 </Button>
-                <Button type="submit" size="lg" className="h-14 w-2/3 text-lg font-bold" disabled={isLoading}>
-                  {isLoading ? "Procesando Reserva..." : "Confirmar Reserva"}
+                <Button type="submit" size="lg" className="h-16 w-2/3 text-lg font-medium bg-[#D4AF37] text-[#0B0C10] hover:bg-[#C5A059] rounded-sm transition-all" disabled={isLoading}>
+                  {isLoading ? "Asegurando Reserva..." : "Finalizar y Pagar"}
                 </Button>
               </div>
             </form>

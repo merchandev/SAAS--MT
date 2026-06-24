@@ -21,16 +21,16 @@ export default async function PaymentPage({ params }: { params: Promise<{ code: 
 
   if (booking.paymentStatus === "PAID") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg text-center">
-          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0C10] font-sans">
+        <div className="max-w-md w-full bg-[#13151A] border border-white/5 p-8 rounded-sm shadow-2xl text-center">
+          <div className="w-16 h-16 bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Reserva ya pagada</h2>
-          <p className="text-gray-600 mb-6">Esta reserva ya ha sido procesada exitosamente.</p>
-          <a href="/booking" className="inline-block bg-blue-600 text-white px-6 py-2 rounded-md font-medium">
+          <h2 className="text-2xl font-serif font-bold text-white mb-2">Reserva Confirmada</h2>
+          <p className="text-gray-400 font-light mb-8">Esta reserva ya ha sido procesada y abonada exitosamente.</p>
+          <a href="/" className="inline-block bg-[#D4AF37] text-[#0B0C10] hover:bg-[#C5A059] px-8 py-3 rounded-sm font-medium transition-all">
             Volver al inicio
           </a>
         </div>
@@ -61,16 +61,16 @@ export default async function PaymentPage({ params }: { params: Promise<{ code: 
   const redsysFormHtml = redsysService.generateHtmlForm(booking, payment.providerOrderId || undefined);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg text-center">
-        <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-6" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Redirigiendo a pasarela segura...</h2>
-        <p className="text-gray-600 mb-6">
-          Por favor, no cierres esta ventana. Vas a ser redirigido a Redsys para completar el pago de{" "}
-          {Number(booking.finalPrice).toFixed(2)}€.
+    <div className="min-h-screen flex items-center justify-center bg-[#0B0C10] font-sans">
+      <div className="max-w-md w-full bg-[#13151A] border border-white/5 p-10 rounded-sm shadow-2xl text-center">
+        <div className="animate-spin w-12 h-12 border-4 border-[#D4AF37] border-t-transparent rounded-full mx-auto mb-8" />
+        <h2 className="text-2xl font-serif font-bold text-white mb-3">Conexión Segura</h2>
+        <p className="text-gray-400 font-light mb-8">
+          Por favor, espere. Será redirigido a nuestra pasarela encriptada para procesar el pago de{" "}
+          <span className="font-medium text-[#D4AF37]">{Number(booking.finalPrice).toFixed(2)}€</span>.
         </p>
 
-        <div dangerouslySetInnerHTML={{ __html: redsysFormHtml }} />
+        <div className="hidden" dangerouslySetInnerHTML={{ __html: redsysFormHtml }} />
       </div>
     </div>
   );

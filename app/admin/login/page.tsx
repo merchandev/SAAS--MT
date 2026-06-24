@@ -27,32 +27,35 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#0B0C10] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans text-gray-100">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="mx-auto h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl">
+        <div className="mx-auto h-16 w-16 bg-gradient-to-br from-[#D4AF37] to-[#AA8B2C] rounded-sm flex items-center justify-center text-[#0B0C10] font-serif font-bold text-3xl shadow-lg shadow-[#D4AF37]/20">
           MT
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Panel de Control
+        <h2 className="mt-8 text-center text-3xl font-serif font-bold text-white tracking-wide">
+          Acceso Exclusivo
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          MeTransfers SaaS Platform
+        <p className="mt-3 text-center text-sm font-medium tracking-[0.2em] uppercase text-[#D4AF37]">
+          MeTransfers Partners
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-[#13151A] py-10 px-6 shadow-2xl sm:rounded-sm sm:px-10 border border-white/5 relative overflow-hidden">
+          {/* Subtle glow */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37] rounded-full blur-[80px] opacity-10 pointer-events-none"></div>
+
+          <form className="space-y-8 relative z-10" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm font-medium">
+              <div className="bg-red-950/50 text-red-400 p-4 rounded-sm text-sm font-medium border border-red-900/50">
                 {error}
               </div>
             )}
             <div>
-              <Label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <Label htmlFor="email" className="block text-xs font-medium tracking-wide uppercase text-gray-400">
                 Correo Electrónico
               </Label>
-              <div className="mt-1">
+              <div className="mt-2">
                 <Input
                   id="email"
                   name="email"
@@ -61,16 +64,17 @@ export default function AdminLoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full h-12 px-4 bg-[#0B0C10] border border-white/10 text-white rounded-sm placeholder-gray-600 focus:outline-none focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all"
+                  placeholder="admin@metransfers.com"
                 />
               </div>
             </div>
 
             <div>
-              <Label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <Label htmlFor="password" className="block text-xs font-medium tracking-wide uppercase text-gray-400">
                 Contraseña
               </Label>
-              <div className="mt-1">
+              <div className="mt-2">
                 <Input
                   id="password"
                   name="password"
@@ -79,7 +83,8 @@ export default function AdminLoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="appearance-none block w-full h-12 px-4 bg-[#0B0C10] border border-white/10 text-white rounded-sm placeholder-gray-600 focus:outline-none focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all"
+                  placeholder="••••••••"
                 />
               </div>
             </div>
@@ -88,9 +93,9 @@ export default function AdminLoginPage() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="w-full flex justify-center py-3 h-14 border border-transparent rounded-sm shadow-sm text-lg font-medium text-[#0B0C10] bg-[#D4AF37] hover:bg-[#C5A059] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4AF37] transition-all"
               >
-                {isLoading ? "Iniciando sesión..." : "Ingresar"}
+                {isLoading ? "Verificando Credenciales..." : "Ingresar al Panel"}
               </Button>
             </div>
           </form>
