@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 export const b2bQueries = {
   async getAllHotels() {
-    return prisma.hotel.findMany({
+    const hotels = await prisma.hotel.findMany({
       orderBy: { name: "asc" },
       include: {
         _count: {
@@ -9,6 +9,13 @@ export const b2bQueries = {
         }
       }
     });
+
+    // Convert Decimals to numbers to prevent Next.js serialization errors
+    return hotels.map(h => ({
+      ...h,
+      commissionValue: Number(h.commissionValue),
+      discountValue: Number(h.discountValue),
+    }));
   },
 
   async getHotelByToken(token: string) {

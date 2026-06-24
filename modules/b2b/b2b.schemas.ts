@@ -11,6 +11,12 @@ export const hotelCreationSchema = z.object({
 
 export type HotelCreationInput = z.infer<typeof hotelCreationSchema>;
 
+export const updateHotelSchema = hotelCreationSchema.extend({
+  isActive: z.boolean().optional(),
+});
+
+export type HotelUpdateInput = z.infer<typeof updateHotelSchema>;
+
 export const hotelUserCreationSchema = z.object({
   hotelId: z.string().uuid("ID de hotel inválido"),
   fullName: z.string().min(3, "El nombre completo es requerido"),

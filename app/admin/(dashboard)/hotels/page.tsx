@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { b2bQueries } from "@/modules/b2b/b2b.queries";
 import { Button } from "@/components/ui/button";
+import { QRDialogButton } from "@/components/ui/qr-dialog-button";
 
 export const dynamic = "force-dynamic";
 
@@ -53,11 +54,12 @@ export default async function HotelsPage() {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                  <Link href={`/hotel/${h.token}`} target="_blank">
-                    <Button variant="outline" size="sm">Portal</Button>
+                  <QRDialogButton token={h.token} hotelName={h.name} />
+                  <Link href={`/admin/hotels/${h.id}/edit`}>
+                    <Button variant="secondary" size="sm">Editar</Button>
                   </Link>
                   <Link href={`/admin/hotels/${h.id}/user/new`}>
-                    <Button variant="secondary" size="sm">+ Usuario</Button>
+                    <Button variant="outline" size="sm">+ Usuario</Button>
                   </Link>
                 </td>
               </tr>

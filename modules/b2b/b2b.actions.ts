@@ -27,12 +27,41 @@ export async function createHotelAction(data: HotelCreationInput) {
     });
     
     revalidatePath("/admin/hotels");
-    return { success: true, data: hotel };
+    return { success: true, data: { id: hotel.id } };
   } catch (error: any) {
     if (error.code === 'P2002') {
       return { error: "El nombre o slug del hotel ya existe." };
     }
     return { error: "Error al crear el hotel" };
+  }
+}
+
+export async function updateHotelAction(hotelId: string, data: import("./b2b.schemas").HotelUpdateInput) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+
+  const { updateHotelSchema } = await import("./b2b.schemas");
+  const parsed = updateHotelSchema.safeParse(data);
+  if (!parsed.success) {
+    return { error: "Datos inválidos", details: parsed.error.flatten() };
+  }
+
+  try {
+    const slug = parsed.data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const hotel = await prisma.hotel.update({
+      where: { id: hotelId },
+      data: {
+        ...parsed.data,
+        slug
+      }
+    });
+    
+    revalidatePath("/admin/hotels");
+    return { success: true, data: { id: hotel.id } };
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      return { error: "El nombre o slug del hotel ya existe." };
+    }
+    return { error: "Error al actualizar el hotel" };
   }
 }
 

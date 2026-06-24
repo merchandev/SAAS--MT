@@ -23,8 +23,8 @@ export default async function NewHotelUserPage(props: { params: Promise<{ id: st
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h3 className="text-2xl font-bold tracking-tight">Crear Acceso B2B</h3>
-          <p className="text-gray-500">Asignar un nuevo usuario administrador para el hotel: {hotel.name}</p>
+          <h3 className="text-2xl font-bold tracking-tight text-gray-900">Crear Acceso B2B</h3>
+          <p className="text-gray-500">Asignar un nuevo usuario administrador para el hotel: <span className="font-semibold text-gray-700">{hotel.name}</span></p>
         </div>
       </div>
 

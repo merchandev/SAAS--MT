@@ -9,10 +9,12 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
 
-  const kpis = await reportsQueries.getGlobalKPIs();
-  const recentBookings = await reportsQueries.getRecentBookings(10);
-  const revenueData = await reportsQueries.getRevenueByMonth();
-  const statusData = await reportsQueries.getBookingsByStatus();
+  const [kpis, recentBookings, revenueData, statusData] = await Promise.all([
+    reportsQueries.getGlobalKPIs(),
+    reportsQueries.getRecentBookings(10),
+    reportsQueries.getRevenueByMonth(),
+    reportsQueries.getBookingsByStatus()
+  ]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">

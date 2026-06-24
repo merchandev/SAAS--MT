@@ -49,37 +49,40 @@ export function HotelUserForm({ hotelId, hotelName, hotelEmail }: { hotelId: str
         <h4 className="font-semibold text-gray-900 border-b pb-2">Datos de Acceso para {hotelName}</h4>
         
         <div className="space-y-2">
-          <Label htmlFor="fullName">Nombre de la persona o rol</Label>
+          <Label htmlFor="fullName" className="text-gray-700">Nombre de la persona o rol</Label>
           <Input 
             id="fullName" 
             name="fullName" 
             value={data.fullName} 
             onChange={handleChange} 
             placeholder="Ej: Recepción Central" 
+            className="text-gray-900 bg-white"
             required 
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Correo Electrónico (Usuario)</Label>
+          <Label htmlFor="email" className="text-gray-700">Correo Electrónico (Usuario)</Label>
           <Input 
             id="email" 
             name="email" 
             type="email" 
             value={data.email} 
             onChange={handleChange} 
+            className="text-gray-900 bg-white"
             required 
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">Contraseña</Label>
+          <Label htmlFor="password" className="text-gray-700">Contraseña</Label>
           <Input 
             id="password" 
             name="password" 
             type="password" 
             value={data.password} 
             onChange={handleChange} 
+            className="text-gray-900 bg-white"
             required 
             minLength={6}
           />

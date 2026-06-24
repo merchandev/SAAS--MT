@@ -7,13 +7,6 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const pathname = headersList.get("x-invoke-path") || "";
-  
-  // No renderizar el layout en la página de login
-  if (pathname === "/admin/login") {
-    return <>{children}</>;
-  }
 
   const session = await authService.getSession();
   const role = session?.role || "OPERATOR"; // Default fallback para no quebrar UI si falla algo rápido
