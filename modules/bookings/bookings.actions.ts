@@ -309,3 +309,60 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
     return { error: error.message || "Error al procesar tu reserva. Intenta de nuevo." };
   }
 }
+
+export async function updateBookingStatusAction(id: string, newStatus: any) {
+  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  try {
+    const booking = await prisma.booking.findUnique({ where: { id } });
+    if (!booking) return { error: "Reserva no encontrada" };
+
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({ where: { id }, data: { bookingStatus: newStatus } });
+      await tx.bookingStatusHistory.create({
+        data: {
+          bookingId: id,
+          oldStatus: booking.bookingStatus,
+          newStatus,
+          changedBy: "ADMIN_SYSTEM",
+        }
+      });
+    });
+    revalidatePath(`/admin/bookings/${id}`);
+    revalidatePath("/admin/bookings");
+    return { success: true };
+  } catch (err) {
+    return { error: "Error al actualizar el estado" };
+  }
+}
+
+export async function assignDriverToBookingAction(id: string, driverId: string | null) {
+  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  try {
+    await prisma.booking.update({
+      where: { id },
+      data: {
+        driverId,
+        driverStatus: driverId ? "ASIGNADO" : null,
+      }
+    });
+    revalidatePath(`/admin/bookings/${id}`);
+    revalidatePath("/admin/bookings");
+    return { success: true };
+  } catch (err) {
+    return { error: "Error al asignar el conductor" };
+  }
+}
+
+export async function updateInternalNotesAction(id: string, internalNotes: string) {
+  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  try {
+    await prisma.booking.update({
+      where: { id },
+      data: { internalNotes }
+    });
+    revalidatePath(`/admin/bookings/${id}`);
+    return { success: true };
+  } catch (err) {
+    return { error: "Error al actualizar las notas" };
+  }
+}

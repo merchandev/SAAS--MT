@@ -63,7 +63,9 @@ export default async function BookingsPage() {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <Button variant="outline" size="sm">Ver Detalles</Button>
+                  <Link href={`/admin/bookings/${b.id}`}>
+                    <Button variant="outline" size="sm">Ver Detalles</Button>
+                  </Link>
                 </td>
               </tr>
             ))}

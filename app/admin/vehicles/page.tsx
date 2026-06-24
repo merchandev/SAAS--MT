@@ -50,7 +50,9 @@ export default async function VehiclesPage() {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <Button variant="outline" size="sm" className="mr-2">Editar</Button>
+                  <Link href={`/admin/vehicles/${v.id}/edit`}>
+                    <Button variant="outline" size="sm" className="mr-2">Editar</Button>
+                  </Link>
                 </td>
               </tr>
             ))}
