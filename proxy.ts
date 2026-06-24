@@ -60,6 +60,15 @@ export async function proxy(request: NextRequest) {
 
   const { role } = session;
 
+  // Rutas restringidas para operadores
+  const restrictedForOperator = [
+    '/admin/settings',
+    '/admin/pricing',
+    '/admin/hotels',
+    '/admin/agencies',
+    '/admin/payments'
+  ];
+
   // RBAC: rutas de admin solo para SUPER_ADMIN, ADMIN, OPERATOR
   if (isAdminRoute) {
     const isAdminRole = role === 'SUPER_ADMIN' || role === 'ADMIN' || role === 'OPERATOR';
@@ -68,6 +77,14 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(new URL('/hotel/dashboard', request.url));
       }
       return NextResponse.redirect(new URL('/', request.url));
+    }
+
+    // Bloquear acceso a rutas restringidas para OPERATOR
+    if (role === 'OPERATOR') {
+      const isRestricted = restrictedForOperator.some(r => pathname.startsWith(r));
+      if (isRestricted) {
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+      }
     }
   }
 

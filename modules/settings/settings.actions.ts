@@ -6,7 +6,7 @@ import { updateSettingsSchema, UpdateSettingsInput } from "./settings.schemas";
 import { requireRole } from "../auth/permissions";
 
 export async function upsertSettingsAction(data: UpdateSettingsInput) {
-  await requireRole(["SUPER_ADMIN"]);
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
 
   const parsed = updateSettingsSchema.safeParse(data);
   if (!parsed.success) {
