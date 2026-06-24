@@ -179,7 +179,8 @@ model PriceRule {
   id                  String   @id @default(uuid())
   name                String
   description         String?
-  type                String   // Ej. NIGHT_SURCHARGE, WEEKEND_SURCHARGE, AIRPORT_FEE
+  // Ejemplo: NIGHT_SURCHARGE, WEEKEND_SURCHARGE, AIRPORT_FEE
+  type                String
   valueType           String   // PERCENTAGE, FIXED
   value               Decimal  @db.Decimal(10, 2)
   isActive            Boolean  @default(true)
@@ -329,7 +330,8 @@ model Payment {
 model AuditLog {
   id          String   @id @default(uuid())
   userId      String?  // UUID del administrador o sistema
-  entityType  String   // Ej. Booking, Vehicle
+  // Ejemplo: Booking, Vehicle
+  entityType  String
   entityId    String   // ID del registro modificado
   action      String   // CREATE, UPDATE, DELETE
   oldValue    String?  @db.Text // JSON stringificado
@@ -429,7 +431,8 @@ model Review {
 
 model RoutePage {
   id              String   @id @default(uuid())
-  slug            String   @unique // Ej: traslados-aeropuerto-mallorca-alcudia
+  // Ejemplo: traslados-aeropuerto-mallorca-alcudia
+  slug            String   @unique
   originName      String
   destinationName String
   h1Title         String
