@@ -330,7 +330,10 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
 export async function updateBookingStatusAction(id: string, newStatus: any) {
   await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
   try {
-    const booking = await prisma.booking.findUnique({ where: { id } });
+    const booking = await prisma.booking.findUnique({ 
+      where: { id },
+      include: { customer: true }
+    });
     if (!booking) return { error: "Reserva no encontrada" };
 
     await prisma.$transaction(async (tx) => {
@@ -344,6 +347,22 @@ export async function updateBookingStatusAction(id: string, newStatus: any) {
         }
       });
     });
+
+    // Send email notification if status changed to CONFIRMADA
+    if (newStatus === "CONFIRMADA" && booking.bookingStatus !== "CONFIRMADA") {
+      try {
+        const { emailsService } = await import("../notifications/emails.service");
+        await emailsService.sendBookingConfirmation(
+          booking.customer.email,
+          booking.publicCode,
+          booking.customer.fullName,
+          booking
+        );
+      } catch (emailError) {
+        console.error("Error sending booking confirmation email:", emailError);
+      }
+    }
+
     revalidatePath(`/admin/bookings/${id}`);
     revalidatePath("/admin/bookings");
     return { success: true };
@@ -355,6 +374,13 @@ export async function updateBookingStatusAction(id: string, newStatus: any) {
 export async function assignDriverToBookingAction(id: string, driverId: string | null) {
   await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
   try {
+    const booking = await prisma.booking.findUnique({
+      where: { id },
+      include: { customer: true }
+    });
+    
+    if (!booking) return { error: "Reserva no encontrada" };
+
     await prisma.booking.update({
       where: { id },
       data: {
@@ -362,6 +388,30 @@ export async function assignDriverToBookingAction(id: string, driverId: string |
         driverStatus: driverId ? "ASIGNADO" : null,
       }
     });
+
+    // Send email notification if a driver was assigned
+    if (driverId && booking.driverId !== driverId) {
+      try {
+        const driver = await prisma.driver.findUnique({
+          where: { id: driverId },
+          include: { user: true }
+        });
+        
+        if (driver) {
+          const { emailsService } = await import("../notifications/emails.service");
+          await emailsService.sendDriverAssignedNotification(
+            booking.customer.email,
+            booking.publicCode,
+            booking.customer.fullName,
+            { name: driver.user.fullName, phone: driver.user.phone },
+            booking
+          );
+        }
+      } catch (emailError) {
+        console.error("Error sending driver assignment email:", emailError);
+      }
+    }
+
     revalidatePath(`/admin/bookings/${id}`);
     revalidatePath("/admin/bookings");
     return { success: true };

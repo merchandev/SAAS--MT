@@ -1,12 +1,79 @@
+import { Resend } from 'resend';
+import { render } from '@react-email/render';
+import { BookingConfirmedEmail } from '@/components/emails/BookingConfirmedEmail';
+import { DriverAssignedEmail } from '@/components/emails/DriverAssignedEmail';
+import React from 'react';
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const SENDER_EMAIL = 'no-reply@metransfers.com'; // Sustituir por dominio verificado en producción
+
 export const emailsService = {
-  async sendBookingConfirmation(email: string, publicCode: string, customerName: string) {
-    // Implementación real con Resend o SendGrid vendrá después.
-    // Por ahora, simulamos el envío en los logs.
-    console.log(`[EMAILS_MOCK] Simulando envío de confirmación a: ${email}`);
-    console.log(`[EMAILS_MOCK] Hola ${customerName}, tu reserva con código ${publicCode} ha sido recibida y confirmada.`);
-    
-    // Retornamos true para indicar éxito en el mock
-    return true;
+  async sendBookingConfirmation(email: string, publicCode: string, customerName: string, bookingDetails: any) {
+    if (!resend) {
+      console.log(`[EMAILS_MOCK] Simulando envío de confirmación a: ${email} (código ${publicCode})`);
+      return true;
+    }
+
+    try {
+      const html = await render(
+        React.createElement(BookingConfirmedEmail, {
+          customerName,
+          publicCode,
+          originAddress: bookingDetails.originAddress,
+          destinationAddress: bookingDetails.destinationAddress,
+          serviceDate: bookingDetails.serviceDate.toISOString().split('T')[0],
+          serviceTime: bookingDetails.serviceTime,
+          passengers: bookingDetails.passengers,
+        })
+      );
+
+      await resend.emails.send({
+        from: `MeTransfers <${SENDER_EMAIL}>`,
+        to: email,
+        subject: `Confirmación de Reserva - ${publicCode}`,
+        html,
+      });
+
+      console.log(`[EMAIL_SENT] Confirmación enviada a ${email}`);
+      return true;
+    } catch (error) {
+      console.error("[EMAIL_ERROR] Error al enviar confirmación:", error);
+      return false;
+    }
+  },
+
+  async sendDriverAssignedNotification(email: string, publicCode: string, customerName: string, driverDetails: any, bookingDetails: any) {
+    if (!resend) {
+      console.log(`[EMAILS_MOCK] Simulando envío de chofer asignado a: ${email} (chofer: ${driverDetails.name})`);
+      return true;
+    }
+
+    try {
+      const html = await render(
+        React.createElement(DriverAssignedEmail, {
+          customerName,
+          publicCode,
+          driverName: driverDetails.name,
+          driverPhone: driverDetails.phone,
+          originAddress: bookingDetails.originAddress,
+          serviceDate: bookingDetails.serviceDate.toISOString().split('T')[0],
+          serviceTime: bookingDetails.serviceTime,
+        })
+      );
+
+      await resend.emails.send({
+        from: `MeTransfers <${SENDER_EMAIL}>`,
+        to: email,
+        subject: `Conductor Asignado - ${publicCode}`,
+        html,
+      });
+
+      console.log(`[EMAIL_SENT] Notificación de chofer enviada a ${email}`);
+      return true;
+    } catch (error) {
+      console.error("[EMAIL_ERROR] Error al enviar notificación de chofer:", error);
+      return false;
+    }
   },
 
   async sendAdminNotification(publicCode: string) {

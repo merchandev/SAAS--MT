@@ -3,6 +3,8 @@ import { z } from "zod";
 import { requireRole } from "@/modules/auth/permissions";
 import { emailsService } from "@/modules/notifications/emails.service";
 
+import { prisma } from "@/lib/prisma";
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
@@ -25,10 +27,22 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const booking = await prisma.booking.findUnique({
+    where: { publicCode: parsed.data.publicCode }
+  });
+
+  if (!booking) {
+    return NextResponse.json(
+      { error: "Reserva no encontrada" },
+      { status: 404 }
+    );
+  }
+
   await emailsService.sendBookingConfirmation(
     parsed.data.email,
     parsed.data.publicCode,
-    parsed.data.customerName
+    parsed.data.customerName,
+    booking
   );
 
   return NextResponse.json({ success: true });

@@ -90,7 +90,8 @@ export async function POST(req: NextRequest) {
        await emailsService.sendBookingConfirmation(
          payment.booking.customer.email, 
          payment.booking.publicCode, 
-         payment.booking.customer.fullName
+         payment.booking.customer.fullName,
+         payment.booking
        );
        await emailsService.sendAdminNotification(payment.booking.publicCode);
     }
