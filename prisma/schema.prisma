@@ -51,6 +51,8 @@ model Customer {
   preferredLanguage String? @default("en")
   
   bookings      Booking[]
+  invoices      Invoice[]
+  reviews       Review[]
   
   totalSpent    Decimal   @default(0) @db.Decimal(10, 2)
   totalBookings Int       @default(0)
@@ -286,6 +288,9 @@ model Booking {
   internalNotes       String?   @db.Text
   
   payments            Payment[]
+  statusHistory       BookingStatusHistory[]
+  invoice             Invoice?
+  review              Review?
   
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
