@@ -1,67 +1,58 @@
-"use server";
-
-import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { vehicleSchema, VehicleInput } from "./vehicles.schemas";
+import { PrismaClient } from "@prisma/client";
+import { vehicleSchema, type VehicleInput } from "./vehicles.schemas";
 
 const prisma = new PrismaClient();
 
 export async function createVehicleAction(data: VehicleInput) {
   const parsed = vehicleSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos de vehículo inválidos", details: parsed.error.flatten() };
   }
 
   try {
     const vehicle = await prisma.vehicle.create({
       data: parsed.data,
     });
+    
     revalidatePath("/admin/vehicles");
     return { success: true, data: vehicle };
-  } catch (error) {
-    return { error: "Error al crear el vehículo" };
+  } catch (error: any) {
+    return { error: "Error al crear el vehículo. Asegúrate de que el slug sea único." };
   }
 }
 
-export async function toggleVehicleStatusAction(id: string, isActive: boolean) {
+export async function updateVehicleAction(id: string, data: VehicleInput) {
+  const parsed = vehicleSchema.safeParse(data);
+  if (!parsed.success) {
+    return { error: "Datos de vehículo inválidos", details: parsed.error.flatten() };
+  }
+
   try {
-    await prisma.vehicle.update({
+    const vehicle = await prisma.vehicle.update({
       where: { id },
-      data: { isActive },
+      data: parsed.data,
     });
+    
     revalidatePath("/admin/vehicles");
-    return { success: true };
-  } catch (error) {
-    return { error: "Error al actualizar el estado" };
+    revalidatePath("/booking"); // Purgar la caché de la vista pública también
+    return { success: true, data: vehicle };
+  } catch (error: any) {
+    return { error: "Error al actualizar el vehículo." };
   }
 }
 
-export async function deleteVehicleAction(id: string) {
+export async function toggleVehicleStatusAction(id: string, currentStatus: boolean) {
   try {
-    await prisma.vehicle.delete({
+    const vehicle = await prisma.vehicle.update({
       where: { id },
+      data: { isActive: !currentStatus },
     });
+    
     revalidatePath("/admin/vehicles");
-    return { success: true };
-  } catch (error) {
-    return { error: "Error al eliminar el vehículo" };
-  }
-}
-
-// Para MVP, creamos una acción rápida para asegurar que exista al menos una categoría
-export async function seedCategoriesAction() {
-  try {
-    const existing = await prisma.vehicleCategory.count();
-    if (existing === 0) {
-      await prisma.vehicleCategory.create({
-        data: { name: "Standard", slug: "standard", description: "Vehículos estándar" }
-      });
-      await prisma.vehicleCategory.create({
-        data: { name: "Minivan", slug: "minivan", description: "Para grupos" }
-      });
-    }
-    return { success: true };
-  } catch (error) {
-    return { error: "Error seeding categories" };
+    revalidatePath("/booking");
+    return { success: true, isActive: vehicle.isActive };
+  } catch (error: any) {
+    return { error: "Error al cambiar el estado del vehículo." };
   }
 }
