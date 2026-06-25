@@ -50,7 +50,7 @@ export async function GET(
 
     // 4. Renderizar a Stream
     // Importante: renderToStream es asíncrono y devuelve un stream de Node que Next.js puede pipear
-    const stream = await renderToStream(React.createElement(InvoiceDocument, { invoice }));
+    const stream = await renderToStream(React.createElement(InvoiceDocument, { invoice }) as any);
 
     // Retornar la respuesta como PDF
     return new NextResponse(stream as any, {

@@ -6,8 +6,6 @@ import Link from "next/link";
 
 interface Props {
   booking: any;
-  customer: any;
-  settings: Record<string, string>;
   publicCode?: string; // Para clientes públicos
 }
 
@@ -16,11 +14,9 @@ export function InvoiceDownloadButton({ booking, publicCode }: Props) {
   const downloadUrl = `/api/invoices/${booking.id}${publicCode ? `?publicCode=${publicCode}` : ""}`;
 
   return (
-    <Button variant="outline" className="flex items-center gap-2" asChild>
-      <Link href={downloadUrl} target="_blank" rel="noopener noreferrer">
-        <Download className="h-4 w-4" />
-        Descargar Factura
-      </Link>
+    <Button variant="outline" className="flex items-center gap-2" type="button" onClick={() => window.open(downloadUrl, "_blank")}>
+      <Download className="h-4 w-4" />
+      Descargar Factura
     </Button>
   );
 }
