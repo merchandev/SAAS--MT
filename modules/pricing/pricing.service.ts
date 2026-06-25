@@ -82,9 +82,9 @@ export const pricingService = {
       
       if (discount && discount.isActive) {
         const now = new Date();
-        const isStarted = !discount.validFrom || now >= discount.validFrom;
-        const isNotExpired = !discount.validUntil || now <= discount.validUntil;
-        const hasUsesLeft = discount.maxUses === null || discount.usedCount < discount.maxUses;
+        const isStarted = discount.validFrom == null || now >= discount.validFrom;
+        const isNotExpired = discount.validUntil == null || now <= discount.validUntil;
+        const hasUsesLeft = discount.maxUses == null || (discount.usedCount || 0) < discount.maxUses;
 
         if (isStarted && isNotExpired && hasUsesLeft) {
           if (discount.valueType === "FIXED") {
