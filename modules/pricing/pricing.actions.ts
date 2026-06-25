@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { requireRole } from "../auth/permissions";
 import { authService } from "../auth/auth.service";
+import { discountCodeSchema, priceRuleSchema } from "./pricing.schemas";
 
 // --- DISCOUNT CODES ---
 
@@ -24,12 +25,17 @@ export async function createDiscountCode(data: {
 }) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
   const session = await authService.getSession();
+
+  const parsed = discountCodeSchema.safeParse(data);
+  if (!parsed.success) {
+    return { success: false, error: "Datos inválidos" };
+  }
+
   try {
     const code = await prisma.discountCode.create({
       data: {
-        ...data,
-        code: data.code.toUpperCase().trim(),
-        value: data.value,
+        ...parsed.data,
+        code: parsed.data.code.toUpperCase().trim(),
       }
     });
     await prisma.auditLog.create({
@@ -60,12 +66,18 @@ export async function updateDiscountCode(id: string, data: {
 }) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
   const session = await authService.getSession();
+
+  const parsed = discountCodeSchema.safeParse(data);
+  if (!parsed.success) {
+    return { success: false, error: "Datos inválidos" };
+  }
+
   try {
     await prisma.discountCode.update({
       where: { id },
       data: {
-        ...data,
-        code: data.code.toUpperCase().trim(),
+        ...parsed.data,
+        code: parsed.data.code.toUpperCase().trim(),
       }
     });
     await prisma.auditLog.create({
@@ -149,8 +161,14 @@ export async function createPriceRule(data: {
 }) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
   const session = await authService.getSession();
+
+  const parsed = priceRuleSchema.safeParse(data);
+  if (!parsed.success) {
+    return { success: false, error: "Datos inválidos" };
+  }
+
   try {
-    const rule = await prisma.priceRule.create({ data });
+    const rule = await prisma.priceRule.create({ data: parsed.data });
     await prisma.auditLog.create({
       data: {
         userId: session?.userId,
@@ -177,10 +195,16 @@ export async function updatePriceRule(id: string, data: {
 }) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
   const session = await authService.getSession();
+
+  const parsed = priceRuleSchema.safeParse(data);
+  if (!parsed.success) {
+    return { success: false, error: "Datos inválidos" };
+  }
+
   try {
     await prisma.priceRule.update({
       where: { id },
-      data
+      data: parsed.data
     });
     await prisma.auditLog.create({
       data: {

@@ -9,11 +9,6 @@ import { headers } from "next/headers";
 import { loginRateLimiter } from "@/lib/rate-limit";
 
 export async function loginAction(data: LoginInput) {
-  const ip = (await headers()).get("x-forwarded-for") || "unknown";
-  if (!loginRateLimiter.check(ip)) {
-    return { error: "Demasiados intentos. Por favor, inténtelo de nuevo en 15 minutos." };
-  }
-
   // 1. Validar input
   const parsed = loginSchema.safeParse(data);
   if (!parsed.success) {
@@ -21,6 +16,13 @@ export async function loginAction(data: LoginInput) {
   }
 
   const { email, password } = parsed.data;
+
+  // Rate Limiter
+  const ip = (await headers()).get("x-forwarded-for") || "unknown";
+  const key = `${ip}:${email.toLowerCase()}`;
+  if (!loginRateLimiter.check(key)) {
+    return { error: "Demasiados intentos. Por favor, inténtelo de nuevo en 15 minutos." };
+  }
 
   // 2. Buscar usuario en base de datos
   const user = await prisma.user.findUnique({

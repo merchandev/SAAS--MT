@@ -11,3 +11,21 @@ export const pricingCalculationSchema = z.object({
 });
 
 export type PricingCalculationInput = z.infer<typeof pricingCalculationSchema>;
+
+export const discountCodeSchema = z.object({
+  code: z.string().min(2),
+  description: z.string().optional(),
+  valueType: z.enum(["FIXED", "PERCENTAGE"]),
+  value: z.number().min(0),
+  maxUses: z.number().nullable().optional(),
+  validFrom: z.date().nullable().optional(),
+  validUntil: z.date().nullable().optional(),
+});
+
+export const priceRuleSchema = z.object({
+  name: z.string().min(2),
+  description: z.string().optional(),
+  type: z.string(),
+  valueType: z.enum(["FIXED", "PERCENTAGE"]),
+  value: z.number().min(0),
+});

@@ -2,20 +2,14 @@ import crypto from "crypto";
 
 const SIGNATURE_VERSION = "HMAC_SHA256_V1";
 
-// Evaluate secret at startup so it crashes early if missing
-const REDSYS_SECRET_KEY = process.env.REDSYS_SECRET_KEY;
-if (!REDSYS_SECRET_KEY && process.env.NODE_ENV === "production") {
-  if (process.env.NEXT_PUBLIC_IS_BUILDING === "true") {
-    console.warn("WARNING: REDSYS_SECRET_KEY is missing (ignored during build).");
-  } else {
-    throw new Error("FATAL: REDSYS_SECRET_KEY environment variable is not set. Payments will fail.");
-  }
-}
+const REDSYS_SECRET_KEY =
+  process.env.REDSYS_SECRET_KEY ??
+  (process.env.NODE_ENV === "development"
+    ? "sq7HjrUOBfKmC576ILgskD5srU870gJ7"
+    : undefined);
 
-// Fallback ONLY for local development, never used in production
-const effectiveSecret = REDSYS_SECRET_KEY || (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test" ? "sq7HjrUOBfKmC576ILgskD5srU870gJ7" : "");
-if (!effectiveSecret && process.env.NEXT_PUBLIC_IS_BUILDING !== "true") {
-  throw new Error("FATAL: REDSYS_SECRET_KEY is missing.");
+if (!REDSYS_SECRET_KEY && process.env.NEXT_PUBLIC_IS_BUILDING !== "true") {
+  throw new Error("FATAL: REDSYS_SECRET_KEY is required outside development");
 }
 
 type RedsysBooking = {
@@ -45,7 +39,7 @@ function fromBase64Url(value: string): string {
 }
 
 function getRedsysSecretKey(): string {
-  return effectiveSecret;
+  return REDSYS_SECRET_KEY!;
 }
 
 function escapeHtml(value: string): string {
