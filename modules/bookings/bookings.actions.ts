@@ -371,10 +371,21 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
       });
 
       if (discountCode) {
-        await tx.discountCode.update({
-          where: { code: discountCode },
-          data: { usedCount: { increment: 1 } }
-        });
+        const discount = await tx.discountCode.findUnique({ where: { code: discountCode } });
+        if (discount && discount.maxUses) {
+          const updateResult = await tx.discountCode.updateMany({
+            where: { code: discountCode, usedCount: { lt: discount.maxUses } },
+            data: { usedCount: { increment: 1 } }
+          });
+          if (updateResult.count === 0) {
+             throw new Error("El código de descuento acaba de alcanzar su límite de usos simultáneos.");
+          }
+        } else {
+          await tx.discountCode.update({
+            where: { code: discountCode },
+            data: { usedCount: { increment: 1 } }
+          });
+        }
       }
 
       return newBooking;

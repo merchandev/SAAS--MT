@@ -4,12 +4,17 @@ const SIGNATURE_VERSION = "HMAC_SHA256_V1";
 
 const REDSYS_SECRET_KEY =
   process.env.REDSYS_SECRET_KEY ??
-  (process.env.NODE_ENV === "development"
+  (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"
     ? "sq7HjrUOBfKmC576ILgskD5srU870gJ7"
     : undefined);
 
-if (!REDSYS_SECRET_KEY && process.env.NEXT_PUBLIC_IS_BUILDING !== "true") {
-  throw new Error("FATAL: REDSYS_SECRET_KEY is required outside development");
+const REDSYS_MERCHANT_CODE = process.env.REDSYS_MERCHANT_CODE ?? (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test" ? "999008881" : undefined);
+const REDSYS_TERMINAL = process.env.REDSYS_TERMINAL ?? (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test" ? "1" : undefined);
+
+if (process.env.NEXT_PUBLIC_IS_BUILDING !== "true") {
+  if (!REDSYS_SECRET_KEY) throw new Error("FATAL: REDSYS_SECRET_KEY is required outside development");
+  if (!REDSYS_MERCHANT_CODE) throw new Error("FATAL: REDSYS_MERCHANT_CODE is required outside development");
+  if (!REDSYS_TERMINAL) throw new Error("FATAL: REDSYS_TERMINAL is required outside development");
 }
 
 type RedsysBooking = {
@@ -61,8 +66,8 @@ function createOrderId(booking: RedsysBooking): string {
 
 export const redsysService = {
   signatureVersion: SIGNATURE_VERSION,
-  merchantCode: process.env.REDSYS_MERCHANT_CODE || "999008881",
-  terminal: process.env.REDSYS_TERMINAL || "1",
+  merchantCode: REDSYS_MERCHANT_CODE!,
+  terminal: REDSYS_TERMINAL!,
   createOrderId,
 
   createMerchantParameters(booking: RedsysBooking, orderId?: string) {
