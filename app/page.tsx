@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
+import MobileMenu from "@/components/home/MobileMenu";
 
 export default function HomePage() {
   return (
@@ -14,12 +15,20 @@ export default function HomePage() {
           </div>
           <span className="font-serif font-bold text-2xl tracking-widest text-white uppercase">MeTransfers</span>
         </div>
-        <nav className="hidden md:flex gap-10 font-bold text-sm tracking-widest uppercase text-white/80">
+        
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-10 font-bold text-sm tracking-widest uppercase text-white/80">
           <Link href="/booking" className="hover:text-[#D4AF37] transition-colors duration-300">Reservar</Link>
           <a href="#servicios" className="hover:text-[#D4AF37] transition-colors duration-300">Servicios</a>
           <a href="#flota" className="hover:text-[#D4AF37] transition-colors duration-300">Flota</a>
-          <Link href="/admin/login" className="hover:text-[#D4AF37] transition-colors duration-300">Acceso VIP</Link>
+          <div className="flex items-center gap-4 ml-2 pl-4 border-l border-white/20">
+            <Link href="/login" className="hover:text-[#D4AF37] transition-colors duration-300">Ingresar</Link>
+            <Link href="/register" className="bg-[#D4AF37] hover:bg-[#AA8B2C] text-white px-4 py-1.5 rounded-full transition-colors duration-300">Registrarse</Link>
+          </div>
         </nav>
+
+        {/* Mobile Nav */}
+        <MobileMenu />
       </header>
 
       <main>
