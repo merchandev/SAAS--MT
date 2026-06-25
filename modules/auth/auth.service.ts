@@ -29,6 +29,8 @@ export const authService = {
     return await new SignJWT({ ...payload })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
+      .setIssuer("metransfers:auth")
+      .setAudience("metransfers:app")
       .setExpirationTime("24h")
       .sign(key);
   },
@@ -37,6 +39,8 @@ export const authService = {
     try {
       const { payload } = await jwtVerify(token, key, {
         algorithms: ["HS256"],
+        issuer: "metransfers:auth",
+        audience: "metransfers:app",
       });
       return payload as unknown as SessionPayload;
     } catch (error) {

@@ -37,19 +37,26 @@ export const pricingService = {
     // 1. Cálculo Base
     let basePrice = 0;
     
-    const pricePerKmOneWay = Number(vehicle.pricePerKmOneWay);
-    const pricePerKmRoundTrip = Number(vehicle.pricePerKmRoundTrip);
-    const minimumPrice = Number(vehicle.minimumPrice);
+    if (input.fixedPriceOverride !== undefined) {
+      basePrice = input.fixedPriceOverride;
+      if (input.tripType === "ROUND_TRIP") {
+        basePrice = basePrice * 2;
+      }
+    } else {
+      const pricePerKmOneWay = Number(vehicle.pricePerKmOneWay);
+      const pricePerKmRoundTrip = Number(vehicle.pricePerKmRoundTrip);
+      const minimumPrice = Number(vehicle.minimumPrice);
 
-    if (input.tripType === "ONE_WAY") {
-      basePrice = input.distanceKm * pricePerKmOneWay;
-    } else if (input.tripType === "ROUND_TRIP") {
-      basePrice = (input.distanceKm * pricePerKmRoundTrip) * 2; // Asumiendo distanceKm es solo ida
-    }
+      if (input.tripType === "ONE_WAY") {
+        basePrice = input.distanceKm * pricePerKmOneWay;
+      } else if (input.tripType === "ROUND_TRIP") {
+        basePrice = (input.distanceKm * pricePerKmRoundTrip) * 2; // Asumiendo distanceKm es solo ida
+      }
 
-    // Asegurar que no sea menor al precio mínimo
-    if (basePrice < minimumPrice) {
-      basePrice = minimumPrice;
+      // Asegurar que no sea menor al precio mínimo
+      if (basePrice < minimumPrice) {
+        basePrice = minimumPrice;
+      }
     }
 
     // 2. Recargos (Surcharges)

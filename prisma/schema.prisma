@@ -120,6 +120,10 @@ model Hotel {
   email       String?
   phone       String?
 
+  address     String?
+  placeId     String?
+  routesSettings Json? // Stores predefined destinations and prices
+
   commissionValue Decimal @default(0) @db.Decimal(10, 2)
   discountValue   Decimal @default(0) @db.Decimal(10, 2)
 
@@ -173,6 +177,11 @@ model Driver {
 
   licenseNumber String?
   status        String  @default("ACTIVE")
+
+  // Tracking en tiempo real
+  currentLat         Float?
+  currentLng         Float?
+  lastLocationUpdate DateTime?
 
   bookings Booking[]
 

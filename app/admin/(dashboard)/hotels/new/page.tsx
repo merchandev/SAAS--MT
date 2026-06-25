@@ -7,11 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import PlaceAutocompleteInput from "@/components/maps/PlaceAutocompleteInput";
 
 export default function NewHotelPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [address, setAddress] = useState("");
+  const [placeId, setPlaceId] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -24,6 +27,8 @@ export default function NewHotelPage() {
       contactName: formData.get("contactName") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
+      address,
+      placeId,
       commissionValue: Number(formData.get("commissionValue")),
       discountValue: Number(formData.get("discountValue")),
     };
@@ -58,6 +63,18 @@ export default function NewHotelPage() {
               <div className="space-y-2 col-span-2">
                 <Label htmlFor="name">Nombre del Hotel / Cadena</Label>
                 <Input id="name" name="name" required placeholder="Ej. Hotel Sol y Mar" />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <Label>Dirección del Hotel</Label>
+                <PlaceAutocompleteInput 
+                  value={address}
+                  onChange={setAddress}
+                  onSelectPlace={(place) => {
+                    setAddress(place.address);
+                    setPlaceId(place.placeId);
+                  }}
+                  placeholder="Ej. Calle Principal 123, Ciudad"
+                />
               </div>
             </div>
 

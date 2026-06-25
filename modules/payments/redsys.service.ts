@@ -1,7 +1,15 @@
 import crypto from "crypto";
 
-const DEFAULT_REDSYS_TEST_KEY = "sq7HjrUOBfKmC576ILgskD5srU870gJ7";
 const SIGNATURE_VERSION = "HMAC_SHA256_V1";
+
+// Evaluate secret at startup so it crashes early if missing
+const REDSYS_SECRET_KEY = process.env.REDSYS_SECRET_KEY;
+if (!REDSYS_SECRET_KEY && process.env.NODE_ENV === "production") {
+  throw new Error("FATAL: REDSYS_SECRET_KEY environment variable is not set. Payments will fail.");
+}
+
+// Optional fallback ONLY for local development, never used in production
+const effectiveSecret = REDSYS_SECRET_KEY || "sq7HjrUOBfKmC576ILgskD5srU870gJ7";
 
 type RedsysBooking = {
   id?: string;
@@ -30,13 +38,7 @@ function fromBase64Url(value: string): string {
 }
 
 function getRedsysSecretKey(): string {
-  const secretKey = process.env.REDSYS_SECRET_KEY || DEFAULT_REDSYS_TEST_KEY;
-
-  if (!process.env.REDSYS_SECRET_KEY && process.env.NODE_ENV === "production") {
-    throw new Error("FATAL: REDSYS_SECRET_KEY environment variable is not set.");
-  }
-
-  return secretKey;
+  return effectiveSecret;
 }
 
 function escapeHtml(value: string): string {

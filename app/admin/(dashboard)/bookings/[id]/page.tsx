@@ -5,6 +5,7 @@ import { BookingNotesForm } from "./BookingNotesForm";
 import { DriverAssignmentForm } from "./DriverAssignmentForm";
 import { settingsQueries } from "@/modules/settings/settings.queries";
 import { InvoiceDownloadButton } from "@/components/pdf/InvoiceDownloadButton";
+import LiveMapPollClient from "@/components/maps/LiveMapPollClient";
 
 export const dynamic = "force-dynamic";
 
@@ -41,12 +42,31 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
-            {booking.bookingStatus}
+            {({
+              DRAFT: "Borrador",
+              PENDING_PAYMENT: "Pendiente de Pago",
+              PAID: "Pagado",
+              POR_CONFIRMAR: "Por Confirmar",
+              CONFIRMADA: "Confirmada",
+              ASIGNADA: "Conductor Asignado",
+              EN_CURSO: "En Curso",
+              COMPLETADA: "Completada",
+              CANCELADA: "Cancelada",
+              NO_SHOW: "No Show",
+              REEMBOLSADA: "Reembolsada",
+              FALLIDA: "Fallida"
+            }[booking.bookingStatus as string] || booking.bookingStatus)}
           </span>
           <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
             booking.paymentStatus === "PAID" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
           }`}>
-            Pago: {booking.paymentStatus}
+            Pago: {({
+              PENDING: "Pendiente",
+              PAID: "Pagado",
+              COMPLETED: "Completado",
+              FAILED: "Fallido",
+              REFUNDED: "Reembolsado"
+            }[booking.paymentStatus as string] || booking.paymentStatus)}
           </span>
           {booking.paymentStatus === "PAID" && (
             <InvoiceDownloadButton booking={booking} customer={booking.customer} settings={settings} />
@@ -86,6 +106,23 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
               </div>
             </div>
           </div>
+
+          {booking.driverId && ["EN_CAMINO", "EN_PUNTO_DE_RECOGIDA", "CLIENTE_RECOGIDO"].includes(booking.driverStatus || "") && (
+            <div className="bg-white border rounded-lg p-6 shadow-sm">
+              <h4 className="font-semibold text-lg mb-4 border-b pb-2 flex items-center gap-2">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+                Rastreo GPS en Vivo (Vehículo Asignado)
+              </h4>
+              <LiveMapPollClient 
+                driverId={booking.driverId} 
+                origin={booking.originAddress} 
+                destination={booking.destinationAddress} 
+              />
+            </div>
+          )}
 
           <div className="bg-white border rounded-lg p-6 shadow-sm">
             <h4 className="font-semibold text-lg mb-4 border-b pb-2">Información del Cliente</h4>

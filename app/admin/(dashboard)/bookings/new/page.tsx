@@ -7,11 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import PlaceAutocompleteInput from "@/components/maps/PlaceAutocompleteInput";
 
 export default function NewAdminBookingPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // States for Autocomplete
+  const [originAddress, setOriginAddress] = useState("");
+  const [originPlaceId, setOriginPlaceId] = useState("");
+  const [destinationAddress, setDestinationAddress] = useState("");
+  const [destinationPlaceId, setDestinationPlaceId] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -83,19 +90,39 @@ export default function NewAdminBookingPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="originAddress">Origen</Label>
-                <Input id="originAddress" name="originAddress" required placeholder="Aeropuerto, hotel o dirección" />
+                <PlaceAutocompleteInput 
+                  name="originAddress"
+                  value={originAddress}
+                  onChange={setOriginAddress}
+                  onSelectPlace={(place) => {
+                    setOriginAddress(place.address);
+                    setOriginPlaceId(place.placeId);
+                  }}
+                  className="h-10 w-full"
+                />
+                <input type="hidden" name="originPlaceId" value={originPlaceId} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="originPlaceId">Google Place ID origen opcional</Label>
-                <Input id="originPlaceId" name="originPlaceId" placeholder="place_id opcional" />
+                <Label htmlFor="originPlaceId_display">Google Place ID origen opcional</Label>
+                <Input id="originPlaceId_display" placeholder="place_id opcional" value={originPlaceId} onChange={(e) => setOriginPlaceId(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="destinationAddress">Destino</Label>
-                <Input id="destinationAddress" name="destinationAddress" required placeholder="Hotel, ciudad o dirección" />
+                <PlaceAutocompleteInput 
+                  name="destinationAddress"
+                  value={destinationAddress}
+                  onChange={setDestinationAddress}
+                  onSelectPlace={(place) => {
+                    setDestinationAddress(place.address);
+                    setDestinationPlaceId(place.placeId);
+                  }}
+                  className="h-10 w-full"
+                />
+                <input type="hidden" name="destinationPlaceId" value={destinationPlaceId} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="destinationPlaceId">Google Place ID destino opcional</Label>
-                <Input id="destinationPlaceId" name="destinationPlaceId" placeholder="place_id opcional" />
+                <Label htmlFor="destinationPlaceId_display">Google Place ID destino opcional</Label>
+                <Input id="destinationPlaceId_display" placeholder="place_id opcional" value={destinationPlaceId} onChange={(e) => setDestinationPlaceId(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="serviceDate">Fecha del servicio</Label>

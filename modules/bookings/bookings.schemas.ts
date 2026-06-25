@@ -27,3 +27,26 @@ export const adminBookingSchema = z.object({
 });
 
 export type AdminBookingInput = z.infer<typeof adminBookingSchema>;
+
+function isFutureServiceDate(dateStr: string) {
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return false;
+  // Compare to current date (stripping time)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return date >= today;
+}
+
+export const publicBookingSchema = adminBookingSchema.extend({
+  serviceDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "El formato de fecha debe ser YYYY-MM-DD")
+    .refine(date => isFutureServiceDate(date), "La fecha debe ser igual o posterior a hoy"),
+  serviceTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/, "El formato de hora debe ser HH:MM"),
+  passengers: z.coerce.number().int().min(1, "Debe haber al menos 1 pasajero"),
+  luggage: z.coerce.number().int().min(0, "El equipaje no puede ser negativo"),
+});
+
+export type PublicBookingInput = z.infer<typeof publicBookingSchema>;

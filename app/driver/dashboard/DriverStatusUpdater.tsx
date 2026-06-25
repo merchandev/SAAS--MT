@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { updateDriverBookingStatusAction } from "@/modules/drivers/drivers.actions";
+import { updateDriverLocationAction } from "@/modules/drivers/location.actions";
 import { Button } from "@/components/ui/button";
+import { MapPin } from "lucide-react";
 
 interface Props {
   bookingId: string;
@@ -20,9 +22,50 @@ const statusFlow = [
 
 export function DriverStatusUpdater({ bookingId, driverId, currentStatus }: Props) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isTracking, setIsTracking] = useState(false);
+  const watchIdRef = useRef<number | null>(null);
 
   const currentIndex = statusFlow.findIndex(s => s.value === currentStatus);
   const nextStatus = currentIndex >= 0 && currentIndex < statusFlow.length - 1 ? statusFlow[currentIndex + 1] : null;
+
+  // Lógica de Tracking de Ubicación
+  useEffect(() => {
+    const activeStatuses = ["EN_CAMINO", "EN_PUNTO_DE_RECOGIDA", "CLIENTE_RECOGIDO"];
+    
+    if (currentStatus && activeStatuses.includes(currentStatus)) {
+      if (!isTracking && navigator.geolocation) {
+        setIsTracking(true);
+        watchIdRef.current = navigator.geolocation.watchPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            // Enviar la posición al servidor sin bloquear la UI
+            updateDriverLocationAction(latitude, longitude).catch(console.error);
+          },
+          (error) => {
+            console.error("Error obteniendo ubicación:", error);
+          },
+          {
+            enableHighAccuracy: true,
+            maximumAge: 10000,
+            timeout: 5000
+          }
+        );
+      }
+    } else {
+      // Detener tracking si el estado no es activo
+      if (isTracking && watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+        setIsTracking(false);
+      }
+    }
+
+    return () => {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
+  }, [currentStatus, isTracking]);
 
   const handleUpdate = async () => {
     if (!nextStatus) return;
@@ -41,11 +84,18 @@ export function DriverStatusUpdater({ bookingId, driverId, currentStatus }: Prop
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-sm text-gray-500 font-medium">Estado actual:</span>
-        <span className={`px-2 py-1 rounded-md text-xs font-semibold ${statusFlow[currentIndex]?.color || "bg-gray-100"}`}>
-          {statusFlow[currentIndex]?.label || "Pendiente"}
-        </span>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-500 font-medium">Estado actual:</span>
+          <span className={`px-2 py-1 rounded-md text-xs font-semibold ${statusFlow[currentIndex]?.color || "bg-gray-100"}`}>
+            {statusFlow[currentIndex]?.label || "Pendiente"}
+          </span>
+        </div>
+        {isTracking && (
+          <div className="flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-full border border-green-200 animate-pulse">
+            <MapPin className="h-3 w-3" /> GPS Activo
+          </div>
+        )}
       </div>
 
       {nextStatus && (

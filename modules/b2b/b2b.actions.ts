@@ -58,10 +58,11 @@ export async function updateHotelAction(hotelId: string, data: import("./b2b.sch
     revalidatePath("/admin/hotels");
     return { success: true, data: { id: hotel.id } };
   } catch (error: any) {
+    console.error("Error updating hotel:", error);
     if (error.code === 'P2002') {
       return { error: "El nombre o slug del hotel ya existe." };
     }
-    return { error: "Error al actualizar el hotel" };
+    return { error: `Error al actualizar el hotel: ${error.message}` };
   }
 }
 

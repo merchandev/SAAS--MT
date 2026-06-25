@@ -6,7 +6,7 @@ MeTransfers es un SaaS especializado para la gestión operativa y de reservas de
 El sistema se estructura bajo la arquitectura **App Router** de Next.js, utilizando un enfoque orientado a dominios (Domain-Driven Design simplificado) mediante la carpeta `modules/`.
 
 ## 2. Stack Tecnológico
-- **Frontend**: Next.js 14+ (App Router), React, Tailwind CSS, shadcn/ui.
+- **Frontend**: Next.js 16+ (App Router), React, Tailwind CSS, shadcn/ui.
 - **Backend**: Server Actions y Route Handlers (API).
 - **Base de Datos**: PostgreSQL gestionado mediante Prisma ORM.
 - **Pagos**: Pasarela Redsys.
@@ -40,6 +40,6 @@ Cada módulo debe contener los siguientes archivos (según necesidad):
 
 ## 4. Patrones de Diseño Obligatorios
 1. **El Servidor es la Fuente de la Verdad**: El precio jamás se fía del cliente. Siempre se recalcula en `pricing.service.ts` antes de persistir o cobrar.
-2. **Pagos Asíncronos**: La confirmación de Redsys se gestiona vía Webhook (`/api/redsys/notification`), no por redirección del usuario.
+2. **Pagos Asíncronos**: La confirmación de Redsys se gestiona vía Webhook (`/api/redsys/callback`), no por redirección del usuario.
 3. **Auditoría Estricta**: Toda mutación en una reserva o pago se registra en `AuditLog`.
 4. **Validación Zod**: Todo input desde Server Actions o API debe validarse con `zod` antes de llegar a Prisma.

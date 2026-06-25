@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { driversQueries } from "@/modules/drivers/drivers.queries";
 import { DriverStatusUpdater } from "./DriverStatusUpdater";
 import { MapPin, Clock, Calendar, Briefcase, Info } from "lucide-react";
+import LiveMapPollClient from "@/components/maps/LiveMapPollClient";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +105,17 @@ export default async function DriverDashboardPage() {
                     <p className="text-sm font-semibold text-gray-900 leading-tight mt-0.5">{b.destinationAddress}</p>
                   </div>
                 </div>
+
+                {["EN_CAMINO", "EN_PUNTO_DE_RECOGIDA", "CLIENTE_RECOGIDO"].includes(b.driverStatus || "") && (
+                  <div className="pt-2">
+                    <LiveMapPollClient 
+                      driverId={driver.id} 
+                      origin={b.originAddress} 
+                      destination={b.destinationAddress} 
+                      pollIntervalMs={10000} 
+                    />
+                  </div>
+                )}
 
                 <div className="bg-gray-50 rounded-xl p-3 flex justify-between items-center border border-gray-100">
                   <div className="flex items-center gap-2">

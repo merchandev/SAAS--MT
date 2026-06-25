@@ -62,6 +62,20 @@ export async function POST(req: NextRequest) {
       return new NextResponse("OK", { status: 200 });
     }
 
+    // Invariant validation
+    const expectedAmountInCents = Math.round(Number(payment.amount) * 100).toString();
+    if (decodedParams.Ds_Amount !== expectedAmountInCents) {
+      console.error(`[Redsys] Amount mismatch for ${orderId}: Expected ${expectedAmountInCents}, Got ${decodedParams.Ds_Amount}`);
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    // Usually 978 for EUR
+    const expectedCurrency = "978";
+    if (decodedParams.Ds_Currency !== expectedCurrency) {
+      console.error(`[Redsys] Currency mismatch for ${orderId}: Got ${decodedParams.Ds_Currency}`);
+      return new NextResponse("OK", { status: 200 });
+    }
+
     const isSuccess = responseCode >= 0 && responseCode <= 99;
 
     await prisma.$transaction(async (tx) => {
@@ -75,23 +89,52 @@ export async function POST(req: NextRequest) {
         }
       });
 
+      const newBookingStatus = isSuccess ? "CONFIRMADA" : "FALLIDA";
+
       await tx.booking.update({
         where: { id: payment.bookingId },
         data: {
           paymentStatus: isSuccess ? "PAID" : "FAILED",
-          bookingStatus: isSuccess ? "CONFIRMADA" : "FALLIDA",
+          bookingStatus: newBookingStatus,
+        }
+      });
+
+      // Audit and History tracking
+      await tx.bookingStatusHistory.create({
+        data: {
+          bookingId: payment.bookingId,
+          oldStatus: payment.booking.bookingStatus,
+          newStatus: newBookingStatus,
+          changedBy: "REDSYS_CALLBACK",
+        }
+      });
+
+      await tx.auditLog.create({
+        data: {
+          entityType: "Payment",
+          entityId: payment.id,
+          action: "REDSYS_CALLBACK",
+          newValue: JSON.stringify({
+            responseCode: decodedParams.Ds_Response,
+            isSuccess,
+            dsAmount: decodedParams.Ds_Amount
+          })
         }
       });
     });
 
+    // Handle emails asynchronously without blocking the callback response
     if (isSuccess && payment.booking.customer) {
-       await emailsService.sendBookingConfirmation(
-         payment.booking.customer.email, 
-         payment.booking.publicCode, 
-         payment.booking.customer.fullName,
-         payment.booking
-       );
-       await emailsService.sendAdminNotification(payment.booking.publicCode);
+      // Fire and forget or background worker. Here we just run it without awaiting the outer function to fail.
+      Promise.allSettled([
+        emailsService.sendBookingConfirmation(
+          payment.booking.customer.email, 
+          payment.booking.publicCode, 
+          payment.booking.customer.fullName,
+          payment.booking
+        ),
+        emailsService.sendAdminNotification(payment.booking.publicCode)
+      ]).catch(err => console.error("[Redsys] Email dispatch error:", err));
     }
 
     return new NextResponse("OK", { status: 200 });

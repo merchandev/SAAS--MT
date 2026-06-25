@@ -16,6 +16,8 @@ interface PlaceAutocompleteInputProps {
   onChange?: (value: string) => void;
   onSelectPlace: (place: { address: string; placeId: string }) => void;
   className?: string;
+  name?: string;
+  enableGeolocation?: boolean;
 }
 
 export default function PlaceAutocompleteInput({
@@ -25,6 +27,8 @@ export default function PlaceAutocompleteInput({
   onChange,
   onSelectPlace,
   className = "h-12 bg-gray-50",
+  name,
+  enableGeolocation = false,
 }: PlaceAutocompleteInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -57,20 +61,26 @@ export default function PlaceAutocompleteInput({
     }
   }, []);
 
+  const onChangeRef = useRef(onChange);
+  const onSelectPlaceRef = useRef(onSelectPlace);
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+    onSelectPlaceRef.current = onSelectPlace;
+  }, [onChange, onSelectPlace]);
+
   useEffect(() => {
     if (!isLoaded || !inputRef.current) return;
 
     const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
       fields: ["formatted_address", "place_id"],
-      // Opcional: restringir a un país o tipo si es necesario
-      // types: ["geocode", "establishment"],
     });
 
     const listener = autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
       if (place.formatted_address && place.place_id) {
-        if (onChange) onChange(place.formatted_address);
-        onSelectPlace({
+        if (onChangeRef.current) onChangeRef.current(place.formatted_address);
+        if (onSelectPlaceRef.current) onSelectPlaceRef.current({
           address: place.formatted_address,
           placeId: place.place_id,
         });
@@ -82,15 +92,60 @@ export default function PlaceAutocompleteInput({
         window.google.maps.event.removeListener(listener);
       }
     };
-  }, [isLoaded, onSelectPlace, onChange]);
+  }, [isLoaded]);
+
+  const handleGeolocation = () => {
+    if (!navigator.geolocation) {
+      alert("La geolocalización no está soportada por tu navegador.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        if (window.google && window.google.maps && window.google.maps.Geocoder) {
+          const geocoder = new window.google.maps.Geocoder();
+          geocoder.geocode({ location: { lat: latitude, lng: longitude } }, (results: any, status: any) => {
+            if (status === "OK" && results && results[0]) {
+              const address = results[0].formatted_address;
+              const placeId = results[0].place_id;
+              if (onChange) onChange(address);
+              if (onSelectPlace) onSelectPlace({ address, placeId });
+            } else {
+              alert("No se pudo obtener la dirección de tu ubicación.");
+            }
+          });
+        }
+      },
+      () => {
+        alert("No se pudo obtener tu ubicación. Por favor, revisa los permisos.");
+      }
+    );
+  };
 
   return (
-    <Input
-      ref={inputRef}
-      placeholder={placeholder || label || "Ingresa una dirección..."}
-      value={value}
-      onChange={(e) => onChange && onChange(e.target.value)}
-      className={className}
-    />
+    <div className="relative w-full">
+      <Input
+        ref={inputRef}
+        name={name}
+        placeholder={placeholder || label || "Ingresa una dirección..."}
+        value={value}
+        onChange={(e) => onChange && onChange(e.target.value)}
+        className={`${className} ${enableGeolocation ? 'pr-10' : ''}`}
+      />
+      {enableGeolocation && isLoaded && (
+        <button
+          type="button"
+          onClick={handleGeolocation}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#D4AF37] transition-colors"
+          title="Usar mi ubicación actual"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </button>
+      )}
+    </div>
   );
 }

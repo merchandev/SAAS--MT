@@ -7,6 +7,7 @@ export const pricingCalculationSchema = z.object({
   isNightTrip: z.boolean().default(false),
   isAirportTrip: z.boolean().default(false),
   discountCode: z.string().optional(),
+  fixedPriceOverride: z.number().optional(),
 });
 
 export type PricingCalculationInput = z.infer<typeof pricingCalculationSchema>;

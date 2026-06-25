@@ -212,11 +212,12 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
   }
 }
 
-export async function createPublicBookingAction(data: AdminBookingInput, hotelToken?: string) {
-  // Nota: Para el MVP usamos el mismo esquema, pero en producción habría publicBookingSchema
-  const parsed = adminBookingSchema.safeParse(data);
+export async function createPublicBookingAction(data: import("./bookings.schemas").PublicBookingInput, hotelToken?: string) {
+  const { publicBookingSchema } = await import("./bookings.schemas");
+  const parsed = publicBookingSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    const fieldErrors = Object.values(parsed.error.flatten().fieldErrors).flat().join(", ");
+    return { error: `Datos inválidos: ${fieldErrors}`, details: parsed.error.flatten() };
   }
 
   const {
@@ -230,6 +231,7 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
     let hotelId = null;
     let discountCode = undefined;
     let sourceType = "WEB_DIRECT";
+    let fixedPriceOverride: number | undefined = undefined;
 
     // Si viene de un token B2B
     if (hotelToken) {
@@ -237,7 +239,17 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
       if (hotel && hotel.isActive) {
         hotelId = hotel.id;
         sourceType = "HOTEL_QR";
-        // Si el hotel ofrece descuento al cliente final, aquí se integraría a discountCode o lógica análoga
+        
+        // Comprobar si coincide con una ruta fija predefinida
+        if (hotel.routesSettings && typeof hotel.routesSettings === 'object' && 'destinations' in hotel.routesSettings) {
+          const dests = (hotel.routesSettings as any).destinations as any[];
+          if (Array.isArray(dests)) {
+            const matchedDest = dests.find(d => d.placeId === originPlaceId || d.placeId === destinationPlaceId);
+            if (matchedDest && matchedDest.prices && matchedDest.prices[vehicleId]) {
+              fixedPriceOverride = Number(matchedDest.prices[vehicleId]);
+            }
+          }
+        }
       }
     }
 
@@ -260,7 +272,8 @@ export async function createPublicBookingAction(data: AdminBookingInput, hotelTo
       tripType,
       isNightTrip: await isNightTime(serviceTime),
       isAirportTrip: tripContext.isAirportTrip,
-      discountCode
+      discountCode,
+      fixedPriceOverride
     });
 
     const booking = await prisma.$transaction(async (tx) => {
