@@ -4,8 +4,30 @@ import { loginSchema, LoginInput } from "./auth.schemas";
 import { authService } from "./auth.service";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+
+const rateLimitMap = new Map<string, { count: number, resetAt: number }>();
+
+function checkRateLimit(ip: string) {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+  if (!record || now > record.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + 15 * 60 * 1000 });
+    return true;
+  }
+  if (record.count >= 5) {
+    return false;
+  }
+  record.count++;
+  return true;
+}
 
 export async function loginAction(data: LoginInput) {
+  const ip = (await headers()).get("x-forwarded-for") || "unknown";
+  if (!checkRateLimit(ip)) {
+    return { error: "Demasiados intentos. Por favor, inténtelo de nuevo en 15 minutos." };
+  }
+
   // 1. Validar input
   const parsed = loginSchema.safeParse(data);
   if (!parsed.success) {

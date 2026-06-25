@@ -73,7 +73,7 @@ export const pricingService = {
 
     const totalSurcharges = nightSurcharge + airportSurcharge;
 
-    // 3. Descuentos (Draft MVP, se puede expandir)
+    // 3. Descuentos
     let totalDiscounts = 0;
     if (input.discountCode) {
       const discount = await prisma.discountCode.findUnique({
@@ -81,11 +81,22 @@ export const pricingService = {
       });
       
       if (discount && discount.isActive) {
-        if (discount.valueType === "FIXED") {
-          totalDiscounts = Number(discount.value);
-        } else if (discount.valueType === "PERCENTAGE") {
-          totalDiscounts = (basePrice + totalSurcharges) * (Number(discount.value) / 100);
+        const now = new Date();
+        const isStarted = !discount.validFrom || now >= discount.validFrom;
+        const isNotExpired = !discount.validUntil || now <= discount.validUntil;
+        const hasUsesLeft = discount.maxUses === null || discount.usedCount < discount.maxUses;
+
+        if (isStarted && isNotExpired && hasUsesLeft) {
+          if (discount.valueType === "FIXED") {
+            totalDiscounts = Number(discount.value);
+          } else if (discount.valueType === "PERCENTAGE") {
+            totalDiscounts = (basePrice + totalSurcharges) * (Number(discount.value) / 100);
+          }
+        } else {
+          throw new Error("El código de descuento no es válido, ha caducado o ha alcanzado su límite de usos.");
         }
+      } else {
+        throw new Error("El código de descuento no es válido o está inactivo.");
       }
     }
 

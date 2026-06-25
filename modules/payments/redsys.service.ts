@@ -5,7 +5,11 @@ const SIGNATURE_VERSION = "HMAC_SHA256_V1";
 // Evaluate secret at startup so it crashes early if missing
 const REDSYS_SECRET_KEY = process.env.REDSYS_SECRET_KEY;
 if (!REDSYS_SECRET_KEY && process.env.NODE_ENV === "production") {
-  console.warn("WARNING: REDSYS_SECRET_KEY environment variable is not set. Payments will fail.");
+  if (process.env.NEXT_PUBLIC_IS_BUILDING === "true") {
+    console.warn("WARNING: REDSYS_SECRET_KEY is missing (ignored during build).");
+  } else {
+    throw new Error("FATAL: REDSYS_SECRET_KEY environment variable is not set. Payments will fail.");
+  }
 }
 
 // Optional fallback ONLY for local development, never used in production

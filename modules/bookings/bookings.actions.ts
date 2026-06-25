@@ -133,6 +133,17 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
       destinationPlaceId
     );
 
+    const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
+    if (!vehicle || !vehicle.isActive) {
+      throw new Error("El vehículo no está disponible.");
+    }
+    if (passengers > vehicle.passengerCapacity) {
+      throw new Error(`Número de pasajeros supera la capacidad del vehículo (${vehicle.passengerCapacity}).`);
+    }
+    if (luggage > vehicle.luggageCapacity) {
+      throw new Error(`Número de maletas supera la capacidad del vehículo (${vehicle.luggageCapacity}).`);
+    }
+
     // 1. Usar el motor de precios (Principio de Responsabilidad Única)
     const pricingResult = await pricingService.calculateBookingPrice({
       vehicleId,
@@ -253,6 +264,17 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
       }
     }
 
+    const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
+    if (!vehicle || !vehicle.isActive) {
+      throw new Error("El vehículo no está disponible.");
+    }
+    if (passengers > vehicle.passengerCapacity) {
+      throw new Error(`Número de pasajeros supera la capacidad del vehículo (${vehicle.passengerCapacity}).`);
+    }
+    if (luggage > vehicle.luggageCapacity) {
+      throw new Error(`Número de maletas supera la capacidad del vehículo (${vehicle.luggageCapacity}).`);
+    }
+
     const mapResult = await mapsService.calculateDistanceAndDuration(
       { address: originAddress, placeId: originPlaceId },
       { address: destinationAddress, placeId: destinationPlaceId }
@@ -329,6 +351,13 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
           }),
         }
       });
+
+      if (discountCode) {
+        await tx.discountCode.update({
+          where: { code: discountCode },
+          data: { usedCount: { increment: 1 } }
+        });
+      }
 
       return newBooking;
     });
