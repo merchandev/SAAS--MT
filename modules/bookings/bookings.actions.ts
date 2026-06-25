@@ -258,7 +258,7 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
 
   try {
     let hotelId = null;
-    let discountCode = undefined;
+    const discountCode = undefined;
     let sourceType = "WEB_DIRECT";
     let fixedPriceOverride: number | undefined = undefined;
 

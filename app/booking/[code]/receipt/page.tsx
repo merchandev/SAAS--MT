@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import { InvoiceDownloadButton } from "@/components/pdf/InvoiceDownloadButton";
 
 export default async function ReceiptPage({ params }: { params: Promise<{ code: string }> }) {
   const code = (await params).code;
@@ -82,10 +83,14 @@ export default async function ReceiptPage({ params }: { params: Promise<{ code: 
           </div>
         </div>
 
-        <div className="mt-12 text-center print:hidden">
+        <div className="mt-12 text-center print:hidden flex justify-center gap-4">
           <button onClick={() => typeof window !== 'undefined' && window.print()} className="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-black transition-colors font-medium shadow-md">
             Imprimir Recibo
           </button>
+          
+          {booking.paymentStatus === 'PAID' && (
+            <InvoiceDownloadButton booking={booking} publicCode={booking.publicCode} />
+          )}
         </div>
       </div>
     </div>
