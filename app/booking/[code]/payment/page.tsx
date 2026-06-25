@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { redsysService } from "@/modules/payments/redsys.service";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -30,16 +31,16 @@ export default async function PaymentPage({ params }: { params: Promise<{ code: 
           </div>
           <h2 className="text-2xl font-serif font-bold text-white mb-2">Reserva Confirmada</h2>
           <p className="text-gray-400 font-light mb-8">Esta reserva ya ha sido procesada y abonada exitosamente.</p>
-          <a href="/" className="inline-block bg-[#D4AF37] text-[#0B0C10] hover:bg-[#C5A059] px-8 py-3 rounded-sm font-medium transition-all">
+          <Link href="/" className="inline-block bg-[#D4AF37] text-[#0B0C10] hover:bg-[#C5A059] px-8 py-3 rounded-sm font-medium transition-all">
             Volver al inicio
-          </a>
+          </Link>
         </div>
       </div>
     );
   }
 
   const payment = await prisma.$transaction(async (tx) => {
-    let existing = await tx.payment.findFirst({
+    const existing = await tx.payment.findFirst({
       where: { bookingId: booking.id, status: "PENDING" },
     });
 

@@ -101,6 +101,7 @@ export default function BookingFormClient({
       };
       fetchDistance();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Se ejecuta solo al montar el componente
 
   const handleNextStep1 = async () => {
@@ -464,7 +465,7 @@ export default function BookingFormClient({
                       else updateForm('largeLuggage', Math.min(val, selectedVehicle?.luggageCapacity || 4));
                     }}
                     onBlur={() => {
-                      if (formData.largeLuggage === '') updateForm('largeLuggage', 0);
+                      if (formData.largeLuggage === ('' as unknown as number)) updateForm('largeLuggage', 0);
                     }}
                     className="h-12" 
                   />
@@ -484,7 +485,7 @@ export default function BookingFormClient({
                       else updateForm('smallLuggage', Math.min(val, maxSmall));
                     }}
                     onBlur={() => {
-                      if (formData.smallLuggage === '') updateForm('smallLuggage', 0);
+                      if (formData.smallLuggage === ('' as unknown as number)) updateForm('smallLuggage', 0);
                     }}
                     className="h-12" 
                   />

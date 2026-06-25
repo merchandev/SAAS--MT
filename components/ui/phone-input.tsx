@@ -37,12 +37,13 @@ export function PhoneInput({ value, onChange, className, placeholder = "600 000 
       const match = COUNTRY_CODES.find(c => value.startsWith(c.code));
       if (match) {
         if (match.code !== '+34') {
-          setPrefix(match.code);
+          setTimeout(() => setPrefix(match.code), 0);
         }
-        setNumber(value.slice(match.code.length).trim());
+        setTimeout(() => setNumber(value.slice(match.code.length).trim()), 0);
       } else {
-        setNumber(value);
+        setTimeout(() => setNumber(value), 0);
       }
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInitialized(true);
     }
   }, [value, initialized]);

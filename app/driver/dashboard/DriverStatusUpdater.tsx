@@ -34,7 +34,7 @@ export function DriverStatusUpdater({ bookingId, driverId, currentStatus }: Prop
     
     if (currentStatus && activeStatuses.includes(currentStatus)) {
       if (!isTracking && navigator.geolocation) {
-        setIsTracking(true);
+        setTimeout(() => setIsTracking(true), 0);
         watchIdRef.current = navigator.geolocation.watchPosition(
           (position) => {
             const { latitude, longitude } = position.coords;

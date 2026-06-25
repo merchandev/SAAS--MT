@@ -32,6 +32,21 @@ export async function POST(req: NextRequest) {
     const expectedSignature = redsysService.createSignature(dsMerchantParameters, orderId);
     const isSignatureValid = redsysService.signaturesMatch(dsSignature, expectedSignature);
 
+    if (decodedParams.Ds_MerchantCode !== redsysService.merchantCode) {
+      console.error(`[Redsys] Merchant Code mismatch: Expected ${redsysService.merchantCode}, Got ${decodedParams.Ds_MerchantCode}`);
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    if (decodedParams.Ds_Terminal !== redsysService.terminal) {
+      console.error(`[Redsys] Terminal mismatch: Expected ${redsysService.terminal}, Got ${decodedParams.Ds_Terminal}`);
+      return new NextResponse("OK", { status: 200 });
+    }
+
+    if (decodedParams.Ds_TransactionType !== "0") {
+      console.error(`[Redsys] Unsupported transaction type: ${decodedParams.Ds_TransactionType}`);
+      return new NextResponse("OK", { status: 200 });
+    }
+
     await prisma.redsysLog.create({
       data: {
         orderId,

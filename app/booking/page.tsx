@@ -42,8 +42,8 @@ export default async function PublicBookingPage(props: {
           </Link>
           <nav className="hidden md:flex gap-8 font-bold text-sm tracking-widest uppercase text-gray-700">
             <Link href="/" className="hover:text-[#D4AF37] transition-colors">Inicio</Link>
-            <a href="/#servicios" className="hover:text-[#D4AF37] transition-colors">Servicios VIP</a>
-            <a href="/#flota" className="hover:text-[#D4AF37] transition-colors">Flota</a>
+            <Link href="/#servicios" className="hover:text-[#D4AF37] transition-colors">Servicios VIP</Link>
+            <Link href="/#flota" className="hover:text-[#D4AF37] transition-colors">Flota</Link>
           </nav>
         </div>
       </header>

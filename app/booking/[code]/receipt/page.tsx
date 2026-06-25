@@ -71,7 +71,7 @@ export default async function ReceiptPage({ params }: { params: Promise<{ code: 
           <div>
             <p className="text-sm text-gray-500">Estado del pago:</p>
             <p className={`font-bold uppercase tracking-wider ${
-              booking.paymentStatus === 'COMPLETED' || booking.paymentStatus === 'PAID' ? 'text-green-600' : 'text-yellow-600'
+              booking.paymentStatus === 'PAID' ? 'text-green-600' : 'text-yellow-600'
             }`}>
               {booking.paymentStatus}
             </p>

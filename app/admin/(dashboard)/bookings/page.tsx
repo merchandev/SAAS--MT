@@ -98,7 +98,7 @@ export default async function BookingsPage() {
                     {b.currency} {Number(b.finalPrice).toFixed(2)}
                   </div>
                   <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest ${
-                    b.paymentStatus === 'COMPLETED' ? 'bg-green-100 text-green-800' : 
+                    b.paymentStatus === 'PAID' ? 'bg-green-100 text-green-800' : 
                     b.paymentStatus === 'FAILED' ? 'bg-red-100 text-red-800' : 
                     'bg-yellow-100 text-yellow-800'
                   }`}>

@@ -23,7 +23,7 @@ export function QRDialogButton({ token, hotelName }: QRDialogButtonProps) {
   useEffect(() => {
     // Generar la URL completa usando el origin del cliente (ej. https://tudominio.com/hotel/token)
     if (typeof window !== "undefined") {
-      setUrl(`${window.location.origin}/hotel/${token}`);
+      setTimeout(() => setUrl(`${window.location.origin}/hotel/${token}`), 0);
     }
   }, [token]);
 

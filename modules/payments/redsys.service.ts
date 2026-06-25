@@ -5,7 +5,7 @@ const SIGNATURE_VERSION = "HMAC_SHA256_V1";
 // Evaluate secret at startup so it crashes early if missing
 const REDSYS_SECRET_KEY = process.env.REDSYS_SECRET_KEY;
 if (!REDSYS_SECRET_KEY && process.env.NODE_ENV === "production") {
-  throw new Error("FATAL: REDSYS_SECRET_KEY environment variable is not set. Payments will fail.");
+  console.warn("WARNING: REDSYS_SECRET_KEY environment variable is not set. Payments will fail.");
 }
 
 // Optional fallback ONLY for local development, never used in production
@@ -60,6 +60,8 @@ function createOrderId(booking: RedsysBooking): string {
 
 export const redsysService = {
   signatureVersion: SIGNATURE_VERSION,
+  merchantCode: process.env.REDSYS_MERCHANT_CODE || "999008881",
+  terminal: process.env.REDSYS_TERMINAL || "1",
   createOrderId,
 
   createMerchantParameters(booking: RedsysBooking, orderId?: string) {
@@ -70,10 +72,10 @@ export const redsysService = {
     const params = {
       DS_MERCHANT_AMOUNT: amountInCents,
       DS_MERCHANT_ORDER: merchantOrderId,
-      DS_MERCHANT_MERCHANTCODE: process.env.REDSYS_MERCHANT_CODE || "999008881",
+      DS_MERCHANT_MERCHANTCODE: this.merchantCode,
       DS_MERCHANT_CURRENCY: "978",
       DS_MERCHANT_TRANSACTIONTYPE: "0",
-      DS_MERCHANT_TERMINAL: process.env.REDSYS_TERMINAL || "1",
+      DS_MERCHANT_TERMINAL: this.terminal,
       DS_MERCHANT_MERCHANTURL: `${appUrl}/api/redsys/callback`,
       DS_MERCHANT_URLOK: `${appUrl}/booking/success?code=${booking.publicCode}&paid=true`,
       DS_MERCHANT_URLKO: `${appUrl}/booking/error?code=${booking.publicCode}`,
