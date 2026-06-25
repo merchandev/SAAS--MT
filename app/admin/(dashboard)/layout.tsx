@@ -12,7 +12,7 @@ export default async function AdminLayout({
   const session = await authService.getSession();
   
   if (!session) {
-    redirect("/login");
+    redirect("/admin/login");
   }
 
   // Add explicit server-side role verification

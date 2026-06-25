@@ -2,8 +2,10 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { vehicleSchema, type VehicleInput } from "./vehicles.schemas";
 import { requireRole } from "@/modules/auth/permissions";
+import { authService } from "@/modules/auth/auth.service";
 
 export async function createVehicleAction(data: VehicleInput) {
+  const session = await authService.getSession();
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
 
   const parsed = vehicleSchema.safeParse(data);
@@ -15,6 +17,15 @@ export async function createVehicleAction(data: VehicleInput) {
     const vehicle = await prisma.vehicle.create({
       data: parsed.data,
     });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "Vehicle",
+        entityId: vehicle.id,
+        action: "CREATE",
+        newValue: JSON.stringify(parsed.data),
+      }
+    });
     
     revalidatePath("/admin/vehicles");
     return { success: true, data: vehicle };
@@ -24,6 +35,7 @@ export async function createVehicleAction(data: VehicleInput) {
 }
 
 export async function updateVehicleAction(id: string, data: VehicleInput) {
+  const session = await authService.getSession();
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
 
   const parsed = vehicleSchema.safeParse(data);
@@ -36,6 +48,15 @@ export async function updateVehicleAction(id: string, data: VehicleInput) {
       where: { id },
       data: parsed.data,
     });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "Vehicle",
+        entityId: id,
+        action: "UPDATE",
+        newValue: JSON.stringify(parsed.data),
+      }
+    });
     
     revalidatePath("/admin/vehicles");
     revalidatePath("/booking"); // Purgar la caché de la vista pública también
@@ -46,12 +67,22 @@ export async function updateVehicleAction(id: string, data: VehicleInput) {
 }
 
 export async function toggleVehicleStatusAction(id: string, currentStatus: boolean) {
+  const session = await authService.getSession();
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
 
   try {
     const vehicle = await prisma.vehicle.update({
       where: { id },
       data: { isActive: !currentStatus },
+    });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "Vehicle",
+        entityId: id,
+        action: "TOGGLE_STATUS",
+        newValue: JSON.stringify({ isActive: !currentStatus }),
+      }
     });
     
     revalidatePath("/admin/vehicles");

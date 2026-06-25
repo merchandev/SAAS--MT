@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { redsysService } from "@/modules/payments/redsys.service";
+import { paymentRateLimiter } from "@/lib/rate-limit";
+import { headers } from "next/headers";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -20,21 +22,18 @@ export default async function PaymentPage({ params }: { params: Promise<{ code: 
     notFound();
   }
 
-  if (booking.paymentStatus === "PAID") {
+  // Si ya está pagada o en un estado posterior, redirigir al recibo
+  const paidStatuses = ["PAID", "CONFIRMADA", "ASIGNADA", "EN_CURSO", "COMPLETADA"];
+  if (paidStatuses.includes(booking.bookingStatus) || booking.paymentStatus === "PAID") {
+    redirect(`/booking/${booking.publicCode}/receipt`);
+  }
+
+  const ip = (await headers()).get("x-forwarded-for") || "unknown";
+  if (!paymentRateLimiter.check(ip)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0B0C10] font-sans">
-        <div className="max-w-md w-full bg-[#13151A] border border-white/5 p-8 rounded-sm shadow-2xl text-center">
-          <div className="w-16 h-16 bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-serif font-bold text-white mb-2">Reserva Confirmada</h2>
-          <p className="text-gray-400 font-light mb-8">Esta reserva ya ha sido procesada y abonada exitosamente.</p>
-          <Link href="/" className="inline-block bg-[#D4AF37] text-[#0B0C10] hover:bg-[#C5A059] px-8 py-3 rounded-sm font-medium transition-all">
-            Volver al inicio
-          </Link>
-        </div>
+      <div className="min-h-screen bg-[#0B0C10] flex flex-col items-center justify-center p-6 text-center">
+        <h2 className="text-2xl font-serif font-bold text-white mb-4">Demasiados intentos</h2>
+        <p className="text-gray-400 font-light">Por favor, espera unos minutos antes de intentar el pago de nuevo.</p>
       </div>
     );
   }

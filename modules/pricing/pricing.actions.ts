@@ -2,6 +2,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "../auth/permissions";
+import { authService } from "../auth/auth.service";
 
 // --- DISCOUNT CODES ---
 
@@ -20,12 +22,23 @@ export async function createDiscountCode(data: {
   validFrom?: Date;
   validUntil?: Date;
 }) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  const session = await authService.getSession();
   try {
-    await prisma.discountCode.create({
+    const code = await prisma.discountCode.create({
       data: {
         ...data,
         code: data.code.toUpperCase().trim(),
         value: data.value,
+      }
+    });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "DiscountCode",
+        entityId: code.id,
+        action: "CREATE",
+        newValue: JSON.stringify(data),
       }
     });
     revalidatePath("/admin/pricing");
@@ -45,12 +58,23 @@ export async function updateDiscountCode(id: string, data: {
   validFrom?: Date | null;
   validUntil?: Date | null;
 }) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  const session = await authService.getSession();
   try {
     await prisma.discountCode.update({
       where: { id },
       data: {
         ...data,
         code: data.code.toUpperCase().trim(),
+      }
+    });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "DiscountCode",
+        entityId: id,
+        action: "UPDATE",
+        newValue: JSON.stringify(data),
       }
     });
     revalidatePath("/admin/pricing");
@@ -62,6 +86,8 @@ export async function updateDiscountCode(id: string, data: {
 }
 
 export async function toggleDiscountCodeStatus(id: string) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  const session = await authService.getSession();
   try {
     const current = await prisma.discountCode.findUnique({ where: { id } });
     if (!current) return { success: false, error: "Not found" };
@@ -69,6 +95,15 @@ export async function toggleDiscountCodeStatus(id: string) {
     await prisma.discountCode.update({
       where: { id },
       data: { isActive: !current.isActive }
+    });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "DiscountCode",
+        entityId: id,
+        action: "TOGGLE_STATUS",
+        newValue: JSON.stringify({ isActive: !current.isActive }),
+      }
     });
     revalidatePath("/admin/pricing");
     return { success: true };
@@ -78,8 +113,18 @@ export async function toggleDiscountCodeStatus(id: string) {
 }
 
 export async function deleteDiscountCode(id: string) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  const session = await authService.getSession();
   try {
     await prisma.discountCode.delete({ where: { id } });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "DiscountCode",
+        entityId: id,
+        action: "DELETE",
+      }
+    });
     revalidatePath("/admin/pricing");
     return { success: true };
   } catch (error) {
@@ -102,8 +147,19 @@ export async function createPriceRule(data: {
   valueType: string;
   value: number;
 }) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  const session = await authService.getSession();
   try {
-    await prisma.priceRule.create({ data });
+    const rule = await prisma.priceRule.create({ data });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "PriceRule",
+        entityId: rule.id,
+        action: "CREATE",
+        newValue: JSON.stringify(data),
+      }
+    });
     revalidatePath("/admin/pricing");
     return { success: true };
   } catch (error) {
@@ -119,10 +175,21 @@ export async function updatePriceRule(id: string, data: {
   valueType: string;
   value: number;
 }) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  const session = await authService.getSession();
   try {
     await prisma.priceRule.update({
       where: { id },
       data
+    });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "PriceRule",
+        entityId: id,
+        action: "UPDATE",
+        newValue: JSON.stringify(data),
+      }
     });
     revalidatePath("/admin/pricing");
     return { success: true };
@@ -133,6 +200,8 @@ export async function updatePriceRule(id: string, data: {
 }
 
 export async function togglePriceRuleStatus(id: string) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  const session = await authService.getSession();
   try {
     const current = await prisma.priceRule.findUnique({ where: { id } });
     if (!current) return { success: false, error: "Not found" };
@@ -140,6 +209,15 @@ export async function togglePriceRuleStatus(id: string) {
     await prisma.priceRule.update({
       where: { id },
       data: { isActive: !current.isActive }
+    });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "PriceRule",
+        entityId: id,
+        action: "TOGGLE_STATUS",
+        newValue: JSON.stringify({ isActive: !current.isActive }),
+      }
     });
     revalidatePath("/admin/pricing");
     return { success: true };
@@ -149,8 +227,18 @@ export async function togglePriceRuleStatus(id: string) {
 }
 
 export async function deletePriceRule(id: string) {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  const session = await authService.getSession();
   try {
     await prisma.priceRule.delete({ where: { id } });
+    await prisma.auditLog.create({
+      data: {
+        userId: session?.userId,
+        entityType: "PriceRule",
+        entityId: id,
+        action: "DELETE",
+      }
+    });
     revalidatePath("/admin/pricing");
     return { success: true };
   } catch (error) {

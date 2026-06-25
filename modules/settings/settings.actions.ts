@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { updateSettingsSchema, UpdateSettingsInput } from "./settings.schemas";
 import { requireRole } from "../auth/permissions";
+import { authService } from "../auth/auth.service";
 
 export async function upsertSettingsAction(data: UpdateSettingsInput) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
@@ -21,6 +22,21 @@ export async function upsertSettingsAction(data: UpdateSettingsInput) {
         create: { key, value }
       });
     });
+
+    const session = await authService.getSession();
+    
+    // Push the audit log creation into the transaction array
+    operations.push(
+      prisma.auditLog.create({
+        data: {
+          userId: session?.userId,
+          entityType: "SystemSetting",
+          entityId: "global",
+          action: "UPSERT",
+          newValue: JSON.stringify(parsed.data),
+        }
+      }) as any
+    );
 
     await prisma.$transaction(operations);
 

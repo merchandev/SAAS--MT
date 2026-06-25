@@ -23,7 +23,11 @@ async function getSessionPayload(token: string) {
     const secret = process.env.JWT_SECRET;
     if (!secret) return null;
     const key = new TextEncoder().encode(secret);
-    const { payload } = await jwtVerify(token, key, { algorithms: ['HS256'] });
+    const { payload } = await jwtVerify(token, key, { 
+      algorithms: ['HS256'],
+      issuer: "metransfers",
+      audience: "metransfers-users"
+    });
     return payload as { userId: string; role: string; email: string };
   } catch {
     return null;
