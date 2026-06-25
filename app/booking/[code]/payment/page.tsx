@@ -39,25 +39,42 @@ export default async function PaymentPage({ params }: { params: Promise<{ code: 
     );
   }
 
-  const payment = await prisma.$transaction(async (tx) => {
-    const existing = await tx.payment.findFirst({
-      where: { bookingId: booking.id, status: "PENDING" },
+  let payment;
+  try {
+    payment = await prisma.$transaction(async (tx) => {
+      const existing = await tx.payment.findFirst({
+        where: { bookingId: booking.id, status: "PENDING" },
+      });
+
+      if (existing) return existing;
+
+      const orderId = redsysService.createOrderId(booking);
+      return tx.payment.create({
+        data: {
+          bookingId: booking.id,
+          provider: "REDSYS",
+          amount: booking.finalPrice,
+          currency: "EUR",
+          status: "PENDING",
+          providerOrderId: orderId,
+        }
+      });
     });
-
-    if (existing) return existing;
-
-    const orderId = redsysService.createOrderId(booking);
-    return tx.payment.create({
-      data: {
-        bookingId: booking.id,
-        provider: "REDSYS",
-        amount: booking.finalPrice,
-        currency: "EUR",
-        status: "PENDING",
-        providerOrderId: orderId,
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      // Race condition hit: another request created the payment with the same providerOrderId.
+      const existing = await prisma.payment.findFirst({
+        where: { bookingId: booking.id, status: "PENDING" },
+      });
+      if (existing) {
+        payment = existing;
+      } else {
+        throw new Error("Error concurrente al generar el pago. Por favor, recarga la página.");
       }
-    });
-  });
+    } else {
+      throw error;
+    }
+  }
 
   const redsysFormHtml = redsysService.generateHtmlForm(booking, payment.providerOrderId || undefined);
 

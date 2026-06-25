@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { driverCreationSchema, DriverCreationInput } from "./drivers.schemas";
 import { requireRole } from "../auth/permissions";
+import { authService } from "../auth/auth.service";
 import bcrypt from "bcryptjs";
 
 export async function createDriverAction(data: DriverCreationInput) {
@@ -68,14 +69,22 @@ export async function toggleDriverStatusAction(driverId: string, currentStatus: 
 }
 
 export async function updateDriverBookingStatusAction(bookingId: string, driverId: string, newDriverStatus: any) {
+  const session = await authService.getSession();
   await requireRole(["SUPER_ADMIN", "ADMIN", "DRIVER"]);
 
   try {
     const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
     if (!booking) return { error: "Reserva no encontrada" };
 
-    if (booking.driverId !== driverId) {
-      return { error: "No tienes permisos para actualizar esta reserva." };
+    if (session?.role === "DRIVER") {
+      const driver = await prisma.driver.findUnique({ where: { userId: session.userId } });
+      if (!driver) return { error: "Perfil de conductor no encontrado" };
+      if (booking.driverId !== driver.id) return { error: "No tienes permisos para actualizar esta reserva." };
+    } else {
+      // Es ADMIN / SUPER_ADMIN
+      if (driverId && booking.driverId !== driverId) {
+        return { error: "El conductor proporcionado no coincide con la reserva." };
+      }
     }
 
     let newBookingStatus = booking.bookingStatus;

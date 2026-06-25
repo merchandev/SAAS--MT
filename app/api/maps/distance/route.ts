@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { distanceInputSchema } from "@/modules/maps/maps.schemas";
 import { mapsService } from "@/modules/maps/maps.service";
 
+import { mapsRateLimiter } from "@/lib/rate-limit";
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    if (!mapsRateLimiter.check(ip)) {
+      return NextResponse.json({ error: "Demasiadas peticiones. Inténtelo más tarde." }, { status: 429 });
+    }
+
     const body = await request.json();
     const parsed = distanceInputSchema.safeParse(body);
 

@@ -10,6 +10,8 @@ import { requireRole } from "../auth/permissions";
 import { distanceInputSchema, type DistanceInput } from "../maps/maps.schemas";
 
 import { settingsQueries } from "../settings/settings.queries";
+import { publicBookingRateLimiter } from "@/lib/rate-limit";
+import { headers } from "next/headers";
 
 async function isNightTime(timeStr: string) {
   if (!timeStr) return false;
@@ -224,6 +226,11 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
 }
 
 export async function createPublicBookingAction(data: import("./bookings.schemas").PublicBookingInput, hotelToken?: string) {
+  const ip = (await headers()).get("x-forwarded-for") || "unknown";
+  if (!publicBookingRateLimiter.check(ip)) {
+    return { error: "Demasiadas peticiones. Inténtelo más tarde." };
+  }
+
   const { publicBookingSchema } = await import("./bookings.schemas");
   const parsed = publicBookingSchema.safeParse(data);
   if (!parsed.success) {
@@ -237,6 +244,17 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
     serviceDate, serviceTime,
     tripType, passengers, luggage, flightNumber, customerNotes
   } = parsed.data;
+
+  // Validate MIN_HOURS_AHEAD_BOOKING
+  const minHours = Number(await settingsQueries.getSettingValue("MIN_HOURS_AHEAD_BOOKING", "24"));
+  if (!isNaN(minHours)) {
+    const serviceDateTime = new Date(`${serviceDate.split('T')[0]}T${serviceTime}:00`);
+    const now = new Date();
+    const diffHours = (serviceDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+    if (diffHours < minHours) {
+      return { error: `Las reservas deben hacerse con al menos ${minHours} horas de antelación.` };
+    }
+  }
 
   try {
     let hotelId = null;
@@ -401,6 +419,15 @@ export async function updateBookingStatusAction(id: string, newStatus: any) {
           changedBy: "ADMIN_SYSTEM",
         }
       });
+      await tx.auditLog.create({
+        data: {
+          entityType: "Booking",
+          entityId: id,
+          action: "UPDATE_STATUS",
+          oldValue: JSON.stringify({ bookingStatus: booking.bookingStatus }),
+          newValue: JSON.stringify({ bookingStatus: validatedStatus }),
+        }
+      });
     });
 
     // Send email notification if status changed to CONFIRMADA
@@ -436,12 +463,23 @@ export async function assignDriverToBookingAction(id: string, driverId: string |
     
     if (!booking) return { error: "Reserva no encontrada" };
 
-    await prisma.booking.update({
-      where: { id },
-      data: {
-        driverId,
-        driverStatus: driverId ? "ASIGNADO" : null,
-      }
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id },
+        data: {
+          driverId,
+          driverStatus: driverId ? "ASIGNADO" : null,
+        }
+      });
+      await tx.auditLog.create({
+        data: {
+          entityType: "Booking",
+          entityId: id,
+          action: "ASSIGN_DRIVER",
+          oldValue: JSON.stringify({ driverId: booking.driverId }),
+          newValue: JSON.stringify({ driverId }),
+        }
+      });
     });
 
     // Send email notification if a driver was assigned
@@ -478,9 +516,21 @@ export async function assignDriverToBookingAction(id: string, driverId: string |
 export async function updateInternalNotesAction(id: string, internalNotes: string) {
   await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
   try {
-    await prisma.booking.update({
-      where: { id },
-      data: { internalNotes }
+    const booking = await prisma.booking.findUnique({ where: { id } });
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id },
+        data: { internalNotes }
+      });
+      await tx.auditLog.create({
+        data: {
+          entityType: "Booking",
+          entityId: id,
+          action: "UPDATE_NOTES",
+          oldValue: JSON.stringify({ internalNotes: booking?.internalNotes }),
+          newValue: JSON.stringify({ internalNotes }),
+        }
+      });
     });
     revalidatePath(`/admin/bookings/${id}`);
     return { success: true };

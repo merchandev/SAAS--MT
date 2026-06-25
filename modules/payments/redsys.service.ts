@@ -12,8 +12,11 @@ if (!REDSYS_SECRET_KEY && process.env.NODE_ENV === "production") {
   }
 }
 
-// Optional fallback ONLY for local development, never used in production
-const effectiveSecret = REDSYS_SECRET_KEY || "sq7HjrUOBfKmC576ILgskD5srU870gJ7";
+// Fallback ONLY for local development, never used in production
+const effectiveSecret = REDSYS_SECRET_KEY || (process.env.NODE_ENV === "development" ? "sq7HjrUOBfKmC576ILgskD5srU870gJ7" : "");
+if (!effectiveSecret && process.env.NEXT_PUBLIC_IS_BUILDING !== "true") {
+  throw new Error("FATAL: REDSYS_SECRET_KEY is missing.");
+}
 
 type RedsysBooking = {
   id?: string;
