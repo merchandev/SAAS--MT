@@ -8,8 +8,8 @@ import PlaceAutocompleteInput from "@/components/maps/PlaceAutocompleteInput";
 import { Label } from "@/components/ui/label";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
 import { Clock } from "lucide-react";
+import { getSpainToday } from "@/lib/utils";
 
 const timeOptions = Array.from({ length: 24 * 4 }).map((_, i) => {
   const hours = Math.floor(i / 4).toString().padStart(2, '0');
@@ -85,7 +85,8 @@ export default function HomeBookingFormClient() {
             selected={formData.date ? new Date(formData.date + "T12:00:00") : null}
             onChange={(date: Date | null) => updateForm('date', date ? date.toISOString().split('T')[0] : '')}
             dateFormat="dd/MM/yyyy"
-            customInput={<Input className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm text-gray-600 w-full" />}
+            minDate={getSpainToday()}
+            customInput={<Input readOnly className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm text-gray-600 w-full cursor-pointer" />}
             placeholderText="dd/mm/aaaa"
           />
         </div>

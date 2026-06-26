@@ -13,6 +13,7 @@ import Image from "next/image";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Clock } from "lucide-react";
+import { getSpainToday } from "@/lib/utils";
 
 type Vehicle = any; // Tipado simple para el MVP
 
@@ -334,7 +335,8 @@ export default function BookingFormClient({
                     selected={formData.serviceDate ? new Date(formData.serviceDate + "T12:00:00") : null}
                     onChange={(date: Date | null) => updateForm('serviceDate', date ? date.toISOString().split('T')[0] : '')}
                     dateFormat="dd/MM/yyyy"
-                    customInput={<Input className="h-12 border-gray-300 rounded-md shadow-sm w-full" />}
+                    minDate={getSpainToday()}
+                    customInput={<Input readOnly className="h-12 border-gray-300 rounded-md shadow-sm w-full cursor-pointer bg-white" />}
                     placeholderText="dd/mm/aaaa"
                   />
                 </div>
