@@ -55,12 +55,12 @@ Build and start the full stack:
 docker compose up -d --build
 ```
 
-The web app is exposed on `http://localhost:3000` by default. On the Hostinger VPS, set `NEXT_PUBLIC_APP_URL` to the public URL, for example `http://72.61.77.167:3000` or your domain.
+The web app is exposed on `http://localhost:3100` by default. On the Hostinger VPS, set `NEXT_PUBLIC_APP_URL` to the public URL, for example `http://72.61.77.167:3100` or your domain. PgAdmin is exposed on `http://localhost:5051` by default. PostgreSQL is internal to the Compose network and is not published to the host.
 
-For Hostinger Docker Manager, use the raw Compose URL:
+For Hostinger Docker Manager, deploy from the GitHub repository:
 
 ```text
-https://raw.githubusercontent.com/merchandev/SAAS--MT/main/docker-compose.yml
+https://github.com/merchandev/SAAS--MT
 ```
 
 This Compose file builds the `app` image from this repository with the included `Dockerfile`. The running container only applies Prisma migrations, seeds the initial admin user when `ADMIN_EMAIL` and `ADMIN_PASSWORD` are set, and starts the standalone Next.js server. It does not clone the repository, install dependencies, or build Next.js on every restart.

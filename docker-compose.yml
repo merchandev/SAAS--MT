@@ -1,12 +1,12 @@
 services:
   app:
     build:
-      context: https://github.com/merchandev/SAAS--MT.git#main
+      context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://72.61.77.167:3000}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://72.61.77.167:3100}
         NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
-    image: saas-mt-app:latest
+    image: merchandev-saas-mt-app:latest
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -15,7 +15,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-metransfers}:${POSTGRES_PASSWORD:-change_me}@postgres:5432/${POSTGRES_DB:-metransfers_saas}?schema=public
       JWT_SECRET: ${JWT_SECRET:-change_me_jwt_secret}
       RECEIPT_TOKEN_SECRET: ${RECEIPT_TOKEN_SECRET:-}
-      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://72.61.77.167:3000}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://72.61.77.167:3100}
       GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
       NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
       MAPS_DISTANCE_CACHE_TTL_HOURS: ${MAPS_DISTANCE_CACHE_TTL_HOURS:-6}
@@ -28,7 +28,7 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@metransfers.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin_secure_pwd_123}
     ports:
-      - "${APP_PORT:-3000}:3000"
+      - "${APP_PORT:-3100}:3000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -55,7 +55,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@metransfers.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-change_me}
     ports:
-      - "5050:80"
+      - "${PGADMIN_PORT:-5051}:80"
     depends_on:
       - postgres
 
