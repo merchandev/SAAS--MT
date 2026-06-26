@@ -100,7 +100,7 @@ export async function getDistanceEstimationAction(input: DistanceInput) {
   ].join("->");
   const rateLimitKey = buildRateLimitKey("maps-estimate", requestMeta, routeKey);
   if (!(await mapsRateLimiter.check(rateLimitKey))) {
-    return { success: false as const, error: "Demasiadas peticiones. Intentelo mas tarde." };
+    return { success: false as const, error: "Demasiadas peticiones. Inténtelo más tarde." };
   }
 
   try {
@@ -259,7 +259,7 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
 
   const emailRateLimitKey = buildRateLimitKey("public-booking-email", requestMeta, customerEmail);
   if (!(await publicBookingRateLimiter.check(emailRateLimitKey))) {
-    return { error: "Demasiadas peticiones. Intentelo mas tarde." };
+    return { error: "Demasiadas peticiones. Inténtelo más tarde." };
   }
 
   // Validate MIN_HOURS_AHEAD_BOOKING
@@ -566,5 +566,133 @@ export async function updateInternalNotesAction(id: string, internalNotes: strin
     return { success: true };
   } catch (err) {
     return { error: "Error al actualizar las notas" };
+  }
+}
+
+export async function moveBookingToTrashAction(id: string) {
+  const session = await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+
+  try {
+    const booking = await prisma.booking.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        publicCode: true,
+        deletedAt: true,
+        bookingStatus: true,
+        paymentStatus: true,
+      },
+    });
+
+    if (!booking) {
+      return { error: "Reserva no encontrada" };
+    }
+
+    if (booking.deletedAt) {
+      return { success: true };
+    }
+
+    const deletedAt = new Date();
+
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id },
+        data: {
+          deletedAt,
+          deletedBy: session.userId,
+          deletedReason: "Movida a la papelera desde el panel de administración",
+        },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          userId: session.userId,
+          entityType: "Booking",
+          entityId: id,
+          action: "MOVE_TO_TRASH",
+          oldValue: JSON.stringify({
+            publicCode: booking.publicCode,
+            bookingStatus: booking.bookingStatus,
+            paymentStatus: booking.paymentStatus,
+            deletedAt: null,
+          }),
+          newValue: JSON.stringify({
+            deletedAt,
+            deletedBy: session.userId,
+          }),
+        },
+      });
+    });
+
+    revalidatePath("/admin/bookings");
+    revalidatePath("/admin/bookings/trash");
+    revalidatePath(`/admin/bookings/${id}`);
+    revalidatePath("/admin/dashboard");
+    return { success: true };
+  } catch (err) {
+    console.error("Move booking to trash error:", err);
+    return { error: "Error al mover la reserva a la papelera" };
+  }
+}
+
+export async function restoreBookingFromTrashAction(id: string) {
+  const session = await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+
+  try {
+    const booking = await prisma.booking.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        publicCode: true,
+        deletedAt: true,
+        deletedBy: true,
+      },
+    });
+
+    if (!booking) {
+      return { error: "Reserva no encontrada" };
+    }
+
+    if (!booking.deletedAt) {
+      return { success: true };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id },
+        data: {
+          deletedAt: null,
+          deletedBy: null,
+          deletedReason: null,
+        },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          userId: session.userId,
+          entityType: "Booking",
+          entityId: id,
+          action: "RESTORE_FROM_TRASH",
+          oldValue: JSON.stringify({
+            publicCode: booking.publicCode,
+            deletedAt: booking.deletedAt,
+            deletedBy: booking.deletedBy,
+          }),
+          newValue: JSON.stringify({
+            deletedAt: null,
+            restoredBy: session.userId,
+          }),
+        },
+      });
+    });
+
+    revalidatePath("/admin/bookings");
+    revalidatePath("/admin/bookings/trash");
+    revalidatePath(`/admin/bookings/${id}`);
+    revalidatePath("/admin/dashboard");
+    return { success: true };
+  } catch (err) {
+    console.error("Restore booking from trash error:", err);
+    return { error: "Error al restaurar la reserva" };
   }
 }

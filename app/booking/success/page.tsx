@@ -16,8 +16,8 @@ export default async function BookingSuccessPage(props: {
     redirect("/booking/error");
   }
 
-  const booking = await prisma.booking.findUnique({
-    where: { publicCode: code },
+  const booking = await prisma.booking.findFirst({
+    where: { publicCode: code, deletedAt: null },
     select: {
       id: true,
       publicCode: true,

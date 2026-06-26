@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
-export default function MobileMenu() {
+export default function MobileMenu({ accentColor = "#D4AF37" }: { accentColor?: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -54,7 +54,8 @@ export default function MobileMenu() {
           <Link 
             href="/register" 
             onClick={() => setIsOpen(false)}
-            className="bg-[#D4AF37] hover:bg-[#AA8B2C] text-white px-4 py-3 rounded-xl transition-colors duration-300 text-center"
+            className="text-white px-4 py-3 rounded-xl transition-colors duration-300 text-center"
+            style={{ backgroundColor: accentColor }}
           >
             Registrarse
           </Link>

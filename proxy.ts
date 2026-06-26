@@ -12,11 +12,15 @@ const adminRoutes = [
   '/admin/customers',
   '/admin/payments',
   '/admin/pricing',
+  '/admin/users',
   '/admin/reports',
   '/admin/settings',
 ];
 
 const hotelRoutes = ['/hotel/dashboard'];
+const customerRoutes = ['/customer/dashboard'];
+const AUTH_ISSUER = "metransfers:auth";
+const AUTH_AUDIENCE = "metransfers:app";
 
 async function getSessionPayload(token: string) {
   try {
@@ -25,8 +29,8 @@ async function getSessionPayload(token: string) {
     const key = new TextEncoder().encode(secret);
     const { payload } = await jwtVerify(token, key, { 
       algorithms: ['HS256'],
-      issuer: "metransfers",
-      audience: "metransfers-users"
+      issuer: AUTH_ISSUER,
+      audience: AUTH_AUDIENCE
     });
     return payload as { userId: string; role: string; email: string };
   } catch {
@@ -39,8 +43,9 @@ export async function proxy(request: NextRequest) {
 
   const isAdminRoute = adminRoutes.some((r) => pathname.startsWith(r));
   const isHotelRoute = hotelRoutes.some((r) => pathname.startsWith(r));
+  const isCustomerRoute = customerRoutes.some((r) => pathname.startsWith(r));
 
-  if (!isAdminRoute && !isHotelRoute) {
+  if (!isAdminRoute && !isHotelRoute && !isCustomerRoute) {
     return NextResponse.next();
   }
 
@@ -48,7 +53,8 @@ export async function proxy(request: NextRequest) {
   const token = request.cookies.get('auth_token')?.value;
 
   if (!token) {
-    const response = NextResponse.redirect(new URL('/admin/login', request.url));
+    const loginPath = isCustomerRoute ? '/login' : '/admin/login';
+    const response = NextResponse.redirect(new URL(loginPath, request.url));
     response.cookies.delete('session');
     return response;
   }
@@ -56,7 +62,8 @@ export async function proxy(request: NextRequest) {
   const session = await getSessionPayload(token);
 
   if (!session) {
-    const response = NextResponse.redirect(new URL('/admin/login', request.url));
+    const loginPath = isCustomerRoute ? '/login' : '/admin/login';
+    const response = NextResponse.redirect(new URL(loginPath, request.url));
     response.cookies.delete('auth_token');
     response.cookies.delete('session');
     return response;
@@ -70,7 +77,8 @@ export async function proxy(request: NextRequest) {
     '/admin/pricing',
     '/admin/hotels',
     '/admin/agencies',
-    '/admin/payments'
+    '/admin/payments',
+    '/admin/users'
   ];
 
   // RBAC: rutas de admin solo para SUPER_ADMIN, ADMIN, OPERATOR
@@ -96,6 +104,18 @@ export async function proxy(request: NextRequest) {
   if (isHotelRoute) {
     const allowed = ['HOTEL', 'AGENCY', 'SUPER_ADMIN', 'ADMIN'];
     if (!allowed.includes(role)) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
+
+  if (isCustomerRoute) {
+    if (role !== 'CUSTOMER') {
+      if (role === 'HOTEL' || role === 'AGENCY') {
+        return NextResponse.redirect(new URL('/hotel/dashboard', request.url));
+      }
+      if (role === 'SUPER_ADMIN' || role === 'ADMIN' || role === 'OPERATOR') {
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+      }
       return NextResponse.redirect(new URL('/', request.url));
     }
   }

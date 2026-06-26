@@ -19,13 +19,12 @@ export async function upsertSettingsAction(data: UpdateSettingsInput) {
       return prisma.systemSetting.upsert({
         where: { key },
         update: { value },
-        create: { key, value }
+        create: { key, value },
       });
     });
 
     const session = await authService.getSession();
-    
-    // Push the audit log creation into the transaction array
+
     operations.push(
       prisma.auditLog.create({
         data: {
@@ -34,16 +33,18 @@ export async function upsertSettingsAction(data: UpdateSettingsInput) {
           entityId: "global",
           action: "UPSERT",
           newValue: JSON.stringify(parsed.data),
-        }
+        },
       }) as any
     );
 
     await prisma.$transaction(operations);
 
+    revalidatePath("/", "layout");
     revalidatePath("/admin/settings");
+    revalidatePath("/admin/dashboard");
     revalidatePath("/admin/bookings/new");
-    revalidatePath("/booking"); // Revalidar front público de reservas
-    
+    revalidatePath("/booking");
+
     return { success: true };
   } catch (error: any) {
     console.error("Settings Update Error:", error);

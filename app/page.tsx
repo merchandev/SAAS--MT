@@ -3,17 +3,32 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 import MobileMenu from "@/components/home/MobileMenu";
+import { settingsQueries } from "@/modules/settings/settings.queries";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const settings = await settingsQueries.getAllSettings();
+  const brandName = settings.SITE_NAME || settings.COMPANY_NAME || "MeTransfers";
+  const logoUrl = settings.SITE_LOGO_URL?.trim();
+  const accentColor = settings.BRAND_ACCENT_COLOR || "#D4AF37";
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900 selection:bg-[#D4AF37] selection:text-white">
       {/* Navbar */}
       <header className="fixed inset-x-0 top-0 z-50 px-6 py-4 flex justify-between items-center max-w-7xl mx-auto w-full bg-black/40 backdrop-blur-md mt-4 rounded-2xl border border-white/10 shadow-2xl transition-all">
         <div className="flex items-center gap-4">
-          <div className="h-12 w-12 bg-gradient-to-br from-[#D4AF37] to-[#AA8B2C] rounded-lg flex items-center justify-center text-white font-serif font-bold text-2xl shadow-lg">
-            MT
-          </div>
-          <span className="font-serif font-bold text-2xl tracking-widest text-white uppercase">MeTransfers</span>
+          {logoUrl ? (
+            <img src={logoUrl} alt={brandName} className="h-12 w-12 rounded-lg object-contain bg-white shadow-lg" />
+          ) : (
+            <div
+              className="h-12 w-12 rounded-lg flex items-center justify-center text-white font-serif font-bold text-2xl shadow-lg"
+              style={{ backgroundColor: accentColor }}
+            >
+              MT
+            </div>
+          )}
+          <span className="font-serif font-bold text-2xl tracking-widest text-white uppercase">{brandName}</span>
         </div>
         
         {/* Desktop Nav */}
@@ -23,12 +38,12 @@ export default function HomePage() {
           <a href="#flota" className="hover:text-[#D4AF37] transition-colors duration-300">Flota</a>
           <div className="flex items-center gap-4 ml-2 pl-4 border-l border-white/20">
             <Link href="/login" className="hover:text-[#D4AF37] transition-colors duration-300">Ingresar</Link>
-            <Link href="/register" className="bg-[#D4AF37] hover:bg-[#AA8B2C] text-white px-4 py-1.5 rounded-full transition-colors duration-300">Registrarse</Link>
+            <Link href="/register" className="text-white px-4 py-1.5 rounded-full transition-colors duration-300" style={{ backgroundColor: accentColor }}>Registrarse</Link>
           </div>
         </nav>
 
         {/* Mobile Nav */}
-        <MobileMenu />
+        <MobileMenu accentColor={accentColor} />
       </header>
 
       <main>
@@ -48,7 +63,7 @@ export default function HomePage() {
               {/* Left Content */}
               <div className="w-full lg:w-1/2 text-white">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-md mb-8 shadow-lg">
-                  <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></div>
+                  <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: accentColor }}></div>
                   <span className="text-xs font-bold tracking-[0.2em] uppercase text-gray-200">Traslados Privados & Tours Premium</span>
                 </div>
                 
@@ -129,10 +144,10 @@ export default function HomePage() {
       <footer className="bg-white py-16 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
           <div className="flex items-center gap-3 mb-6 md:mb-0">
-            <span className="font-serif font-bold text-2xl tracking-widest text-gray-900 uppercase">MeTransfers</span>
+            <span className="font-serif font-bold text-2xl tracking-widest text-gray-900 uppercase">{brandName}</span>
           </div>
           <p className="text-gray-500 font-medium text-base tracking-wide">
-            © {new Date().getFullYear()} MeTransfers Premium Mobility. Todos los derechos reservados.
+            © {new Date().getFullYear()} {brandName} Premium Mobility. Todos los derechos reservados.
           </p>
         </div>
       </footer>

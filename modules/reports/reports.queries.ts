@@ -7,13 +7,14 @@ export const reportsQueries = {
   async getGlobalKPIs() {
     // 1. Ingresos totales (PAGADOS)
     const paidBookings = await prisma.booking.aggregate({
-      where: { paymentStatus: 'PAID' },
+      where: { paymentStatus: 'PAID', deletedAt: null },
       _sum: { finalPrice: true }
     });
 
     // 2. Número de reservas activas (no canceladas ni fallidas)
     const activeBookingsCount = await prisma.booking.count({
       where: {
+        deletedAt: null,
         bookingStatus: {
           notIn: ['CANCELADA', 'FALLIDA', 'REEMBOLSADA', 'NO_SHOW']
         }
@@ -23,6 +24,7 @@ export const reportsQueries = {
     // 3. Comisiones estimadas a pagar (B2B)
     const b2bBookings = await prisma.booking.findMany({
       where: { 
+        deletedAt: null,
         hotelId: { not: null },
         paymentStatus: 'PAID'
       },
@@ -47,6 +49,7 @@ export const reportsQueries = {
    */
   async getRecentBookings(limit: number = 5) {
     return await prisma.booking.findMany({
+      where: { deletedAt: null },
       orderBy: { createdAt: 'desc' },
       take: limit,
       include: {
@@ -66,6 +69,7 @@ export const reportsQueries = {
 
     const bookings = await prisma.booking.findMany({
       where: {
+        deletedAt: null,
         paymentStatus: 'PAID',
         createdAt: { gte: sixMonthsAgo }
       },
@@ -99,6 +103,7 @@ export const reportsQueries = {
   async getBookingsByStatus() {
     const grouped = await prisma.booking.groupBy({
       by: ['bookingStatus'],
+      where: { deletedAt: null },
       _count: { _all: true }
     });
 

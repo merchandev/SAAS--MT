@@ -15,8 +15,8 @@ export default async function ReceiptPage({
   const { token: tokenParam } = await searchParams;
   const receiptToken = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam;
   
-  const booking = await prisma.booking.findUnique({
-    where: { publicCode: code },
+  const booking = await prisma.booking.findFirst({
+    where: { publicCode: code, deletedAt: null },
     include: {
       customer: true,
       vehicle: true,

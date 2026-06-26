@@ -11,31 +11,40 @@ export default function PublicRegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setError(null);
     setIsPending(true);
-    
-    const formData = new FormData(e.currentTarget);
+
+    const formData = new FormData(event.currentTarget);
     const fullName = formData.get("fullName") as string;
     const email = formData.get("email") as string;
     const phone = formData.get("phone") as string;
+    const country = formData.get("country") as string;
+    const preferredLanguage = formData.get("preferredLanguage") as "es" | "en" | "de" | "fr";
     const password = formData.get("password") as string;
-    
+
     if (password.length < 6) {
       setError("La contraseña debe tener al menos 6 caracteres");
       setIsPending(false);
       return;
     }
-    
+
     try {
-      const result = await registerAction({ fullName, email, phone, password });
+      const result = await registerAction({
+        fullName,
+        email,
+        phone,
+        country,
+        preferredLanguage,
+        password,
+      });
+
       if (result?.error) {
         setError(result.error);
         setIsPending(false);
       }
-      // If successful, registerAction will redirect automatically to /booking
-    } catch (err) {
+    } catch {
       setError("Ocurrió un error inesperado al registrarse.");
       setIsPending(false);
     }
@@ -44,8 +53,8 @@ export default function PublicRegisterForm() {
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">Crear Cuenta</h1>
-        <p className="text-gray-400">Únete a MeTransfers y reserva con privilegios exclusivos.</p>
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">Crear cuenta</h1>
+        <p className="text-gray-400">Registro exclusivo para clientes MeTransfers.</p>
       </div>
 
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
@@ -58,7 +67,7 @@ export default function PublicRegisterForm() {
           )}
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Nombre Completo <span className="text-[#D4AF37]">*</span></label>
+            <label className="text-sm font-medium text-gray-300">Nombre completo <span className="text-[#D4AF37]">*</span></label>
             <Input
               name="fullName"
               type="text"
@@ -70,7 +79,7 @@ export default function PublicRegisterForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Correo Electrónico <span className="text-[#D4AF37]">*</span></label>
+            <label className="text-sm font-medium text-gray-300">Correo electrónico <span className="text-[#D4AF37]">*</span></label>
             <Input
               name="email"
               type="email"
@@ -81,13 +90,41 @@ export default function PublicRegisterForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Teléfono (Opcional)</label>
+            <label className="text-sm font-medium text-gray-300">Teléfono <span className="text-[#D4AF37]">*</span></label>
             <Input
               name="phone"
               type="tel"
+              required
               placeholder="+34 600 000 000"
               className="bg-black/50 border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] placeholder:text-gray-600 rounded-xl"
             />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">País <span className="text-[#D4AF37]">*</span></label>
+              <Input
+                name="country"
+                type="text"
+                required
+                placeholder="España"
+                className="bg-black/50 border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] placeholder:text-gray-600 rounded-xl"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Idioma</label>
+              <select
+                name="preferredLanguage"
+                defaultValue="es"
+                className="h-10 w-full rounded-xl border border-white/10 bg-black/50 px-3 text-sm text-white outline-none focus:border-[#D4AF37]"
+              >
+                <option value="es">Español</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="fr">Français</option>
+              </select>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -97,7 +134,7 @@ export default function PublicRegisterForm() {
               type="password"
               required
               minLength={6}
-              placeholder="••••••••"
+              placeholder="********"
               className="bg-black/50 border-white/10 text-white focus:border-[#D4AF37] focus:ring-[#D4AF37] placeholder:text-gray-600 rounded-xl"
             />
           </div>
@@ -109,7 +146,7 @@ export default function PublicRegisterForm() {
           >
             {isPending ? "Creando cuenta..." : (
               <div className="flex items-center justify-center gap-2">
-                Completar Registro
+                Completar registro
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             )}

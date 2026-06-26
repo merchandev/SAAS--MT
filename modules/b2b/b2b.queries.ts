@@ -5,7 +5,7 @@ export const b2bQueries = {
       orderBy: { name: "asc" },
       include: {
         _count: {
-          select: { bookings: true }
+          select: { bookings: true, users: true }
         }
       }
     });
@@ -18,11 +18,87 @@ export const b2bQueries = {
     }));
   },
 
+  async getAllAgencies() {
+    const agencies = await prisma.agency.findMany({
+      orderBy: { name: "asc" },
+      include: {
+        _count: {
+          select: { bookings: true, users: true }
+        }
+      }
+    });
+
+    return agencies.map((agency) => ({
+      ...agency,
+      commissionValue: Number(agency.commissionValue),
+      discountValue: Number(agency.discountValue),
+    }));
+  },
+
+  async getAgencyById(id: string) {
+    const agency = await prisma.agency.findUnique({
+      where: { id },
+      include: {
+        users: {
+          select: {
+            id: true,
+            email: true,
+            fullName: true,
+            isActive: true,
+            createdAt: true,
+          },
+          orderBy: { createdAt: "desc" },
+        },
+        _count: {
+          select: { bookings: true, users: true },
+        },
+      },
+    });
+
+    if (!agency) return null;
+
+    return {
+      ...agency,
+      commissionValue: Number(agency.commissionValue),
+      discountValue: Number(agency.discountValue),
+    };
+  },
+
+  async getHotelById(id: string) {
+    const hotel = await prisma.hotel.findUnique({
+      where: { id },
+      include: {
+        users: {
+          select: {
+            id: true,
+            email: true,
+            fullName: true,
+            isActive: true,
+            createdAt: true,
+          },
+          orderBy: { createdAt: "desc" },
+        },
+        _count: {
+          select: { bookings: true, users: true },
+        },
+      },
+    });
+
+    if (!hotel) return null;
+
+    return {
+      ...hotel,
+      commissionValue: Number(hotel.commissionValue),
+      discountValue: Number(hotel.discountValue),
+    };
+  },
+
   async getHotelByToken(token: string) {
     return prisma.hotel.findUnique({
       where: { token },
       include: {
         bookings: {
+          where: { deletedAt: null },
           orderBy: { createdAt: "desc" },
           take: 10,
         }
@@ -35,6 +111,7 @@ export const b2bQueries = {
       where: { id: hotelId },
       include: {
         bookings: {
+          where: { deletedAt: null },
           orderBy: { createdAt: 'desc' },
           include: {
             customer: true,
@@ -69,4 +146,3 @@ export const b2bQueries = {
     };
   }
 };
-

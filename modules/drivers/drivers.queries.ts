@@ -11,6 +11,7 @@ export const driversQueries = {
     const bookings = await prisma.booking.findMany({
       where: {
         driverId: driver.id,
+        deletedAt: null,
       },
       orderBy: [
         { serviceDate: 'asc' },

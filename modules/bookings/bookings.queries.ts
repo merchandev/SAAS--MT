@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 export const bookingsQueries = {
   async getAllBookings() {
     return prisma.booking.findMany({
+      where: { deletedAt: null },
       include: {
         customer: true,
         vehicle: true,
@@ -9,6 +10,19 @@ export const bookingsQueries = {
         agency: true,
       },
       orderBy: { createdAt: "desc" },
+    });
+  },
+
+  async getDeletedBookings() {
+    return prisma.booking.findMany({
+      where: { deletedAt: { not: null } },
+      include: {
+        customer: true,
+        vehicle: true,
+        hotel: true,
+        agency: true,
+      },
+      orderBy: { deletedAt: "desc" },
     });
   },
 

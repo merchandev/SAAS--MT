@@ -38,7 +38,7 @@ export default function RegisterPage() {
             Eleva tus estándares de <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8B2C] italic">viaje</span>.
           </h2>
           <p className="text-gray-300 text-lg leading-relaxed">
-            Al registrarte en MeTransfers obtienes acceso prioritario a nuestra flota, facturación simplificada e historial de servicios corporativos.
+            Al registrarte en MeTransfers obtienes un perfil de cliente con historial de traslados, gastos y seguimiento de tus servicios.
           </p>
         </div>
       </div>

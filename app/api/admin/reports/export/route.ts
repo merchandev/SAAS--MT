@@ -14,6 +14,7 @@ export async function GET() {
   await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
 
   const bookings = await prisma.booking.findMany({
+    where: { deletedAt: null },
     orderBy: { createdAt: "desc" },
     include: {
       customer: true,

@@ -57,7 +57,7 @@ export async function loginAction(data: LoginInput) {
   if (user.role === "HOTEL" || user.role === "AGENCY") {
     redirect("/hotel/dashboard");
   } else if (user.role === "CUSTOMER") {
-    redirect("/booking"); // o panel de cliente
+    redirect("/customer/dashboard");
   } else {
     redirect("/admin/dashboard");
   }
@@ -70,7 +70,7 @@ export async function registerAction(data: RegisterInput) {
     return { error: "Datos de registro inválidos." };
   }
 
-  const { email, password, fullName, phone } = parsed.data;
+  const { email, password, fullName, phone, country, preferredLanguage } = parsed.data;
   const lowerEmail = email.toLowerCase();
 
   // Rate Limiter
@@ -117,7 +117,7 @@ export async function registerAction(data: RegisterInput) {
         // Enlazar perfil existente
         await tx.customer.update({
           where: { id: existingCustomer.id },
-          data: { userId: user.id, fullName, phone }
+          data: { userId: user.id, fullName, phone, country, preferredLanguage }
         });
       } else {
         // Crear nuevo perfil
@@ -127,6 +127,8 @@ export async function registerAction(data: RegisterInput) {
             email: lowerEmail,
             fullName,
             phone,
+            country,
+            preferredLanguage,
           }
         });
       }
@@ -149,7 +151,7 @@ export async function registerAction(data: RegisterInput) {
   }
 
   // 6. Redirigir
-  redirect("/booking");
+  redirect("/customer/dashboard");
 }
 
 export async function logoutAction() {

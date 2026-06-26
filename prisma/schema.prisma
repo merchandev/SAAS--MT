@@ -59,6 +59,7 @@ model Customer {
   bookings Booking[]
   invoices Invoice[]
   reviews  Review[]
+  suggestions CustomerSuggestion[]
 
   totalSpent    Decimal @default(0) @db.Decimal(10, 2)
   totalBookings Int     @default(0)
@@ -324,6 +325,9 @@ model Booking {
 
   customerNotes String? @db.Text
   internalNotes String? @db.Text
+  deletedAt     DateTime?
+  deletedBy     String?
+  deletedReason String? @db.Text
 
   payments      Payment[]
   statusHistory BookingStatusHistory[]
@@ -332,6 +336,8 @@ model Booking {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([deletedAt])
 }
 
 // ==========================================
@@ -486,6 +492,22 @@ model Review {
   isPublished Boolean @default(false)
 
   createdAt DateTime @default(now())
+}
+
+model CustomerSuggestion {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  subject String
+  message String @db.Text
+  status  String @default("NEW")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([status])
 }
 
 model RoutePage {

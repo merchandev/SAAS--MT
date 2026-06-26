@@ -13,20 +13,20 @@ export async function GET(
 ) {
   try {
     const { bookingId } = await params;
-    const booking = await prisma.booking.findUnique({
-      where: { id: bookingId },
-    });
-
-    if (!booking) {
-      return NextResponse.json({ error: "Reserva no encontrada" }, { status: 404 });
-    }
-
     const { searchParams } = new URL(request.url);
     const receiptToken = searchParams.get("token");
     const session = await authService.getSession();
     const hasAdminSession = Boolean(
       session && ["SUPER_ADMIN", "ADMIN", "OPERATOR"].includes(session.role)
     );
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+    });
+
+    if (!booking || (booking.deletedAt && !hasAdminSession)) {
+      return NextResponse.json({ error: "Reserva no encontrada" }, { status: 404 });
+    }
+
     const hasReceiptToken = await verifyReceiptAccessToken(receiptToken, booking);
 
     if (!hasAdminSession && !hasReceiptToken) {

@@ -9,8 +9,8 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-2xl font-bold tracking-tight">Configuración Global</h3>
-        <p className="text-gray-500">Ajustes generales de la plataforma, identidad comercial y reglas del motor de reservas.</p>
+        <h3 className="text-2xl font-bold tracking-tight">Configuración global</h3>
+        <p className="text-gray-500">Ajustes generales de la plataforma, SEO, marca y reglas del motor de reservas.</p>
       </div>
 
       <SettingsForm initialData={settings} />

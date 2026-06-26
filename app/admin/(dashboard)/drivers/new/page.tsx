@@ -77,7 +77,7 @@ export default function NewDriverPage() {
                 <Input id="licenseNumber" name="licenseNumber" required placeholder="B-123456" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Contraseña Provisional</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <Input id="password" name="password" type="password" required placeholder="Min 6 caracteres" />
               </div>
             </div>
