@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { InvoiceDownloadButton } from "@/components/pdf/InvoiceDownloadButton";
 import { authService } from "@/modules/auth/auth.service";
 import { verifyReceiptAccessToken } from "@/modules/bookings/receipt-access";
+import { PrintReceiptButton } from "./PrintReceiptButton";
 
 export default async function ReceiptPage({
   params,
@@ -144,9 +145,7 @@ export default async function ReceiptPage({
         </div>
 
         <div className="mt-12 text-center print:hidden flex justify-center gap-4">
-          <button onClick={() => typeof window !== 'undefined' && window.print()} className="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-black transition-colors font-medium shadow-md">
-            Imprimir Recibo
-          </button>
+          <PrintReceiptButton />
           
           {booking.paymentStatus === 'PAID' && (
             <InvoiceDownloadButton
