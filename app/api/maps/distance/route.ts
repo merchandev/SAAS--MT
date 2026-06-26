@@ -3,14 +3,15 @@ import { distanceInputSchema } from "@/modules/maps/maps.schemas";
 import { mapsService } from "@/modules/maps/maps.service";
 
 import { mapsRateLimiter } from "@/lib/rate-limit";
+import { buildRateLimitKey, getRequestMeta } from "@/lib/request-meta";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
-    if (!mapsRateLimiter.check(ip)) {
+    const requestMeta = getRequestMeta(request.headers);
+    if (!(await mapsRateLimiter.check(buildRateLimitKey("maps-api", requestMeta)))) {
       return NextResponse.json({ error: "Demasiadas peticiones. Inténtelo más tarde." }, { status: 429 });
     }
 

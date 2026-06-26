@@ -64,13 +64,29 @@ function createOrderId(booking: RedsysBooking): string {
   return `${year}${uniquePart}${attemptPart}`;
 }
 
+function appendSuccessUrlParams(appUrl: string, publicCode: string, receiptToken?: string) {
+  const url = new URL("/booking/success", appUrl);
+  url.searchParams.set("code", publicCode);
+  url.searchParams.set("paid", "true");
+
+  if (receiptToken) {
+    url.searchParams.set("token", receiptToken);
+  }
+
+  return url.toString();
+}
+
 export const redsysService = {
   signatureVersion: SIGNATURE_VERSION,
   merchantCode: REDSYS_MERCHANT_CODE!,
   terminal: REDSYS_TERMINAL!,
   createOrderId,
 
-  createMerchantParameters(booking: RedsysBooking, orderId?: string) {
+  createMerchantParameters(
+    booking: RedsysBooking,
+    orderId?: string,
+    options?: { receiptToken?: string }
+  ) {
     const merchantOrderId = orderId ?? createOrderId(booking);
     const amountInCents = Math.round(Number(booking.finalPrice) * 100).toString();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -83,7 +99,7 @@ export const redsysService = {
       DS_MERCHANT_TRANSACTIONTYPE: "0",
       DS_MERCHANT_TERMINAL: this.terminal,
       DS_MERCHANT_MERCHANTURL: `${appUrl}/api/redsys/callback`,
-      DS_MERCHANT_URLOK: `${appUrl}/booking/success?code=${booking.publicCode}&paid=true`,
+      DS_MERCHANT_URLOK: appendSuccessUrlParams(appUrl, booking.publicCode, options?.receiptToken),
       DS_MERCHANT_URLKO: `${appUrl}/booking/error?code=${booking.publicCode}`,
       DS_MERCHANT_MERCHANTDATA: booking.publicCode,
     };
@@ -123,9 +139,9 @@ export const redsysService = {
     return JSON.parse(decoded);
   },
 
-  generateHtmlForm(booking: RedsysBooking, orderId?: string) {
+  generateHtmlForm(booking: RedsysBooking, orderId?: string, options?: { receiptToken?: string }) {
     const merchantOrderId = orderId ?? createOrderId(booking);
-    const merchantParams = this.createMerchantParameters(booking, merchantOrderId);
+    const merchantParams = this.createMerchantParameters(booking, merchantOrderId, options);
     const signature = this.createSignature(merchantParams, merchantOrderId);
     const redsysUrl = process.env.REDSYS_URL || "https://sis-t.redsys.es:25443/sis/realizarPago";
 

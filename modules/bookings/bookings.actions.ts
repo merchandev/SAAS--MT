@@ -10,8 +10,10 @@ import { requireRole } from "../auth/permissions";
 import { distanceInputSchema, type DistanceInput } from "../maps/maps.schemas";
 
 import { settingsQueries } from "../settings/settings.queries";
-import { publicBookingRateLimiter } from "@/lib/rate-limit";
+import { mapsRateLimiter, publicBookingRateLimiter } from "@/lib/rate-limit";
+import { buildRateLimitKey, getRequestMeta } from "@/lib/request-meta";
 import { headers } from "next/headers";
+import { createReceiptAccessToken } from "./receipt-access";
 
 async function isNightTime(timeStr: string) {
   if (!timeStr) return false;
@@ -89,6 +91,16 @@ export async function getDistanceEstimationAction(input: DistanceInput) {
   const parsed = distanceInputSchema.safeParse(input);
   if (!parsed.success) {
     return { success: false as const, error: "Origen y destino son obligatorios." };
+  }
+
+  const requestMeta = getRequestMeta(await headers());
+  const routeKey = [
+    parsed.data.originPlaceId || parsed.data.originAddress || "",
+    parsed.data.destinationPlaceId || parsed.data.destinationAddress || "",
+  ].join("->");
+  const rateLimitKey = buildRateLimitKey("maps-estimate", requestMeta, routeKey);
+  if (!(await mapsRateLimiter.check(rateLimitKey))) {
+    return { success: false as const, error: "Demasiadas peticiones. Intentelo mas tarde." };
   }
 
   try {
@@ -226,8 +238,8 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
 }
 
 export async function createPublicBookingAction(data: import("./bookings.schemas").PublicBookingInput, hotelToken?: string) {
-  const ip = (await headers()).get("x-forwarded-for") || "unknown";
-  if (!publicBookingRateLimiter.check(ip)) {
+  const requestMeta = getRequestMeta(await headers());
+  if (!(await publicBookingRateLimiter.check(buildRateLimitKey("public-booking-ip", requestMeta)))) {
     return { error: "Demasiadas peticiones. Inténtelo más tarde." };
   }
 
@@ -244,6 +256,11 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
     serviceDate, serviceTime,
     tripType, passengers, luggage, flightNumber, customerNotes
   } = parsed.data;
+
+  const emailRateLimitKey = buildRateLimitKey("public-booking-email", requestMeta, customerEmail);
+  if (!(await publicBookingRateLimiter.check(emailRateLimitKey))) {
+    return { error: "Demasiadas peticiones. Intentelo mas tarde." };
+  }
 
   // Validate MIN_HOURS_AHEAD_BOOKING
   const minHours = Number(await settingsQueries.getSettingValue("MIN_HOURS_AHEAD_BOOKING", "24"));
@@ -391,7 +408,9 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
       return newBooking;
     });
 
-    return { success: true, bookingId: booking.id, publicCode: booking.publicCode };
+    const receiptToken = await createReceiptAccessToken(booking);
+
+    return { success: true, bookingId: booking.id, publicCode: booking.publicCode, receiptToken };
   } catch (error: any) {
     console.error("Public Booking Error:", error);
     return { error: error.message || "Error al procesar tu reserva. Intenta de nuevo." };

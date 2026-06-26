@@ -3,12 +3,21 @@ import { notFound, redirect } from "next/navigation";
 import { redsysService } from "@/modules/payments/redsys.service";
 import { paymentRateLimiter } from "@/lib/rate-limit";
 import { headers } from "next/headers";
-import Link from "next/link";
+import { buildRateLimitKey, getRequestMeta } from "@/lib/request-meta";
+import { verifyReceiptAccessToken } from "@/modules/bookings/receipt-access";
 
 export const dynamic = "force-dynamic";
 
-export default async function PaymentPage({ params }: { params: Promise<{ code: string }> }) {
+export default async function PaymentPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ code: string }>;
+  searchParams: Promise<{ token?: string | string[] }>;
+}) {
   const { code } = await params;
+  const { token: tokenParam } = await searchParams;
+  const receiptToken = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam;
 
   const booking = await prisma.booking.findUnique({
     where: { publicCode: code },
@@ -22,14 +31,19 @@ export default async function PaymentPage({ params }: { params: Promise<{ code: 
     notFound();
   }
 
+  const hasValidReceiptToken = await verifyReceiptAccessToken(receiptToken, booking);
+
   // Si ya está pagada o en un estado posterior, redirigir al recibo
   const paidStatuses = ["PAID", "CONFIRMADA", "ASIGNADA", "EN_CURSO", "COMPLETADA"];
   if (paidStatuses.includes(booking.bookingStatus) || booking.paymentStatus === "PAID") {
-    redirect(`/booking/${booking.publicCode}/receipt`);
+    if (hasValidReceiptToken) {
+      redirect(`/booking/${booking.publicCode}/receipt?token=${encodeURIComponent(receiptToken!)}`);
+    }
+    redirect(`/booking/success?code=${booking.publicCode}`);
   }
 
-  const ip = (await headers()).get("x-forwarded-for") || "unknown";
-  if (!paymentRateLimiter.check(ip)) {
+  const requestMeta = getRequestMeta(await headers());
+  if (!(await paymentRateLimiter.check(buildRateLimitKey("payment", requestMeta, booking.id)))) {
     return (
       <div className="min-h-screen bg-[#0B0C10] flex flex-col items-center justify-center p-6 text-center">
         <h2 className="text-2xl font-serif font-bold text-white mb-4">Demasiados intentos</h2>
@@ -75,7 +89,9 @@ export default async function PaymentPage({ params }: { params: Promise<{ code: 
     }
   }
 
-  const redsysFormHtml = redsysService.generateHtmlForm(booking, payment.providerOrderId || undefined);
+  const redsysFormHtml = redsysService.generateHtmlForm(booking, payment.providerOrderId || undefined, {
+    receiptToken: hasValidReceiptToken ? receiptToken : undefined,
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0B0C10] font-sans">

@@ -8,6 +8,7 @@ import { headers } from "next/headers";
 import bcrypt from "bcryptjs";
 
 import { loginRateLimiter } from "@/lib/rate-limit";
+import { buildRateLimitKey, getRequestMeta } from "@/lib/request-meta";
 
 export async function loginAction(data: LoginInput) {
   // 1. Validar input
@@ -17,17 +18,20 @@ export async function loginAction(data: LoginInput) {
   }
 
   const { email, password } = parsed.data;
+  const lowerEmail = email.toLowerCase();
 
   // Rate Limiter
-  const ip = (await headers()).get("x-forwarded-for") || "unknown";
-  const key = `${ip}:${email.toLowerCase()}`;
-  if (!loginRateLimiter.check(key)) {
+  const requestMeta = getRequestMeta(await headers());
+  const ipKey = buildRateLimitKey("login-ip", requestMeta);
+  const emailKey = buildRateLimitKey("login-email", requestMeta, lowerEmail);
+  const isAllowed = (await loginRateLimiter.check(ipKey)) && (await loginRateLimiter.check(emailKey));
+  if (!isAllowed) {
     return { error: "Demasiados intentos. Por favor, inténtelo de nuevo en 15 minutos." };
   }
 
   // 2. Buscar usuario en base de datos
   const user = await prisma.user.findUnique({
-    where: { email: email.toLowerCase() }
+    where: { email: lowerEmail }
   });
 
   if (!user || !user.isActive) {
@@ -70,9 +74,11 @@ export async function registerAction(data: RegisterInput) {
   const lowerEmail = email.toLowerCase();
 
   // Rate Limiter
-  const ip = (await headers()).get("x-forwarded-for") || "unknown";
-  const key = `register:${ip}:${lowerEmail}`;
-  if (!loginRateLimiter.check(key)) {
+  const requestMeta = getRequestMeta(await headers());
+  const ipKey = buildRateLimitKey("register-ip", requestMeta);
+  const emailKey = buildRateLimitKey("register-email", requestMeta, lowerEmail);
+  const isAllowed = (await loginRateLimiter.check(ipKey)) && (await loginRateLimiter.check(emailKey));
+  if (!isAllowed) {
     return { error: "Demasiados intentos. Por favor, inténtelo de nuevo más tarde." };
   }
 

@@ -69,7 +69,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
             }[booking.paymentStatus as string] || booking.paymentStatus)}
           </span>
           {booking.paymentStatus === "PAID" && (
-            <InvoiceDownloadButton booking={booking} />
+            <InvoiceDownloadButton bookingId={booking.id} />
           )}
         </div>
       </div>

@@ -7,7 +7,7 @@
     "build": "prisma generate && cross-env NEXT_PUBLIC_IS_BUILDING=true next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "prisma generate && next typegen && tsc --noEmit",
     "test": "vitest run",
     "check": "npm run lint && npm run typecheck && npx prisma validate && npm run build && npm run test"
   },

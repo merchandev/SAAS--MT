@@ -397,6 +397,29 @@ model NotificationLog {
   sentAt      DateTime @default(now())
 }
 
+model RateLimitBucket {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
+}
+
+model MapsDistanceCache {
+  key             String   @id
+  origin          String
+  destination     String
+  distanceKm      Float
+  durationMinutes Int
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([expiresAt])
+}
+
 // ==========================================
 // 10. CONFIGURACIÓN DEL SISTEMA
 // ==========================================

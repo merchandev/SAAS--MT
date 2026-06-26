@@ -9,6 +9,7 @@ import {
   Section,
   Text,
   Hr,
+  Link,
 } from '@react-email/components';
 
 interface BookingConfirmedEmailProps {
@@ -19,6 +20,7 @@ interface BookingConfirmedEmailProps {
   serviceDate: string;
   serviceTime: string;
   passengers: number;
+  receiptUrl?: string;
 }
 
 export const BookingConfirmedEmail = ({
@@ -29,6 +31,7 @@ export const BookingConfirmedEmail = ({
   serviceDate,
   serviceTime,
   passengers,
+  receiptUrl,
 }: BookingConfirmedEmailProps) => {
   return (
     <Html>
@@ -51,6 +54,14 @@ export const BookingConfirmedEmail = ({
             <Text style={detailText}><strong>Destino:</strong> {destinationAddress}</Text>
             <Text style={detailText}><strong>Pasajeros:</strong> {passengers}</Text>
           </Section>
+
+          {receiptUrl && (
+            <Section style={actionSection}>
+              <Link href={receiptUrl} style={buttonLink}>
+                Ver recibo seguro
+              </Link>
+            </Section>
+          )}
 
           <Hr style={hr} />
 
@@ -102,6 +113,22 @@ const detailsSection = {
   padding: '20px',
   borderRadius: '6px',
   margin: '20px 0',
+};
+
+const actionSection = {
+  textAlign: 'center' as const,
+  margin: '24px 0',
+};
+
+const buttonLink = {
+  backgroundColor: '#1a202c',
+  borderRadius: '6px',
+  color: '#ffffff',
+  display: 'inline-block',
+  fontSize: '15px',
+  fontWeight: '600',
+  padding: '12px 18px',
+  textDecoration: 'none',
 };
 
 const detailText = {

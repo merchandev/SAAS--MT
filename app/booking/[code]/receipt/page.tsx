@@ -1,10 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { InvoiceDownloadButton } from "@/components/pdf/InvoiceDownloadButton";
+import { authService } from "@/modules/auth/auth.service";
+import { verifyReceiptAccessToken } from "@/modules/bookings/receipt-access";
 
-export default async function ReceiptPage({ params }: { params: Promise<{ code: string }> }) {
+export default async function ReceiptPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ code: string }>;
+  searchParams: Promise<{ token?: string | string[] }>;
+}) {
   const code = (await params).code;
+  const { token: tokenParam } = await searchParams;
+  const receiptToken = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam;
   
   const booking = await prisma.booking.findUnique({
     where: { publicCode: code },
@@ -16,6 +25,57 @@ export default async function ReceiptPage({ params }: { params: Promise<{ code: 
 
   if (!booking) {
     return notFound();
+  }
+
+  const [hasReceiptAccess, session] = await Promise.all([
+    verifyReceiptAccessToken(receiptToken, booking),
+    authService.getSession(),
+  ]);
+  const isAdminSession = Boolean(session && ["SUPER_ADMIN", "ADMIN", "OPERATOR"].includes(session.role));
+  const canViewSensitiveData = hasReceiptAccess || isAdminSession;
+
+  if (!canViewSensitiveData) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-lg w-full bg-white rounded-lg shadow-lg p-10">
+          <div className="flex justify-between items-start border-b pb-6 mb-6">
+            <div>
+              <h1 className="text-3xl font-serif font-bold text-gray-900">RECIBO PROTEGIDO</h1>
+              <p className="text-gray-500 mt-1">Ref: {booking.publicCode}</p>
+            </div>
+            <div className="text-right">
+              <div className="h-10 w-10 bg-gradient-to-br from-[#D4AF37] to-[#AA8B2C] rounded-sm flex items-center justify-center text-white font-serif font-bold text-xl shadow-md ml-auto mb-2">
+                MT
+              </div>
+              <p className="font-bold text-gray-800">MeTransfers VIP</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-gray-500">Estado de la reserva:</p>
+              <p className="font-bold uppercase tracking-wider text-gray-900">{booking.bookingStatus}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Estado del pago:</p>
+              <p className={`font-bold uppercase tracking-wider ${
+                booking.paymentStatus === 'PAID' ? 'text-green-600' : 'text-yellow-600'
+              }`}>
+                {booking.paymentStatus}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 uppercase tracking-wider mb-1">Total</p>
+              <p className="text-4xl font-bold text-[#D4AF37]">{booking.currency} {Number(booking.finalPrice).toFixed(2)}</p>
+            </div>
+          </div>
+
+          <p className="mt-8 text-sm text-gray-500">
+            Para ver datos personales, itinerario completo o factura necesitas el enlace seguro enviado al crear o confirmar la reserva.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -89,7 +149,10 @@ export default async function ReceiptPage({ params }: { params: Promise<{ code: 
           </button>
           
           {booking.paymentStatus === 'PAID' && (
-            <InvoiceDownloadButton booking={booking} publicCode={booking.publicCode} />
+            <InvoiceDownloadButton
+              bookingId={booking.id}
+              receiptToken={hasReceiptAccess ? receiptToken : undefined}
+            />
           )}
         </div>
       </div>

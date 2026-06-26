@@ -176,7 +176,8 @@ export default function BookingFormClient({
       setError(result.error);
       setIsLoading(false);
     } else {
-      router.push(`/booking/${result.publicCode}/payment`);
+      const receiptToken = result.receiptToken ? `?token=${encodeURIComponent(result.receiptToken)}` : "";
+      router.push(`/booking/${result.publicCode}/payment${receiptToken}`);
     }
   };
 

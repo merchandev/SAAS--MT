@@ -9,6 +9,10 @@ function isFutureServiceDate(dateStr: string) {
   return date >= today;
 }
 
+const serviceTimeSchema = z
+  .string()
+  .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "La hora debe estar entre 00:00 y 23:59");
+
 export const adminBookingSchema = z.object({
   customerName: z.string().min(2, "Nombre requerido"),
   customerEmail: z.string().email("Email inválido"),
@@ -29,7 +33,7 @@ export const adminBookingSchema = z.object({
     .refine(date => isFutureServiceDate(date), "La fecha debe ser igual o posterior a hoy"),
   serviceTime: z
     .string()
-    .regex(/^\d{2}:\d{2}$/, "El formato de hora debe ser HH:MM"),
+    .pipe(serviceTimeSchema),
   tripType: z.enum(["ONE_WAY", "ROUND_TRIP"]),
   
   passengers: z.coerce.number().int().min(1, "Debe haber al menos 1 pasajero"),

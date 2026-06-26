@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import { BookingConfirmedEmail } from '@/components/emails/BookingConfirmedEmail';
 import { DriverAssignedEmail } from '@/components/emails/DriverAssignedEmail';
+import { createReceiptAccessToken } from '@/modules/bookings/receipt-access';
 import React from 'react';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -15,6 +16,17 @@ export const emailsService = {
     }
 
     try {
+      let receiptUrl: string | undefined;
+      if (bookingDetails?.id) {
+        const receiptToken = await createReceiptAccessToken({
+          id: bookingDetails.id,
+          publicCode,
+        });
+        const url = new URL(`/booking/${publicCode}/receipt`, process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
+        url.searchParams.set("token", receiptToken);
+        receiptUrl = url.toString();
+      }
+
       const html = await render(
         React.createElement(BookingConfirmedEmail, {
           customerName,
@@ -24,6 +36,7 @@ export const emailsService = {
           serviceDate: bookingDetails.serviceDate.toISOString().split('T')[0],
           serviceTime: bookingDetails.serviceTime,
           passengers: bookingDetails.passengers,
+          receiptUrl,
         })
       );
 

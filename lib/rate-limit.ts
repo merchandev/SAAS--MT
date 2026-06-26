@@ -1,19 +1,19 @@
+import { prisma } from "@/lib/prisma";
+
 export class RateLimiter {
-  private limits = new Map<string, { count: number; resetAt: number }>();
-  private maxRequests: number;
-  private windowMs: number;
+  private memoryLimits = new Map<string, { count: number; resetAt: number }>();
 
-  constructor(maxRequests: number, windowMs: number) {
-    this.maxRequests = maxRequests;
-    this.windowMs = windowMs;
-  }
+  constructor(
+    private maxRequests: number,
+    private windowMs: number
+  ) {}
 
-  check(key: string): boolean {
+  private checkMemory(key: string): boolean {
     const now = Date.now();
-    const record = this.limits.get(key);
+    const record = this.memoryLimits.get(key);
 
     if (!record || now > record.resetAt) {
-      this.limits.set(key, { count: 1, resetAt: now + this.windowMs });
+      this.memoryLimits.set(key, { count: 1, resetAt: now + this.windowMs });
       return true;
     }
 
@@ -23,6 +23,83 @@ export class RateLimiter {
 
     record.count++;
     return true;
+  }
+
+  private async checkDatabase(key: string): Promise<boolean> {
+    const now = new Date();
+    const resetAt = new Date(now.getTime() + this.windowMs);
+
+    await prisma.rateLimitBucket.deleteMany({
+      where: {
+        key,
+        resetAt: { lte: now },
+      },
+    });
+
+    const incremented = await prisma.rateLimitBucket.updateMany({
+      where: {
+        key,
+        resetAt: { gt: now },
+        count: { lt: this.maxRequests },
+      },
+      data: {
+        count: { increment: 1 },
+      },
+    });
+
+    if (incremented.count > 0) {
+      return true;
+    }
+
+    const existing = await prisma.rateLimitBucket.findUnique({
+      where: { key },
+      select: { resetAt: true },
+    });
+
+    if (existing && existing.resetAt > now) {
+      return false;
+    }
+
+    try {
+      await prisma.rateLimitBucket.create({
+        data: {
+          key,
+          count: 1,
+          resetAt,
+        },
+      });
+      return true;
+    } catch (error: any) {
+      if (error?.code !== "P2002") {
+        throw error;
+      }
+
+      const retried = await prisma.rateLimitBucket.updateMany({
+        where: {
+          key,
+          resetAt: { gt: now },
+          count: { lt: this.maxRequests },
+        },
+        data: {
+          count: { increment: 1 },
+        },
+      });
+
+      return retried.count > 0;
+    }
+  }
+
+  async check(key: string): Promise<boolean> {
+    if (process.env.RATE_LIMIT_BACKEND === "memory" || process.env.NODE_ENV === "test") {
+      return this.checkMemory(key);
+    }
+
+    try {
+      return await this.checkDatabase(key);
+    } catch (error) {
+      console.error("[RateLimit] Falling back to in-memory limiter:", error);
+      return this.checkMemory(key);
+    }
   }
 }
 

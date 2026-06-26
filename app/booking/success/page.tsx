@@ -2,12 +2,15 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { verifyReceiptAccessToken } from "@/modules/bookings/receipt-access";
 
 export default async function BookingSuccessPage(props: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const searchParams = await props.searchParams;
   const code = searchParams.code as string;
+  const tokenParam = searchParams.token;
+  const receiptToken = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam;
 
   if (!code) {
     redirect("/booking/error");
@@ -16,6 +19,7 @@ export default async function BookingSuccessPage(props: {
   const booking = await prisma.booking.findUnique({
     where: { publicCode: code },
     select: {
+      id: true,
       publicCode: true,
       paymentStatus: true,
       bookingStatus: true,
@@ -43,6 +47,8 @@ export default async function BookingSuccessPage(props: {
     );
   }
 
+  const hasReceiptAccess = await verifyReceiptAccessToken(receiptToken, booking);
+
   return (
     <div className="min-h-screen bg-[#0B0C10] flex items-center justify-center p-4 font-sans text-gray-100">
       <div className="max-w-md w-full bg-[#13151A] rounded-sm shadow-2xl p-10 text-center border border-[#D4AF37]/20 relative overflow-hidden">
@@ -68,9 +74,17 @@ export default async function BookingSuccessPage(props: {
           Ha recibido un correo con los detalles de la confirmación. Su chófer le contactará a la brevedad.
         </p>
 
-        <Link href="/" className="relative z-10">
-          <Button size="lg" className="w-full h-14 text-lg bg-[#D4AF37] hover:bg-[#C5A059] text-[#0B0C10] rounded-sm transition-all font-medium">Volver al Inicio</Button>
-        </Link>
+        <div className="relative z-10 space-y-3">
+          {hasReceiptAccess && (
+            <Link href={`/booking/${booking.publicCode}/receipt?token=${encodeURIComponent(receiptToken!)}`}>
+              <Button size="lg" className="w-full h-14 text-lg bg-[#D4AF37] hover:bg-[#C5A059] text-[#0B0C10] rounded-sm transition-all font-medium">Ver Recibo</Button>
+            </Link>
+          )}
+
+          <Link href="/">
+            <Button size="lg" variant="outline" className="w-full h-14 text-lg rounded-sm transition-all font-medium">Volver al Inicio</Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
