@@ -1,66 +1,71 @@
 services:
   app:
-    build:
-      context: .
-      args:
-        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
-        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
-    image: metransfers_app:latest
-    container_name: metransfers_app
+    image: node:22-bookworm-slim
     restart: always
+    working_dir: /workspace
     environment:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
-      JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgresql://metransfers:metransfers_secure_pwd@postgres:5432/metransfers_saas?schema=public
+      JWT_SECRET: ${JWT_SECRET:-metransfers_jwt_change_me_on_hostinger}
       RECEIPT_TOKEN_SECRET: ${RECEIPT_TOKEN_SECRET:-}
-      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://72.61.77.167:3000}
       GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
       NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
       MAPS_DISTANCE_CACHE_TTL_HOURS: ${MAPS_DISTANCE_CACHE_TTL_HOURS:-6}
       RATE_LIMIT_BACKEND: ${RATE_LIMIT_BACKEND:-memory}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       REDSYS_URL: ${REDSYS_URL:-https://sis-t.redsys.es:25443/sis/realizarPago}
-      REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-}
-      REDSYS_TERMINAL: ${REDSYS_TERMINAL:-}
-      REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:-}
+      REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-999008881}
+      REDSYS_TERMINAL: ${REDSYS_TERMINAL:-1}
+      REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:-sq7HjrUOBfKmC576ILgskD5srU870gJ7}
+    command: >
+      sh -c "
+        apt-get update &&
+        apt-get install -y --no-install-recommends ca-certificates git openssl postgresql-client &&
+        rm -rf /var/lib/apt/lists/* &&
+        rm -rf /app &&
+        git clone --depth=1 https://github.com/merchandev/SAAS--MT.git /app &&
+        cd /app &&
+        npm ci --include=dev &&
+        ALLOW_PRISMA_BUILD_STUB=true DATABASE_URL= npm run build &&
+        until pg_isready -h postgres -U metransfers -d metransfers_saas; do sleep 2; done &&
+        npx prisma migrate deploy &&
+        npm run start
+      "
     ports:
       - "${APP_PORT:-3000}:3000"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
 
   postgres:
     image: postgres:15-alpine
-    container_name: metransfers_db
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: metransfers
+      POSTGRES_PASSWORD: metransfers_secure_pwd
+      POSTGRES_DB: metransfers_saas
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      test: ["CMD-SHELL", "pg_isready -U metransfers -d metransfers_saas"]
       interval: 5s
       timeout: 5s
       retries: 10
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: metransfers_pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-${PGADMIN_EMAIL:-}}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-${PGADMIN_PASSWORD:-}}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@metransfers.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin_secure_pwd}
     ports:
       - "5050:80"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
 
 volumes:
   postgres_data:
