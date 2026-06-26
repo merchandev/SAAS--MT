@@ -1,14 +1,17 @@
 services:
   app:
-    image: node:22-bookworm-slim
+    build:
+      context: https://github.com/merchandev/SAAS--MT.git#main
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://72.61.77.167:3000}
+        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
+    image: saas-mt-app:latest
     restart: unless-stopped
-    working_dir: /workspace
     environment:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
-      POSTGRES_USER: ${POSTGRES_USER:-metransfers}
-      POSTGRES_DB: ${POSTGRES_DB:-metransfers_saas}
       DATABASE_URL: postgresql://${POSTGRES_USER:-metransfers}:${POSTGRES_PASSWORD:-change_me}@postgres:5432/${POSTGRES_DB:-metransfers_saas}?schema=public
       JWT_SECRET: ${JWT_SECRET:-change_me_jwt_secret}
       RECEIPT_TOKEN_SECRET: ${RECEIPT_TOKEN_SECRET:-}
@@ -19,27 +22,16 @@ services:
       RATE_LIMIT_BACKEND: ${RATE_LIMIT_BACKEND:-memory}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       REDSYS_URL: ${REDSYS_URL:-https://sis-t.redsys.es:25443/sis/realizarPago}
-      REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-}
+      REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-change_me_redsys_merchant_code}
       REDSYS_TERMINAL: ${REDSYS_TERMINAL:-1}
       REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:-change_me_redsys_secret_key}
-    command: >
-      sh -c "
-        apt-get update &&
-        apt-get install -y --no-install-recommends ca-certificates git openssl postgresql-client &&
-        rm -rf /var/lib/apt/lists/* &&
-        rm -rf /app &&
-        git clone --depth=1 https://github.com/merchandev/SAAS--MT.git /app &&
-        cd /app &&
-        npm install --include=dev --no-audit --no-fund &&
-        ALLOW_PRISMA_BUILD_STUB=true DATABASE_URL= npm run build &&
-        until pg_isready -h postgres -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\"; do sleep 2; done &&
-        npx prisma migrate deploy &&
-        npm run start
-      "
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@metransfers.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin_secure_pwd_123}
     ports:
       - "${APP_PORT:-3000}:3000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   postgres:
     image: postgres:15-alpine

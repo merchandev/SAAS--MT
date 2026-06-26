@@ -49,10 +49,10 @@ PgAdmin is available at `http://localhost:5050`.
 
 ## Production Docker
 
-Start the full stack:
+Build and start the full stack:
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
 The web app is exposed on `http://localhost:3000` by default. On the Hostinger VPS, set `NEXT_PUBLIC_APP_URL` to the public URL, for example `http://72.61.77.167:3000` or your domain.
@@ -63,7 +63,7 @@ For Hostinger Docker Manager, use the raw Compose URL:
 https://raw.githubusercontent.com/merchandev/SAAS--MT/main/docker-compose.yml
 ```
 
-This Compose file is self-contained for Hostinger: the `app` container clones this repository, installs dependencies, builds Next.js with the VPS environment variables, runs `prisma migrate deploy`, and then starts Next.js.
+This Compose file builds the `app` image from this repository with the included `Dockerfile`. The running container only applies Prisma migrations, seeds the initial admin user when `ADMIN_EMAIL` and `ADMIN_PASSWORD` are set, and starts the standalone Next.js server. It does not clone the repository, install dependencies, or build Next.js on every restart.
 
 ## Documentation
 - [Architecture Guide](docs/architecture.md)
