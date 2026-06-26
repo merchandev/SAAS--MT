@@ -28,10 +28,20 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@metransfers.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin_secure_pwd_123}
     ports:
-      - "${APP_PORT:-3100}:3000"
+      - "0.0.0.0:${APP_PORT:-3100}:3000"
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3000/admin/login').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   postgres:
     image: postgres:15-alpine
@@ -55,9 +65,19 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@metransfers.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-change_me}
     ports:
-      - "${PGADMIN_PORT:-5051}:80"
+      - "0.0.0.0:${PGADMIN_PORT:-5051}:80"
     depends_on:
       - postgres
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/venv/bin/python3 -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:80/misc/ping', timeout=5)\"",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 volumes:
   postgres_data:
