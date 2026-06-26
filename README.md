@@ -12,7 +12,7 @@ SaaS B2B/B2C Platform for Private Transfer Bookings, Vehicle Fleet, Hotel QR Ref
 - **Auth**: JWT (jose), bcryptjs
 
 ## Prerequisites
-- Node.js 18+
+- Node.js 20.19+ (Node 22 recommended)
 - Docker & Docker Compose (for local database)
 
 ## Quick Start
@@ -30,7 +30,7 @@ SaaS B2B/B2C Platform for Private Transfer Bookings, Vehicle Fleet, Hotel QR Ref
 
 3. **Start Local Database**
    ```bash
-   docker-compose up -d
+   docker compose up -d postgres pgadmin
    ```
 
 4. **Initialize Database Schema**
@@ -46,6 +46,18 @@ SaaS B2B/B2C Platform for Private Transfer Bookings, Vehicle Fleet, Hotel QR Ref
 
 Visit `http://localhost:3000` to see the application.
 PgAdmin is available at `http://localhost:5050`.
+
+## Production Docker
+
+Build and start the full stack:
+
+```bash
+docker compose up -d --build
+```
+
+The web app is exposed on `http://localhost:3000` by default. On a VPS, set `NEXT_PUBLIC_APP_URL` to the public URL, for example `http://YOUR_SERVER_IP:3000` or your domain.
+
+The `app` container runs `prisma migrate deploy` before starting Next.js, so pending migrations are applied automatically on boot.
 
 ## Documentation
 - [Architecture Guide](docs/architecture.md)
