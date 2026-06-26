@@ -39,4 +39,4 @@ COPY --from=builder --chown=node:node /app/tsconfig.json ./tsconfig.json
 USER node
 EXPOSE 3000
 
-CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node node_modules/ts-node/dist/bin.js prisma/seed.ts && node server.js"]
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]

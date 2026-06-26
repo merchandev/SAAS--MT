@@ -63,7 +63,13 @@ For Hostinger Docker Manager, deploy from the GitHub repository:
 https://github.com/merchandev/SAAS--MT
 ```
 
-This Compose file builds the `app` image from this repository with the included `Dockerfile`. The running container only applies Prisma migrations, seeds the initial admin user when `ADMIN_EMAIL` and `ADMIN_PASSWORD` are set, and starts the standalone Next.js server. It does not clone the repository, install dependencies, or build Next.js on every restart.
+This Compose file builds the `app` image from this repository with the included `Dockerfile`. The running container only applies Prisma migrations and starts the standalone Next.js server. It does not clone the repository, install dependencies, build Next.js, or run database seeds on every restart.
+
+Run the seed only for first setup or manual recovery:
+
+```bash
+docker compose run --rm app node node_modules/ts-node/dist/bin.js prisma/seed.ts
+```
 
 ## Documentation
 - [Architecture Guide](docs/architecture.md)
