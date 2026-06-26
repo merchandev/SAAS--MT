@@ -1,14 +1,16 @@
 services:
   app:
     image: node:22-bookworm-slim
-    restart: always
+    restart: unless-stopped
     working_dir: /workspace
     environment:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
-      DATABASE_URL: postgresql://metransfers:metransfers_secure_pwd@postgres:5432/metransfers_saas?schema=public
-      JWT_SECRET: ${JWT_SECRET:-metransfers_jwt_change_me_on_hostinger}
+      POSTGRES_USER: ${POSTGRES_USER:-metransfers}
+      POSTGRES_DB: ${POSTGRES_DB:-metransfers_saas}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-metransfers}:${POSTGRES_PASSWORD:-change_me}@postgres:5432/${POSTGRES_DB:-metransfers_saas}?schema=public
+      JWT_SECRET: ${JWT_SECRET:-change_me_jwt_secret}
       RECEIPT_TOKEN_SECRET: ${RECEIPT_TOKEN_SECRET:-}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://72.61.77.167:3000}
       GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
@@ -17,9 +19,9 @@ services:
       RATE_LIMIT_BACKEND: ${RATE_LIMIT_BACKEND:-memory}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       REDSYS_URL: ${REDSYS_URL:-https://sis-t.redsys.es:25443/sis/realizarPago}
-      REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-999008881}
+      REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-}
       REDSYS_TERMINAL: ${REDSYS_TERMINAL:-1}
-      REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:-sq7HjrUOBfKmC576ILgskD5srU870gJ7}
+      REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:-change_me_redsys_secret_key}
     command: >
       sh -c "
         apt-get update &&
@@ -28,9 +30,9 @@ services:
         rm -rf /app &&
         git clone --depth=1 https://github.com/merchandev/SAAS--MT.git /app &&
         cd /app &&
-        npm ci --include=dev &&
+        npm install --include=dev --no-audit --no-fund &&
         ALLOW_PRISMA_BUILD_STUB=true DATABASE_URL= npm run build &&
-        until pg_isready -h postgres -U metransfers -d metransfers_saas; do sleep 2; done &&
+        until pg_isready -h postgres -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\"; do sleep 2; done &&
         npx prisma migrate deploy &&
         npm run start
       "
@@ -41,27 +43,25 @@ services:
 
   postgres:
     image: postgres:15-alpine
-    restart: always
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: metransfers
-      POSTGRES_PASSWORD: metransfers_secure_pwd
-      POSTGRES_DB: metransfers_saas
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER:-metransfers}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-metransfers_saas}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U metransfers -d metransfers_saas"]
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 5s
       timeout: 5s
       retries: 10
 
   pgadmin:
     image: dpage/pgadmin4
-    restart: always
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@metransfers.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin_secure_pwd}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-change_me}
     ports:
       - "5050:80"
     depends_on:
