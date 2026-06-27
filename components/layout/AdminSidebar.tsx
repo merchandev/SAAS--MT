@@ -81,21 +81,21 @@ export function AdminSidebar({ role, companyName = "MeTransfers", logoUrl, accen
   return (
     <aside
       className={cn(
-        "w-full bg-white border-r border-gray-200 flex flex-col transition-[width] duration-200 ease-in-out",
+        "w-full bg-white border-r border-gray-200 flex flex-col transition-[width] duration-200 ease-in-out relative",
         isCollapsed ? "md:w-20" : "md:w-64"
       )}
     >
-      <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
+      <div className={cn("flex h-16 items-center border-b border-gray-200", isCollapsed ? "justify-center px-0" : "px-4")}>
         <Link href="/admin/dashboard" className="min-w-0 flex items-center gap-3">
           {logoUrl ? (
             <img
               src={logoUrl}
               alt={companyName}
-              className="h-9 w-9 rounded-md object-contain border border-gray-100 bg-white"
+              className="h-9 w-9 rounded-md object-contain border border-gray-100 bg-white shrink-0"
             />
           ) : (
             <div
-              className="h-9 w-9 rounded-md text-gray-950 flex items-center justify-center font-bold"
+              className="h-9 w-9 rounded-md text-gray-950 flex items-center justify-center font-bold shrink-0"
               style={{ backgroundColor: accentColor }}
             >
               MT
@@ -105,18 +105,17 @@ export function AdminSidebar({ role, companyName = "MeTransfers", logoUrl, accen
             <span className="truncate text-xl font-bold text-gray-900">{companyName}</span>
           )}
         </Link>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          onClick={toggleCollapsed}
-          className="hidden md:inline-flex"
-          aria-label={isCollapsed ? "Expandir menú lateral" : "Contraer menú lateral"}
-          title={isCollapsed ? "Expandir menú lateral" : "Contraer menú lateral"}
-        >
-          {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-        </Button>
       </div>
+
+      <button
+        type="button"
+        onClick={toggleCollapsed}
+        className="hidden md:flex absolute -right-3 top-5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 hover:text-gray-900 shadow-sm rounded-full w-6 h-6 items-center justify-center z-50 transition-colors"
+        aria-label={isCollapsed ? "Expandir menú lateral" : "Contraer menú lateral"}
+        title={isCollapsed ? "Expandir menú lateral" : "Contraer menú lateral"}
+      >
+        {isCollapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
+      </button>
 
       <nav className="flex-1 space-y-1 px-2 py-4 overflow-y-auto">
         {navigation.map((item) => {
