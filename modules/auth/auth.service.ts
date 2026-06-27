@@ -53,12 +53,10 @@ export const authService = {
     const cookieStore = await cookies();
     cookieStore.delete("session");
     
-    // Solo requerir secure (HTTPS) en producción si la URL de la app usa HTTPS
-    const isHttps = process.env.NEXT_PUBLIC_APP_URL?.startsWith("https://") || false;
-    
+    // Forzamos secure a false para evitar que el navegador rechace la cookie en HTTP
     cookieStore.set("auth_token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production" && isHttps,
+      secure: false, 
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24, // 24 hours
