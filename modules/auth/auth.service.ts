@@ -44,6 +44,7 @@ export const authService = {
       });
       return payload as unknown as SessionPayload;
     } catch (error) {
+      console.error("[verifyToken] JWT verification failed:", error);
       return null;
     }
   },
@@ -61,6 +62,7 @@ export const authService = {
       path: "/",
       maxAge: 60 * 60 * 24, // 24 hours
     });
+    console.log("[setSessionCookie] Cookie 'auth_token' sent to browser.");
   },
 
   async deleteSessionCookie() {
@@ -72,7 +74,13 @@ export const authService = {
   async getSession(): Promise<SessionPayload | null> {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth_token")?.value;
-    if (!token) return null;
-    return await this.verifyToken(token);
+    console.log("[getSession] Token present in cookie?", !!token);
+    if (!token) {
+      console.log("[getSession] No auth_token cookie found.");
+      return null;
+    }
+    const session = await this.verifyToken(token);
+    console.log("[getSession] Session valid?", !!session);
+    return session;
   }
 };
