@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CalendarDays, Clock, Newspaper } from "lucide-react";
+import { ArrowRight, CalendarDays, Newspaper } from "lucide-react";
 import MarketingCta from "@/components/marketing/MarketingCta";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import PageHero from "@/components/marketing/PageHero";
+import { getBlogImage } from "@/lib/fleet-images";
 
 export const metadata: Metadata = {
   title: "Blog de traslados privados en Barcelona | MeTransfers",
@@ -21,6 +22,15 @@ import postsData from "@/data/posts.json";
 const sortedPosts = [...postsData].sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 // Mostrar los últimos 15
 const posts = sortedPosts.slice(0, 15);
+
+const blogImages = [
+  "/images/blog/airport-transfer.png",
+  "/images/blog/city-tour.png",
+  "/images/blog/corporate-vip.png",
+  "/images/blog/costa-brava-tour.png",
+  "/images/blog/cruise-port.png",
+  "/images/blog/family-v-class.png"
+];
 
 const guides = [
   "Traslados desde hoteles, puertos y estaciones",
@@ -53,13 +63,17 @@ export default function BlogPage() {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
-              {posts.map((post) => (
+              {posts.map((post, index) => (
                 <article key={post.slug} className="group relative overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition">
-                  <div className="relative aspect-[16/10] bg-gray-100 flex items-center justify-center">
-                     {/* Imagen genérica ya que el XML no tiene imágenes destacadas fáciles de extraer */}
-                    <div className="text-[#D4AF37] opacity-20 transition-transform duration-300 group-hover:scale-110">
-                      <Newspaper className="h-20 w-20" />
-                    </div>
+                  <div className="relative aspect-[16/10] bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <Image
+                      src={blogImages[index % blogImages.length]}
+                      alt={post.title}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
                   </div>
                   <div className="p-6">
                     <div className="flex flex-wrap gap-3 text-xs font-black uppercase tracking-[0.1em] text-[#D4AF37]">
