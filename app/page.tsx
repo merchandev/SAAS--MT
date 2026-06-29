@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+import MarketingLogo from "@/components/marketing/MarketingLogo";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 import MobileMenu from "@/components/home/MobileMenu";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
@@ -243,23 +244,7 @@ export default async function HomePage() {
       />
 
       <header className="fixed inset-x-0 top-0 z-50 mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-7xl items-center justify-between rounded-lg border border-white/15 bg-black/55 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-6">
-        <Link href="/" className="flex min-w-0 items-center gap-3" aria-label={`${brandName} inicio`}>
-          {logoUrl ? (
-            <span
-              className="h-11 w-11 shrink-0 rounded-lg bg-white bg-contain bg-center bg-no-repeat shadow-lg"
-              style={{ backgroundImage: logoBackgroundImage }}
-              aria-hidden="true"
-            />
-          ) : (
-            <span
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-lg font-bold text-white shadow-lg"
-              style={{ backgroundColor: accentColor }}
-            >
-              MT
-            </span>
-          )}
-          <span className="truncate text-lg font-semibold uppercase text-white sm:text-xl">{brandName}</span>
-        </Link>
+        <MarketingLogo />
 
         <nav className="hidden items-center gap-7 text-sm font-semibold text-white/85 md:flex">
           <a href="#servicios" className="transition-colors hover:text-[#D4AF37]">
