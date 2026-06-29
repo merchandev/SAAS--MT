@@ -54,10 +54,10 @@ export default function BlogPage() {
 
             <div className="grid gap-6 lg:grid-cols-3">
               {posts.map((post) => (
-                <article key={post.slug} className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition">
+                <article key={post.slug} className="group relative overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition">
                   <div className="relative aspect-[16/10] bg-gray-100 flex items-center justify-center">
                      {/* Imagen genérica ya que el XML no tiene imágenes destacadas fáciles de extraer */}
-                    <div className="text-[#D4AF37] opacity-20">
+                    <div className="text-[#D4AF37] opacity-20 transition-transform duration-300 group-hover:scale-110">
                       <Newspaper className="h-20 w-20" />
                     </div>
                   </div>
@@ -65,12 +65,17 @@ export default function BlogPage() {
                     <div className="flex flex-wrap gap-3 text-xs font-black uppercase tracking-[0.1em] text-[#D4AF37]">
                       <span>{post.category}</span>
                     </div>
-                    <h3 className="mt-4 text-2xl font-black tracking-tight line-clamp-3">{post.title}</h3>
+                    <h3 className="mt-4 text-2xl font-black tracking-tight line-clamp-3 group-hover:text-[#D4AF37] transition-colors">
+                      <Link href={`/blog/${post.slug}`}>
+                        <span className="absolute inset-0 z-10" aria-hidden="true" />
+                        {post.title}
+                      </Link>
+                    </h3>
                     <p className="mt-4 text-base leading-7 text-gray-600 line-clamp-3">{post.excerpt}</p>
-                    <Link href={`/blog/${post.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-black text-[#D4AF37] hover:text-gray-900 transition">
+                    <div className="mt-6 inline-flex items-center gap-2 text-sm font-black text-[#D4AF37] group-hover:text-gray-900 transition">
                       Leer artículo
                       <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </Link>
+                    </div>
                   </div>
                 </article>
               ))}
