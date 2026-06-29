@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
-export default function MobileMenu({ accentColor = "#D4AF37" }: { accentColor?: string }) {
+export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false }: { accentColor?: string; isCustomer?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -65,29 +65,42 @@ export default function MobileMenu({ accentColor = "#D4AF37" }: { accentColor?: 
           
           <div className="h-px bg-white/20 w-full my-2"></div>
 
-          <Link
-            href="/booking"
-            onClick={() => setIsOpen(false)}
-            className="text-black px-4 py-3 rounded-lg transition-colors duration-300 text-center"
-            style={{ backgroundColor: accentColor }}
-          >
-            Reservar traslado
-          </Link>
-          
-          <Link 
-            href="/login" 
-            onClick={() => setIsOpen(false)}
-            className="hover:text-[#D4AF37] transition-colors duration-300"
-          >
-            Ingresar
-          </Link>
-          <Link 
-            href="/register" 
-            onClick={() => setIsOpen(false)}
-            className="text-white px-4 py-3 rounded-lg border border-white/20 transition-colors duration-300 text-center"
-          >
-            Registrarse
-          </Link>
+          {isCustomer ? (
+            <Link
+              href="/customer/dashboard"
+              onClick={() => setIsOpen(false)}
+              className="text-black px-4 py-3 rounded-lg transition-colors duration-300 text-center flex items-center justify-center gap-2"
+              style={{ backgroundColor: accentColor }}
+            >
+              <span className="material-symbols-outlined text-[20px]">person</span>
+              Mi Panel
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/booking"
+                onClick={() => setIsOpen(false)}
+                className="text-black px-4 py-3 rounded-lg transition-colors duration-300 text-center"
+                style={{ backgroundColor: accentColor }}
+              >
+                Reservar traslado
+              </Link>
+              <Link 
+                href="/login" 
+                onClick={() => setIsOpen(false)}
+                className="hover:text-[#D4AF37] transition-colors duration-300"
+              >
+                Ingresar
+              </Link>
+              <Link 
+                href="/register" 
+                onClick={() => setIsOpen(false)}
+                className="text-white px-4 py-3 rounded-lg border border-white/20 transition-colors duration-300 text-center"
+              >
+                Registrarse
+              </Link>
+            </>
+          )}
         </div>
       )}
     </div>
