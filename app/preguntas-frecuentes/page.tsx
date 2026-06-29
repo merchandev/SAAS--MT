@@ -107,7 +107,7 @@ export default function FrequentlyAskedQuestionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7fbff] text-[#082141]">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
@@ -120,11 +120,11 @@ export default function FrequentlyAskedQuestionsPage() {
 
       <main className="py-16 sm:py-20">
         <section className="mx-auto max-w-5xl px-6">
-          <div className="mb-8 rounded-3xl border border-blue-100 bg-white px-6 py-10 text-center shadow-xl shadow-blue-100/70 sm:px-12">
-            <h2 className="text-3xl font-black tracking-tight text-[#07509f]">
+          <div className="mb-8 rounded-3xl border border-gray-200 bg-white px-6 py-10 text-center shadow-md sm:px-12">
+            <h2 className="text-3xl font-black tracking-tight text-gray-900">
               Todo lo que necesitas saber antes de reservar
             </h2>
-            <p className="mx-auto mt-5 max-w-4xl text-lg leading-8 text-[#082141]/80">
+            <p className="mx-auto mt-5 max-w-4xl text-lg leading-8 text-gray-700">
               Hemos reunido las consultas más habituales sobre reservas, vehículos, aeropuertos, pagos,
               cancelaciones y atención al cliente para que encuentres la información de forma rápida y ordenada.
             </p>
@@ -135,18 +135,18 @@ export default function FrequentlyAskedQuestionsPage() {
               <details
                 key={item.question}
                 open
-                className="group overflow-hidden rounded-3xl border border-blue-200 bg-white shadow-lg shadow-blue-100/50"
+                className="group overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm"
               >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 border-b border-blue-100 px-5 py-5 text-left [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 border-b border-gray-100 px-5 py-5 text-left [&::-webkit-details-marker]:hidden">
                   <span className="flex min-w-0 items-center gap-4">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-black text-[#082141]">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#D4AF37]/10 text-sm font-black text-[#D4AF37]">
                       {String(index + 1).padStart(2, "0")}
                     </span>
-                    <span className="text-lg font-black text-[#082141]">{item.question}</span>
+                    <span className="text-lg font-black text-gray-900">{item.question}</span>
                   </span>
-                  <Minus className="h-5 w-5 shrink-0 text-[#082141]" aria-hidden="true" />
+                  <Minus className="h-5 w-5 shrink-0 text-gray-900" aria-hidden="true" />
                 </summary>
-                <div className="space-y-4 px-5 py-5 pl-[5.25rem] text-base leading-8 text-[#082141]/90 max-sm:pl-5">
+                <div className="space-y-4 px-5 py-5 pl-[5.25rem] text-base leading-8 text-gray-800 max-sm:pl-5">
                   {item.answer.map((line) => (
                     <p key={line}>{line}</p>
                   ))}

@@ -16,15 +16,15 @@ export default function MarketingHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="absolute inset-x-0 top-0 z-50 pt-6">
-      <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-gray-200 bg-white/90 px-5 py-3 shadow-md backdrop-blur-md lg:px-9">
+    <header className="fixed inset-x-0 top-0 z-50 pt-4">
+      <div className="mx-auto flex w-[calc(100%-2rem)] max-w-7xl items-center justify-between rounded-lg border border-white/15 bg-black/55 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-6">
         <Link href="/" className="flex items-center gap-2 transition hover:opacity-80">
           <MarketingLogo />
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm font-bold text-gray-700 lg:flex">
+        <nav className="hidden items-center gap-7 text-sm font-semibold text-white/85 lg:flex">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="transition-colors hover:text-gray-900">
+            <Link key={item.href} href={item.href} className="transition-colors hover:text-[#D4AF37]">
               {item.label}
             </Link>
           ))}
@@ -33,7 +33,7 @@ export default function MarketingHeader() {
         <div className="hidden items-center gap-4 lg:flex">
           <button
             type="button"
-            className="inline-flex h-11 items-center gap-1.5 rounded-full border border-gray-200 px-4 text-sm font-bold text-gray-700 transition hover:bg-gray-50"
+            className="inline-flex h-11 items-center gap-1.5 rounded-full border border-white/20 px-4 text-sm font-bold text-white transition hover:bg-white/10"
           >
             <span className="material-symbols-outlined text-[18px]" aria-hidden="true">language</span>
             Idioma
@@ -41,7 +41,7 @@ export default function MarketingHeader() {
           </button>
           <Link
              href="/booking"
-             className="inline-flex h-11 items-center justify-center rounded-full bg-gray-900 px-6 text-sm font-bold text-white shadow-md transition hover:bg-gray-800"
+             className="inline-flex h-11 items-center justify-center rounded-full bg-[#D4AF37] px-6 text-sm font-bold text-gray-900 shadow-md transition hover:bg-[#C5A059]"
           >
              Reservar ahora
           </Link>
@@ -49,7 +49,7 @@ export default function MarketingHeader() {
 
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 text-gray-900 lg:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white lg:hidden"
         >
           <span className="material-symbols-outlined text-[24px]" aria-hidden="true">
             {isMenuOpen ? "close" : "menu"}

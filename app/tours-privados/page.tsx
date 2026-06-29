@@ -70,7 +70,7 @@ export default function PrivateToursPage() {
         <section className="bg-white py-20 sm:py-24">
           <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1fr_420px] lg:items-start">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-blue-600">Sobre el servicio</p>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Sobre el servicio</p>
               <h2 className="mt-4 text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">Tours privados a tu ritmo</h2>
               <p className="mt-5 max-w-3xl text-lg leading-8 text-gray-600">
                 Organizamos tours privados para viajeros que quieren conocer Barcelona y Cataluña con
@@ -90,21 +90,21 @@ export default function PrivateToursPage() {
             </div>
 
             <aside className="rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-lg">
-              <Map className="h-10 w-10 text-blue-600" aria-hidden="true" />
+              <Map className="h-10 w-10 text-[#D4AF37]" aria-hidden="true" />
               <h2 className="mt-5 text-2xl font-black text-gray-900">Resumen</h2>
               <div className="my-8 h-px bg-gray-200" />
               <h3 className="font-black text-gray-900">¿Qué incluye?</h3>
               <ul className="mt-5 space-y-4 text-base font-bold text-gray-700">
                 <li className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-600" />
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
                   Rutas personalizadas
                 </li>
                 <li className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-600" />
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
                   Vehículos de lujo
                 </li>
                 <li className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-blue-600" />
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
                   Chófer local experto
                 </li>
               </ul>
@@ -123,7 +123,7 @@ export default function PrivateToursPage() {
         <section className="bg-gray-50 py-20 text-gray-900 sm:py-24">
           <div className="mx-auto max-w-7xl px-6">
             <div className="mx-auto mb-12 max-w-3xl text-center">
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-blue-600">Destinos destacados</p>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Destinos destacados</p>
               <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">
                 Elige tu ruta privada desde Barcelona
               </h2>
@@ -140,10 +140,10 @@ export default function PrivateToursPage() {
                   className="rounded-3xl border border-gray-200 bg-white p-7 shadow-sm transition hover:shadow-md"
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37]">
                       <Icon className="h-6 w-6" aria-hidden="true" />
                     </div>
-                    <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-2 text-xs font-black text-blue-600">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[#D4AF37]/10 px-3 py-2 text-xs font-black text-[#D4AF37]">
                       <Clock className="h-4 w-4" aria-hidden="true" />
                       {duration}
                     </span>

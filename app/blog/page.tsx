@@ -51,7 +51,7 @@ const guides = [
 
 export default function BlogPage() {
   return (
-    <div className="min-h-screen bg-white text-[#082141]">
+    <div className="min-h-screen bg-white text-gray-900">
       <PageHero
         eyebrow="Blog"
         title="Guías de movilidad premium"
@@ -63,10 +63,10 @@ export default function BlogPage() {
           <div className="mx-auto max-w-7xl px-6">
             <div className="mb-12 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#075cbe]">Últimos artículos</p>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Últimos artículos</p>
                 <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">Consejos antes de viajar</h2>
               </div>
-              <p className="max-w-xl text-base leading-7 text-[#082141]/70">
+              <p className="max-w-xl text-base leading-7 text-gray-600">
                 Contenido pensado para viajeros particulares, empresas, grupos y clientes premium que buscan una
                 experiencia de transporte clara, puntual y sin sorpresas.
               </p>
@@ -74,21 +74,21 @@ export default function BlogPage() {
 
             <div className="grid gap-6 lg:grid-cols-3">
               {posts.map((post) => (
-                <article key={post.title} className="overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-xl shadow-blue-100/60">
+                <article key={post.title} className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition">
                   <div className="relative aspect-[16/10]">
                     <Image src={post.image} alt={post.title} fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover" />
                   </div>
                   <div className="p-6">
-                    <div className="flex flex-wrap gap-3 text-xs font-black uppercase tracking-[0.1em] text-[#075cbe]">
+                    <div className="flex flex-wrap gap-3 text-xs font-black uppercase tracking-[0.1em] text-[#D4AF37]">
                       <span>{post.category}</span>
-                      <span className="inline-flex items-center gap-1 text-[#082141]/50">
+                      <span className="inline-flex items-center gap-1 text-gray-500">
                         <Clock className="h-4 w-4" aria-hidden="true" />
                         {post.readTime}
                       </span>
                     </div>
                     <h3 className="mt-4 text-2xl font-black tracking-tight">{post.title}</h3>
-                    <p className="mt-4 text-base leading-7 text-[#082141]/70">{post.excerpt}</p>
-                    <Link href="/contacto" className="mt-6 inline-flex items-center gap-2 text-sm font-black text-[#075cbe]">
+                    <p className="mt-4 text-base leading-7 text-gray-600">{post.excerpt}</p>
+                    <Link href="/contacto" className="mt-6 inline-flex items-center gap-2 text-sm font-black text-[#D4AF37] hover:text-gray-900 transition">
                       Consultar este servicio
                       <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </Link>
@@ -99,20 +99,20 @@ export default function BlogPage() {
           </div>
         </section>
 
-        <section className="bg-[#f7fbff] py-20 sm:py-24">
+        <section className="bg-gray-50 py-20 sm:py-24">
           <div className="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
             <div>
-              <Newspaper className="h-12 w-12 text-[#075cbe]" aria-hidden="true" />
+              <Newspaper className="h-12 w-12 text-[#D4AF37]" aria-hidden="true" />
               <h2 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl">Temas que encontrarás en el blog</h2>
-              <p className="mt-5 text-lg leading-8 text-[#082141]/70">
+              <p className="mt-5 text-lg leading-8 text-gray-600">
                 Publicamos guías sencillas para elegir mejor tu transporte privado y preparar desplazamientos
                 importantes con más seguridad.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {guides.map((guide) => (
-                <div key={guide} className="rounded-2xl border border-blue-100 bg-white p-6 shadow-lg shadow-blue-100/60">
-                  <CalendarDays className="h-6 w-6 text-[#075cbe]" aria-hidden="true" />
+                <div key={guide} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                  <CalendarDays className="h-6 w-6 text-[#D4AF37]" aria-hidden="true" />
                   <h3 className="mt-4 text-lg font-black">{guide}</h3>
                 </div>
               ))}
