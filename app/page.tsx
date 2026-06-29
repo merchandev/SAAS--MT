@@ -320,7 +320,7 @@ export default async function HomePage() {
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/booking"
-                  className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-brand-blue shadow-2xl transition hover:-translate-y-1 hover:shadow-[var(--brand-accent)]/30"
+                  className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-brand-blue shadow-lg transition hover:-translate-y-1"
                   style={{ backgroundColor: accentColor }}
                 >
                   Reservar traslado
@@ -380,13 +380,13 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section id="como-funciona" className="bg-brand-blue py-20 text-white sm:py-28 relative">
+        <section id="como-funciona" className="bg-gray-50 py-20 text-gray-900 sm:py-28 relative">
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
               <div>
                 <p className="mb-3 text-sm font-semibold uppercase text-[#D4AF37]">Cómo funciona</p>
                 <h2 className="text-3xl font-semibold sm:text-4xl">Reserve su chófer privado en Barcelona sin complicaciones</h2>
-                <p className="mt-5 leading-8 text-white/70">
+                <p className="mt-5 leading-8 text-gray-600">
                   MeTransfers organiza cada servicio con información clara: ruta, horario, tipo de
                   vehículo, pasajeros, equipaje y condiciones aplicables antes de confirmar.
                 </p>
@@ -394,12 +394,12 @@ export default async function HomePage() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 {steps.map((step, index) => (
-                  <article key={step.title} className="rounded-lg border border-white/10 bg-white/10 p-6">
-                    <span className="mb-5 flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sm font-bold text-gray-950">
+                  <article key={step.title} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                    <span className="mb-5 flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-950">
                       {index + 1}
                     </span>
                     <h3 className="text-xl font-semibold">{step.title}</h3>
-                    <p className="mt-3 leading-7 text-white/70">{step.description}</p>
+                    <p className="mt-3 leading-7 text-gray-600">{step.description}</p>
                   </article>
                 ))}
               </div>
@@ -474,13 +474,13 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section id="rutas" className="bg-brand-blue py-20 text-white sm:py-28">
+        <section id="rutas" className="bg-gray-50 py-20 text-gray-900 sm:py-28">
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
               <div>
                 <p className="mb-3 text-sm font-semibold uppercase text-[#D4AF37]">Rutas destacadas</p>
                 <h2 className="text-3xl font-semibold sm:text-4xl">Traslados privados desde Barcelona</h2>
-                <p className="mt-5 leading-8 text-white/70">
+                <p className="mt-5 leading-8 text-gray-600">
                   Reserve transporte privado desde aeropuertos, estaciones, hoteles, puertos, oficinas,
                   domicilios particulares o cualquier dirección que necesite.
                 </p>
@@ -488,7 +488,7 @@ export default async function HomePage() {
 
               <div className="grid gap-4">
                 {routes.map((route) => (
-                  <article key={route} className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-5 transition hover:bg-white/10">
+                  <article key={route} className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md">
                     <span className="material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">location_on</span>
                     <h3 className="text-lg font-semibold">{route}</h3>
                   </article>
@@ -534,7 +534,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/booking"
-              className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-brand-blue shadow-lg shadow-[var(--brand-accent)]/20 transition hover:-translate-y-1"
+              className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-brand-blue shadow-lg transition hover:-translate-y-1"
               style={{ backgroundColor: accentColor }}
             >
               Ver disponibilidad
