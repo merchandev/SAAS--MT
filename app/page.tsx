@@ -114,22 +114,22 @@ const fleet = [
 const routes = [
   {
     label: "Barcelona - Aeropuerto Josep Tarradellas Barcelona-El Prat",
-    origin: "Barcelona, España",
+    origin: "",
     destination: "Aeropuerto Josep Tarradellas Barcelona-El Prat",
   },
   {
     label: "Barcelona - Puerto de cruceros y terminales marítimas",
-    origin: "Barcelona, España",
+    origin: "",
     destination: "Puerto de Barcelona, Terminal de Cruceros",
   },
   {
     label: "Barcelona - Sitges, Tarragona y Costa Brava",
-    origin: "Barcelona, España",
+    origin: "",
     destination: "Sitges, España",
   },
   {
     label: "Barcelona - Andorra y traslados de larga distancia",
-    origin: "Barcelona, España",
+    origin: "",
     destination: "Andorra la Vella, Andorra",
   },
 ];
