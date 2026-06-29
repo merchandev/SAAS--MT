@@ -18,6 +18,7 @@
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.0.9",
     "@react-pdf/renderer": "^4.5.1",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/pg": "^8.20.0",
     "@types/react-datepicker": "^6.2.0",
     "bcryptjs": "^3.0.3",
@@ -53,7 +54,8 @@
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.9",
+    "xml2js": "^0.6.2"
   },
   "prisma": {
     "seed": "node node_modules/ts-node/dist/bin.js prisma/seed.ts"

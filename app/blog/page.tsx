@@ -15,32 +15,12 @@ export const metadata: Metadata = {
   },
 };
 
-const posts = [
-  {
-    title: "Cómo reservar un traslado privado en Barcelona sin complicaciones",
-    excerpt:
-      "Qué datos preparar, cómo elegir vehículo y por qué conviene reservar con antelación cuando viajas desde o hacia el aeropuerto.",
-    category: "Reservas",
-    readTime: "4 min",
-    image: "/images/hero_light.png",
-  },
-  {
-    title: "Transfer Barcelona-El Prat: claves para llegar puntual",
-    excerpt:
-      "Recomendaciones prácticas para vuelos tempranos, llegadas internacionales, equipaje y recogidas con conductor privado.",
-    category: "Aeropuerto",
-    readTime: "5 min",
-    image: "/images/chauffeur_day.png",
-  },
-  {
-    title: "Tours privados desde Barcelona: Montserrat, Girona y Costa Brava",
-    excerpt:
-      "Ideas de rutas a medida para descubrir Cataluña en vehículo premium, con paradas flexibles y chófer profesional.",
-    category: "Tours",
-    readTime: "6 min",
-    image: "/images/fleet_light.png",
-  },
-];
+import postsData from "@/data/posts.json";
+
+// Ordenar por fecha descendente
+const sortedPosts = [...postsData].sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+// Mostrar los últimos 15
+const posts = sortedPosts.slice(0, 15);
 
 const guides = [
   "Traslados desde hoteles, puertos y estaciones",
@@ -74,22 +54,25 @@ export default function BlogPage() {
 
             <div className="grid gap-6 lg:grid-cols-3">
               {posts.map((post) => (
-                <article key={post.title} className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition">
-                  <div className="relative aspect-[16/10]">
-                    <Image src={post.image} alt={post.title} fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover" />
+                <article key={post.slug} className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition">
+                  <div className="relative aspect-[16/10] bg-gray-100 flex items-center justify-center">
+                     {/* Imagen genérica ya que el XML no tiene imágenes destacadas fáciles de extraer */}
+                    <div className="text-[#D4AF37] opacity-20">
+                      <Newspaper className="h-20 w-20" />
+                    </div>
                   </div>
                   <div className="p-6">
                     <div className="flex flex-wrap gap-3 text-xs font-black uppercase tracking-[0.1em] text-[#D4AF37]">
                       <span>{post.category}</span>
                       <span className="inline-flex items-center gap-1 text-gray-500">
                         <Clock className="h-4 w-4" aria-hidden="true" />
-                        {post.readTime}
+                        5 min
                       </span>
                     </div>
-                    <h3 className="mt-4 text-2xl font-black tracking-tight">{post.title}</h3>
-                    <p className="mt-4 text-base leading-7 text-gray-600">{post.excerpt}</p>
-                    <Link href="/contacto" className="mt-6 inline-flex items-center gap-2 text-sm font-black text-[#D4AF37] hover:text-gray-900 transition">
-                      Consultar este servicio
+                    <h3 className="mt-4 text-2xl font-black tracking-tight line-clamp-3">{post.title}</h3>
+                    <p className="mt-4 text-base leading-7 text-gray-600 line-clamp-3">{post.excerpt}</p>
+                    <Link href={`/blog/${post.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-black text-[#D4AF37] hover:text-gray-900 transition">
+                      Leer artículo
                       <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </Link>
                   </div>
