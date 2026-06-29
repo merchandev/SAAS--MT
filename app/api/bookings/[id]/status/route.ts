@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/modules/auth/permissions";
+import { requireRoleApi } from "@/modules/auth/permissions";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -40,7 +40,11 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  const auth = await requireRoleApi(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+  const { session } = auth;
   const { id } = await params;
   const body = await request.json();
   const parsed = statusUpdateSchema.safeParse(body);

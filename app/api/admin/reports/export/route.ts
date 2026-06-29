@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/modules/auth/permissions";
+import { requireRoleApi } from "@/modules/auth/permissions";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -11,7 +11,10 @@ function csvValue(value: unknown) {
 }
 
 export async function GET() {
-  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  const auth = await requireRoleApi(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
 
   const bookings = await prisma.booking.findMany({
     where: { deletedAt: null },

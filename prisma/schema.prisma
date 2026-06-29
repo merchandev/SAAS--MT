@@ -32,11 +32,11 @@ model User {
   // Relaciones
   driverProfile   Driver?
   customerProfile Customer?
-  
-  hotelId         String?
-  hotel           Hotel?   @relation(fields: [hotelId], references: [id])
-  agencyId        String?
-  agency          Agency?  @relation(fields: [agencyId], references: [id])
+
+  hotelId  String?
+  hotel    Hotel?  @relation(fields: [hotelId], references: [id])
+  agencyId String?
+  agency   Agency? @relation(fields: [agencyId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,9 +56,9 @@ model Customer {
   country           String?
   preferredLanguage String? @default("en")
 
-  bookings Booking[]
-  invoices Invoice[]
-  reviews  Review[]
+  bookings    Booking[]
+  invoices    Invoice[]
+  reviews     Review[]
   suggestions CustomerSuggestion[]
 
   totalSpent    Decimal @default(0) @db.Decimal(10, 2)
@@ -102,7 +102,8 @@ model Vehicle {
   isActive  Boolean @default(true)
   sortOrder Int     @default(0)
 
-  bookings Booking[]
+  bookings     Booking[]
+  availability VehicleAvailability[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -121,8 +122,8 @@ model Hotel {
   email       String?
   phone       String?
 
-  address     String?
-  placeId     String?
+  address        String?
+  placeId        String?
   routesSettings Json? // Stores predefined destinations and prices
 
   commissionValue Decimal @default(0) @db.Decimal(10, 2)
@@ -184,10 +185,43 @@ model Driver {
   currentLng         Float?
   lastLocationUpdate DateTime?
 
-  bookings Booking[]
+  bookings     Booking[]
+  availability DriverAvailability[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model DriverAvailability {
+  id       String @id @default(uuid())
+  driverId String
+  driver   Driver @relation(fields: [driverId], references: [id])
+
+  startsAt DateTime
+  endsAt   DateTime
+  status   String
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([driverId, startsAt, endsAt])
+}
+
+model VehicleAvailability {
+  id        String  @id @default(uuid())
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  startsAt DateTime
+  endsAt   DateTime
+  status   String
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vehicleId, startsAt, endsAt])
 }
 
 // ==========================================
@@ -323,11 +357,11 @@ model Booking {
   bookingStatus BookingStatus @default(PENDING_PAYMENT)
   paymentStatus PaymentStatus @default(PENDING)
 
-  customerNotes String? @db.Text
-  internalNotes String? @db.Text
+  customerNotes String?   @db.Text
+  internalNotes String?   @db.Text
   deletedAt     DateTime?
   deletedBy     String?
-  deletedReason String? @db.Text
+  deletedReason String?   @db.Text
 
   payments      Payment[]
   statusHistory BookingStatusHistory[]
@@ -338,6 +372,15 @@ model Booking {
   updatedAt DateTime @updatedAt
 
   @@index([deletedAt])
+  @@index([bookingStatus])
+  @@index([serviceDate])
+  @@index([driverId])
+  @@index([hotelId])
+  @@index([agencyId])
+  @@index([customerId])
+  @@index([createdAt])
+  @@index([bookingStatus, serviceDate])
+  @@index([driverId, serviceDate])
 }
 
 // ==========================================

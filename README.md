@@ -30,7 +30,12 @@ SaaS B2B/B2C Platform for Private Transfer Bookings, Vehicle Fleet, Hotel QR Ref
 
 3. **Start Local Database**
    ```bash
-   docker compose up -d postgres pgadmin
+   docker compose up -d postgres
+   ```
+
+   PgAdmin is optional and bound to localhost through the development profile:
+   ```bash
+   docker compose --profile dev up -d pgadmin
    ```
 
 4. **Initialize Database Schema**
@@ -45,7 +50,7 @@ SaaS B2B/B2C Platform for Private Transfer Bookings, Vehicle Fleet, Hotel QR Ref
    ```
 
 Visit `http://localhost:3000` to see the application.
-PgAdmin is available at `http://localhost:5050`.
+PgAdmin is available at `http://localhost:5051` when started with the `dev` profile.
 
 ## Production Docker
 
@@ -55,7 +60,7 @@ Build and start the full stack:
 docker compose up -d --build
 ```
 
-The web app is exposed on `http://localhost:3100` by default. On the Hostinger VPS, set `NEXT_PUBLIC_APP_URL` to the public URL, for example `http://72.61.77.167:3100` or your domain. PgAdmin is exposed on `http://localhost:5051` by default. PostgreSQL is internal to the Compose network and is not published to the host.
+The web app is exposed on `http://localhost:3100` by default. On the Hostinger VPS, set `NEXT_PUBLIC_APP_URL` to the public URL, for example `http://72.61.77.167:3100` or your domain. PostgreSQL is internal to the Compose network and is not published to the host. PgAdmin is not started by default in production; if enabled with `--profile dev`, it binds to `127.0.0.1:${PGADMIN_PORT:-5051}` only.
 
 For Hostinger Docker Manager, deploy from the GitHub repository:
 

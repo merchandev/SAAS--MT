@@ -34,20 +34,34 @@ export default function MobileMenu({ accentColor = "#D4AF37" }: { accentColor?: 
           >
             Cómo funciona
           </a>
-          <a
-            href="#flota"
+          <Link
+            href="/tours-privados"
             onClick={() => setIsOpen(false)}
             className="hover:text-[#D4AF37] transition-colors duration-300"
           >
-            Flota
-          </a>
-          <a
-            href="#faq"
+            Tours
+          </Link>
+          <Link
+            href="/blog"
+            onClick={() => setIsOpen(false)}
+            className="hover:text-[#D4AF37] transition-colors duration-300"
+          >
+            Blog
+          </Link>
+          <Link
+            href="/preguntas-frecuentes"
             onClick={() => setIsOpen(false)}
             className="hover:text-[#D4AF37] transition-colors duration-300"
           >
             FAQ
-          </a>
+          </Link>
+          <Link
+            href="/contacto"
+            onClick={() => setIsOpen(false)}
+            className="hover:text-[#D4AF37] transition-colors duration-300"
+          >
+            Contacto
+          </Link>
           
           <div className="h-px bg-white/20 w-full my-2"></div>
 

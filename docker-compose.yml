@@ -14,12 +14,13 @@ services:
       HOSTNAME: 0.0.0.0
       DATABASE_URL: postgresql://${POSTGRES_USER:-metransfers}:${POSTGRES_PASSWORD:-change_me}@postgres:5432/${POSTGRES_DB:-metransfers_saas}?schema=public
       JWT_SECRET: ${JWT_SECRET:-change_me_jwt_secret}
+      AUTH_COOKIE_SECURE: ${AUTH_COOKIE_SECURE:-}
       RECEIPT_TOKEN_SECRET: ${RECEIPT_TOKEN_SECRET:-}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://72.61.77.167:3100}
       GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
       NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}
       MAPS_DISTANCE_CACHE_TTL_HOURS: ${MAPS_DISTANCE_CACHE_TTL_HOURS:-6}
-      RATE_LIMIT_BACKEND: ${RATE_LIMIT_BACKEND:-memory}
+      RATE_LIMIT_BACKEND: ${RATE_LIMIT_BACKEND:-database}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       REDSYS_URL: ${REDSYS_URL:-https://sis-t.redsys.es:25443/sis/realizarPago}
       REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-change_me_redsys_merchant_code}
@@ -60,12 +61,13 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
+    profiles: ["dev"]
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@metransfers.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-change_me}
     ports:
-      - "0.0.0.0:${PGADMIN_PORT:-5051}:80"
+      - "127.0.0.1:${PGADMIN_PORT:-5051}:80"
     depends_on:
       - postgres
     healthcheck:

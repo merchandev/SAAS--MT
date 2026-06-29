@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { requireRole } from "@/modules/auth/permissions";
+import { requireRoleApi } from "@/modules/auth/permissions";
 import { emailsService } from "@/modules/notifications/emails.service";
 
 import { prisma } from "@/lib/prisma";
@@ -15,7 +15,10 @@ const notificationSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  const auth = await requireRoleApi(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
 
   const body = await request.json();
   const parsed = notificationSchema.safeParse(body);

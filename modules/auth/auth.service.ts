@@ -7,6 +7,10 @@ if (!JWT_SECRET) {
   throw new Error("FATAL: JWT_SECRET environment variable is not set.");
 }
 const key = new TextEncoder().encode(JWT_SECRET);
+const authCookieSecure =
+  process.env.AUTH_COOKIE_SECURE === "true" ||
+  (process.env.AUTH_COOKIE_SECURE !== "false" &&
+    process.env.NODE_ENV === "production");
 
 export interface SessionPayload {
   userId: string;
@@ -44,7 +48,9 @@ export const authService = {
       });
       return payload as unknown as SessionPayload;
     } catch (error) {
-      console.error("[verifyToken] JWT verification failed:", error);
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[verifyToken] JWT verification failed:", error);
+      }
       return null;
     }
   },
@@ -54,15 +60,13 @@ export const authService = {
     const cookieStore = await cookies();
     cookieStore.delete("session");
     
-    // Forzamos secure a false para evitar que el navegador rechace la cookie en HTTP
     cookieStore.set("auth_token", token, {
       httpOnly: true,
-      secure: false, 
+      secure: authCookieSecure,
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24, // 24 hours
     });
-    console.log("[setSessionCookie] Cookie 'auth_token' sent to browser.");
   },
 
   async deleteSessionCookie() {
@@ -74,13 +78,9 @@ export const authService = {
   async getSession(): Promise<SessionPayload | null> {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth_token")?.value;
-    console.log("[getSession] Token present in cookie?", !!token);
     if (!token) {
-      console.log("[getSession] No auth_token cookie found.");
       return null;
     }
-    const session = await this.verifyToken(token);
-    console.log("[getSession] Session valid?", !!session);
-    return session;
+    return await this.verifyToken(token);
   }
 };

@@ -12,11 +12,11 @@ import {
   MapPin,
   Plane,
   Route,
-  Star,
   Users,
 } from "lucide-react";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 import MobileMenu from "@/components/home/MobileMenu";
+import MarketingFooter from "@/components/marketing/MarketingFooter";
 import { settingsQueries } from "@/modules/settings/settings.queries";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +24,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Traslados y tours en Barcelona | Chófer privado MeTransfers",
   description:
-    "Tu chófer privado en Barcelona para traslados al aeropuerto, tours y eventos corporativos. Vehículos de alta gama y confirmación instantánea en menos de 2 minutos.",
+    "Tu chófer privado en Barcelona para traslados al aeropuerto, tours y eventos corporativos. Vehículos de alta gama y reserva online con confirmación del servicio.",
   keywords: [
     "traslados privados Barcelona",
     "tours en Barcelona",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Traslados y tours en Barcelona | MeTransfers",
     description:
-      "Reserva tu chófer privado en Barcelona con confirmación instantánea en menos de 2 minutos.",
+      "Reserva tu chófer privado en Barcelona con una experiencia online rápida y confirmación del servicio.",
   },
   robots: {
     index: true,
@@ -276,15 +276,18 @@ export default async function HomePage() {
           <a href="#servicios" className="transition-colors hover:text-[#D4AF37]">
             Servicios
           </a>
-          <a href="#como-funciona" className="transition-colors hover:text-[#D4AF37]">
-            Cómo funciona
-          </a>
-          <a href="#flota" className="transition-colors hover:text-[#D4AF37]">
-            Flota
-          </a>
-          <a href="#faq" className="transition-colors hover:text-[#D4AF37]">
+          <Link href="/tours-privados" className="transition-colors hover:text-[#D4AF37]">
+            Tours
+          </Link>
+          <Link href="/blog" className="transition-colors hover:text-[#D4AF37]">
+            Blog
+          </Link>
+          <Link href="/preguntas-frecuentes" className="transition-colors hover:text-[#D4AF37]">
             FAQ
-          </a>
+          </Link>
+          <Link href="/contacto" className="transition-colors hover:text-[#D4AF37]">
+            Contacto
+          </Link>
           <Link
             href="/booking"
             className="inline-flex items-center gap-2 rounded-lg px-4 py-2 font-bold text-black transition-transform hover:-translate-y-0.5"
@@ -321,8 +324,8 @@ export default async function HomePage() {
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
                 Tu chófer privado en Barcelona te espera. Vehículos de alta gama para traslados al
-                aeropuerto, tours y eventos corporativos. Asegura tu viaje con confirmación
-                instantánea en menos de 2 minutos.
+                aeropuerto, tours y eventos corporativos. Asegura tu viaje con reserva online rápida
+                y confirmación del servicio.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -345,7 +348,7 @@ export default async function HomePage() {
 
               <div className="mt-10 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
                 {[
-                  ["< 2 min", "Confirmación online"],
+                  ["Online", "Reserva rápida"],
                   ["24/7", "Reservas anticipadas"],
                   ["BCN", "Aeropuerto, puerto y hoteles"],
                 ].map(([value, label]) => (
@@ -552,23 +555,7 @@ export default async function HomePage() {
         </section>
       </main>
 
-      <footer className="border-t border-gray-200 bg-white py-10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 text-sm text-gray-600 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-3">
-            <Star className="h-5 w-5 text-[#9B7B20]" aria-hidden="true" />
-            <span className="font-semibold uppercase text-gray-950">{brandName}</span>
-          </div>
-          <p>© {new Date().getFullYear()} {brandName} Premium Mobility. Todos los derechos reservados.</p>
-          <div className="flex gap-4">
-            <Link href="/login" className="hover:text-gray-950">
-              Acceso clientes
-            </Link>
-            <Link href="/register" className="hover:text-gray-950">
-              Registro
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <MarketingFooter />
     </div>
   );
 }
