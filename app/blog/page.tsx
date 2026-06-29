@@ -64,10 +64,6 @@ export default function BlogPage() {
                   <div className="p-6">
                     <div className="flex flex-wrap gap-3 text-xs font-black uppercase tracking-[0.1em] text-[#D4AF37]">
                       <span>{post.category}</span>
-                      <span className="inline-flex items-center gap-1 text-gray-500">
-                        <Clock className="h-4 w-4" aria-hidden="true" />
-                        5 min
-                      </span>
                     </div>
                     <h3 className="mt-4 text-2xl font-black tracking-tight line-clamp-3">{post.title}</h3>
                     <p className="mt-4 text-base leading-7 text-gray-600 line-clamp-3">{post.excerpt}</p>
