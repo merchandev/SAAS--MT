@@ -12,21 +12,14 @@ export default function MobileMenu({ accentColor = "#D4AF37" }: { accentColor?: 
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className="text-white p-2 focus:outline-none"
-        aria-label="Toggle menu"
+        aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </button>
 
       {/* Mobile Dropdown */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-4 bg-black/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col gap-6 font-bold text-sm tracking-widest uppercase text-white/90">
-          <Link 
-            href="/booking" 
-            onClick={() => setIsOpen(false)}
-            className="hover:text-[#D4AF37] transition-colors duration-300"
-          >
-            Reservar
-          </Link>
+        <div className="absolute top-full left-0 right-0 mt-4 bg-black/95 backdrop-blur-xl border border-white/10 rounded-lg p-6 shadow-2xl flex flex-col gap-5 font-bold text-sm uppercase text-white/90">
           <a 
             href="#servicios" 
             onClick={() => setIsOpen(false)}
@@ -34,15 +27,38 @@ export default function MobileMenu({ accentColor = "#D4AF37" }: { accentColor?: 
           >
             Servicios
           </a>
-          <a 
-            href="#flota" 
+          <a
+            href="#como-funciona"
+            onClick={() => setIsOpen(false)}
+            className="hover:text-[#D4AF37] transition-colors duration-300"
+          >
+            Cómo funciona
+          </a>
+          <a
+            href="#flota"
             onClick={() => setIsOpen(false)}
             className="hover:text-[#D4AF37] transition-colors duration-300"
           >
             Flota
           </a>
+          <a
+            href="#faq"
+            onClick={() => setIsOpen(false)}
+            className="hover:text-[#D4AF37] transition-colors duration-300"
+          >
+            FAQ
+          </a>
           
           <div className="h-px bg-white/20 w-full my-2"></div>
+
+          <Link
+            href="/booking"
+            onClick={() => setIsOpen(false)}
+            className="text-black px-4 py-3 rounded-lg transition-colors duration-300 text-center"
+            style={{ backgroundColor: accentColor }}
+          >
+            Reservar traslado
+          </Link>
           
           <Link 
             href="/login" 
@@ -54,8 +70,7 @@ export default function MobileMenu({ accentColor = "#D4AF37" }: { accentColor?: 
           <Link 
             href="/register" 
             onClick={() => setIsOpen(false)}
-            className="text-white px-4 py-3 rounded-xl transition-colors duration-300 text-center"
-            style={{ backgroundColor: accentColor }}
+            className="text-white px-4 py-3 rounded-lg border border-white/20 transition-colors duration-300 text-center"
           >
             Registrarse
           </Link>
