@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireCustomerProfile } from "./customer.auth";
+import { authService } from "@/modules/auth/auth.service";
 import {
   customerProfileSchema,
   customerReviewSchema,
@@ -103,4 +104,71 @@ export async function createCustomerSuggestionAction(input: CustomerSuggestionIn
 
   revalidatePath("/customer/dashboard");
   return { success: true };
+}
+
+export async function getSavedAddressesAction() {
+  try {
+    const { customer } = await requireCustomerProfile();
+    const addresses = await prisma.customerAddress.findMany({
+      where: { customerId: customer.id },
+      orderBy: { createdAt: "desc" },
+    });
+    return { success: true, data: addresses };
+  } catch (error) {
+    return { error: "No se pudieron recuperar las direcciones guardadas" };
+  }
+}
+
+export async function getOptionalSavedAddressesAction() {
+  try {
+    const session = await authService.getSession();
+    if (!session || session.role !== "CUSTOMER") return { success: true, data: [] };
+
+    const customer = await prisma.customer.findUnique({
+      where: { userId: session.userId }
+    });
+    if (!customer) return { success: true, data: [] };
+
+    const addresses = await prisma.customerAddress.findMany({
+      where: { customerId: customer.id },
+      orderBy: { createdAt: "desc" },
+    });
+    return { success: true, data: addresses };
+  } catch (error) {
+    return { success: true, data: [] };
+  }
+}
+
+export async function addSavedAddressAction(input: { label: string; address: string; placeId?: string; isDefault?: boolean }) {
+  try {
+    const { customer } = await requireCustomerProfile();
+    await prisma.customerAddress.create({
+      data: {
+        customerId: customer.id,
+        label: input.label,
+        address: input.address,
+        placeId: input.placeId,
+        isDefault: input.isDefault || false,
+      },
+    });
+    revalidatePath("/customer/dashboard");
+    revalidatePath("/booking");
+    return { success: true };
+  } catch (error) {
+    return { error: "No se pudo guardar la dirección" };
+  }
+}
+
+export async function deleteSavedAddressAction(id: string) {
+  try {
+    const { customer } = await requireCustomerProfile();
+    await prisma.customerAddress.deleteMany({
+      where: { id, customerId: customer.id },
+    });
+    revalidatePath("/customer/dashboard");
+    revalidatePath("/booking");
+    return { success: true };
+  } catch (error) {
+    return { error: "No se pudo eliminar la dirección" };
+  }
 }

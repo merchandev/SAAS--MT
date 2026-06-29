@@ -6,7 +6,9 @@ import {
   CustomerProfileForm,
   CustomerReviewForm,
   CustomerSuggestionForm,
+  CustomerAddressesForm,
 } from "./CustomerDashboardForms";
+import { getSavedAddressesAction } from "@/modules/customers/customer.actions";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +36,9 @@ export default async function CustomerDashboardPage() {
     serviceTime: booking.serviceTime,
     route: `${booking.originAddress} -> ${booking.destinationAddress}`,
   }));
+  
+  const savedAddressesResponse = await getSavedAddressesAction();
+  const savedAddresses = savedAddressesResponse.data || [];
 
   return (
     <main className="min-h-screen bg-gray-50 text-gray-950">
@@ -80,10 +85,19 @@ export default async function CustomerDashboardPage() {
           <div className="bg-white border rounded-lg p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-5">
               <MessageSquare className="h-5 w-5 text-[#AA8B2C]" />
-              <h2 className="text-lg font-semibold">Buzon de sugerencias</h2>
+              <h2 className="text-lg font-semibold">Buzón de sugerencias</h2>
             </div>
             <CustomerSuggestionForm />
           </div>
+        </section>
+
+        <section className="bg-white border rounded-lg p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-5">
+            <MapPinned className="h-5 w-5 text-[#AA8B2C]" />
+            <h2 className="text-lg font-semibold">Mis Direcciones Guardadas</h2>
+          </div>
+          <p className="text-sm text-gray-500 mb-6">Guarda aquí tus lugares frecuentes para usarlos rápidamente al hacer una nueva reserva.</p>
+          <CustomerAddressesForm addresses={savedAddresses} />
         </section>
 
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">

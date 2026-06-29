@@ -60,12 +60,25 @@ model Customer {
   invoices    Invoice[]
   reviews     Review[]
   suggestions CustomerSuggestion[]
+  addresses   CustomerAddress[]
 
   totalSpent    Decimal @default(0) @db.Decimal(10, 2)
   totalBookings Int     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model CustomerAddress {
+  id          String   @id @default(uuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  label       String
+  address     String
+  placeId     String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // ==========================================

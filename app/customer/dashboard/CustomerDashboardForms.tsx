@@ -8,6 +8,8 @@ import {
   createCustomerSuggestionAction,
   submitCustomerReviewAction,
   updateCustomerProfileAction,
+  addSavedAddressAction,
+  deleteSavedAddressAction,
 } from "@/modules/customers/customer.actions";
 
 type ProfileFormProps = {
@@ -222,5 +224,89 @@ export function CustomerSuggestionForm() {
         {pending ? "Enviando..." : "Enviar sugerencia"}
       </Button>
     </form>
+  );
+}
+
+export function CustomerAddressesForm({ addresses }: { addresses: any[] }) {
+  const router = useRouter();
+  const [message, setMessage] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+
+  async function onAdd(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPending(true);
+    setMessage(null);
+
+    const formData = new FormData(event.currentTarget);
+    const result = await addSavedAddressAction({
+      label: String(formData.get("label") ?? ""),
+      address: String(formData.get("address") ?? ""),
+      isDefault: formData.get("isDefault") === "on",
+    });
+
+    if (result.error) {
+      setMessage(result.error);
+    } else {
+      (event.target as HTMLFormElement).reset();
+      router.refresh();
+    }
+    setPending(false);
+  }
+
+  async function onDelete(id: string) {
+    if (!confirm("¿Seguro que quieres eliminar esta dirección?")) return;
+    setPending(true);
+    await deleteSavedAddressAction(id);
+    router.refresh();
+    setPending(false);
+  }
+
+  return (
+    <div className="space-y-6">
+      {message && <p className="text-sm font-medium text-red-600">{message}</p>}
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        {addresses.map((addr) => (
+          <div key={addr.id} className="p-4 border rounded-lg bg-gray-50 flex justify-between items-start">
+            <div>
+              <p className="font-semibold text-gray-900">{addr.label} {addr.isDefault && <span className="text-xs bg-[#D4AF37] text-white px-2 py-0.5 rounded ml-2">Predeterminada</span>}</p>
+              <p className="text-sm text-gray-600 mt-1">{addr.address}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onDelete(addr.id)}
+              disabled={pending}
+              className="text-red-500 hover:text-red-700 disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-[20px]">delete</span>
+            </button>
+          </div>
+        ))}
+        {addresses.length === 0 && (
+          <p className="text-sm text-gray-500 col-span-2">No tienes direcciones guardadas.</p>
+        )}
+      </div>
+
+      <form onSubmit={onAdd} className="bg-white border rounded-lg p-5 space-y-4">
+        <h4 className="font-semibold text-gray-900">Añadir nueva dirección</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label className="block space-y-1">
+            <span className="text-xs font-semibold uppercase text-gray-500">Etiqueta (ej: Casa, Oficina)</span>
+            <Input name="label" required placeholder="Casa" />
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs font-semibold uppercase text-gray-500">Dirección completa</span>
+            <Input name="address" required placeholder="Carrer de Mallorca 401, Barcelona" />
+          </label>
+        </div>
+        <label className="flex items-center gap-2">
+          <input type="checkbox" name="isDefault" className="rounded text-[#D4AF37] focus:ring-[#D4AF37]" />
+          <span className="text-sm text-gray-700">Marcar como predeterminada</span>
+        </label>
+        <Button type="submit" disabled={pending}>
+          {pending ? "Guardando..." : "Guardar Dirección"}
+        </Button>
+      </form>
+    </div>
   );
 }

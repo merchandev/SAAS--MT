@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createPublicBookingAction, getDistanceEstimationAction } from "@/modules/bookings/bookings.actions";
+import { getOptionalSavedAddressesAction } from "@/modules/customers/customer.actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,6 +36,7 @@ export default function BookingFormClient({
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -71,6 +73,16 @@ export default function BookingFormClient({
     const total = Math.max(base, Number(vehicle.minimumPrice));
     return formData.tripType === "ROUND_TRIP" ? (total * 2).toFixed(2) : total.toFixed(2);
   };
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      const res = await getOptionalSavedAddressesAction();
+      if (res.success && res.data) {
+        setSavedAddresses(res.data);
+      }
+    };
+    fetchAddresses();
+  }, []);
 
   useEffect(() => {
     // Si viene con origen y destino en la URL, auto-calcula la distancia para mostrar el mapa.
@@ -302,6 +314,42 @@ export default function BookingFormClient({
                   </div>
                 </label>
               </div>
+
+              {savedAddresses.length > 0 && (
+                <div className="bg-gray-50 border border-gray-100 rounded-lg p-4 mb-6">
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Tus Direcciones Guardadas</p>
+                  <div className="flex flex-wrap gap-2">
+                    {savedAddresses.map(addr => (
+                      <div key={addr.id} className="flex flex-col sm:flex-row gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="bg-white border-gray-300 text-gray-700 hover:text-[#D4AF37] hover:border-[#D4AF37]"
+                          onClick={() => {
+                            updateForm('originAddress', addr.address);
+                            if (addr.placeId) updateForm('originPlaceId', addr.placeId);
+                          }}
+                        >
+                          <span className="material-symbols-outlined text-[16px] mr-1">location_on</span>
+                          {addr.label} (Origen)
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="bg-white border-gray-300 text-gray-700 hover:text-[#D4AF37] hover:border-[#D4AF37]"
+                          onClick={() => {
+                            updateForm('destinationAddress', addr.address);
+                            if (addr.placeId) updateForm('destinationPlaceId', addr.placeId);
+                          }}
+                        >
+                          <span className="material-symbols-outlined text-[16px] mr-1">flag</span>
+                          {addr.label} (Destino)
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2 md:col-span-2">
