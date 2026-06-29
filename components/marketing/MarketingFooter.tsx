@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Camera, LockKeyhole, Mail, MapPin, MessageCircle, Phone, Star, Users } from "lucide-react";
 import MarketingLogo from "./MarketingLogo";
 
 const services = [
@@ -26,7 +25,7 @@ const legalLinks = [
 
 export default function MarketingFooter() {
   return (
-    <footer className="relative bg-[#061833] text-white">
+    <footer className="relative bg-brand-blue text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 lg:grid-cols-[1.2fr_0.9fr_0.9fr_1.1fr]">
         <div>
           <MarketingLogo className="mb-5" />
@@ -36,29 +35,29 @@ export default function MarketingFooter() {
           </p>
           <div className="mt-8 flex gap-3">
             {[
-              { href: "https://www.instagram.com/", label: "Instagram", Icon: Camera },
-              { href: "https://www.facebook.com/", label: "Facebook", Icon: Users },
-              { href: "https://wa.me/34662024136", label: "WhatsApp", Icon: MessageCircle },
-            ].map(({ href, label, Icon }) => (
+              { href: "https://www.instagram.com/", label: "Instagram", icon: "photo_camera" },
+              { href: "https://www.facebook.com/", label: "Facebook", icon: "group" },
+              { href: "https://wa.me/34662024136", label: "WhatsApp", icon: "chat" },
+            ].map(({ href, label, icon }) => (
               <a
                 key={label}
                 href={href}
                 aria-label={label}
-                className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white/80 transition hover:bg-white/15 hover:text-white"
+                className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 transition hover:bg-white/15 hover:text-white"
                 rel="noreferrer"
                 target="_blank"
               >
-                <Icon className="h-5 w-5" aria-hidden="true" />
+                <span className="material-symbols-outlined text-[20px]" aria-hidden="true">{icon}</span>
               </a>
             ))}
           </div>
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em]">Servicios</h2>
-          <nav className="mt-6 grid gap-4 text-sm font-bold text-white/85">
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-brand-gold">Servicios</h2>
+          <nav className="mt-6 grid gap-4 text-sm font-semibold text-white/85">
             {services.map((item) => (
-              <Link key={item.label} href={item.href} className="transition hover:text-white">
+              <Link key={item.label} href={item.href} className="transition hover:text-brand-gold hover:translate-x-1 inline-block w-fit">
                 {item.label}
               </Link>
             ))}
@@ -66,10 +65,10 @@ export default function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em]">Tours destacados</h2>
-          <nav className="mt-6 grid gap-4 text-sm font-bold text-white/85">
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-brand-gold">Tours destacados</h2>
+          <nav className="mt-6 grid gap-4 text-sm font-semibold text-white/85">
             {tours.map((item) => (
-              <Link key={item.label} href={item.href} className="transition hover:text-white">
+              <Link key={item.label} href={item.href} className="transition hover:text-brand-gold hover:translate-x-1 inline-block w-fit">
                 {item.label}
               </Link>
             ))}
@@ -77,38 +76,40 @@ export default function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em]">Contacto</h2>
-          <div className="mt-6 grid gap-4 text-sm font-bold text-white/85">
-            <a href="tel:+34662024136" className="flex items-center gap-3 transition hover:text-white">
-              <Phone className="h-4 w-4 text-[#2b8cff]" aria-hidden="true" />
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-brand-gold">Contacto</h2>
+          <div className="mt-6 grid gap-4 text-sm font-semibold text-white/85">
+            <a href="tel:+34662024136" className="flex items-center gap-3 transition hover:text-brand-gold w-fit">
+              <span className="material-symbols-outlined text-[18px] text-brand-gold" aria-hidden="true">phone</span>
               +34 662 02 41 36
             </a>
-            <a href="mailto:info@metransfers.es" className="flex items-center gap-3 transition hover:text-white">
-              <Mail className="h-4 w-4 text-[#2b8cff]" aria-hidden="true" />
+            <a href="mailto:info@metransfers.es" className="flex items-center gap-3 transition hover:text-brand-gold w-fit">
+              <span className="material-symbols-outlined text-[18px] text-brand-gold" aria-hidden="true">mail</span>
               info@metransfers.es
             </a>
             <span className="flex items-center gap-3">
-              <MapPin className="h-4 w-4 text-[#2b8cff]" aria-hidden="true" />
+              <span className="material-symbols-outlined text-[18px] text-brand-gold" aria-hidden="true">location_on</span>
               Barcelona, España
             </span>
-            <span className="inline-flex w-fit items-center gap-2 rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-xs font-black">
-              <Star className="h-4 w-4 fill-[#21d070] text-[#21d070]" aria-hidden="true" />
-              GetYourGuide Verified
-            </span>
-            <span className="inline-flex w-fit items-center gap-2 rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-xs font-black">
-              <LockKeyhole className="h-4 w-4 text-[#ffd643]" aria-hidden="true" />
-              Pago Seguro
-            </span>
+            <div className="flex gap-2 mt-2">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-black">
+                <span className="material-symbols-outlined text-[16px] text-[#21d070]" aria-hidden="true">star</span>
+                Verified
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-black">
+                <span className="material-symbols-outlined text-[16px] text-brand-gold" aria-hidden="true">lock</span>
+                Seguro
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-8 text-sm font-semibold text-white/80 md:flex-row md:items-center md:justify-between">
+      <div className="border-t border-white/10 bg-black/20">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-8 text-sm font-semibold text-white/60 md:flex-row md:items-center md:justify-between">
           <p>© 2026 MeTransfers Barcelona. Todos los derechos reservados.</p>
           <nav className="flex flex-wrap gap-x-8 gap-y-3">
             {legalLinks.map((item) => (
-              <Link key={item.label} href={item.href} className="transition hover:text-white">
+              <Link key={item.label} href={item.href} className="transition hover:text-brand-gold">
                 {item.label}
               </Link>
             ))}
@@ -123,8 +124,9 @@ export default function MarketingFooter() {
         rel="noreferrer"
         target="_blank"
       >
-        <MessageCircle className="h-7 w-7" aria-hidden="true" />
+        <span className="material-symbols-outlined text-[28px]" aria-hidden="true">chat</span>
       </a>
     </footer>
   );
 }
+
