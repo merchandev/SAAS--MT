@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import { BookingConfirmedEmail } from '@/components/emails/BookingConfirmedEmail';
 import { DriverAssignedEmail } from '@/components/emails/DriverAssignedEmail';
+import { AccountCreatedEmail } from '@/components/emails/AccountCreatedEmail';
 import { createReceiptAccessToken } from '@/modules/bookings/receipt-access';
 import React from 'react';
 
@@ -85,6 +86,39 @@ export const emailsService = {
       return true;
     } catch (error) {
       console.error("[EMAIL_ERROR] Error al enviar notificación de chofer:", error);
+      return false;
+    }
+  },
+
+  async sendAccountCreatedEmail(email: string, fullName: string, temporaryPassword: string) {
+    if (!resend) {
+      console.log(`[EMAILS_MOCK] Simulando envío de creación de cuenta a: ${email} (pass: ${temporaryPassword})`);
+      return true;
+    }
+
+    try {
+      const loginUrl = new URL(`/login`, process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").toString();
+      
+      const html = await render(
+        React.createElement(AccountCreatedEmail, {
+          customerName: fullName,
+          email,
+          temporaryPassword,
+          loginUrl,
+        })
+      );
+
+      await resend.emails.send({
+        from: `MeTransfers <${SENDER_EMAIL}>`,
+        to: email,
+        subject: `Bienvenido a MeTransfers - Tu cuenta ha sido creada`,
+        html,
+      });
+
+      console.log(`[EMAIL_SENT] Notificación de cuenta creada enviada a ${email}`);
+      return true;
+    } catch (error) {
+      console.error("[EMAIL_ERROR] Error al enviar notificación de creación de cuenta:", error);
       return false;
     }
   },

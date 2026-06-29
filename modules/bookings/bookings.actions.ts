@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { adminBookingSchema, AdminBookingInput } from "./bookings.schemas";
 import { pricingService } from "../pricing/pricing.service";
@@ -169,11 +170,29 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
 
     // 2. Transacción de creación (Cliente + Reserva + Auditoría)
     const booking = await prisma.$transaction(async (tx) => {
-      // Upsert Customer
+      // 2.1 Buscar o crear usuario
+      let user = await tx.user.findUnique({ where: { email: customerEmail } });
+      let temporaryPassword = null;
+      
+      if (!user) {
+        temporaryPassword = Math.random().toString(36).slice(-8);
+        const passwordHash = await bcrypt.hash(temporaryPassword, 10);
+        user = await tx.user.create({
+          data: {
+            email: customerEmail,
+            passwordHash,
+            fullName: customerName,
+            phone: customerPhone,
+            role: "CUSTOMER",
+          }
+        });
+      }
+
+      // Upsert Customer and link to User
       const customer = await tx.customer.upsert({
         where: { email: customerEmail },
-        update: { fullName: customerName, phone: customerPhone },
-        create: { email: customerEmail, fullName: customerName, phone: customerPhone },
+        update: { fullName: customerName, phone: customerPhone, userId: user.id },
+        create: { email: customerEmail, fullName: customerName, phone: customerPhone, userId: user.id },
       });
 
       // Generar código público único para seguimiento y pagos
@@ -226,11 +245,20 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
         }
       });
 
-      return newBooking;
+      return { newBooking, temporaryPassword };
     });
 
+    if (booking.temporaryPassword) {
+      try {
+        const { emailsService } = await import("../notifications/emails.service");
+        await emailsService.sendAccountCreatedEmail(customerEmail, customerName, booking.temporaryPassword);
+      } catch (err) {
+        console.error("Error al enviar email de cuenta creada:", err);
+      }
+    }
+
     revalidatePath("/admin/bookings");
-    return { success: true, data: booking };
+    return { success: true, data: booking.newBooking };
   } catch (error: any) {
     console.error("Booking Error:", error);
     return { error: error.message || "Error al crear la reserva interna" };
@@ -334,10 +362,28 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
     });
 
     const booking = await prisma.$transaction(async (tx) => {
+      // 1. Buscar o crear usuario
+      let user = await tx.user.findUnique({ where: { email: customerEmail } });
+      let temporaryPassword = null;
+      
+      if (!user) {
+        temporaryPassword = Math.random().toString(36).slice(-8);
+        const passwordHash = await bcrypt.hash(temporaryPassword, 10);
+        user = await tx.user.create({
+          data: {
+            email: customerEmail,
+            passwordHash,
+            fullName: customerName,
+            phone: customerPhone,
+            role: "CUSTOMER",
+          }
+        });
+      }
+
       const customer = await tx.customer.upsert({
         where: { email: customerEmail },
-        update: { fullName: customerName, phone: customerPhone },
-        create: { email: customerEmail, fullName: customerName, phone: customerPhone },
+        update: { fullName: customerName, phone: customerPhone, userId: user.id },
+        create: { email: customerEmail, fullName: customerName, phone: customerPhone, userId: user.id },
       });
 
       const publicCode = await generateUniquePublicCode(tx);
@@ -405,12 +451,21 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
         }
       }
 
-      return newBooking;
+      return { newBooking, temporaryPassword };
     });
 
-    const receiptToken = await createReceiptAccessToken(booking);
+    const receiptToken = await createReceiptAccessToken(booking.newBooking);
 
-    return { success: true, bookingId: booking.id, publicCode: booking.publicCode, receiptToken };
+    if (booking.temporaryPassword) {
+      try {
+        const { emailsService } = await import("../notifications/emails.service");
+        await emailsService.sendAccountCreatedEmail(customerEmail, customerName, booking.temporaryPassword);
+      } catch (err) {
+        console.error("Error al enviar email de cuenta creada:", err);
+      }
+    }
+
+    return { success: true, bookingId: booking.newBooking.id, publicCode: booking.newBooking.publicCode, receiptToken };
   } catch (error: any) {
     console.error("Public Booking Error:", error);
     return { error: error.message || "Error al procesar tu reserva. Intenta de nuevo." };
