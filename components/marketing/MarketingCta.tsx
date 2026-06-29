@@ -16,15 +16,15 @@ export default function MarketingCta({
 }) {
   return (
     <section className="bg-white py-16">
-      <div className="mx-auto max-w-5xl rounded-3xl border border-blue-100 bg-white px-6 py-12 text-center shadow-xl shadow-blue-100/70 sm:px-12">
-        <p className="mx-auto mb-5 inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#075cbe]">
+      <div className="mx-auto max-w-5xl rounded-3xl border border-gray-200 bg-white px-6 py-12 text-center shadow-md sm:px-12">
+        <p className="mx-auto mb-5 inline-flex rounded-full bg-[#D4AF37]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#D4AF37]">
           {eyebrow}
         </p>
-        <h2 className="text-3xl font-black tracking-tight text-[#07509f] sm:text-4xl">{title}</h2>
-        <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-[#082141]/80">{description}</p>
+        <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">{title}</h2>
+        <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-gray-700">{description}</p>
         <Link
           href={href}
-          className="mt-7 inline-flex h-14 items-center justify-center gap-2 rounded-full bg-[#0868d8] px-9 text-base font-black text-white shadow-xl shadow-blue-200 transition hover:bg-[#075cbe]"
+          className="mt-7 inline-flex h-14 items-center justify-center gap-2 rounded-full bg-[#D4AF37] px-9 text-base font-black text-gray-900 shadow-md transition hover:bg-[#C5A059]"
         >
           {label}
           <ChevronRight className="h-5 w-5" aria-hidden="true" />

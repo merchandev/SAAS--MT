@@ -279,7 +279,7 @@ export default async function HomePage() {
           </Link>
           <Link
             href="/booking"
-            className="inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-bold text-brand-blue shadow-lg transition-transform hover:-translate-y-0.5"
+            className="inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-bold text-gray-900 shadow-lg transition-transform hover:-translate-y-0.5"
             style={{ backgroundColor: accentColor }}
           >
             Reservar
@@ -320,7 +320,7 @@ export default async function HomePage() {
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/booking"
-                  className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-brand-blue shadow-lg transition hover:-translate-y-1"
+                  className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-gray-900 shadow-lg transition hover:-translate-y-1"
                   style={{ backgroundColor: accentColor }}
                 >
                   Reservar traslado
@@ -534,7 +534,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/booking"
-              className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-brand-blue shadow-lg transition hover:-translate-y-1"
+              className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-gray-900 shadow-lg transition hover:-translate-y-1"
               style={{ backgroundColor: accentColor }}
             >
               Ver disponibilidad
