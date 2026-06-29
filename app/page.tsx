@@ -112,10 +112,26 @@ const fleet = [
 ];
 
 const routes = [
-  "Barcelona - Aeropuerto Josep Tarradellas Barcelona-El Prat",
-  "Barcelona - Puerto de cruceros y terminales marítimas",
-  "Barcelona - Sitges, Tarragona y Costa Brava",
-  "Barcelona - Andorra y traslados de larga distancia",
+  {
+    label: "Barcelona - Aeropuerto Josep Tarradellas Barcelona-El Prat",
+    origin: "Barcelona, España",
+    destination: "Aeropuerto Josep Tarradellas Barcelona-El Prat",
+  },
+  {
+    label: "Barcelona - Puerto de cruceros y terminales marítimas",
+    origin: "Barcelona, España",
+    destination: "Puerto de Barcelona, Terminal de Cruceros",
+  },
+  {
+    label: "Barcelona - Sitges, Tarragona y Costa Brava",
+    origin: "Barcelona, España",
+    destination: "Sitges, España",
+  },
+  {
+    label: "Barcelona - Andorra y traslados de larga distancia",
+    origin: "Barcelona, España",
+    destination: "Andorra la Vella, Andorra",
+  },
 ];
 
 const advantages = [
@@ -473,10 +489,14 @@ export default async function HomePage() {
 
               <div className="grid gap-4">
                 {routes.map((route) => (
-                  <article key={route} className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+                  <Link 
+                    key={route.label} 
+                    href={`/booking?origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}`}
+                    className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-[#D4AF37]"
+                  >
                     <span className="material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">location_on</span>
-                    <h3 className="text-lg font-semibold">{route}</h3>
-                  </article>
+                    <h3 className="text-lg font-semibold">{route.label}</h3>
+                  </Link>
                 ))}
               </div>
             </div>
