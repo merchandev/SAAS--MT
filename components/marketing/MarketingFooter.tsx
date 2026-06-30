@@ -48,7 +48,7 @@ export default function MarketingFooter() {
     <footer className="relative bg-gray-50 text-gray-900 border-t border-gray-200">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 lg:grid-cols-[1.2fr_0.9fr_0.9fr_1.1fr]">
         <div>
-          <MarketingLogo className="mb-5" />
+          <MarketingLogo className="mb-5" variant="footer" />
           <p className="max-w-xs text-base leading-7 text-gray-600">
             Traslados privados y tours personalizados de lujo en Barcelona y toda España. Tu comodidad,
             nuestra pasión.
