@@ -15,15 +15,15 @@ const inter = Inter({
 
 const fallbackMetadata: Metadata = {
   metadataBase: new URL("https://metransfers.es"),
-  title: "MeTransfers | Private Luxury Transfers",
-  description: "Premium private transfer services and management platform.",
+  title: "Traslados privados y chófer en Barcelona | MeTransfers",
+  description: "Reserva transfers de aeropuerto, traslados privados, tours y coches con chófer en Barcelona. Precio cerrado, conductor profesional y vehículos premium.",
 };
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const settings = await settingsQueries.getAllSettings();
     const siteName = settings.SITE_NAME || settings.COMPANY_NAME || "MeTransfers";
-    const title = settings.SITE_TITLE || `${siteName} | Traslados privados premium`;
+    const title = settings.SITE_TITLE || `Traslados privados y chófer en Barcelona | ${siteName}`;
     const description = settings.SITE_META_DESCRIPTION || fallbackMetadata.description;
     const logoUrl = settings.SITE_LOGO_URL?.trim();
     const faviconUrl = settings.SITE_FAVICON_URL?.trim();

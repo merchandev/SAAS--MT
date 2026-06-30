@@ -12,29 +12,31 @@ import { settingsQueries } from "@/modules/settings/settings.queries";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Traslados y tours en Barcelona | Chófer privado MeTransfers",
+  title: "Traslados privados y chófer en Barcelona | MeTransfers",
   description:
-    "Tu chófer privado en Barcelona para traslados al aeropuerto, tours y eventos corporativos. Vehículos de alta gama y reserva online con confirmación del servicio.",
+    "Reserva transfers de aeropuerto, traslados privados, tours y coches con chófer en Barcelona. Precio cerrado, conductor profesional y vehículos para empresas, eventos y viajes privados.",
   keywords: [
-    "traslados privados Barcelona",
-    "tours en Barcelona",
-    "chófer privado Barcelona",
     "transfer aeropuerto Barcelona",
-    "coches con chófer Barcelona",
-    "traslados premium España",
+    "traslado aeropuerto Barcelona",
+    "traslado privado Barcelona",
+    "chófer privado Barcelona",
+    "coche con chófer Barcelona",
+    "alquiler coche con conductor Barcelona",
+    "transfer Barcelona aeropuerto",
+    "taxi privado Barcelona aeropuerto",
   ],
   openGraph: {
-    title: "Traslados Privados & Tours Premium en Barcelona",
+    title: "Traslados privados y coches con chófer en Barcelona",
     description:
-      "Vehículos de alta gama para traslados al aeropuerto, tours privados y eventos corporativos en Barcelona.",
+      "Reserva transfers de aeropuerto, traslados privados, tours y coches con chófer en Barcelona. Precio cerrado, conductor profesional y vehículos para empresas y eventos.",
     locale: "es_ES",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Traslados y tours en Barcelona | MeTransfers",
+    title: "Traslados privados y chófer en Barcelona | MeTransfers",
     description:
-      "Reserva tu chófer privado en Barcelona con una experiencia online rápida y confirmación del servicio.",
+      "Reserva transfers de aeropuerto, traslados privados, tours y coches con chófer en Barcelona. Precio cerrado y conductor profesional.",
   },
   robots: {
     index: true,
@@ -220,18 +222,20 @@ export default async function HomePage() {
     name: brandName,
     url: "https://metransfers.es",
     description:
-      "Traslados privados, tours premium y coches con chófer en Barcelona para aeropuerto, empresas, eventos y viajes a medida.",
+      "MeTransfers ofrece traslados privados, transfers de aeropuerto, tours y servicios de coche con chófer en Barcelona. Reserva online con precio cerrado y atención personalizada.",
     areaServed: [
       { "@type": "City", name: "Barcelona" },
-      { "@type": "Country", name: "España" },
+      { "@type": "City", name: "Sitges" },
+      { "@type": "City", name: "Tarragona" },
+      { "@type": "City", name: "Girona" },
     ],
     serviceType: [
-      "Traslados privados",
-      "Tours privados",
-      "Chófer privado",
-      "Transfers de aeropuerto",
-      "Alquiler de vehículo con conductor por horas",
-      "Transporte corporativo",
+      "Transfer aeropuerto Barcelona",
+      "Traslados privados Barcelona",
+      "Coche con chófer Barcelona",
+      "Traslados corporativos Barcelona",
+      "Tours privados Barcelona",
+      "Traslados puerto de Barcelona",
     ],
     makesOffer: {
       "@type": "OfferCatalog",
@@ -278,14 +282,12 @@ export default async function HomePage() {
             <div className="max-w-3xl text-white contents lg:block">
               <div className="order-1 lg:order-none">
                 <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
-                  Traslados y tours en Barcelona
+                  Traslados privados y coches con chófer en Barcelona
                 </h1>
               </div>
               <div className="order-3 lg:order-none">
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
-                Tu chófer privado en Barcelona te espera. Vehículos de alta gama para traslados al
-                aeropuerto, tours y eventos corporativos. Asegura tu viaje con reserva online rápida
-                y confirmación del servicio.
+                  Reserva tu traslado privado en Barcelona con MeTransfers. Transfers de aeropuerto, puerto de cruceros, tours privados, eventos corporativos y servicios de coche con chófer por horas. Viaja con precio cerrado, conductor profesional y atención personalizada.
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
