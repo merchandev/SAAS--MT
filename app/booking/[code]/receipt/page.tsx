@@ -45,9 +45,7 @@ export default async function ReceiptPage({
               <p className="text-gray-500 mt-1">Ref: {booking.publicCode}</p>
             </div>
             <div className="text-right">
-              <div className="h-10 w-10 bg-gradient-to-br from-[#D4AF37] to-[#AA8B2C] rounded-sm flex items-center justify-center text-white font-serif font-bold text-xl shadow-md ml-auto mb-2">
-                MT
-              </div>
+              <img src="/logo.png" alt="MeTransfers" className="h-10 w-auto object-contain ml-auto mb-2" />
               <p className="font-bold text-gray-800">MeTransfers VIP</p>
             </div>
           </div>
@@ -88,9 +86,7 @@ export default async function ReceiptPage({
             <p className="text-gray-500 mt-1">Ref: {booking.publicCode}</p>
           </div>
           <div className="text-right">
-            <div className="h-10 w-10 bg-gradient-to-br from-[#D4AF37] to-[#AA8B2C] rounded-sm flex items-center justify-center text-white font-serif font-bold text-xl shadow-md ml-auto mb-2">
-              MT
-            </div>
+            <img src="/logo.png" alt="MeTransfers" className="h-10 w-auto object-contain ml-auto mb-2" />
             <p className="font-bold text-gray-800">MeTransfers VIP</p>
             <p className="text-sm text-gray-500">Barcelona, España</p>
           </div>
