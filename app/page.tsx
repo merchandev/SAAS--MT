@@ -277,9 +277,6 @@ export default async function HomePage() {
           <div className="relative z-10 mx-auto flex flex-col lg:grid w-full max-w-7xl lg:items-center gap-10 px-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,440px)]">
             <div className="max-w-3xl text-white contents lg:block">
               <div className="order-1 lg:order-none">
-                <p className="mb-4 inline-flex rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur">
-                  Traslados Privados & Tours Premium — España
-                </p>
                 <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
                   Traslados y tours en Barcelona
                 </h1>
