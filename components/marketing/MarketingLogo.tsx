@@ -12,7 +12,7 @@ export default function MarketingLogo({
     <Link href="/" className={`inline-flex items-center gap-3 ${className}`} aria-label="MeTransfers inicio">
       <div className="relative h-11 w-44">
         <Image 
-          src="/logo.png" 
+          src="/images/MeTransfers-exp.png" 
           alt="MeTransfers Barcelona" 
           fill 
           className="object-contain object-left" 

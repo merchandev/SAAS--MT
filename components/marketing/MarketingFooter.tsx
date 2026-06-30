@@ -1,6 +1,26 @@
 import Link from "next/link";
 import MarketingLogo from "./MarketingLogo";
 
+const FacebookIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+  </svg>
+);
+
+const InstagramIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+  </svg>
+);
+
+const WhatsAppIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+  </svg>
+);
+
 const services = [
   { href: "/booking", label: "Traslados Aeropuerto" },
   { href: "/booking", label: "Traslados al Puerto" },
@@ -35,10 +55,10 @@ export default function MarketingFooter() {
           </p>
           <div className="mt-8 flex gap-3">
             {[
-              { href: "https://www.instagram.com/", label: "Instagram", icon: "photo_camera" },
-              { href: "https://www.facebook.com/", label: "Facebook", icon: "group" },
-              { href: "https://wa.me/34662024136", label: "WhatsApp", icon: "chat" },
-            ].map(({ href, label, icon }) => (
+              { href: "https://www.instagram.com/", label: "Instagram", icon: InstagramIcon },
+              { href: "https://www.facebook.com/", label: "Facebook", icon: FacebookIcon },
+              { href: "https://wa.me/34662024136", label: "WhatsApp", icon: WhatsAppIcon },
+            ].map(({ href, label, icon: Icon }) => (
               <a
                 key={label}
                 href={href}
@@ -47,7 +67,7 @@ export default function MarketingFooter() {
                 rel="noreferrer"
                 target="_blank"
               >
-                <span className="material-symbols-outlined text-[20px]" aria-hidden="true">{icon}</span>
+                <Icon className="h-5 w-5" />
               </a>
             ))}
           </div>
@@ -91,13 +111,13 @@ export default function MarketingFooter() {
               Barcelona, España
             </span>
             <div className="flex gap-2 mt-2">
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-black text-gray-700">
-                <span className="material-symbols-outlined text-[16px] text-[#21d070]" aria-hidden="true">star</span>
-                Verified
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1527] px-2.5 py-1.5 text-xs font-black text-white">
+                <span className="material-symbols-outlined text-[16px] text-[#00C26D]" aria-hidden="true">star</span>
+                GetYourGuide Verified
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-black text-gray-700">
-                <span className="material-symbols-outlined text-[16px] text-gray-400" aria-hidden="true">lock</span>
-                Seguro
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1527] px-2.5 py-1.5 text-xs font-black text-white">
+                <span className="material-symbols-outlined text-[16px] text-[#F3C200]" aria-hidden="true">lock</span>
+                Pago Seguro
               </span>
             </div>
           </div>
