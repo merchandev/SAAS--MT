@@ -38,7 +38,7 @@ const tours = [
 
 const legalLinks = [
   { href: "/politica-de-privacidad", label: "Política de Privacidad" },
-  { href: "/contacto", label: "Términos y Condiciones" },
+  { href: "/terminos-y-condiciones", label: "Términos y Condiciones" },
   { href: "/contacto", label: "Aviso Legal" },
   { href: "/contacto", label: "Cookies" },
 ];
