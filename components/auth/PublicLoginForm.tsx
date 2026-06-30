@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { loginAction } from "@/modules/auth/auth.actions";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import Link from "next/link";
 export default function PublicLoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,8 +26,12 @@ export default function PublicLoginForm() {
       if (result?.error) {
         setError(result.error);
         setIsPending(false);
+        return;
       }
-      // If successful, loginAction will redirect automatically
+      
+      if (result?.redirect) {
+        router.push(result.redirect);
+      }
     } catch (err) {
       setError("Ocurrió un error inesperado.");
       setIsPending(false);

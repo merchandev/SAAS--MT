@@ -75,11 +75,11 @@ export async function loginAction(data: LoginInput) {
 
   // 5. Redirigir según rol
   if (user.role === "HOTEL" || user.role === "AGENCY") {
-    redirect("/hotel/dashboard");
+    return { redirect: "/hotel/dashboard" };
   } else if (user.role === "CUSTOMER") {
-    redirect("/customer/dashboard");
+    return { redirect: "/customer/dashboard" };
   } else {
-    redirect("/admin/dashboard");
+    return { redirect: "/admin/dashboard" };
   }
 }
 
@@ -192,7 +192,7 @@ export async function registerAction(data: RegisterInput) {
   await loginRateLimiter.clear(emailKeyClear);
 
   // 6. Redirigir
-  redirect("/customer/dashboard");
+  return { redirect: "/customer/dashboard" };
 }
 
 export async function logoutAction() {

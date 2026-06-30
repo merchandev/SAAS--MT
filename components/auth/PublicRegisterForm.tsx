@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { registerAction } from "@/modules/auth/auth.actions";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import Link from "next/link";
 export default function PublicRegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -43,6 +44,11 @@ export default function PublicRegisterForm() {
       if (result?.error) {
         setError(result.error);
         setIsPending(false);
+        return;
+      }
+
+      if (result?.redirect) {
+        router.push(result.redirect);
       }
     } catch {
       setError("Ocurrió un error inesperado al registrarse.");

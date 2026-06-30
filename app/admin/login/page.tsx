@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,8 +24,12 @@ export default function AdminLoginPage() {
     if (result && result.error) {
       setError(result.error);
       setIsLoading(false);
+      return;
     }
-    // Si es exitoso, loginAction maneja el redirect internamente.
+    
+    if (result && result.redirect) {
+      router.push(result.redirect);
+    }
   };
 
   return (
