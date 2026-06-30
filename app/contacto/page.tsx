@@ -4,6 +4,7 @@ import { Building2, Clock, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck
 import MarketingCta from "@/components/marketing/MarketingCta";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import PageHero from "@/components/marketing/PageHero";
+import ContactForm from "@/components/home/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contacto | MeTransfers Barcelona",
@@ -116,21 +117,7 @@ export default function ContactPage() {
 
         <section className="bg-gray-50 py-20 sm:py-24">
           <div className="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-2 lg:items-start">
-            <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-md">
-              <Building2 className="h-10 w-10 text-[#D4AF37]" aria-hidden="true" />
-              <h2 className="mt-5 text-3xl font-black tracking-tight">Datos útiles para preparar tu servicio</h2>
-              <p className="mt-4 leading-8 text-gray-600">
-                Para responder más rápido, incluye esta información cuando contactes con nosotros.
-              </p>
-              <ul className="mt-6 grid gap-4">
-                {requestDetails.map((detail) => (
-                  <li key={detail} className="flex gap-3 font-semibold text-gray-700">
-                    <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#D4AF37]" aria-hidden="true" />
-                    {detail}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ContactForm />
 
             <div className="rounded-3xl bg-gray-900 p-8 text-white shadow-xl">
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Respuesta profesional</p>

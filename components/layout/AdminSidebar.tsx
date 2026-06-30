@@ -19,6 +19,7 @@ import {
   UserCog,
   Users,
   ClipboardList,
+  MessageSquare,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { logoutAction } from "@/modules/auth/auth.actions";
@@ -66,6 +67,7 @@ export function AdminSidebar({ role, companyName = "MeTransfers", logoUrl, accen
     { name: "Pagos", href: "/admin/payments", roles: ["SUPER_ADMIN", "ADMIN"], icon: Banknote },
     { name: "Precios", href: "/admin/pricing", roles: ["SUPER_ADMIN", "ADMIN"], icon: Tags },
     { name: "Usuarios", href: "/admin/users", roles: ["SUPER_ADMIN", "ADMIN"], icon: Users },
+    { name: "Mensajes", href: "/admin/contact-messages", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: MessageSquare },
     { name: "Ajustes", href: "/admin/settings", roles: ["SUPER_ADMIN", "ADMIN"], icon: Settings },
     { name: "Sistema", href: "/admin/system", roles: ["SUPER_ADMIN", "ADMIN"], icon: HardDrive },
   ];
