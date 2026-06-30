@@ -54,6 +54,11 @@ export default async function HotelsPage() {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                  <a href={`/api/admin/hotels/${h.id}/flyer`} target="_blank" download>
+                    <Button variant="outline" size="sm" className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200">
+                      Descargar Hablador (PDF)
+                    </Button>
+                  </a>
                   <QRDialogButton token={h.token} hotelName={h.name} />
                   <Link href={`/admin/hotels/${h.id}/edit`}>
                     <Button variant="secondary" size="sm">Editar</Button>
