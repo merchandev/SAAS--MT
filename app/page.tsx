@@ -274,15 +274,18 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/30" />
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent" />
 
-          <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-10 px-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,440px)]">
-            <div className="max-w-3xl text-white">
-              <p className="mb-4 inline-flex rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur">
-                Traslados Privados & Tours Premium — España
-              </p>
-              <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
-                Traslados y tours en Barcelona
-              </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
+          <div className="relative z-10 mx-auto flex flex-col lg:grid w-full max-w-7xl lg:items-center gap-10 px-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,440px)]">
+            <div className="max-w-3xl text-white contents lg:block">
+              <div className="order-1 lg:order-none">
+                <p className="mb-4 inline-flex rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur">
+                  Traslados Privados & Tours Premium — España
+                </p>
+                <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
+                  Traslados y tours en Barcelona
+                </h1>
+              </div>
+              <div className="order-3 lg:order-none">
+                <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
                 Tu chófer privado en Barcelona te espera. Vehículos de alta gama para traslados al
                 aeropuerto, tours y eventos corporativos. Asegura tu viaje con reserva online rápida
                 y confirmación del servicio.
@@ -319,8 +322,9 @@ export default async function HomePage() {
                 ))}
               </div>
             </div>
+            </div>
 
-            <aside className="w-full justify-self-end" aria-label="Formulario de reserva">
+            <aside className="w-full justify-self-end order-2 lg:order-none" aria-label="Formulario de reserva">
               <HomeBookingFormClient />
             </aside>
           </div>
