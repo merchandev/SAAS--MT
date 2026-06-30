@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginAction } from "@/modules/auth/auth.actions";
+import MarketingLogo from "@/components/marketing/MarketingLogo";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -29,8 +30,8 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-[#0B0C10] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans text-gray-100">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="mx-auto h-16 w-16 bg-gradient-to-br from-[#D4AF37] to-[#AA8B2C] rounded-sm flex items-center justify-center text-[#0B0C10] font-serif font-bold text-3xl shadow-lg shadow-[#D4AF37]/20">
-          MT
+        <div className="flex justify-center mb-4">
+          <MarketingLogo />
         </div>
         <h2 className="mt-8 text-center text-3xl font-serif font-bold text-white tracking-wide">
           Acceso Exclusivo

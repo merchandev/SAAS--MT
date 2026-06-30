@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import PublicRegisterForm from "@/components/auth/PublicRegisterForm";
+import MarketingLogo from "@/components/marketing/MarketingLogo";
 
 export const metadata = {
   title: "Registro | MeTransfers Premium Mobility",
@@ -25,12 +26,7 @@ export default function RegisterPage() {
         </div>
         
         <div className="relative z-10">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-[#D4AF37] to-[#AA8B2C] rounded-lg flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg">
-              MT
-            </div>
-            <span className="font-serif font-bold text-xl tracking-widest text-white uppercase">MeTransfers</span>
-          </Link>
+          <MarketingLogo />
         </div>
 
         <div className="relative z-10 max-w-lg mb-12">
@@ -47,12 +43,7 @@ export default function RegisterPage() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12 md:px-12 relative overflow-y-auto">
         {/* Mobile Header (Only visible on small screens) */}
         <div className="lg:hidden absolute top-6 left-6 z-10">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-[#D4AF37] to-[#AA8B2C] rounded-lg flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg">
-              MT
-            </div>
-            <span className="font-serif font-bold text-xl tracking-widest text-white uppercase drop-shadow-md">MeTransfers</span>
-          </Link>
+          <MarketingLogo className="drop-shadow-md" />
         </div>
 
         {/* Mobile background overlay */}
