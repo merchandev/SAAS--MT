@@ -21,7 +21,7 @@ export default async function AdminLayout({
   const settings = await settingsQueries.getAllSettings();
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row bg-gray-50">
+    <div className="flex h-screen flex-col md:flex-row bg-gray-50 overflow-hidden">
       {/* Sidebar - Componente Cliente */}
       <AdminSidebar
         role={session.role}

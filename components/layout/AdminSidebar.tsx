@@ -93,16 +93,16 @@ export function AdminSidebar({ role, companyName = "MeTransfers", logoUrl, accen
             src="/images/MeTransfers-exp.png"
             alt={companyName}
             className={cn(
-              "absolute top-1/2 -translate-y-1/2 left-0 h-9 w-auto object-contain transition-all duration-300 ease-in-out",
-              isCollapsed ? "opacity-0 -translate-x-4 pointer-events-none" : "opacity-100 translate-x-0"
+              "absolute top-1/2 -translate-y-1/2 left-0 h-9 w-auto object-contain transition-opacity duration-500 ease-in-out",
+              isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
             )}
           />
           <img
             src="/images/MeTransfers-x.png"
             alt="MT"
             className={cn(
-              "absolute top-1/2 -translate-y-1/2 h-9 w-auto object-contain transition-all duration-300 ease-in-out",
-              isCollapsed ? "opacity-100 left-1/2 -translate-x-1/2" : "opacity-0 left-4 pointer-events-none"
+              "absolute top-1/2 -translate-y-1/2 h-9 w-auto object-contain transition-opacity duration-500 ease-in-out",
+              isCollapsed ? "opacity-100 left-1/2 -translate-x-1/2" : "opacity-0 left-0 pointer-events-none"
             )}
           />
         </Link>
