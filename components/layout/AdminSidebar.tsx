@@ -88,24 +88,23 @@ export function AdminSidebar({ role, companyName = "MeTransfers", logoUrl, accen
       )}
     >
       <div className={cn("flex h-16 items-center border-b border-gray-200", isCollapsed ? "justify-center px-0" : "px-4")}>
-        <Link href="/admin/dashboard" className="min-w-0 flex items-center gap-3">
-          {logoUrl ? (
-            <img
-              src={logoUrl}
-              alt={companyName}
-              className="h-9 w-9 rounded-md object-contain border border-gray-100 bg-white shrink-0"
-            />
-          ) : (
-            <div
-              className="h-9 w-9 rounded-md text-gray-950 flex items-center justify-center font-bold shrink-0"
-              style={{ backgroundColor: accentColor }}
-            >
-              MT
-            </div>
-          )}
-          {!isCollapsed && (
-            <span className="truncate text-xl font-bold text-gray-900">{companyName}</span>
-          )}
+        <Link href="/admin/dashboard" className="relative block w-full h-10">
+          <img
+            src="/images/MeTransfers-exp.png"
+            alt={companyName}
+            className={cn(
+              "absolute top-1/2 -translate-y-1/2 left-0 h-9 w-auto object-contain transition-all duration-300 ease-in-out",
+              isCollapsed ? "opacity-0 -translate-x-4 pointer-events-none" : "opacity-100 translate-x-0"
+            )}
+          />
+          <img
+            src="/images/MeTransfers-x.png"
+            alt="MT"
+            className={cn(
+              "absolute top-1/2 -translate-y-1/2 h-9 w-auto object-contain transition-all duration-300 ease-in-out",
+              isCollapsed ? "opacity-100 left-1/2 -translate-x-1/2" : "opacity-0 left-4 pointer-events-none"
+            )}
+          />
         </Link>
       </div>
 
