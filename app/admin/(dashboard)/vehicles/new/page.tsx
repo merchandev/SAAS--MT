@@ -21,6 +21,7 @@ export default async function NewVehiclePage() {
         const data = {
           name: formData.get("name") as string,
           slug: formData.get("slug") as string,
+          imageUrl: formData.get("imageUrl") as string,
           categoryId: formData.get("categoryId") as string,
           passengerCapacity: Number(formData.get("passengerCapacity")),
           luggageCapacity: Number(formData.get("luggageCapacity")),
@@ -28,6 +29,7 @@ export default async function NewVehiclePage() {
           pricePerKmRoundTrip: Number(formData.get("pricePerKmRoundTrip")),
           pricePerHour: Number(formData.get("pricePerHour")),
           minimumPrice: Number(formData.get("minimumPrice")),
+          sortOrder: Number(formData.get("sortOrder")),
         };
         
         const res = await createVehicleAction(data as any);
@@ -53,6 +55,11 @@ export default async function NewVehiclePage() {
             ))}
             {categories.length === 0 && <option value="">No hay categorías - Créalas en DB primero</option>}
           </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Imagen</label>
+          <input name="imageUrl" placeholder="/images/vehicles/economic-class.png" className="w-full p-2 border rounded-md" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -86,6 +93,11 @@ export default async function NewVehiclePage() {
             <label className="block text-sm font-medium mb-1">Precio Hora (€)</label>
             <input name="pricePerHour" type="number" step="0.01" required defaultValue="0" className="w-full p-2 border rounded-md" />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Orden</label>
+          <input name="sortOrder" type="number" required defaultValue="0" className="w-full p-2 border rounded-md" />
         </div>
 
         <div className="pt-4 flex justify-end gap-2">

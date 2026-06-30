@@ -59,33 +59,61 @@ async function main() {
 
   await seedAdminUser();
 
-  const premiumCategory = await prisma.vehicleCategory.upsert({
-    where: { slug: "premium" },
-    update: {},
+  const economicCategory = await prisma.vehicleCategory.upsert({
+    where: { slug: "economic" },
+    update: {
+      name: "Economic",
+      description: "Berlina Mercedes para traslados privados eficientes.",
+    },
     create: {
-      name: "Premium",
-      slug: "premium",
-      description: "Vehículos de alta gama (Mercedes E-Class, Audi A6)",
+      name: "Economic",
+      slug: "economic",
+      description: "Berlina Mercedes para traslados privados eficientes.",
+    },
+  });
+
+  const businessCategory = await prisma.vehicleCategory.upsert({
+    where: { slug: "business" },
+    update: {
+      name: "Business",
+      description: "Berlina Mercedes ejecutiva para servicios premium.",
+    },
+    create: {
+      name: "Business",
+      slug: "business",
+      description: "Berlina Mercedes ejecutiva para servicios premium.",
     },
   });
 
   const vanCategory = await prisma.vehicleCategory.upsert({
     where: { slug: "minivan" },
-    update: {},
+    update: {
+      name: "Mini Van",
+      description: "Mercedes Vito y Clase V para grupos, familias y equipaje.",
+    },
     create: {
-      name: "Minivan",
+      name: "Mini Van",
       slug: "minivan",
-      description: "Furgonetas para grupos (Mercedes V-Class, VW Transporter)",
+      description: "Mercedes Vito y Clase V para grupos, familias y equipaje.",
     },
   });
 
   await prisma.vehicle.upsert({
     where: { slug: "mercedes-e-class" },
-    update: {},
+    update: {
+      name: "ECONOMIC CLASS",
+      categoryId: economicCategory.id,
+      imageUrl: "/images/vehicles/economic-class.png",
+      passengerCapacity: 3,
+      luggageCapacity: 3,
+      sortOrder: 1,
+      isActive: true,
+    },
     create: {
-      name: "Mercedes E-Class",
+      name: "ECONOMIC CLASS",
       slug: "mercedes-e-class",
-      categoryId: premiumCategory.id,
+      imageUrl: "/images/vehicles/economic-class.png",
+      categoryId: economicCategory.id,
       passengerCapacity: 3,
       luggageCapacity: 3,
       pricePerKmOneWay: 2.5,
@@ -97,11 +125,46 @@ async function main() {
   });
 
   await prisma.vehicle.upsert({
-    where: { slug: "mercedes-v-class" },
-    update: {},
+    where: { slug: "business-class" },
+    update: {
+      name: "BUSINESS CLASS",
+      categoryId: businessCategory.id,
+      imageUrl: "/images/vehicles/business-class.png",
+      passengerCapacity: 3,
+      luggageCapacity: 3,
+      sortOrder: 2,
+      isActive: true,
+    },
     create: {
-      name: "Mercedes V-Class",
-      slug: "mercedes-v-class",
+      name: "BUSINESS CLASS",
+      slug: "business-class",
+      imageUrl: "/images/vehicles/business-class.png",
+      categoryId: businessCategory.id,
+      passengerCapacity: 3,
+      luggageCapacity: 3,
+      pricePerKmOneWay: 3.0,
+      pricePerKmRoundTrip: 2.8,
+      pricePerHour: 75.0,
+      minimumPrice: 65.0,
+      sortOrder: 2,
+    },
+  });
+
+  await prisma.vehicle.upsert({
+    where: { slug: "mini-van-economic" },
+    update: {
+      name: "MINI VAN ECONOMIC",
+      categoryId: vanCategory.id,
+      imageUrl: "/images/vehicles/mini-van-economic.png",
+      passengerCapacity: 7,
+      luggageCapacity: 7,
+      sortOrder: 3,
+      isActive: true,
+    },
+    create: {
+      name: "MINI VAN ECONOMIC",
+      slug: "mini-van-economic",
+      imageUrl: "/images/vehicles/mini-van-economic.png",
       categoryId: vanCategory.id,
       passengerCapacity: 7,
       luggageCapacity: 7,
@@ -109,7 +172,33 @@ async function main() {
       pricePerKmRoundTrip: 2.8,
       pricePerHour: 80.0,
       minimumPrice: 70.0,
-      sortOrder: 2,
+      sortOrder: 3,
+    },
+  });
+
+  await prisma.vehicle.upsert({
+    where: { slug: "mercedes-v-class" },
+    update: {
+      name: "MINI VAN «V» CLASS",
+      categoryId: vanCategory.id,
+      imageUrl: "/images/vehicles/mini-van-v-class.png",
+      passengerCapacity: 7,
+      luggageCapacity: 7,
+      sortOrder: 4,
+      isActive: true,
+    },
+    create: {
+      name: "MINI VAN «V» CLASS",
+      slug: "mercedes-v-class",
+      imageUrl: "/images/vehicles/mini-van-v-class.png",
+      categoryId: vanCategory.id,
+      passengerCapacity: 7,
+      luggageCapacity: 7,
+      pricePerKmOneWay: 3.0,
+      pricePerKmRoundTrip: 2.8,
+      pricePerHour: 80.0,
+      minimumPrice: 70.0,
+      sortOrder: 4,
     },
   });
 

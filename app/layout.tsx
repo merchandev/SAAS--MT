@@ -14,6 +14,7 @@ const inter = Inter({
 });
 
 const fallbackMetadata: Metadata = {
+  metadataBase: new URL("https://metransfers.es"),
   title: "MeTransfers | Private Luxury Transfers",
   description: "Premium private transfer services and management platform.",
 };
@@ -26,8 +27,10 @@ export async function generateMetadata(): Promise<Metadata> {
     const description = settings.SITE_META_DESCRIPTION || fallbackMetadata.description;
     const logoUrl = settings.SITE_LOGO_URL?.trim();
     const faviconUrl = settings.SITE_FAVICON_URL?.trim();
+    const siteUrl = settings.SITE_URL?.trim() || "https://metransfers.es";
 
     return {
+      metadataBase: new URL(siteUrl),
       title,
       description,
       applicationName: siteName,

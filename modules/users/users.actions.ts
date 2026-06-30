@@ -408,3 +408,25 @@ export async function deleteUserAction(userId: string) {
   revalidateUserAdminPaths();
   return { success: true };
 }
+
+export async function forceLogoutUserAction(userId: string) {
+  const session = await requireUserManager();
+  const existing = await prisma.user.findUnique({ where: { id: userId } });
+
+  if (!existing) return { error: "Usuario no encontrado." };
+  
+  if (!canManageRole(session, existing.role, existing.role)) {
+    return { error: "Solo un super administrador puede cerrar la sesión de super administradores." };
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
+      where: { id: userId },
+      data: { sessionVersion: { increment: 1 } },
+    });
+    await createAudit(tx, session, userId, "FORCE_LOGOUT");
+  });
+
+  revalidateUserAdminPaths();
+  return { success: true };
+}

@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import postsData from "@/data/posts.json";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
-import { ArrowLeft, Calendar, Clock, Newspaper } from "lucide-react";
+import { ArrowLeft, Calendar } from "lucide-react";
 import Link from "next/link";
 import MarketingCta from "@/components/marketing/MarketingCta";
+import { getBlogImage } from "@/lib/fleet-images";
 
 export const dynamic = "force-static";
 
@@ -24,9 +26,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
+  const image = getBlogImage(post);
+
   return {
     title: `${post.title} | Blog MeTransfers`,
     description: post.excerpt,
+    openGraph: {
+      title: `${post.title} | Blog MeTransfers`,
+      description: post.excerpt,
+      images: [
+        {
+          url: image.src,
+          alt: image.alt,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [image.src],
+    },
   };
 }
 
@@ -44,6 +62,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     month: "long",
     day: "numeric",
   });
+  const image = getBlogImage(post);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
@@ -75,10 +94,16 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
             </h1>
           </header>
 
-          <div className="relative aspect-[21/9] bg-white rounded-3xl overflow-hidden mb-12 flex items-center justify-center border border-gray-200 shadow-sm">
-            <div className="text-[#D4AF37] opacity-10">
-              <Newspaper className="h-40 w-40" />
-            </div>
+          <div className="relative aspect-[21/9] bg-white rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-sm">
+            <Image
+              src={image.src}
+              alt={image.alt}
+              fill
+              priority
+              sizes="(min-width: 1024px) 896px, 100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
           </div>
 
           <div 

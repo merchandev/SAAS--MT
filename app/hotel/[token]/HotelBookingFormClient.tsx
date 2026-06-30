@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createPublicBookingAction, getDistanceEstimationAction } from "@/modules/bookings/bookings.actions";
 import { Button } from "@/components/ui/button";
@@ -11,8 +12,9 @@ import PlaceAutocompleteInput from "@/components/maps/PlaceAutocompleteInput";
 import GoogleMapRoute from "@/components/maps/GoogleMapRoute";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Clock, MapPin } from "lucide-react";
+import { Clock } from "lucide-react";
 import { getSpainToday } from "@/lib/utils";
+import { getVehicleImageSrc } from "@/lib/fleet-images";
 
 type Vehicle = any;
 
@@ -437,26 +439,41 @@ export default function HotelBookingFormClient({
                 <p className="text-sm text-gray-500 mt-1 font-medium">Elija la categoría de la flota que mejor se adapte.</p>
               </div>
               <div className="grid grid-cols-1 gap-4">
-                {vehicles.map(v => (
-                  <div 
-                    key={v.id} 
-                    onClick={() => updateForm('vehicleId', v.id)}
-                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex justify-between items-center ${
-                      formData.vehicleId === v.id 
-                        ? 'border-[#D4AF37] bg-[#D4AF37]/5 shadow-md' 
-                        : 'border-gray-200 bg-white hover:border-[#D4AF37]/50'
-                    }`}
-                  >
-                    <div>
-                      <h4 className="text-xl font-bold text-gray-900">{v.name}</h4>
-                      <p className="text-sm text-gray-500 mt-1">Capacidad: {v.passengerCapacity} Pasajeros | {v.luggageCapacity} Maletas</p>
+                {vehicles.map(v => {
+                  const vehicleImage = getVehicleImageSrc(v);
+
+                  return (
+                    <div
+                      key={v.id}
+                      onClick={() => updateForm('vehicleId', v.id)}
+                      className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between ${
+                        formData.vehicleId === v.id
+                          ? 'border-[#D4AF37] bg-[#D4AF37]/5 shadow-md'
+                          : 'border-gray-200 bg-white hover:border-[#D4AF37]/50'
+                      }`}
+                    >
+                      <div className="flex min-w-0 items-center gap-4">
+                        <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                          <Image
+                            src={vehicleImage}
+                            alt={`${v.name} de MeTransfers`}
+                            fill
+                            sizes="112px"
+                            className="object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-bold text-gray-900">{v.name}</h4>
+                          <p className="text-sm text-gray-500 mt-1">Capacidad: {v.passengerCapacity} Pasajeros | {v.luggageCapacity} Maletas</p>
+                        </div>
+                      </div>
+                      <div className="text-left sm:text-right">
+                        <p className="text-sm text-gray-500 uppercase tracking-wider mb-1">Precio</p>
+                        <p className="text-2xl font-bold text-[#D4AF37]">€{calculateEstimation(v)}</p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-500 uppercase tracking-wider mb-1">Precio</p>
-                      <p className="text-2xl font-bold text-[#D4AF37]">€{calculateEstimation(v)}</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
               
               <div className="pt-6 flex justify-between gap-4">

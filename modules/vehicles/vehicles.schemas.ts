@@ -4,6 +4,7 @@ export const vehicleSchema = z.object({
   categoryId: z.string().uuid("Categoría inválida"),
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   slug: z.string().min(2, "El slug debe tener al menos 2 caracteres"),
+  imageUrl: z.string().trim().optional(),
   passengerCapacity: z.coerce.number().min(1, "Debe haber al menos 1 pasajero"),
   luggageCapacity: z.coerce.number().min(0, "La capacidad de maletas no puede ser negativa"),
   pricePerKmOneWay: z.coerce.number().min(0, "El precio por Km no puede ser negativo"),
@@ -13,6 +14,7 @@ export const vehicleSchema = z.object({
   airportSurcharge: z.coerce.number().default(0),
   nightSurcharge: z.coerce.number().default(0),
   isActive: z.boolean().default(true),
+  sortOrder: z.coerce.number().int().default(0),
 });
 
 export type VehicleInput = z.infer<typeof vehicleSchema>;

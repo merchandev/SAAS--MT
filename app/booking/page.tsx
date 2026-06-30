@@ -1,7 +1,5 @@
 import { vehiclesQueries } from "@/modules/vehicles/vehicles.queries";
 import BookingFormClient from "./BookingFormClient";
-import Link from "next/link";
-import Image from "next/image";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
 
 export const dynamic = "force-dynamic";

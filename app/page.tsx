@@ -105,10 +105,10 @@ const steps = [
 ];
 
 const fleet = [
-  "Berlina estándar para traslados urbanos y aeropuerto",
-  "Vehículo business para reuniones, congresos y clientes ejecutivos",
-  "Vehículo premium o de lujo para servicios VIP y representación",
-  "Monovolumen, minivan y minibús para familias, grupos y equipaje",
+  "ECONOMIC CLASS: berlina Mercedes para traslados urbanos y aeropuerto",
+  "BUSINESS CLASS: berlina Mercedes ejecutiva para reuniones, congresos y clientes premium",
+  "MINI VAN ECONOMIC: Mercedes para familias, grupos y equipaje amplio",
+  "MINI VAN «V» CLASS: Mercedes Clase V para servicios VIP, grupos y máxima comodidad",
 ];
 
 const routes = [

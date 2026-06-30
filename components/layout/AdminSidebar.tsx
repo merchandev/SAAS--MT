@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Gauge,
+  HardDrive,
   Hotel,
   LogOut,
   Settings,
@@ -66,6 +67,7 @@ export function AdminSidebar({ role, companyName = "MeTransfers", logoUrl, accen
     { name: "Precios", href: "/admin/pricing", roles: ["SUPER_ADMIN", "ADMIN"], icon: Tags },
     { name: "Usuarios", href: "/admin/users", roles: ["SUPER_ADMIN", "ADMIN"], icon: Users },
     { name: "Ajustes", href: "/admin/settings", roles: ["SUPER_ADMIN", "ADMIN"], icon: Settings },
+    { name: "Sistema", href: "/admin/system", roles: ["SUPER_ADMIN", "ADMIN"], icon: HardDrive },
   ];
 
   const navigation = allNavigation.filter((item) => item.roles.includes(role));

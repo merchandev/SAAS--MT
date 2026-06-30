@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import HotelBookingFormClient from "./HotelBookingFormClient";
-import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -21,10 +20,19 @@ export default async function HotelPortalPage({ params }: Props) {
     notFound();
   }
 
-  const vehicles = await prisma.vehicle.findMany({
+  const rawVehicles = await prisma.vehicle.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },
   });
+  const vehicles = rawVehicles.map((vehicle) => ({
+    ...vehicle,
+    pricePerKmOneWay: Number(vehicle.pricePerKmOneWay),
+    pricePerKmRoundTrip: Number(vehicle.pricePerKmRoundTrip),
+    pricePerHour: Number(vehicle.pricePerHour),
+    minimumPrice: Number(vehicle.minimumPrice),
+    airportSurcharge: Number(vehicle.airportSurcharge),
+    nightSurcharge: Number(vehicle.nightSurcharge),
+  }));
 
   // Safe passing of data
   const hotelData = {

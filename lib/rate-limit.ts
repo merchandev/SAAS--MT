@@ -103,8 +103,105 @@ export class RateLimiter {
   }
 }
 
+export class ExponentialRateLimiter {
+  private memoryLimits = new Map<string, { count: number; resetAt: number }>();
+
+  constructor(private backoffStagesMs: number[]) {}
+
+  private getBackoffForCount(count: number): number {
+    if (count <= 0) return 0;
+    const index = Math.min(count - 1, this.backoffStagesMs.length - 1);
+    return this.backoffStagesMs[index];
+  }
+
+  async check(key: string): Promise<{ allowed: boolean; resetAtMs: number }> {
+    const now = Date.now();
+
+    if (process.env.RATE_LIMIT_BACKEND === "memory" || process.env.NODE_ENV === "test") {
+      const record = this.memoryLimits.get(key);
+      if (record && record.resetAt > now) {
+        return { allowed: false, resetAtMs: record.resetAt };
+      }
+      return { allowed: true, resetAtMs: 0 };
+    }
+
+    try {
+      const bucket = await prisma.rateLimitBucket.findUnique({ where: { key }, select: { resetAt: true } });
+      if (bucket && bucket.resetAt.getTime() > now) {
+        return { allowed: false, resetAtMs: bucket.resetAt.getTime() };
+      }
+      return { allowed: true, resetAtMs: 0 };
+    } catch (error) {
+      console.error("[RateLimit] Falling back to in-memory limiter:", error);
+      const record = this.memoryLimits.get(key);
+      if (record && record.resetAt > now) {
+        return { allowed: false, resetAtMs: record.resetAt };
+      }
+      return { allowed: true, resetAtMs: 0 };
+    }
+  }
+
+  async consume(key: string): Promise<void> {
+    const now = Date.now();
+
+    if (process.env.RATE_LIMIT_BACKEND === "memory" || process.env.NODE_ENV === "test") {
+      const record = this.memoryLimits.get(key) || { count: 0, resetAt: 0 };
+      // If it's been more than 2x the longest timeout since the last lockout, reset count
+      const longestTimeout = this.backoffStagesMs[this.backoffStagesMs.length - 1];
+      if (record.resetAt > 0 && now > record.resetAt + longestTimeout * 2) {
+        record.count = 0;
+      }
+      record.count++;
+      record.resetAt = now + this.getBackoffForCount(record.count);
+      this.memoryLimits.set(key, record);
+      return;
+    }
+
+    try {
+      const bucket = await prisma.rateLimitBucket.findUnique({ where: { key } });
+      
+      let count = (bucket?.count || 0);
+      const longestTimeout = this.backoffStagesMs[this.backoffStagesMs.length - 1];
+      
+      if (bucket && bucket.resetAt.getTime() > 0 && now > bucket.resetAt.getTime() + longestTimeout * 2) {
+        count = 0;
+      }
+
+      count++;
+      const backoffMs = this.getBackoffForCount(count);
+      const resetAt = new Date(now + backoffMs);
+
+      await prisma.rateLimitBucket.upsert({
+        where: { key },
+        update: { count, resetAt },
+        create: { key, count, resetAt }
+      });
+    } catch (error) {
+      console.error("[RateLimit] Failed to consume:", error);
+    }
+  }
+
+  async clear(key: string): Promise<void> {
+    if (process.env.RATE_LIMIT_BACKEND === "memory" || process.env.NODE_ENV === "test") {
+      this.memoryLimits.delete(key);
+      return;
+    }
+    try {
+      await prisma.rateLimitBucket.delete({ where: { key } });
+    } catch (e) {
+      // Ignore if not exists
+    }
+  }
+}
+
 // Singleton instances for different purposes
-export const loginRateLimiter = new RateLimiter(5, 15 * 60 * 1000); // 5 per 15 min
+export const loginRateLimiter = new ExponentialRateLimiter([
+  30 * 1000,        // 30s
+  60 * 1000,        // 1m
+  5 * 60 * 1000,    // 5m
+  15 * 60 * 1000,   // 15m
+]);
 export const publicBookingRateLimiter = new RateLimiter(5, 15 * 60 * 1000); // 5 per 15 min
 export const mapsRateLimiter = new RateLimiter(30, 15 * 60 * 1000); // 30 per 15 min
 export const paymentRateLimiter = new RateLimiter(10, 15 * 60 * 1000); // 10 per 15 min
+export const aiImageRateLimiter = new RateLimiter(10, 60 * 60 * 1000); // 10 per hour

@@ -1,6 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
+import { prisma } from "@/lib/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -16,6 +17,7 @@ export interface SessionPayload {
   userId: string;
   role: string;
   email: string;
+  sessionVersion?: number;
 }
 
 export const authService = {
@@ -81,6 +83,29 @@ export const authService = {
     if (!token) {
       return null;
     }
-    return await this.verifyToken(token);
+    
+    const payload = await this.verifyToken(token);
+    if (!payload) return null;
+
+    try {
+      // Validate session against DB (allows immediate logout & suspension)
+      const user = await prisma.user.findUnique({
+        where: { id: payload.userId },
+        select: { isActive: true, sessionVersion: true }
+      });
+
+      // If payload has no sessionVersion, we default to 0 for backwards compatibility
+      const payloadVersion = payload.sessionVersion ?? 0;
+
+      if (!user || !user.isActive || user.sessionVersion !== payloadVersion) {
+        await this.deleteSessionCookie();
+        return null;
+      }
+    } catch (error) {
+      console.error("[getSession] Database validation failed:", error);
+      return null;
+    }
+
+    return payload;
   }
 };

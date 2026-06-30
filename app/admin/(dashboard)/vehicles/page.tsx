@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { vehiclesQueries } from "@/modules/vehicles/vehicles.queries";
 import { Button } from "@/components/ui/button";
+import { getVehicleImageSrc } from "@/lib/fleet-images";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +26,7 @@ export default async function VehiclesPage() {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imagen</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacidad</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio/Km</th>
@@ -35,6 +38,17 @@ export default async function VehiclesPage() {
             {vehicles.map((v) => (
               <tr key={v.id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{v.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="relative h-12 w-20 overflow-hidden rounded-md bg-gray-100">
+                    <Image
+                      src={getVehicleImageSrc(v)}
+                      alt={`${v.name} de MeTransfers`}
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                    />
+                  </div>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{v.category.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {v.passengerCapacity} Pax / {v.luggageCapacity} Maletas
@@ -58,7 +72,7 @@ export default async function VehiclesPage() {
             ))}
             {vehicles.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
+                <td colSpan={7} className="px-6 py-10 text-center text-gray-500">
                   No hay vehículos registrados.
                 </td>
               </tr>

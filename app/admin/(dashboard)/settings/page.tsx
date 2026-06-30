@@ -1,4 +1,5 @@
 import { settingsQueries } from "@/modules/settings/settings.queries";
+import { GenerateImageButton } from "@/components/admin/GenerateImageButton";
 import { SettingsForm } from "./SettingsForm";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +15,7 @@ export default async function SettingsPage() {
       </div>
 
       <SettingsForm initialData={settings} />
+      <GenerateImageButton />
     </div>
   );
 }

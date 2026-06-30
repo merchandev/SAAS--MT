@@ -21,9 +21,9 @@ export default async function MarketingHeader() {
       <MarketingLogo />
 
       <nav className="hidden items-center gap-7 text-sm font-semibold text-white/85 md:flex">
-        <a href="/#servicios" className="transition-colors hover:text-[#D4AF37]">
+        <Link href="/#servicios" className="transition-colors hover:text-[#D4AF37]">
           Servicios
-        </a>
+        </Link>
         <Link href="/tours-privados" className="transition-colors hover:text-[#D4AF37]">
           Tours
         </Link>

@@ -24,9 +24,20 @@ export async function loginAction(data: LoginInput) {
   const requestMeta = getRequestMeta(await headers());
   const ipKey = buildRateLimitKey("login-ip", requestMeta);
   const emailKey = buildRateLimitKey("login-email", requestMeta, lowerEmail);
-  const isAllowed = (await loginRateLimiter.check(ipKey)) && (await loginRateLimiter.check(emailKey));
-  if (!isAllowed) {
-    return { error: "Demasiados intentos. Por favor, inténtelo de nuevo en 15 minutos." };
+  
+  const ipCheck = await loginRateLimiter.check(ipKey);
+  const emailCheck = await loginRateLimiter.check(emailKey);
+  
+  if (!ipCheck.allowed || !emailCheck.allowed) {
+    const maxResetAtMs = Math.max(ipCheck.resetAtMs, emailCheck.resetAtMs);
+    const waitSeconds = Math.ceil((maxResetAtMs - Date.now()) / 1000);
+    const waitMinutes = Math.ceil(waitSeconds / 60);
+    
+    if (waitSeconds < 60) {
+      return { error: `Demasiados intentos. Por favor, inténtelo de nuevo en ${waitSeconds} segundos.` };
+    } else {
+      return { error: `Demasiados intentos. Por favor, inténtelo de nuevo en ${waitMinutes} minutos.` };
+    }
   }
 
   // 2. Buscar usuario en base de datos
@@ -35,20 +46,29 @@ export async function loginAction(data: LoginInput) {
   });
 
   if (!user || !user.isActive) {
+    await loginRateLimiter.consume(ipKey);
+    await loginRateLimiter.consume(emailKey);
     return { error: "Credenciales incorrectas o usuario inactivo." };
   }
 
   // 3. Verificar contraseña
   const isValid = await authService.verifyPassword(password, user.passwordHash);
   if (!isValid) {
+    await loginRateLimiter.consume(ipKey);
+    await loginRateLimiter.consume(emailKey);
     return { error: "Credenciales incorrectas." };
   }
+
+  // Éxito: Limpiar los intentos fallidos
+  await loginRateLimiter.clear(ipKey);
+  await loginRateLimiter.clear(emailKey);
 
   // 4. Crear sesión (JWT Cookie)
   const token = await authService.createToken({
     userId: user.id,
     role: user.role,
     email: user.email,
+    sessionVersion: user.sessionVersion,
   });
 
   await authService.setSessionCookie(token);
@@ -77,9 +97,20 @@ export async function registerAction(data: RegisterInput) {
   const requestMeta = getRequestMeta(await headers());
   const ipKey = buildRateLimitKey("register-ip", requestMeta);
   const emailKey = buildRateLimitKey("register-email", requestMeta, lowerEmail);
-  const isAllowed = (await loginRateLimiter.check(ipKey)) && (await loginRateLimiter.check(emailKey));
-  if (!isAllowed) {
-    return { error: "Demasiados intentos. Por favor, inténtelo de nuevo más tarde." };
+  
+  const ipCheck = await loginRateLimiter.check(ipKey);
+  const emailCheck = await loginRateLimiter.check(emailKey);
+  
+  if (!ipCheck.allowed || !emailCheck.allowed) {
+    const maxResetAtMs = Math.max(ipCheck.resetAtMs, emailCheck.resetAtMs);
+    const waitSeconds = Math.ceil((maxResetAtMs - Date.now()) / 1000);
+    const waitMinutes = Math.ceil(waitSeconds / 60);
+    
+    if (waitSeconds < 60) {
+      return { error: `Demasiados intentos. Por favor, inténtelo de nuevo en ${waitSeconds} segundos.` };
+    } else {
+      return { error: `Demasiados intentos. Por favor, inténtelo de nuevo en ${waitMinutes} minutos.` };
+    }
   }
 
   // 2. Verificar si el usuario ya existe
@@ -88,6 +119,8 @@ export async function registerAction(data: RegisterInput) {
   });
 
   if (existingUser) {
+    await loginRateLimiter.consume(ipKey);
+    await loginRateLimiter.consume(emailKey);
     return { error: "Ya existe una cuenta con este correo electrónico." };
   }
 
@@ -141,6 +174,7 @@ export async function registerAction(data: RegisterInput) {
       userId: newUser.id,
       role: newUser.role,
       email: newUser.email,
+      sessionVersion: newUser.sessionVersion,
     });
 
     await authService.setSessionCookie(token);
@@ -149,6 +183,13 @@ export async function registerAction(data: RegisterInput) {
     console.error("Error en registro:", error);
     return { error: "Ocurrió un error inesperado durante el registro." };
   }
+
+  // Éxito: Limpiar los intentos fallidos
+  const requestMetaClear = getRequestMeta(await headers());
+  const ipKeyClear = buildRateLimitKey("register-ip", requestMetaClear);
+  const emailKeyClear = buildRateLimitKey("register-email", requestMetaClear, lowerEmail);
+  await loginRateLimiter.clear(ipKeyClear);
+  await loginRateLimiter.clear(emailKeyClear);
 
   // 6. Redirigir
   redirect("/customer/dashboard");
