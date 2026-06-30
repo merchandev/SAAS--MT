@@ -20,6 +20,8 @@ import {
   Users,
   ClipboardList,
   MessageSquare,
+  FileText,
+  FilePenLine,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { logoutAction } from "@/modules/auth/auth.actions";
@@ -68,6 +70,8 @@ export function AdminSidebar({ role, companyName = "MeTransfers", logoUrl, accen
     { name: "Precios", href: "/admin/pricing", roles: ["SUPER_ADMIN", "ADMIN"], icon: Tags },
     { name: "Usuarios", href: "/admin/users", roles: ["SUPER_ADMIN", "ADMIN"], icon: Users },
     { name: "Mensajes", href: "/admin/contact-messages", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: MessageSquare },
+    { name: "Páginas (SEO)", href: "/admin/pages", roles: ["SUPER_ADMIN", "ADMIN"], icon: FileText },
+    { name: "Blog (Entradas)", href: "/admin/posts", roles: ["SUPER_ADMIN", "ADMIN"], icon: FilePenLine },
     { name: "Ajustes", href: "/admin/settings", roles: ["SUPER_ADMIN", "ADMIN"], icon: Settings },
     { name: "Sistema", href: "/admin/system", roles: ["SUPER_ADMIN", "ADMIN"], icon: HardDrive },
   ];

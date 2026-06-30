@@ -576,11 +576,33 @@ model RoutePage {
   metaDescription String? @db.Text
   contentHtml     String? @db.Text
 
+  seoTitle        String?
+  seoKeywords     String?
+  seoImage        String?
+
   basePriceCache Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X €" rápido
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id              String  @id @default(uuid())
+  slug            String  @unique
+  title           String
+  excerpt         String? @db.Text
+  contentHtml     String? @db.Text
+  
+  metaTitle       String?
+  metaDescription String? @db.Text
+  seoKeywords     String?
+  imageUrl        String?
+
+  isActive    Boolean   @default(true)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model ContactMessage {
