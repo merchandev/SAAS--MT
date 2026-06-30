@@ -40,7 +40,7 @@ const legalLinks = [
   { href: "/politica-de-privacidad", label: "Política de Privacidad" },
   { href: "/terminos-y-condiciones", label: "Términos y Condiciones" },
   { href: "/aviso-legal", label: "Aviso Legal" },
-  { href: "/contacto", label: "Cookies" },
+  { href: "/cookies", label: "Cookies" },
 ];
 
 export default function MarketingFooter() {
