@@ -88,14 +88,14 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
               <Link 
                 href="/login" 
                 onClick={() => setIsOpen(false)}
-                className="hover:text-[#D4AF37] transition-colors duration-300"
+                className="text-white px-4 py-3 rounded-lg bg-white/10 hover:bg-white/20 border border-transparent transition-colors duration-300 text-center"
               >
                 Ingresar
               </Link>
               <Link 
                 href="/register" 
                 onClick={() => setIsOpen(false)}
-                className="text-white px-4 py-3 rounded-lg border border-white/20 transition-colors duration-300 text-center"
+                className="text-white px-4 py-3 rounded-lg border border-white/20 hover:bg-white/10 transition-colors duration-300 text-center"
               >
                 Registrarse
               </Link>
