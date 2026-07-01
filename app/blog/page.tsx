@@ -5,8 +5,9 @@ import { ArrowRight, CalendarDays, Newspaper } from "lucide-react";
 import MarketingCta from "@/components/marketing/MarketingCta";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import PageHero from "@/components/marketing/PageHero";
-import postsData from "@/data/posts.json";
 import { getBlogImage } from "@/lib/fleet-images";
+
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Blog de traslados privados en Barcelona | MeTransfers",
@@ -17,9 +18,6 @@ export const metadata: Metadata = {
   },
 };
 
-const sortedPosts = [...postsData].sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
-const posts = sortedPosts.slice(0, 15);
-
 const guides = [
   "Traslados desde hoteles, puertos y estaciones",
   "Servicios por horas para agendas corporativas",
@@ -27,7 +25,21 @@ const guides = [
   "Consejos para eventos, bodas y grupos",
 ];
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const allPosts = await prisma.post.findMany({
+    where: { isActive: true },
+    orderBy: { publishedAt: "desc" },
+    take: 15,
+  });
+
+  // Map to the format expected by the UI, providing fallbacks
+  const posts = allPosts.map(post => ({
+    title: post.title,
+    slug: post.slug,
+    excerpt: post.excerpt || "",
+    category: "MeTransfers-Blog",
+    pubDate: post.publishedAt ? post.publishedAt.toISOString() : post.createdAt.toISOString()
+  }));
   return (
     <div className="min-h-screen bg-white text-gray-900">
       <PageHero

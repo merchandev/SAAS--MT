@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import postsData from "@/data/posts.json";
+import { prisma } from "@/lib/prisma";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
 import { ArrowLeft, Calendar } from "lucide-react";
@@ -8,61 +8,60 @@ import Link from "next/link";
 import MarketingCta from "@/components/marketing/MarketingCta";
 import { getBlogImage } from "@/lib/fleet-images";
 
-export const dynamic = "force-static";
-
-export function generateStaticParams() {
-  return postsData.map((post) => ({
-    slug: post.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
-  const post = postsData.find((p) => p.slug === resolvedParams.slug);
+  const post = await prisma.post.findUnique({
+    where: { slug: resolvedParams.slug },
+  });
 
-  if (!post) {
+  if (!post || !post.isActive) {
     return {
       title: "Artículo no encontrado | MeTransfers",
     };
   }
 
-  const image = getBlogImage(post);
+  // mock image object for seo
+  const image = getBlogImage({ category: "MeTransfers-Blog", title: post.title });
 
   return {
-    title: `${post.title} | Blog MeTransfers`,
-    description: post.excerpt,
+    title: post.metaTitle || `${post.title} | Blog MeTransfers`,
+    description: post.metaDescription || post.excerpt,
     openGraph: {
-      title: `${post.title} | Blog MeTransfers`,
-      description: post.excerpt,
+      title: post.metaTitle || `${post.title} | Blog MeTransfers`,
+      description: post.metaDescription || post.excerpt,
       images: [
         {
-          url: image.src,
-          alt: image.alt,
+          url: post.imageUrl || image.src,
+          alt: post.title,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      images: [image.src],
+      images: [post.imageUrl || image.src],
     },
   };
 }
 
 export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
-  const post = postsData.find((p) => p.slug === resolvedParams.slug);
+  const post = await prisma.post.findUnique({
+    where: { slug: resolvedParams.slug },
+  });
 
-  if (!post) {
+  if (!post || !post.isActive) {
     notFound();
   }
 
   // Format date
-  const date = new Date(post.pubDate).toLocaleDateString("es-ES", {
+  const date = new Date(post.publishedAt || post.createdAt).toLocaleDateString("es-ES", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
-  const image = getBlogImage(post);
+  const image = getBlogImage({ category: "MeTransfers-Blog", title: post.title });
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
@@ -108,7 +107,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
           <div 
             className="prose prose-lg prose-gray max-w-none prose-headings:font-black prose-a:text-[#D4AF37] prose-img:rounded-2xl"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: post.contentHtml || "" }}
           />
         </article>
 
