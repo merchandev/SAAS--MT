@@ -25,6 +25,8 @@ const guides = [
   "Consejos para eventos, bodas y grupos",
 ];
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogPage() {
   const allPosts = await prisma.post.findMany({
     where: { isActive: true },

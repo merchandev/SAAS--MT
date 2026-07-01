@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   // mock image object for seo
-  const image = getBlogImage({ category: "MeTransfers-Blog", title: post.title });
+  const image = getBlogImage({ slug: post.slug, title: post.title });
 
   return {
     title: post.metaTitle || `${post.title} | Blog MeTransfers`,
@@ -61,7 +61,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     month: "long",
     day: "numeric",
   });
-  const image = getBlogImage({ category: "MeTransfers-Blog", title: post.title });
+  const image = getBlogImage({ slug: post.slug, title: post.title });
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
@@ -80,7 +80,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           <header className="mb-12">
             <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-gray-500 mb-6">
               <span className="inline-flex items-center rounded-full bg-[#D4AF37]/10 px-3 py-1 text-[#D4AF37] uppercase tracking-wider text-xs font-black">
-                {post.category}
+                {"MeTransfers-Blog"}
               </span>
               <span className="flex items-center gap-1.5">
                 <Calendar className="h-4 w-4" />
