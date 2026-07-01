@@ -9,7 +9,7 @@ RUN apt-get update \
 
 FROM base AS deps
 COPY package.json package-lock.json ./
-RUN npm ci --include=dev --no-audit --no-fund
+RUN npm ci --include=dev --no-audit --no-fund --legacy-peer-deps
 
 FROM base AS builder
 ARG NEXT_PUBLIC_APP_URL=http://localhost:3000
