@@ -7,9 +7,10 @@ import path from "path";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const hotelId = params.id;
     const hotel = await prisma.hotel.findUnique({
       where: { id: hotelId },
