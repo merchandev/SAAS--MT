@@ -99,24 +99,24 @@ export default function MarketingFooter() {
           <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Contacto</h2>
           <div className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
             <a href="tel:+34662024136" className="flex items-center gap-3 transition hover:text-gray-900 w-fit">
-              <span className="material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">phone</span>
+              <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">phone</span>
               +34 662 02 41 36
             </a>
             <a href="mailto:info@metransfers.es" className="flex items-center gap-3 transition hover:text-gray-900 w-fit">
-              <span className="material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">mail</span>
+              <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">mail</span>
               info@metransfers.es
             </a>
             <span className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">location_on</span>
+              <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">location_on</span>
               Barcelona, España
             </span>
             <div className="flex gap-2 mt-2">
               <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1527] px-2.5 py-1.5 text-xs font-black text-white">
-                <span className="material-symbols-outlined text-[16px] text-[#00C26D]" aria-hidden="true">star</span>
+                <span translate="no" className="notranslate material-symbols-outlined text-[16px] text-[#00C26D]" aria-hidden="true">star</span>
                 GetYourGuide Verified
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1527] px-2.5 py-1.5 text-xs font-black text-white">
-                <span className="material-symbols-outlined text-[16px] text-[#F3C200]" aria-hidden="true">lock</span>
+                <span translate="no" className="notranslate material-symbols-outlined text-[16px] text-[#F3C200]" aria-hidden="true">lock</span>
                 Pago Seguro
               </span>
             </div>
@@ -144,7 +144,7 @@ export default function MarketingFooter() {
         rel="noreferrer"
         target="_blank"
       >
-        <span className="material-symbols-outlined text-[28px]" aria-hidden="true">chat</span>
+        <span translate="no" className="notranslate material-symbols-outlined text-[28px]" aria-hidden="true">chat</span>
       </a>
     </footer>
   );

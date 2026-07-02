@@ -331,7 +331,7 @@ export default function BookingFormClient({
                             if (addr.placeId) updateForm('originPlaceId', addr.placeId);
                           }}
                         >
-                          <span className="material-symbols-outlined text-[16px] mr-1">location_on</span>
+                          <span translate="no" className="notranslate material-symbols-outlined text-[16px] mr-1">location_on</span>
                           {addr.label} (Origen)
                         </Button>
                         <Button 
@@ -343,7 +343,7 @@ export default function BookingFormClient({
                             if (addr.placeId) updateForm('destinationPlaceId', addr.placeId);
                           }}
                         >
-                          <span className="material-symbols-outlined text-[16px] mr-1">flag</span>
+                          <span translate="no" className="notranslate material-symbols-outlined text-[16px] mr-1">flag</span>
                           {addr.label} (Destino)
                         </Button>
                       </div>

@@ -298,14 +298,14 @@ export default async function HomePage() {
                   style={{ backgroundColor: accentColor }}
                 >
                   Reservar traslado
-                  <span className="material-symbols-outlined text-[22px]" aria-hidden="true">chevron_right</span>
+                  <span translate="no" className="notranslate material-symbols-outlined text-[22px]" aria-hidden="true">chevron_right</span>
                 </Link>
                 <a
                   href="#servicios"
                   className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-7 py-3 font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:border-white/40"
                 >
                   Ver servicios
-                  <span className="material-symbols-outlined text-[20px]" aria-hidden="true">location_on</span>
+                  <span translate="no" className="notranslate material-symbols-outlined text-[20px]" aria-hidden="true">location_on</span>
                 </a>
               </div>
 
@@ -345,7 +345,7 @@ export default async function HomePage() {
                   className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#D4AF37] hover:shadow-lg"
                 >
                   <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37]">
-                    <span className="material-symbols-outlined text-[28px]" aria-hidden="true">{Icon}</span>
+                    <span translate="no" className="notranslate material-symbols-outlined text-[28px]" aria-hidden="true">{Icon}</span>
                   </div>
                   <h3 className="text-xl font-semibold text-gray-950">{title}</h3>
                   <p className="mt-3 leading-7 text-gray-600">{description}</p>
@@ -406,7 +406,7 @@ export default async function HomePage() {
               <div className="mt-8 grid gap-3">
                 {advantages.map((advantage) => (
                   <div key={advantage} className="flex gap-4 rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
-                    <span className="material-symbols-outlined mt-0.5 text-[22px] shrink-0 text-[#D4AF37]" aria-hidden="true">check_circle</span>
+                    <span translate="no" className="notranslate material-symbols-outlined mt-0.5 text-[22px] shrink-0 text-[#D4AF37]" aria-hidden="true">check_circle</span>
                     <p className="leading-7 text-gray-700 font-medium">{advantage}</p>
                   </div>
                 ))}
@@ -430,7 +430,7 @@ export default async function HomePage() {
               <div className="mt-8 grid gap-4">
                 {fleet.map((item) => (
                   <div key={item} className="flex items-start gap-4 rounded-xl border border-gray-200 bg-gray-50/50 p-5 transition hover:bg-white hover:shadow-sm">
-                    <span className="material-symbols-outlined mt-0.5 text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">directions_car</span>
+                    <span translate="no" className="notranslate material-symbols-outlined mt-0.5 text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">directions_car</span>
                     <p className="leading-7 text-gray-700 font-medium">{item}</p>
                   </div>
                 ))}
@@ -468,7 +468,7 @@ export default async function HomePage() {
                     href={`/booking?origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}`}
                     className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-[#D4AF37]"
                   >
-                    <span className="material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">location_on</span>
+                    <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">location_on</span>
                     <h3 className="text-lg font-semibold">{route.label}</h3>
                   </Link>
                 ))}
@@ -492,7 +492,7 @@ export default async function HomePage() {
                 <details key={question} className="group rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-semibold text-gray-950 [&::-webkit-details-marker]:hidden">
                     {question}
-                    <span className="material-symbols-outlined text-[24px] shrink-0 transition group-open:rotate-90" aria-hidden="true">chevron_right</span>
+                    <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 transition group-open:rotate-90" aria-hidden="true">chevron_right</span>
                   </summary>
                   <p className="mt-4 leading-7 text-gray-600">{answer}</p>
                 </details>
@@ -519,7 +519,7 @@ export default async function HomePage() {
               style={{ backgroundColor: accentColor }}
             >
               Ver disponibilidad
-              <span className="material-symbols-outlined text-[20px]" aria-hidden="true">chevron_right</span>
+              <span translate="no" className="notranslate material-symbols-outlined text-[20px]" aria-hidden="true">chevron_right</span>
             </Link>
           </div>
         </section>

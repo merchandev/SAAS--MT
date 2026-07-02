@@ -77,7 +77,7 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
               className="text-black px-4 py-3 rounded-lg transition-colors duration-300 text-center flex items-center justify-center gap-2"
               style={{ backgroundColor: accentColor }}
             >
-              <span className="material-symbols-outlined text-[20px]">person</span>
+              <span translate="no" className="notranslate material-symbols-outlined text-[20px]">person</span>
               Mi Panel
             </Link>
           ) : (

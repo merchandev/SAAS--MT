@@ -47,7 +47,7 @@ export default async function MarketingHeader() {
             style={{ backgroundColor: accentColor, color: "#111" }}
             title="Mi Panel"
           >
-            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">person</span>
+            <span translate="no" className="notranslate material-symbols-outlined text-[20px]" aria-hidden="true">person</span>
           </Link>
         ) : (
           <Link
@@ -56,7 +56,7 @@ export default async function MarketingHeader() {
             style={{ backgroundColor: accentColor }}
           >
             Reservar
-            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">chevron_right</span>
+            <span translate="no" className="notranslate material-symbols-outlined text-[18px]" aria-hidden="true">chevron_right</span>
           </Link>
         )}
       </nav>

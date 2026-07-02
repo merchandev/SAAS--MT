@@ -29,7 +29,7 @@ export function SeoPreviewCard({
     <Card className="border-gray-200 shadow-sm mt-6">
       <CardHeader className="bg-gray-50/50 pb-4 border-b border-gray-100">
         <CardTitle className="text-lg flex items-center gap-2">
-          <span className="material-symbols-outlined text-[20px] text-green-600">search</span>
+          <span translate="no" className="notranslate material-symbols-outlined text-[20px] text-green-600">search</span>
           Vista previa de Google (Yoast SEO)
         </CardTitle>
       </CardHeader>

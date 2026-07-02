@@ -67,7 +67,7 @@ export default async function RouteDynamicPage({ params }: Props) {
               {/* Bloque de características estáticas para SEO */}
               <div className="mt-10 grid gap-4">
                 <div className="flex gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-5 shadow-sm">
-                  <span className="material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">check_circle</span>
+                  <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">check_circle</span>
                   <div>
                     <h3 className="font-semibold">Precio cerrado garantizado</h3>
                     <p className="text-sm text-gray-600 mt-1">
@@ -77,7 +77,7 @@ export default async function RouteDynamicPage({ params }: Props) {
                 </div>
                 
                 <div className="flex gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-5 shadow-sm">
-                  <span className="material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">group</span>
+                  <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">group</span>
                   <div>
                     <h3 className="font-semibold">Vehículos premium y minivans</h3>
                     <p className="text-sm text-gray-600 mt-1">
@@ -87,7 +87,7 @@ export default async function RouteDynamicPage({ params }: Props) {
                 </div>
 
                 <div className="flex gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-5 shadow-sm">
-                  <span className="material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">work</span>
+                  <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">work</span>
                   <div>
                     <h3 className="font-semibold">Chófer profesional</h3>
                     <p className="text-sm text-gray-600 mt-1">

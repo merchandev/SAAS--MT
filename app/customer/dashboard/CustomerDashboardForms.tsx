@@ -278,7 +278,7 @@ export function CustomerAddressesForm({ addresses }: { addresses: any[] }) {
               disabled={pending}
               className="text-red-500 hover:text-red-700 disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[20px]">delete</span>
+              <span translate="no" className="notranslate material-symbols-outlined text-[20px]">delete</span>
             </button>
           </div>
         ))}
