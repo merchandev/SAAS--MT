@@ -66,7 +66,7 @@ export default function GoogleTranslate() {
         Contenedor estiliado 
         El CSS apunta al <select> que Google genera en el interior de este div.
       */}
-      <div className="relative inline-flex items-center">
+      <div className="relative inline-flex items-center min-w-[130px] min-h-[34px]">
         <div 
           id="google_translate_element" 
           className="
@@ -76,15 +76,24 @@ export default function GoogleTranslate() {
             [&_select]:px-3 [&_select]:py-1.5 [&_select]:text-sm [&_select]:outline-none 
             [&_select]:transition-colors [&_select:focus]:border-[#D4AF37] [&_select]:hover:border-[#D4AF37]
             [&_select]:appearance-none [&_select]:cursor-pointer [&_select]:pr-7
+            w-full
           "
         ></div>
-        {/* Icono decorativo para el dropdown */}
-        <span 
-          translate="no" 
-          className="notranslate pointer-events-none absolute right-2 text-white/70 material-symbols-outlined text-[16px]"
+        {/* Icono decorativo para el dropdown (SVG en lugar de fuente para evitar bugs de Google Translate) */}
+        <svg 
+          className="pointer-events-none absolute right-2 text-white/70 w-4 h-4" 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
         >
-          language
-        </span>
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
       </div>
     </>
   );
