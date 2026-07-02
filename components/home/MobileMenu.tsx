@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import GoogleTranslate from "@/components/ui/GoogleTranslate";
 
 export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false }: { accentColor?: string; isCustomer?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,6 +64,10 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
             Contacto
           </Link>
           
+          <div className="py-2 flex justify-center">
+            <GoogleTranslate />
+          </div>
+
           <div className="h-px bg-white/20 w-full my-2"></div>
 
           {isCustomer ? (

@@ -3,6 +3,7 @@ import MarketingLogo from "./MarketingLogo";
 import MobileMenu from "@/components/home/MobileMenu";
 import { authService } from "@/modules/auth/auth.service";
 import { settingsQueries } from "@/modules/settings/settings.queries";
+import GoogleTranslate from "@/components/ui/GoogleTranslate";
 
 export default async function MarketingHeader() {
   let settings;
@@ -37,6 +38,8 @@ export default async function MarketingHeader() {
           Contacto
         </Link>
         
+        <GoogleTranslate />
+
         {isCustomer ? (
           <Link
             href="/customer/dashboard"

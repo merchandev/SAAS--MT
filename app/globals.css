@@ -190,3 +190,37 @@
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 }
+
+/* ========================================= */
+/* GOOGLE TRANSLATE CUSTOM CSS               */
+/* ========================================= */
+.goog-te-banner-frame { 
+  display: none !important; 
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+iframe.goog-te-banner-frame { 
+  display: none !important; 
+}
+iframe.skiptranslate { 
+  display: none !important; 
+}
+body { 
+  top: 0 !important; 
+}
+body.translated-ltr,
+body.translated-rtl {
+  top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Ocultar elementos de marca de Google */
+.goog-logo-link {
+  display: none !important;
+}
+.goog-te-gadget img {
+  display: none !important;
+}
+.goog-te-gadget a {
+  display: none !important;
+}
