@@ -26,7 +26,7 @@ export default function GoogleMapRoute({ origin, destination, className = "w-ful
       return;
     }
 
-    const scriptId = "google-maps-script";
+    const scriptId = "google-maps-global-script";
     let script = document.getElementById(scriptId) as HTMLScriptElement;
 
     if (!script) {

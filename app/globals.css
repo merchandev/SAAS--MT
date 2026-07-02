@@ -232,3 +232,8 @@ body.translated-rtl {
 .goog-te-gadget a {
   display: none !important;
 }
+
+/* Fix para asegurar que el dropdown de autocompletado de Google se muestre por encima de todo */
+.pac-container {
+  z-index: 100000 !important;
+}

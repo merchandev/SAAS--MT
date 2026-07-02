@@ -41,7 +41,7 @@ export default function PlaceAutocompleteInput({
     }
 
     // Check if script tag already exists
-    const scriptId = "google-maps-places-script";
+    const scriptId = "google-maps-global-script";
     let script = document.getElementById(scriptId) as HTMLScriptElement;
 
     if (!script) {
@@ -118,7 +118,7 @@ export default function PlaceAutocompleteInput({
         }
       },
       () => {
-        alert("No se pudo obtener tu ubicación. Por favor, revisa los permisos.");
+        alert("No se pudo obtener tu ubicación. Por favor, asegúrate de estar usando una conexión segura (HTTPS) y de dar permisos al navegador.");
       }
     );
   };

@@ -34,7 +34,7 @@ export default function LiveTrackingMap({
       return;
     }
 
-    const scriptId = "google-maps-script";
+    const scriptId = "google-maps-global-script";
     let script = document.getElementById(scriptId) as HTMLScriptElement;
 
     if (!script) {
