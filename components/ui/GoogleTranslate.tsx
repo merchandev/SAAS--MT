@@ -79,7 +79,10 @@ export default function GoogleTranslate() {
           "
         ></div>
         {/* Icono decorativo para el dropdown */}
-        <span className="pointer-events-none absolute right-2 text-white/70 material-symbols-outlined text-[16px]">
+        <span 
+          translate="no" 
+          className="notranslate pointer-events-none absolute right-2 text-white/70 material-symbols-outlined text-[16px]"
+        >
           language
         </span>
       </div>
