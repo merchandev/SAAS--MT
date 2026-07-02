@@ -215,6 +215,14 @@ body.translated-rtl {
 }
 
 /* Ocultar elementos de marca de Google */
+.goog-te-gadget {
+  font-size: 0px !important; /* Oculta el texto suelto "Con la tecnología de" */
+  color: transparent !important;
+}
+.goog-te-gadget .goog-te-combo {
+  font-size: 14px !important;
+  color: #ffffff !important;
+}
 .goog-logo-link {
   display: none !important;
 }
