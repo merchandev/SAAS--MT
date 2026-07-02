@@ -3,10 +3,16 @@ import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
-export const metadata: Metadata = {
-  title: "Tours Privados con Chófer en Barcelona | MeTransfers",
-  description: "Descubre Barcelona y sus alrededores a tu propio ritmo. Excursiones y tours privados con chófer profesional y atención personalizada.",
-};
+import { prisma } from "@/lib/prisma";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await prisma.staticPage.findUnique({ where: { slug: "tours-privados-barcelona" } });
+  return {
+    title: seo?.title || "Tours Privados con Chófer en Barcelona | MeTransfers",
+    description: seo?.metaDescription || "Descubre Barcelona y sus alrededores a tu propio ritmo. Excursiones y tours privados con chófer profesional y atención personalizada.",
+    keywords: seo?.seoKeywords || undefined,
+  };
+}
 
 export default function ToursPrivadosPage() {
   return (

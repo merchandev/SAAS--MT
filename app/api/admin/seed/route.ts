@@ -53,9 +53,24 @@ const routes = [
   }
 ];
 
+const staticPages = [
+  { slug: "inicio", name: "Página de Inicio", title: "MeTransfers | Traslados y Tours Privados en Barcelona", metaDescription: "Reserva traslados privados, coches con chófer y tours exclusivos en Barcelona. Servicio premium, conductores profesionales y vehículos de alta gama." },
+  { slug: "contacto", name: "Página de Contacto", title: "Contacto | MeTransfers Barcelona", metaDescription: "Contacta con MeTransfers para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona." },
+  { slug: "faqs", name: "Preguntas Frecuentes", title: "Preguntas Frecuentes | MeTransfers Barcelona", metaDescription: "Resuelve todas tus dudas sobre nuestros servicios de traslados privados, reservas, equipaje y políticas en Barcelona." },
+  { slug: "tours-privados-barcelona", name: "Tours Privados", title: "Tours Privados con Chófer en Barcelona | MeTransfers", metaDescription: "Descubre Barcelona y sus alrededores a tu propio ritmo. Excursiones y tours privados con chófer profesional y atención personalizada." },
+  { slug: "transfer-aeropuerto-barcelona", name: "Traslado Aeropuerto", title: "Transfer Aeropuerto de Barcelona | MeTransfers", metaDescription: "Traslados privados desde y hacia el Aeropuerto de Barcelona (El Prat). Conductores profesionales y vehículos premium." },
+  { slug: "traslados-privados-barcelona", name: "Traslados Privados", title: "Traslados Privados en Barcelona | MeTransfers", metaDescription: "Servicio de traslados privados punto a punto en Barcelona. La máxima comodidad para tus desplazamientos por la ciudad." },
+  { slug: "coche-con-chofer-barcelona", name: "Coche con Chófer", title: "Alquiler de Coche con Chófer en Barcelona | MeTransfers", metaDescription: "Servicio de alquiler de vehículo con conductor por horas o días completos en Barcelona para negocios o turismo." },
+  { slug: "traslados-puerto-barcelona", name: "Traslado Puerto Cruceros", title: "Traslados Puerto de Barcelona y Cruceros | MeTransfers", metaDescription: "Transfers privados desde tu hotel o el aeropuerto hasta la terminal de cruceros del Puerto de Barcelona." },
+  { slug: "traslados-corporativos-barcelona", name: "Traslados Corporativos", title: "Traslados Corporativos y Eventos en Barcelona | MeTransfers", metaDescription: "Soluciones de movilidad VIP para empresas, congresos, MWC y eventos corporativos en Barcelona." },
+  { slug: "blog", name: "Blog (Índice)", title: "Blog | MeTransfers Barcelona", metaDescription: "Noticias, guías y consejos sobre traslados, turismo y servicios premium en Barcelona." },
+  { slug: "booking", name: "Página de Reservas", title: "Reservar Traslado | MeTransfers", metaDescription: "Reserva tu traslado privado o tour en Barcelona de forma fácil y segura. Confirmación inmediata." }
+];
+
 export async function GET() {
   try {
     let pagesCreated = 0;
+    let staticPagesCreated = 0;
     let postsCreated = 0;
 
     // 1. Seed Pages
@@ -77,6 +92,26 @@ export async function GET() {
           },
         });
         pagesCreated++;
+      }
+    }
+
+    // 1.5 Seed Static Pages
+    for (const sp of staticPages) {
+      const exists = await prisma.staticPage.findUnique({
+        where: { slug: sp.slug }
+      });
+
+      if (!exists) {
+        await prisma.staticPage.create({
+          data: {
+            slug: sp.slug,
+            name: sp.name,
+            title: sp.title,
+            metaDescription: sp.metaDescription,
+            isActive: true
+          }
+        });
+        staticPagesCreated++;
       }
     }
 
@@ -103,7 +138,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      message: `Migración completada. Páginas de rutas creadas: ${pagesCreated}, Posts del blog creados: ${postsCreated}.`,
+      message: `Migración completada. Páginas de rutas creadas: ${pagesCreated}, Páginas estáticas creadas: ${staticPagesCreated}, Posts del blog creados: ${postsCreated}.`
     });
   } catch (error: any) {
     console.error("Seed error:", error);

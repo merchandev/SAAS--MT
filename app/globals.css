@@ -50,6 +50,12 @@
   --radius-4xl: calc(var(--radius) * 2.6);
   --color-brand-blue: #061833;
   --color-brand-gold: #D4AF37;
+  --animate-marquee: marquee 40s linear infinite;
+  
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
 }
 
 :root {

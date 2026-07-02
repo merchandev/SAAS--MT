@@ -21,11 +21,11 @@ enum Role {
 }
 
 model User {
-  id           String  @id @default(uuid())
-  email        String  @unique
-  passwordHash String
-  fullName     String
-  role         Role    @default(CUSTOMER)
+  id             String  @id @default(uuid())
+  email          String  @unique
+  passwordHash   String
+  fullName       String
+  role           Role    @default(CUSTOMER)
   phone          String?
   isActive       Boolean @default(true)
   sessionVersion Int     @default(0)
@@ -71,15 +71,15 @@ model Customer {
 }
 
 model CustomerAddress {
-  id          String   @id @default(uuid())
-  customerId  String
-  customer    Customer @relation(fields: [customerId], references: [id])
-  label       String
-  address     String
-  placeId     String?
-  isDefault   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  label      String
+  address    String
+  placeId    String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 // ==========================================
@@ -576,9 +576,9 @@ model RoutePage {
   metaDescription String? @db.Text
   contentHtml     String? @db.Text
 
-  seoTitle        String?
-  seoKeywords     String?
-  seoImage        String?
+  seoTitle    String?
+  seoKeywords String?
+  seoImage    String?
 
   basePriceCache Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X €" rápido
 
@@ -588,12 +588,12 @@ model RoutePage {
 }
 
 model Post {
-  id              String  @id @default(uuid())
-  slug            String  @unique
-  title           String
-  excerpt         String? @db.Text
-  contentHtml     String? @db.Text
-  
+  id          String  @id @default(uuid())
+  slug        String  @unique
+  title       String
+  excerpt     String? @db.Text
+  contentHtml String? @db.Text
+
   metaTitle       String?
   metaDescription String? @db.Text
   seoKeywords     String?
@@ -612,7 +612,18 @@ model ContactMessage {
   phone     String?
   subject   String?
   message   String   @db.Text
-  status    String   @default("NEW") // NEW, READ, REPLIED
+  status    String   @default("NEW") // NEW, READ, REPLIED, ARCHIVED
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model StaticPage {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  title           String?
+  metaDescription String?
+  seoKeywords     String?
+  isActive        Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
 }

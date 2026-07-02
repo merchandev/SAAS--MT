@@ -8,6 +8,7 @@ import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
 import { settingsQueries } from "@/modules/settings/settings.queries";
+import GygReviews from "@/components/home/GygReviews";
 
 export const dynamic = "force-dynamic";
 
@@ -475,6 +476,8 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        <GygReviews />
 
         <section id="faq" className="bg-white py-20 sm:py-24">
           <div className="mx-auto max-w-4xl px-6">

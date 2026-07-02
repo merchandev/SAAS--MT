@@ -6,14 +6,19 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import PageHero from "@/components/marketing/PageHero";
 import ContactForm from "@/components/home/ContactForm";
 
-export const metadata: Metadata = {
-  title: "Contacto | MeTransfers Barcelona",
-  description:
-    "Contacta con MeTransfers para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona.",
-  alternates: {
-    canonical: "/contacto",
-  },
-};
+import { prisma } from "@/lib/prisma";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await prisma.staticPage.findUnique({ where: { slug: "contacto" } });
+  return {
+    title: seo?.title || "Contacto | MeTransfers Barcelona",
+    description: seo?.metaDescription || "Contacta con MeTransfers para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona.",
+    keywords: seo?.seoKeywords || undefined,
+    alternates: {
+      canonical: "/contacto",
+    },
+  };
+}
 
 const contactCards = [
   {

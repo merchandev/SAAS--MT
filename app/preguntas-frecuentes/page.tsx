@@ -4,14 +4,19 @@ import MarketingCta from "@/components/marketing/MarketingCta";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import PageHero from "@/components/marketing/PageHero";
 
-export const metadata: Metadata = {
-  title: "Preguntas frecuentes | MeTransfers Barcelona",
-  description:
-    "Respuestas sobre reservas, vehículos, pagos, cancelaciones, aeropuerto, tours privados y coches con chófer en Barcelona.",
-  alternates: {
-    canonical: "/preguntas-frecuentes",
-  },
-};
+import { prisma } from "@/lib/prisma";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await prisma.staticPage.findUnique({ where: { slug: "faqs" } });
+  return {
+    title: seo?.title || "Preguntas frecuentes | MeTransfers Barcelona",
+    description: seo?.metaDescription || "Respuestas sobre reservas, vehículos, pagos, cancelaciones, aeropuerto, tours privados y coches con chófer en Barcelona.",
+    keywords: seo?.seoKeywords || undefined,
+    alternates: {
+      canonical: "/preguntas-frecuentes",
+    },
+  };
+}
 
 const faqItems = [
   {
