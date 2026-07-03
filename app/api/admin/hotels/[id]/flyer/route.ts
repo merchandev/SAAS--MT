@@ -67,9 +67,9 @@ export async function GET(
       
       // Basado en el diseño "HABLADOR - METRANSFERS.PNG"
       // Dimensiones de la imagen: 2362 x 2953 (aprox)
-      const qrSize = width * 0.38; // 38% del ancho para dejar margen en el recuadro
-      const qrX = width * 0.07;    // 7% de margen izquierdo
-      const qrY = height * 0.31;   // 31% desde abajo, centrado en el recuadro blanco
+      const qrSize = width * 0.31; // 31% del ancho para encajar perfectamente
+      const qrX = width * 0.12;    // 12% de margen izquierdo para centrar horizontalmente
+      const qrY = height * 0.365;  // 36.5% desde abajo para subirlo y separarlo del borde inferior
       
       // Ya que la imagen base tiene el recuadro en blanco, incrustamos el QR directamente
       const qrImage = await pdfDoc.embedPng(qrBuffer);
@@ -83,12 +83,12 @@ export async function GET(
       // Añadir el nombre del hotel debajo del QR
       const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const text = hotel.name;
-      const fontSize = 48; // Tamaño grande por la alta resolución (2362px ancho)
+      const fontSize = 72; // Tamaño mucho más grande para que sea legible en alta resolución
       const textWidth = font.widthOfTextAtSize(text, fontSize);
       
       // Centrar el texto respecto al QR
       const textX = qrX + (qrSize / 2) - (textWidth / 2);
-      const textY = qrY - 80; // 80 puntos por debajo del QR
+      const textY = qrY - 110; // Espacio debajo del QR para el texto
       
       page.drawText(text, {
         x: textX,
