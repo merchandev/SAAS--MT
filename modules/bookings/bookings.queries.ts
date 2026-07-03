@@ -40,5 +40,21 @@ export const bookingsQueries = {
         payments: true,
       },
     });
+  },
+
+  async getAbandonedBookings() {
+    return prisma.booking.findMany({
+      where: { 
+        deletedAt: null,
+        bookingStatus: {
+          in: ["DRAFT", "PENDING_PAYMENT", "FALLIDA"]
+        }
+      },
+      include: {
+        customer: true,
+        vehicle: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
   }
 };

@@ -4,6 +4,7 @@ import { requireCustomerProfile } from "./customer.auth";
 
 const completedStatuses = ["COMPLETADA"] as const;
 const billablePaymentStatuses = ["PAID", "REFUNDED"] as const;
+const effectiveBookingStatuses = ["CONFIRMADA", "ASIGNADA", "EN_CURSO", "COMPLETADA"] as const;
 
 export async function getCustomerDashboard() {
   const { customer } = await requireCustomerProfile();
@@ -34,6 +35,10 @@ export async function getCustomerDashboard() {
   const completedBookings = bookings.filter((booking) =>
     completedStatuses.includes(booking.bookingStatus as (typeof completedStatuses)[number])
   );
+  const effectiveBookings = bookings.filter((booking) =>
+    effectiveBookingStatuses.includes(booking.bookingStatus as (typeof effectiveBookingStatuses)[number]) &&
+    billablePaymentStatuses.includes(booking.paymentStatus as (typeof billablePaymentStatuses)[number])
+  );
   const pendingReviewBookings = completedBookings.filter((booking) => !booking.review);
 
   const totalSpent = billableBookings.reduce((sum, booking) => sum + Number(booking.finalPrice), 0);
@@ -45,7 +50,7 @@ export async function getCustomerDashboard() {
     suggestions,
     pendingReviewBookings,
     metrics: {
-      totalBookings: bookings.length,
+      totalBookings: effectiveBookings.length,
       completedTransfers: completedBookings.length,
       totalDistanceKm,
       totalSpent,
@@ -123,10 +128,14 @@ export async function getAdminCustomersDirectory() {
       ["PAID", "REFUNDED"].includes(booking.paymentStatus)
     );
     const completedBookings = customer.bookings.filter((booking) => booking.bookingStatus === "COMPLETADA");
+    const effectiveBookings = customer.bookings.filter((booking) =>
+      ["CONFIRMADA", "ASIGNADA", "EN_CURSO", "COMPLETADA"].includes(booking.bookingStatus) &&
+      ["PAID", "REFUNDED"].includes(booking.paymentStatus)
+    );
     const totalSpent = billableBookings.reduce((sum, booking) => sum + Number(booking.finalPrice), 0);
     const totalDistanceKm = completedBookings.reduce((sum, booking) => sum + Number(booking.distanceKm), 0);
     const lastBooking = customer.bookings[0] ?? null;
-    const activeBookingsCount = customer.bookings.length;
+    const activeBookingsCount = effectiveBookings.length;
 
     return {
       id: customer.id,

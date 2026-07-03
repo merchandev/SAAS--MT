@@ -127,8 +127,16 @@ export const b2bQueries = {
 
     let totalCommissions = 0;
     let paidBookingsCount = 0;
+    let effectiveBookingsCount = 0;
 
     for (const b of hotel.bookings) {
+      const isPaid = b.paymentStatus === "PAID" || b.paymentStatus === "REFUNDED";
+      const isEffectiveStatus = ["CONFIRMADA", "ASIGNADA", "EN_CURSO", "COMPLETADA"].includes(b.bookingStatus);
+      
+      if (isPaid && isEffectiveStatus) {
+        effectiveBookingsCount++;
+      }
+
       if (b.paymentStatus === "PAID" && b.bookingStatus !== "CANCELADA" && b.bookingStatus !== "REEMBOLSADA") {
         totalCommissions += Number(b.basePrice) * commissionPercent;
         paidBookingsCount++;
@@ -139,7 +147,7 @@ export const b2bQueries = {
       hotel,
       bookings: hotel.bookings,
       stats: {
-        totalBookings: hotel.bookings.length,
+        totalBookings: effectiveBookingsCount,
         paidBookings: paidBookingsCount,
         totalCommissions
       }

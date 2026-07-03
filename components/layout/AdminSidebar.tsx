@@ -22,6 +22,7 @@ import {
   MessageSquare,
   FileText,
   FilePenLine,
+  AlertCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { logoutAction } from "@/modules/auth/auth.actions";
@@ -60,6 +61,7 @@ export function AdminSidebar({ role, companyName = "MeTransfers", logoUrl, accen
   const allNavigation: NavigationItem[] = [
     { name: "Dashboard", href: "/admin/dashboard", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: Gauge },
     { name: "Reservas", href: "/admin/bookings", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: ClipboardList },
+    { name: "Abandonadas", href: "/admin/bookings/abandoned", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: AlertCircle },
     { name: "Papelera", href: "/admin/bookings/trash", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: Trash2 },
     { name: "Clientes", href: "/admin/customers", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: Users },
     { name: "Vehículos", href: "/admin/vehicles", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: Car },
