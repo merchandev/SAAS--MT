@@ -65,29 +65,37 @@ export async function GET(
         height,
       });
       
-      // Si el usuario proporcionó el fondo, dibujaremos un recuadro blanco sobre
-      // el QR viejo (las coordenadas X, Y, ancho y alto deberán ajustarse según la imagen final).
-      // Valores de prueba basados en el pantallazo, asumimos que el QR está abajo a la izquierda.
-      const qrSize = width * 0.35; // 35% del ancho de la página
-      const qrX = width * 0.05; // 5% de margen izquierdo
-      const qrY = height * 0.25; // Altura aproximada desde abajo
+      // Basado en el diseño "HABLADOR - METRANSFERS.PNG"
+      // Dimensiones de la imagen: 2362 x 2953 (aprox)
+      const qrSize = width * 0.38; // 38% del ancho para dejar margen en el recuadro
+      const qrX = width * 0.07;    // 7% de margen izquierdo
+      const qrY = height * 0.31;   // 31% desde abajo, centrado en el recuadro blanco
       
-      // Dibujar un rectángulo blanco para tapar el posible QR anterior
-      page.drawRectangle({
+      // Ya que la imagen base tiene el recuadro en blanco, incrustamos el QR directamente
+      const qrImage = await pdfDoc.embedPng(qrBuffer);
+      page.drawImage(qrImage, {
         x: qrX,
         y: qrY,
         width: qrSize,
         height: qrSize,
-        color: rgb(1, 1, 1),
       });
 
-      // Insertar el QR nuevo
-      const qrImage = await pdfDoc.embedPng(qrBuffer);
-      page.drawImage(qrImage, {
-        x: qrX + 10,
-        y: qrY + 10,
-        width: qrSize - 20,
-        height: qrSize - 20,
+      // Añadir el nombre del hotel debajo del QR
+      const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const text = hotel.name;
+      const fontSize = 48; // Tamaño grande por la alta resolución (2362px ancho)
+      const textWidth = font.widthOfTextAtSize(text, fontSize);
+      
+      // Centrar el texto respecto al QR
+      const textX = qrX + (qrSize / 2) - (textWidth / 2);
+      const textY = qrY - 80; // 80 puntos por debajo del QR
+      
+      page.drawText(text, {
+        x: textX,
+        y: textY,
+        size: fontSize,
+        font,
+        color: rgb(0, 0.188, 0.286), // Color azul oscuro similar a #003049
       });
 
     } else {
