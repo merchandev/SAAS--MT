@@ -392,7 +392,16 @@ export default function BookingFormClient({
                   <Label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Fecha</Label>
                   <DatePicker
                     selected={formData.serviceDate ? new Date(formData.serviceDate + "T12:00:00") : null}
-                    onChange={(date: Date | null) => updateForm('serviceDate', date ? date.toISOString().split('T')[0] : '')}
+                    onChange={(date: Date | null) => {
+                      if (!date) {
+                        updateForm('serviceDate', '');
+                        return;
+                      }
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      updateForm('serviceDate', `${year}-${month}-${day}`);
+                    }}
                     dateFormat="dd/MM/yyyy"
                     minDate={getSpainToday()}
                     customInput={<Input readOnly className="h-12 border-gray-300 rounded-md shadow-sm w-full cursor-pointer bg-white" />}
@@ -473,7 +482,7 @@ export default function BookingFormClient({
               </div>
               
               <div className="pt-6 flex justify-between gap-4">
-                <Button variant="outline" onClick={() => setStep(1)} className="h-12 px-8">Volver</Button>
+                <Button variant="outline" onClick={() => { setError(null); setStep(1); }} className="h-12 px-8">Volver</Button>
                 <Button onClick={handleNextStep2} className="bg-[#111111] text-white hover:bg-black h-12 px-8 transition-colors">Continuar</Button>
               </div>
             </div>
@@ -581,7 +590,7 @@ export default function BookingFormClient({
               </div>
 
               <div className="pt-6 flex justify-between gap-4">
-                <Button variant="outline" onClick={() => setStep(2)} className="h-12 px-8">Volver</Button>
+                <Button variant="outline" onClick={() => { setError(null); setStep(2); }} className="h-12 px-8">Volver</Button>
                 <Button onClick={handleNextStep3} className="bg-[#111111] text-white hover:bg-black h-12 px-8 transition-colors">Confirmar Reserva</Button>
               </div>
             </div>
@@ -612,7 +621,7 @@ export default function BookingFormClient({
               </div>
 
               <div className="flex justify-center gap-4 w-full max-w-md">
-                <Button variant="outline" onClick={() => setStep(3)} className="h-14 flex-1 text-lg font-bold">Volver</Button>
+                <Button variant="outline" onClick={() => { setError(null); setStep(3); }} className="h-14 flex-1 text-lg font-bold">Volver</Button>
                 <Button onClick={handleSubmit} disabled={isLoading || !formData.termsAccepted} className="bg-[#111111] text-white hover:bg-black h-14 flex-1 text-lg font-bold shadow-lg transition-colors">
                   {isLoading ? "Procesando..." : "PAGAR"}
                 </Button>
