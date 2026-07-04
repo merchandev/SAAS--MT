@@ -30,6 +30,8 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin_secure_pwd_123}
     ports:
       - "0.0.0.0:${APP_PORT:-3100}:3000"
+    volumes:
+      - ./public/uploads:/app/public/uploads
     depends_on:
       postgres:
         condition: service_healthy
