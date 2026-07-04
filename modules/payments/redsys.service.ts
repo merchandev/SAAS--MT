@@ -106,10 +106,10 @@ export const redsysService = {
       DS_MERCHANT_PRODUCTDESCRIPTION: "Reserva " + booking.publicCode,
     };
 
-    return toBase64Url(JSON.stringify(params));
+    return Buffer.from(JSON.stringify(params)).toString("base64");
   },
 
-  createSignature(merchantParamsBase64: string, orderId: string) {
+  createSignature(merchantParamsBase64: string, orderId: string, isNotification = false) {
     // 1. Decodificar la clave secreta
     const decodedSecret = Buffer.from(getRedsysSecretKey(), "base64");
     
@@ -127,7 +127,10 @@ export const redsysService = {
     const hmac = crypto.createHmac("sha256", derivedKey);
     hmac.update(merchantParamsBase64);
     
-    return toBase64Url(hmac.digest());
+    if (isNotification) {
+      return toBase64Url(hmac.digest());
+    }
+    return hmac.digest("base64");
   },
 
   signaturesMatch(receivedSignature: string, expectedSignature: string) {

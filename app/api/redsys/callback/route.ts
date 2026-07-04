@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid Redsys parameters" }, { status: 400 });
     }
 
-    const expectedSignature = redsysService.createSignature(dsMerchantParameters, orderId);
+    const expectedSignature = redsysService.createSignature(dsMerchantParameters, orderId, true);
     const isSignatureValid = redsysService.signaturesMatch(dsSignature, expectedSignature);
 
     if (decodedParams.Ds_MerchantCode !== redsysService.merchantCode) {
