@@ -7,10 +7,10 @@ import { SeoPreviewCard } from "./SeoPreviewCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Save, ArrowLeft, Code } from "lucide-react";
-import "react-quill/dist/quill.snow.css";
+import "react-quill-new/dist/quill.snow.css";
 
 // Dynamic import for React-Quill to avoid SSR issues
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 export function CmsEditorForm({
   initialData,
