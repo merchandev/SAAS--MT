@@ -41,4 +41,4 @@ COPY --from=builder --chown=node:node /app/data ./data
 USER node
 EXPOSE 3000
 
-CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && node server.js"]
