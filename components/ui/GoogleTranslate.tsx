@@ -66,22 +66,22 @@ export default function GoogleTranslate() {
         Contenedor estiliado 
         El CSS apunta al <select> que Google genera en el interior de este div.
       */}
-      <div className="relative inline-flex items-center min-w-[130px] min-h-[34px]">
-        <div 
-          id="google_translate_element" 
-          className="
-            [&>div]:flex [&>div]:items-center 
-            [&_select]:bg-black/50 [&_select]:text-white [&_select]:font-semibold 
-            [&_select]:border [&_select]:border-white/15 [&_select]:rounded-lg 
-            [&_select]:px-3 [&_select]:py-1.5 [&_select]:text-sm [&_select]:outline-none 
-            [&_select]:transition-colors [&_select:focus]:border-[#D4AF37] [&_select]:hover:border-[#D4AF37]
-            [&_select]:appearance-none [&_select]:cursor-pointer [&_select]:pr-7
-            w-full
-          "
-        ></div>
+      <div className="relative inline-flex items-center w-full md:w-auto min-w-[130px] min-h-[34px]">
+          <div 
+            id="google_translate_element" 
+            className="
+              [&>div]:flex [&>div]:items-center [&>div]:w-full md:[&>div]:w-auto
+              [&_select]:w-full md:[&_select]:w-auto [&_select]:bg-white/10 [&_select]:text-white [&_select]:font-semibold 
+              [&_select]:border [&_select]:border-white/20 [&_select]:rounded-xl md:[&_select]:rounded-lg
+              [&_select]:px-4 md:[&_select]:px-3 [&_select]:py-3 md:[&_select]:py-1.5 [&_select]:text-base md:[&_select]:text-sm [&_select]:outline-none 
+              [&_select]:transition-colors [&_select:focus]:border-[#D4AF37] [&_select]:hover:bg-white/15
+              [&_select]:appearance-none [&_select]:cursor-pointer [&_select]:pr-10 md:[&_select]:pr-7
+              w-full md:w-auto
+            "
+          ></div>
         {/* Icono decorativo para el dropdown (SVG en lugar de fuente para evitar bugs de Google Translate) */}
         <svg 
-          className="pointer-events-none absolute right-2 text-white/70 w-4 h-4" 
+          className="pointer-events-none absolute right-4 md:right-2 text-white/70 w-4 h-4 md:w-3.5 md:h-3.5" 
           xmlns="http://www.w3.org/2000/svg" 
           viewBox="0 0 24 24" 
           fill="none" 
