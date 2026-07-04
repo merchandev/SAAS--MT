@@ -103,7 +103,7 @@ export const redsysService = {
       DS_MERCHANT_MERCHANTURL: `${appUrl}/api/redsys/callback`,
       DS_MERCHANT_URLOK: appendSuccessUrlParams(appUrl, booking.publicCode, options?.receiptToken),
       DS_MERCHANT_URLKO: `${appUrl}/booking/error?code=${booking.publicCode}`,
-      DS_MERCHANT_MERCHANTDATA: booking.publicCode,
+      DS_MERCHANT_PRODUCTDESCRIPTION: "Reserva " + booking.publicCode,
     };
 
     return toBase64Url(JSON.stringify(params));
@@ -145,7 +145,7 @@ export const redsysService = {
     const merchantOrderId = orderId ?? createOrderId(booking);
     const merchantParams = this.createMerchantParameters(booking, merchantOrderId, options);
     const signature = this.createSignature(merchantParams, merchantOrderId);
-    const redsysUrl = process.env.REDSYS_URL || "https://sis-t.redsys.es:25443/sis/realizarPago";
+    const redsysUrl = process.env.REDSYS_URL || "https://sis.redsys.es/sis/realizarPago";
 
     return `
       <form id="redsys-form" action="${escapeHtml(redsysUrl)}" method="POST">
