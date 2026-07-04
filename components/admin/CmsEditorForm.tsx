@@ -167,9 +167,9 @@ export function CmsEditorForm({
 
           </div>
 
-          {/* YOAST SEO PANEL */}
+          {/* SEO PANEL */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-3">Ajustes SEO (Estilo Yoast)</h2>
+            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-3">Ajustes SEO</h2>
             
             <SeoPreviewCard 
               title={formData.seoTitle || formData.metaTitle || (isPage ? formData.h1Title : formData.title)}
@@ -222,6 +222,18 @@ export function CmsEditorForm({
                   onChange={(e) => handleChange("seoKeywords", e.target.value)}
                   placeholder="traslado barcelona, chofer sitges, etc (separado por comas)"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Imagen Destacada (URL)</label>
+                <Input 
+                  value={isPage ? (formData.seoImage || "") : (formData.imageUrl || "")}
+                  onChange={(e) => handleChange(isPage ? "seoImage" : "imageUrl", e.target.value)}
+                  placeholder="https://tudominio.com/imagen.jpg"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Esta imagen se verá al compartir el enlace por WhatsApp, Facebook o Twitter. Se recomienda usar una relación de aspecto 1:1 (cuadrada).
+                </p>
               </div>
             </div>
           </div>
