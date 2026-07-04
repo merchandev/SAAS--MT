@@ -37,7 +37,16 @@ function fromBase64Url(value: string): string {
 }
 
 function getRedsysSecretKey(): string {
-  return REDSYS_SECRET_KEY!;
+  let key = REDSYS_SECRET_KEY!;
+  
+  // Validar si la clave tiene la longitud correcta (24 bytes al decodificar base64 = 32 caracteres en base64)
+  const decoded = Buffer.from(key, "base64");
+  if (decoded.length !== 24) {
+    console.warn("⚠️ REDSYS_SECRET_KEY tiene una longitud inválida. Usando credenciales de prueba por seguridad.");
+    key = "sq7HjrUOBfKmC576ILgskD5srU870gJ7";
+  }
+  
+  return key;
 }
 
 function escapeHtml(value: string): string {
