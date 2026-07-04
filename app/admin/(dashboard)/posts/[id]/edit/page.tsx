@@ -2,7 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { CmsEditorForm } from "@/components/admin/CmsEditorForm";
 
-export default async function EditPost({ params }: { params: { id: string } }) {
+export default async function EditPost(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const postData = await prisma.post.findUnique({
     where: { id: params.id },
   });
