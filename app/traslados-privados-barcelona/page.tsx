@@ -4,7 +4,7 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
 export const metadata: Metadata = {
-  title: "Traslados Privados en Barcelona | MeTransfers",
+  title: "Traslados Privados en Barcelona | Transfers in Barcelona",
   description: "Servicio premium de traslados privados en Barcelona. Vehículos de alta gama, precio cerrado y conductores profesionales para cualquier desplazamiento.",
 };
 

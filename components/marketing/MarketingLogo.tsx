@@ -10,13 +10,13 @@ export default function MarketingLogo({
   compact?: boolean;
   variant?: "header" | "footer";
 }) {
-  const logoSrc = variant === "header" ? "/images/MT-MeTransfers.png" : "/images/MeTransfers-exp.png";
+  const logoSrc = variant === "header" ? "/images/MT-Transfers in Barcelona.png" : "/images/Transfers in Barcelona-exp.png";
   return (
-    <Link href="/" className={`inline-flex items-center gap-3 ${className}`} aria-label="MeTransfers inicio">
+    <Link href="/" className={`inline-flex items-center gap-3 ${className}`} aria-label="Transfers in Barcelona inicio">
       <div className="relative h-11 w-44">
         <Image 
           src={logoSrc}
-          alt="MeTransfers Barcelona" 
+          alt="Transfers in Barcelona" 
           fill 
           className="object-contain object-left" 
           priority 

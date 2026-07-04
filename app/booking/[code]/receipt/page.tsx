@@ -45,8 +45,8 @@ export default async function ReceiptPage({
               <p className="text-gray-500 mt-1">Ref: {booking.publicCode}</p>
             </div>
             <div className="text-right">
-              <img src="/logo.png" alt="MeTransfers" className="h-10 w-auto object-contain ml-auto mb-2" />
-              <p className="font-bold text-gray-800">MeTransfers VIP</p>
+              <img src="/logo.png" alt="Transfers in Barcelona" className="h-10 w-auto object-contain ml-auto mb-2" />
+              <p className="font-bold text-gray-800">Transfers in Barcelona</p>
             </div>
           </div>
 
@@ -86,8 +86,8 @@ export default async function ReceiptPage({
             <p className="text-gray-500 mt-1">Ref: {booking.publicCode}</p>
           </div>
           <div className="text-right">
-            <img src="/logo.png" alt="MeTransfers" className="h-10 w-auto object-contain ml-auto mb-2" />
-            <p className="font-bold text-gray-800">MeTransfers VIP</p>
+            <img src="/logo.png" alt="Transfers in Barcelona" className="h-10 w-auto object-contain ml-auto mb-2" />
+            <p className="font-bold text-gray-800">Transfers in Barcelona</p>
             <p className="text-sm text-gray-500">Barcelona, España</p>
           </div>
         </div>

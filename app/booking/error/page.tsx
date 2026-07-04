@@ -26,7 +26,7 @@ export default async function BookingPaymentErrorPage(props: {
         </div>
 
         <p className="text-sm text-gray-500 mb-8">
-          Puedes volver a intentarlo o contactar con el equipo de MeTransfers si necesitas ayuda.
+          Puedes volver a intentarlo o contactar con el equipo de Transfers in Barcelona si necesitas ayuda.
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">

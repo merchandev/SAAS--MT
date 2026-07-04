@@ -4,7 +4,7 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
 export const metadata: Metadata = {
-  title: "Traslados al Puerto de Cruceros de Barcelona | MeTransfers",
+  title: "Traslados al Puerto de Cruceros de Barcelona | Transfers in Barcelona",
   description: "Transfers privados desde y hacia las terminales de cruceros del Puerto de Barcelona. Inicio o fin de tus vacaciones con total comodidad y sin retrasos.",
 };
 

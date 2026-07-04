@@ -2,8 +2,8 @@ import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 
 export const metadata = {
-  title: "Política de Privacidad | MeTransfers",
-  description: "Política de Privacidad de MeTransfers GESTION SL.",
+  title: "Política de Privacidad | Transfers in Barcelona",
+  description: "Política de Privacidad de Transfers in Barcelona GESTION SL.",
 };
 
 export default function PrivacyPolicyPage() {

@@ -239,7 +239,7 @@ export const InvoiceDocument = ({ invoice }: InvoiceProps) => {
         {/* Header: Logo and Company Info */}
         <View style={styles.headerContainer}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logoText}>MeTransfers</Text>
+            <Text style={styles.logoText}>Transfers in Barcelona</Text>
             <Text style={styles.logoSub}>Premium Chauffeur Service</Text>
           </View>
           <View style={styles.companyDetails}>

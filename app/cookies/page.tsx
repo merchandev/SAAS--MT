@@ -3,8 +3,8 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Política de Cookies | MeTransfers",
-  description: "Política de Cookies de MeTransfers GESTION SL.",
+  title: "Política de Cookies | Transfers in Barcelona",
+  description: "Política de Cookies de Transfers in Barcelona GESTION SL.",
 };
 
 export default function CookiesPolicyPage() {

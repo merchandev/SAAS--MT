@@ -49,7 +49,7 @@ export default function StaticPageForm({ page }: { page: any }) {
             id="title"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            placeholder="Ej: Tours Privados en Barcelona | MeTransfers"
+            placeholder="Ej: Tours Privados en Barcelona | Transfers in Barcelona"
             required
             className="mt-1"
           />

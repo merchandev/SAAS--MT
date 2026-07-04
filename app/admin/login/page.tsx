@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
           Acceso Exclusivo
         </h2>
         <p className="mt-3 text-center text-sm font-medium tracking-[0.2em] uppercase text-[#D4AF37]">
-          MeTransfers Partners
+          Transfers in Barcelona Partners
         </p>
       </div>
 

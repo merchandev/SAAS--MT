@@ -13,11 +13,11 @@ export const settingsQueries = {
 
     // Default values if not found
     const defaults: Record<string, string> = {
-      COMPANY_NAME: "MeTransfers",
+      COMPANY_NAME: "Transfers in Barcelona",
       COMPANY_EMAIL: "admin@transfersinbarcelona.com",
       TAX_ID: "B12345678",
-      SITE_NAME: "MeTransfers",
-      SITE_TITLE: "MeTransfers | Traslados privados premium",
+      SITE_NAME: "Transfers in Barcelona",
+      SITE_TITLE: "Transfers in Barcelona | Traslados privados premium",
       SITE_META_DESCRIPTION: "Reserva traslados privados premium con chófer profesional para aeropuertos, hoteles, eventos y viajes corporativos en España.",
       SITE_LOGO_URL: "",
       SITE_FAVICON_URL: "",

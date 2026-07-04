@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await prisma.staticPage.findUnique({ where: { slug: "tours-privados-barcelona" } });
   return {
-    title: seo?.title || "Tours Privados con Chófer en Barcelona | MeTransfers",
+    title: seo?.title || "Tours Privados con Chófer en Barcelona | Transfers in Barcelona",
     description: seo?.metaDescription || "Descubre Barcelona y sus alrededores a tu propio ritmo. Excursiones y tours privados con chófer profesional y atención personalizada.",
     keywords: seo?.seoKeywords || undefined,
   };

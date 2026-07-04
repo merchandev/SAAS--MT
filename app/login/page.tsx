@@ -4,8 +4,8 @@ import PublicLoginForm from "@/components/auth/PublicLoginForm";
 import MarketingLogo from "@/components/marketing/MarketingLogo";
 
 export const metadata = {
-  title: "Login | MeTransfers Premium Mobility",
-  description: "Inicia sesión en tu cuenta de MeTransfers para gestionar tus reservas premium.",
+  title: "Login | Transfers in Barcelona Premium Mobility",
+  description: "Inicia sesión en tu cuenta de Transfers in Barcelona para gestionar tus reservas premium.",
 };
 
 export default function LoginPage() {
@@ -16,7 +16,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/chauffeur_day.png"
-            alt="MeTransfers Chauffeur"
+            alt="Transfers in Barcelona Chauffeur"
             fill
             className="object-cover opacity-60"
             priority
@@ -50,7 +50,7 @@ export default function LoginPage() {
         <div className="lg:hidden absolute inset-0 z-0 opacity-20">
           <Image
             src="/images/hero_light.png"
-            alt="MeTransfers Background"
+            alt="Transfers in Barcelona Background"
             fill
             className="object-cover"
           />

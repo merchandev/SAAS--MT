@@ -13,7 +13,7 @@ import GygReviews from "@/components/home/GygReviews";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Traslados privados y chófer en Barcelona | MeTransfers",
+  title: "Traslados privados y chófer en Barcelona | Transfers in Barcelona",
   description:
     "Reserva transfers de aeropuerto, traslados privados, tours y coches con chófer en Barcelona. Precio cerrado, conductor profesional y vehículos para empresas, eventos y viajes privados.",
   keywords: [
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Traslados privados y chófer en Barcelona | MeTransfers",
+    title: "Traslados privados y chófer en Barcelona | Transfers in Barcelona",
     description:
       "Reserva transfers de aeropuerto, traslados privados, tours y coches con chófer en Barcelona. Precio cerrado y conductor profesional.",
   },
@@ -163,7 +163,7 @@ const faqs = [
       "Sí. El servicio por horas es adecuado para reuniones, tours privados, eventos, visitas o agendas con varias paradas en Barcelona.",
   },
   {
-    question: "¿MeTransfers ofrece vehículos para grupos?",
+    question: "¿Transfers in Barcelona ofrece vehículos para grupos?",
     answer:
       "Sí. Según disponibilidad, se pueden reservar minivans, minibuses y vehículos amplios para familias, grupos, eventos o viajes corporativos.",
   },
@@ -181,8 +181,8 @@ async function getHomeSettings(): Promise<HomeSettings> {
     return await settingsQueries.getAllSettings();
   } catch {
     return {
-      SITE_NAME: "MeTransfers",
-      COMPANY_NAME: "MeTransfers",
+      SITE_NAME: "Transfers in Barcelona",
+      COMPANY_NAME: "Transfers in Barcelona",
       SITE_LOGO_URL: "",
       BRAND_ACCENT_COLOR: "#D4AF37",
     };
@@ -209,7 +209,7 @@ function SectionIntro({
 
 export default async function HomePage() {
   const settings = await getHomeSettings();
-  const brandName = settings.SITE_NAME || settings.COMPANY_NAME || "MeTransfers";
+  const brandName = settings.SITE_NAME || settings.COMPANY_NAME || "Transfers in Barcelona";
   const logoUrl = settings.SITE_LOGO_URL?.trim();
   const accentColor = settings.BRAND_ACCENT_COLOR || "#D4AF37";
   const brandAccentStyle = {
@@ -223,7 +223,7 @@ export default async function HomePage() {
     name: brandName,
     url: "https://transfersinbarcelona.com",
     description:
-      "MeTransfers ofrece traslados privados, transfers de aeropuerto, tours y servicios de coche con chófer en Barcelona. Reserva online con precio cerrado y atención personalizada.",
+      "Transfers in Barcelona ofrece traslados privados, transfers de aeropuerto, tours y servicios de coche con chófer en Barcelona. Reserva online con precio cerrado y atención personalizada.",
     areaServed: [
       { "@type": "City", name: "Barcelona" },
       { "@type": "City", name: "Sitges" },
@@ -240,7 +240,7 @@ export default async function HomePage() {
     ],
     makesOffer: {
       "@type": "OfferCatalog",
-      name: "Servicios de transporte privado MeTransfers",
+      name: "Servicios de transporte privado Transfers in Barcelona",
       itemListElement: services.map(({ title, description }) => ({
         "@type": "Offer",
         itemOffered: {
@@ -270,7 +270,7 @@ export default async function HomePage() {
         <section className="relative flex min-h-[92svh] items-center overflow-hidden pt-32 pb-14 sm:pt-36 lg:pt-40">
           <Image
             src="/images/hero_light.png"
-            alt="Chófer privado de MeTransfers en Barcelona"
+            alt="Chófer privado de Transfers in Barcelona en Barcelona"
             fill
             priority
             sizes="100vw"
@@ -288,7 +288,7 @@ export default async function HomePage() {
               </div>
               <div className="order-3 lg:order-none">
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
-                  Reserva tu traslado privado en Barcelona con MeTransfers. Transfers de aeropuerto, puerto de cruceros, tours privados, eventos corporativos y servicios de coche con chófer por horas. Viaja con precio cerrado, conductor profesional y atención personalizada.
+                  Reserva tu traslado privado en Barcelona con Transfers in Barcelona. Transfers de aeropuerto, puerto de cruceros, tours privados, eventos corporativos y servicios de coche con chófer por horas. Viaja con precio cerrado, conductor profesional y atención personalizada.
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -362,7 +362,7 @@ export default async function HomePage() {
                 <p className="mb-3 text-sm font-semibold uppercase text-[#D4AF37]">Cómo funciona</p>
                 <h2 className="text-3xl font-semibold sm:text-4xl">Reserve su chófer privado en Barcelona sin complicaciones</h2>
                 <p className="mt-5 leading-8 text-gray-600">
-                  MeTransfers organiza cada servicio con información clara: ruta, horario, tipo de
+                  Transfers in Barcelona organiza cada servicio con información clara: ruta, horario, tipo de
                   vehículo, pasajeros, equipaje y condiciones aplicables antes de confirmar.
                 </p>
               </div>
@@ -395,7 +395,7 @@ export default async function HomePage() {
             </div>
 
             <div>
-              <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B20]">Ventajas MeTransfers</p>
+              <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B20]">Ventajas Transfers in Barcelona</p>
               <h2 className="text-3xl font-semibold text-gray-950 sm:text-4xl">
                 Puntualidad, discreción y precio claro desde la reserva
               </h2>
@@ -506,7 +506,7 @@ export default async function HomePage() {
             <div>
               <p className="text-sm font-semibold uppercase text-[#9B7B20]">Reserve ahora</p>
               <h2 className="mt-2 text-3xl font-semibold text-gray-950">
-                Organice su próximo traslado privado con MeTransfers
+                Organice su próximo traslado privado con Transfers in Barcelona
               </h2>
               <p className="mt-3 max-w-2xl leading-7 text-gray-600">
                 Indique origen, destino, fecha y hora. Le ayudamos a encontrar el transporte privado

@@ -17,7 +17,7 @@ export function SeoPreviewCard({
   baseUrl = "https://transfersinbarcelona.com" 
 }: SeoPreviewCardProps) {
   // Truncate text as Google does
-  const displayTitle = title || "Ejemplo de Título SEO para la Página | MeTransfers";
+  const displayTitle = title || "Ejemplo de Título SEO para la Página | Transfers in Barcelona";
   const truncatedTitle = displayTitle.length > 60 ? displayTitle.substring(0, 60) + "..." : displayTitle;
   
   const displayDesc = description || "Proporciona una meta descripción detallada que resuma el contenido de esta página. Intenta mantenerla entre 120 y 160 caracteres para un SEO óptimo.";

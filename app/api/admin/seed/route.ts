@@ -8,7 +8,7 @@ const routes = [
     originName: "Aeropuerto de Barcelona (El Prat)",
     destinationName: "Sitges",
     h1Title: "Transfer privado del aeropuerto de Barcelona a Sitges",
-    metaDescription: "Reserva tu traslado privado del aeropuerto de Barcelona a Sitges con MeTransfers. Precio cerrado, conductor profesional y vehículos para particulares, empresas y grupos.",
+    metaDescription: "Reserva tu traslado privado del aeropuerto de Barcelona a Sitges con Transfers in Barcelona. Precio cerrado, conductor profesional y vehículos para particulares, empresas y grupos.",
     basePriceCache: 85.00
   },
   {
@@ -54,17 +54,17 @@ const routes = [
 ];
 
 const staticPages = [
-  { slug: "inicio", name: "Página de Inicio", title: "MeTransfers | Traslados y Tours Privados en Barcelona", metaDescription: "Reserva traslados privados, coches con chófer y tours exclusivos en Barcelona. Servicio premium, conductores profesionales y vehículos de alta gama." },
-  { slug: "contacto", name: "Página de Contacto", title: "Contacto | MeTransfers Barcelona", metaDescription: "Contacta con MeTransfers para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona." },
-  { slug: "faqs", name: "Preguntas Frecuentes", title: "Preguntas Frecuentes | MeTransfers Barcelona", metaDescription: "Resuelve todas tus dudas sobre nuestros servicios de traslados privados, reservas, equipaje y políticas en Barcelona." },
-  { slug: "tours-privados-barcelona", name: "Tours Privados", title: "Tours Privados con Chófer en Barcelona | MeTransfers", metaDescription: "Descubre Barcelona y sus alrededores a tu propio ritmo. Excursiones y tours privados con chófer profesional y atención personalizada." },
-  { slug: "transfer-aeropuerto-barcelona", name: "Traslado Aeropuerto", title: "Transfer Aeropuerto de Barcelona | MeTransfers", metaDescription: "Traslados privados desde y hacia el Aeropuerto de Barcelona (El Prat). Conductores profesionales y vehículos premium." },
-  { slug: "traslados-privados-barcelona", name: "Traslados Privados", title: "Traslados Privados en Barcelona | MeTransfers", metaDescription: "Servicio de traslados privados punto a punto en Barcelona. La máxima comodidad para tus desplazamientos por la ciudad." },
-  { slug: "coche-con-chofer-barcelona", name: "Coche con Chófer", title: "Alquiler de Coche con Chófer en Barcelona | MeTransfers", metaDescription: "Servicio de alquiler de vehículo con conductor por horas o días completos en Barcelona para negocios o turismo." },
-  { slug: "traslados-puerto-barcelona", name: "Traslado Puerto Cruceros", title: "Traslados Puerto de Barcelona y Cruceros | MeTransfers", metaDescription: "Transfers privados desde tu hotel o el aeropuerto hasta la terminal de cruceros del Puerto de Barcelona." },
-  { slug: "traslados-corporativos-barcelona", name: "Traslados Corporativos", title: "Traslados Corporativos y Eventos en Barcelona | MeTransfers", metaDescription: "Soluciones de movilidad VIP para empresas, congresos, MWC y eventos corporativos en Barcelona." },
-  { slug: "blog", name: "Blog (Índice)", title: "Blog | MeTransfers Barcelona", metaDescription: "Noticias, guías y consejos sobre traslados, turismo y servicios premium en Barcelona." },
-  { slug: "booking", name: "Página de Reservas", title: "Reservar Traslado | MeTransfers", metaDescription: "Reserva tu traslado privado o tour en Barcelona de forma fácil y segura. Confirmación inmediata." }
+  { slug: "inicio", name: "Página de Inicio", title: "Transfers in Barcelona | Traslados y Tours Privados en Barcelona", metaDescription: "Reserva traslados privados, coches con chófer y tours exclusivos en Barcelona. Servicio premium, conductores profesionales y vehículos de alta gama." },
+  { slug: "contacto", name: "Página de Contacto", title: "Contacto | Transfers in Barcelona", metaDescription: "Contacta con Transfers in Barcelona para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona." },
+  { slug: "faqs", name: "Preguntas Frecuentes", title: "Preguntas Frecuentes | Transfers in Barcelona", metaDescription: "Resuelve todas tus dudas sobre nuestros servicios de traslados privados, reservas, equipaje y políticas en Barcelona." },
+  { slug: "tours-privados-barcelona", name: "Tours Privados", title: "Tours Privados con Chófer en Barcelona | Transfers in Barcelona", metaDescription: "Descubre Barcelona y sus alrededores a tu propio ritmo. Excursiones y tours privados con chófer profesional y atención personalizada." },
+  { slug: "transfer-aeropuerto-barcelona", name: "Traslado Aeropuerto", title: "Transfer Aeropuerto de Barcelona | Transfers in Barcelona", metaDescription: "Traslados privados desde y hacia el Aeropuerto de Barcelona (El Prat). Conductores profesionales y vehículos premium." },
+  { slug: "traslados-privados-barcelona", name: "Traslados Privados", title: "Traslados Privados en Barcelona | Transfers in Barcelona", metaDescription: "Servicio de traslados privados punto a punto en Barcelona. La máxima comodidad para tus desplazamientos por la ciudad." },
+  { slug: "coche-con-chofer-barcelona", name: "Coche con Chófer", title: "Alquiler de Coche con Chófer en Barcelona | Transfers in Barcelona", metaDescription: "Servicio de alquiler de vehículo con conductor por horas o días completos en Barcelona para negocios o turismo." },
+  { slug: "traslados-puerto-barcelona", name: "Traslado Puerto Cruceros", title: "Traslados Puerto de Barcelona y Cruceros | Transfers in Barcelona", metaDescription: "Transfers privados desde tu hotel o el aeropuerto hasta la terminal de cruceros del Puerto de Barcelona." },
+  { slug: "traslados-corporativos-barcelona", name: "Traslados Corporativos", title: "Traslados Corporativos y Eventos en Barcelona | Transfers in Barcelona", metaDescription: "Soluciones de movilidad VIP para empresas, congresos, MWC y eventos corporativos en Barcelona." },
+  { slug: "blog", name: "Blog (Índice)", title: "Blog | Transfers in Barcelona", metaDescription: "Noticias, guías y consejos sobre traslados, turismo y servicios premium en Barcelona." },
+  { slug: "booking", name: "Página de Reservas", title: "Reservar Traslado | Transfers in Barcelona", metaDescription: "Reserva tu traslado privado o tour en Barcelona de forma fácil y segura. Confirmación inmediata." }
 ];
 
 export async function GET() {

@@ -4,7 +4,7 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
 export const metadata: Metadata = {
-  title: "Transfer Aeropuerto Barcelona | MeTransfers",
+  title: "Transfer Aeropuerto Barcelona | Transfers in Barcelona",
   description: "Reserva tu traslado privado desde o hacia el Aeropuerto de Barcelona (El Prat). Precio cerrado, conductor profesional y puntualidad garantizada.",
 };
 

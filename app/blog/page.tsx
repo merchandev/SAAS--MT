@@ -10,7 +10,7 @@ import { getBlogImage } from "@/lib/fleet-images";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "Blog de traslados privados en Barcelona | MeTransfers",
+  title: "Blog de traslados privados en Barcelona | Transfers in Barcelona",
   description:
     "Consejos sobre traslados privados, aeropuerto de Barcelona, tours, eventos corporativos y coches con chofer.",
   alternates: {
@@ -39,7 +39,7 @@ export default async function BlogPage() {
     title: post.title,
     slug: post.slug,
     excerpt: post.excerpt || "",
-    category: "MeTransfers-Blog",
+    category: "Transfersinbarcelona-Blog",
     pubDate: post.publishedAt ? post.publishedAt.toISOString() : post.createdAt.toISOString()
   }));
   return (

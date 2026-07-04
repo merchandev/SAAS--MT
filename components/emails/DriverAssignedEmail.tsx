@@ -59,7 +59,7 @@ export const DriverAssignedEmail = ({
             Si necesitas comunicarte con nosotros antes del servicio, responde a este correo.
           </Text>
           <Text style={footer}>
-            MeTransfers - Viaja seguro y puntual.
+            Transfers in Barcelona - Viaja seguro y puntual.
           </Text>
         </Container>
       </Body>

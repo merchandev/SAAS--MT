@@ -42,7 +42,7 @@ export const emailsService = {
       );
 
       await resend.emails.send({
-        from: `MeTransfers <${SENDER_EMAIL}>`,
+        from: `Transfers in Barcelona <${SENDER_EMAIL}>`,
         to: email,
         subject: `Confirmación de Reserva - ${publicCode}`,
         html,
@@ -76,7 +76,7 @@ export const emailsService = {
       );
 
       await resend.emails.send({
-        from: `MeTransfers <${SENDER_EMAIL}>`,
+        from: `Transfers in Barcelona <${SENDER_EMAIL}>`,
         to: email,
         subject: `Conductor Asignado - ${publicCode}`,
         html,
@@ -109,9 +109,9 @@ export const emailsService = {
       );
 
       await resend.emails.send({
-        from: `MeTransfers <${SENDER_EMAIL}>`,
+        from: `Transfers in Barcelona <${SENDER_EMAIL}>`,
         to: email,
-        subject: `Bienvenido a MeTransfers - Tu cuenta ha sido creada`,
+        subject: `Bienvenido a Transfers in Barcelona - Tu cuenta ha sido creada`,
         html,
       });
 

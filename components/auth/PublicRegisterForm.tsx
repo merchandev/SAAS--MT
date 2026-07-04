@@ -60,7 +60,7 @@ export default function PublicRegisterForm() {
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">Crear cuenta</h1>
-        <p className="text-gray-400">Registro exclusivo para clientes MeTransfers.</p>
+        <p className="text-gray-400">Registro exclusivo para clientes Transfers in Barcelona.</p>
       </div>
 
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">

@@ -11,8 +11,8 @@ import { prisma } from "@/lib/prisma";
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await prisma.staticPage.findUnique({ where: { slug: "contacto" } });
   return {
-    title: seo?.title || "Contacto | MeTransfers Barcelona",
-    description: seo?.metaDescription || "Contacta con MeTransfers para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona.",
+    title: seo?.title || "Contacto | Transfers in Barcelona",
+    description: seo?.metaDescription || "Contacta con Transfers in Barcelona para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona.",
     keywords: seo?.seoKeywords || undefined,
     alternates: {
       canonical: "/contacto",
@@ -63,7 +63,7 @@ export default function ContactPage() {
           <div className="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Atención personalizada</p>
-              <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">Contacta con MeTransfers Barcelona</h2>
+              <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">Contacta con Transfers in Barcelona</h2>
               <p className="mt-5 text-lg leading-8 text-gray-600">
                 Cuéntanos qué tipo de servicio necesitas y te orientaremos con la opción más adecuada
                 según ruta, pasajeros, equipaje, horario y nivel de vehículo.
@@ -132,7 +132,7 @@ export default function ContactPage() {
                 internacionales o transporte para congresos, podemos preparar una solución adaptada.
               </p>
               <Link
-                href="mailto:info@transfersinbarcelona.com?subject=Solicitud%20corporativa%20MeTransfers"
+                href="mailto:info@transfersinbarcelona.com?subject=Solicitud%20corporativa%20Transfers in Barcelona"
                 className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[#D4AF37] px-7 text-sm font-black text-gray-900 shadow-md transition hover:bg-[#C5A059]"
               >
                 Solicitar propuesta

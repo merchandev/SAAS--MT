@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await prisma.staticPage.findUnique({ where: { slug: "faqs" } });
   return {
-    title: seo?.title || "Preguntas frecuentes | MeTransfers Barcelona",
+    title: seo?.title || "Preguntas frecuentes | Transfers in Barcelona",
     description: seo?.metaDescription || "Respuestas sobre reservas, vehículos, pagos, cancelaciones, aeropuerto, tours privados y coches con chófer en Barcelona.",
     keywords: seo?.seoKeywords || undefined,
     alternates: {
@@ -91,7 +91,7 @@ const faqItems = [
   {
     question: "¿Cómo gestionan mis datos personales?",
     answer: [
-      "En MeTransfers Barcelona nos tomamos muy en serio la privacidad de tus datos.",
+      "En Transfers in Barcelona nos tomamos muy en serio la privacidad de tus datos.",
       "Puedes consultar nuestra política de privacidad completa contactando con nuestro equipo.",
     ],
   },

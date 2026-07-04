@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!post || !post.isActive) {
     return {
-      title: "Artículo no encontrado | MeTransfers",
+      title: "Artículo no encontrado | Transfers in Barcelona",
     };
   }
 
@@ -26,10 +26,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const image = getBlogImage({ slug: post.slug, title: post.title });
 
   return {
-    title: post.metaTitle || `${post.title} | Blog MeTransfers`,
+    title: post.metaTitle || `${post.title} | Blog Transfers in Barcelona`,
     description: post.metaDescription || post.excerpt,
     openGraph: {
-      title: post.metaTitle || `${post.title} | Blog MeTransfers`,
+      title: post.metaTitle || `${post.title} | Blog Transfers in Barcelona`,
       description: post.metaDescription || post.excerpt,
       images: [
         {
@@ -80,7 +80,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           <header className="mb-12">
             <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-gray-500 mb-6">
               <span className="inline-flex items-center rounded-full bg-[#D4AF37]/10 px-3 py-1 text-[#D4AF37] uppercase tracking-wider text-xs font-black">
-                {"MeTransfers-Blog"}
+                {"Transfersinbarcelona-Blog"}
               </span>
               <span className="flex items-center gap-1.5">
                 <Calendar className="h-4 w-4" />
@@ -114,7 +114,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         <div className="mt-20">
           <MarketingCta
             title="¿Listo para disfrutar de un traslado premium?"
-            description="Reserva ahora mismo y asegura tu transporte privado en Barcelona con MeTransfers."
+            description="Reserva ahora mismo y asegura tu transporte privado en Barcelona con Transfers in Barcelona."
           />
         </div>
       </main>

@@ -3,8 +3,8 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Aviso Legal | MeTransfers",
-  description: "Aviso Legal de MeTransfers GESTION SL.",
+  title: "Aviso Legal | Transfers in Barcelona",
+  description: "Aviso Legal de Transfers in Barcelona GESTION SL.",
 };
 
 export default function LegalNoticePage() {

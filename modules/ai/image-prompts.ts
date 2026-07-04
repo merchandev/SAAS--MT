@@ -45,7 +45,7 @@ export function buildWebsiteImagePrompt(ctx: ImageContext) {
   const target = ctx.target || "hero";
 
   return [
-    "Create a photorealistic premium transportation website image for MeTransfers.",
+    "Create a photorealistic premium transportation website image for Transfers in Barcelona.",
     `Context: ${pageTypeLabels[ctx.pageType]}${title ? ` titled "${title}"` : ""}.`,
     description ? `Content summary: ${description}.` : null,
     `Location mood: ${city}, Spain and nearby Mediterranean travel routes.`,

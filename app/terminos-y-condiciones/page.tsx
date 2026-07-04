@@ -2,8 +2,8 @@ import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 
 export const metadata = {
-  title: "Términos y Condiciones | MeTransfers",
-  description: "Términos y Condiciones de MeTransfers GESTION SL.",
+  title: "Términos y Condiciones | Transfers in Barcelona",
+  description: "Términos y Condiciones de Transfers in Barcelona GESTION SL.",
 };
 
 export default function TermsAndConditionsPage() {

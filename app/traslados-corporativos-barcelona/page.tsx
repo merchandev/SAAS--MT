@@ -4,7 +4,7 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
 export const metadata: Metadata = {
-  title: "Traslados Corporativos en Barcelona | MeTransfers",
+  title: "Traslados Corporativos en Barcelona | Transfers in Barcelona",
   description: "Servicio de transporte privado para empresas, congresos, ferias y eventos corporativos en Barcelona. Vehículos ejecutivos y máxima puntualidad.",
 };
 

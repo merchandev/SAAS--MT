@@ -126,7 +126,7 @@ export default function MarketingFooter() {
 
       <div className="border-t border-gray-200 bg-gray-100">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-8 text-sm font-semibold text-gray-500 md:flex-row md:items-center md:justify-between">
-          <p>© 2026 MeTransfers Barcelona. Todos los derechos reservados.</p>
+          <p>© 2026 Transfers in Barcelona. Todos los derechos reservados.</p>
           <nav className="flex flex-wrap gap-x-8 gap-y-3">
             {legalLinks.map((item) => (
               <Link key={item.label} href={item.href} className="transition hover:text-gray-900">

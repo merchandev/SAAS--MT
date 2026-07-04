@@ -4,8 +4,8 @@ import PublicRegisterForm from "@/components/auth/PublicRegisterForm";
 import MarketingLogo from "@/components/marketing/MarketingLogo";
 
 export const metadata = {
-  title: "Registro | MeTransfers Premium Mobility",
-  description: "Crea tu cuenta en MeTransfers y accede a servicios de movilidad VIP.",
+  title: "Registro | Transfers in Barcelona Premium Mobility",
+  description: "Crea tu cuenta en Transfers in Barcelona y accede a servicios de movilidad VIP.",
 };
 
 export default function RegisterPage() {
@@ -16,7 +16,7 @@ export default function RegisterPage() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/hero_light.png"
-            alt="MeTransfers Fleet"
+            alt="Transfers in Barcelona Fleet"
             fill
             className="object-cover opacity-60"
             priority
@@ -34,7 +34,7 @@ export default function RegisterPage() {
             Eleva tus estándares de <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8B2C] italic">viaje</span>.
           </h2>
           <p className="text-gray-300 text-lg leading-relaxed">
-            Al registrarte en MeTransfers obtienes un perfil de cliente con historial de traslados, gastos y seguimiento de tus servicios.
+            Al registrarte en Transfers in Barcelona obtienes un perfil de cliente con historial de traslados, gastos y seguimiento de tus servicios.
           </p>
         </div>
       </div>
@@ -50,7 +50,7 @@ export default function RegisterPage() {
         <div className="lg:hidden absolute inset-0 z-0 opacity-20 pointer-events-none">
           <Image
             src="/images/chauffeur_day.png"
-            alt="MeTransfers Background"
+            alt="Transfers in Barcelona Background"
             fill
             className="object-cover"
           />

@@ -46,7 +46,7 @@ export default async function CustomerDashboardPage() {
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-[#AA8B2C]">Area cliente</p>
-            <h1 className="text-2xl font-bold">Mi perfil MeTransfers</h1>
+            <h1 className="text-2xl font-bold">Mi perfil Transfers in Barcelona</h1>
           </div>
           <Link
             href="/booking"

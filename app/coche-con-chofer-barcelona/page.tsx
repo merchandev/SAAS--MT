@@ -4,7 +4,7 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
 export const metadata: Metadata = {
-  title: "Coche con Chófer en Barcelona | MeTransfers",
+  title: "Coche con Chófer en Barcelona | Transfers in Barcelona",
   description: "Alquiler de coche con conductor por horas en Barcelona. Ideal para reuniones, eventos, compras o agendas flexibles con varias paradas.",
 };
 

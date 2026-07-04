@@ -5,7 +5,7 @@ import MarketingHeader from "@/components/marketing/MarketingHeader";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Reservar Traslado | MeTransfers VIP",
+  title: "Reservar Traslado | Transfers in Barcelona",
   description: "Reserva tu traslado privado con la flota más exclusiva.",
 };
 

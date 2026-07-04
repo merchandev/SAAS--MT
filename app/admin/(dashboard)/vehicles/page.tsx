@@ -42,7 +42,7 @@ export default async function VehiclesPage() {
                   <div className="relative h-12 w-20 overflow-hidden rounded-md bg-gray-100">
                     <Image
                       src={getVehicleImageSrc(v)}
-                      alt={`${v.name} de MeTransfers`}
+                      alt={`${v.name} de Transfers in Barcelona`}
                       fill
                       sizes="80px"
                       className="object-cover"

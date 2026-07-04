@@ -20,7 +20,7 @@ export default async function DashboardPage() {
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Dashboard de Operaciones</h1>
-        <p className="text-gray-500">Resumen en tiempo real del estado de MeTransfers.</p>
+        <p className="text-gray-500">Resumen en tiempo real del estado de Transfers in Barcelona.</p>
       </div>
 
       {/* KPI Cards */}

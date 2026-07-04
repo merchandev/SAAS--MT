@@ -7,7 +7,7 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import PageHero from "@/components/marketing/PageHero";
 
 export const metadata: Metadata = {
-  title: "Tours privados en Barcelona | MeTransfers",
+  title: "Tours privados en Barcelona | Transfers in Barcelona",
   description:
     "Tours privados desde Barcelona a Montserrat, Costa Brava, Girona y rutas personalizadas con vehículo premium y chófer profesional.",
   alternates: {

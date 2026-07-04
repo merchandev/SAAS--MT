@@ -36,7 +36,7 @@ export const BookingConfirmedEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Tu reserva de traslado con MeTransfers ha sido confirmada</Preview>
+      <Preview>Tu reserva de traslado con Transfers in Barcelona ha sido confirmada</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>¡Reserva Confirmada!</Heading>
@@ -69,7 +69,7 @@ export const BookingConfirmedEmail = ({
             Si tienes alguna pregunta o necesitas realizar cambios, puedes contactarnos respondiendo a este correo o mediante nuestro sitio web.
           </Text>
           <Text style={footer}>
-            Gracias por elegir MeTransfers.
+            Gracias por elegir Transfers in Barcelona.
           </Text>
         </Container>
       </Body>
