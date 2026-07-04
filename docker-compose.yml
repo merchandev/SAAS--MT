@@ -26,7 +26,7 @@ services:
       REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-change_me_redsys_merchant_code}
       REDSYS_TERMINAL: ${REDSYS_TERMINAL:-1}
       REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:-change_me_redsys_secret_key}
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@metransfers.com}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@transfersinbarcelona.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin_secure_pwd_123}
     ports:
       - "0.0.0.0:${APP_PORT:-3100}:3000"
@@ -64,7 +64,7 @@ services:
     profiles: ["dev"]
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@metransfers.com}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@transfersinbarcelona.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-change_me}
     ports:
       - "127.0.0.1:${PGADMIN_PORT:-5051}:80"

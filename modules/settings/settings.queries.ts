@@ -14,7 +14,7 @@ export const settingsQueries = {
     // Default values if not found
     const defaults: Record<string, string> = {
       COMPANY_NAME: "MeTransfers",
-      COMPANY_EMAIL: "admin@metransfers.com",
+      COMPANY_EMAIL: "admin@transfersinbarcelona.com",
       TAX_ID: "B12345678",
       SITE_NAME: "MeTransfers",
       SITE_TITLE: "MeTransfers | Traslados privados premium",

@@ -7,7 +7,7 @@ import { createReceiptAccessToken } from '@/modules/bookings/receipt-access';
 import React from 'react';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-const SENDER_EMAIL = 'no-reply@metransfers.com'; // Sustituir por dominio verificado en producción
+const SENDER_EMAIL = 'no-reply@transfersinbarcelona.com'; // Sustituir por dominio verificado en producción
 
 export const emailsService = {
   async sendBookingConfirmation(email: string, publicCode: string, customerName: string, bookingDetails: any) {

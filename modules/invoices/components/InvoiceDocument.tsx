@@ -247,7 +247,7 @@ export const InvoiceDocument = ({ invoice }: InvoiceProps) => {
             <Text>NIF: B-12345678</Text>
             <Text>Calle Falsa 123, Palma de Mallorca</Text>
             <Text>07001 Islas Baleares, España</Text>
-            <Text>info@metransfers.com</Text>
+            <Text>info@transfersinbarcelona.com</Text>
           </View>
         </View>
 
@@ -342,7 +342,7 @@ export const InvoiceDocument = ({ invoice }: InvoiceProps) => {
 
         {/* Footer */}
         <Text style={styles.footer}>
-          Gracias por confiar en Metransfers S.L. Para cualquier duda respecto a esta factura, por favor contacte a info@metransfers.com. Esta factura ha sido generada automáticamente y es válida sin firma.
+          Gracias por confiar en Metransfers S.L. Para cualquier duda respecto a esta factura, por favor contacte a info@transfersinbarcelona.com. Esta factura ha sido generada automáticamente y es válida sin firma.
         </Text>
       </Page>
     </Document>

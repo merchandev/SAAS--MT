@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none block w-full h-12 px-4 bg-[#0B0C10] border border-white/10 text-white rounded-sm placeholder-gray-600 focus:outline-none focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all"
-                  placeholder="admin@metransfers.com"
+                  placeholder="admin@transfersinbarcelona.com"
                 />
               </div>
             </div>

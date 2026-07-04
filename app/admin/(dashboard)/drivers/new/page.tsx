@@ -63,7 +63,7 @@ export default function NewDriverPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Correo Electrónico</Label>
-                <Input id="email" name="email" type="email" required placeholder="juan@metransfers.com" />
+                <Input id="email" name="email" type="email" required placeholder="juan@transfersinbarcelona.com" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Teléfono</Label>
