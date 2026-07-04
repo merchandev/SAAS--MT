@@ -29,7 +29,7 @@ export default function LegalNoticePage() {
                 <li><strong className="text-gray-900">Titular del sitio web:</strong> METRANSFERS GESTION SL</li>
                 <li><strong className="text-gray-900">NIF:</strong> B22522353</li>
                 <li><strong className="text-gray-900">Domicilio Social:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ – (BARCELONA)</li>
-                <li><strong className="text-gray-900">Correo electrónico de contacto:</strong> <a href="mailto:info@metransfers.es" className="text-[#D4AF37] hover:underline font-medium">info@metransfers.es</a></li>
+                <li><strong className="text-gray-900">Correo electrónico de contacto:</strong> <a href="mailto:info@transfersinbarcelona.com" className="text-[#D4AF37] hover:underline font-medium">info@transfersinbarcelona.com</a></li>
                 <li><strong className="text-gray-900">Actividad:</strong> Transporte de viajeros y gestión de servicios turísticos.</li>
               </ul>
             </section>

@@ -15,7 +15,7 @@ const inter = Inter({
 });
 
 const fallbackMetadata: Metadata = {
-  metadataBase: new URL("https://metransfers.es"),
+  metadataBase: new URL("https://transfersinbarcelona.com"),
   title: "Traslados privados y chófer en Barcelona | MeTransfers",
   description: "Reserva transfers de aeropuerto, traslados privados, tours y coches con chófer en Barcelona. Precio cerrado, conductor profesional y vehículos premium.",
 };
@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const description = settings.SITE_META_DESCRIPTION || fallbackMetadata.description;
     const logoUrl = settings.SITE_LOGO_URL?.trim();
     const faviconUrl = settings.SITE_FAVICON_URL?.trim();
-    const siteUrl = settings.SITE_URL?.trim() || "https://metransfers.es";
+    const siteUrl = settings.SITE_URL?.trim() || "https://transfersinbarcelona.com";
 
     return {
       metadataBase: new URL(siteUrl),

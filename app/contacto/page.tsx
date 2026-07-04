@@ -29,8 +29,8 @@ const contactCards = [
   },
   {
     title: "Email",
-    value: "info@metransfers.es",
-    href: "mailto:info@metransfers.es",
+    value: "info@transfersinbarcelona.com",
+    href: "mailto:info@transfersinbarcelona.com",
     Icon: Mail,
   },
   {
@@ -132,7 +132,7 @@ export default function ContactPage() {
                 internacionales o transporte para congresos, podemos preparar una solución adaptada.
               </p>
               <Link
-                href="mailto:info@metransfers.es?subject=Solicitud%20corporativa%20MeTransfers"
+                href="mailto:info@transfersinbarcelona.com?subject=Solicitud%20corporativa%20MeTransfers"
                 className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[#D4AF37] px-7 text-sm font-black text-gray-900 shadow-md transition hover:bg-[#C5A059]"
               >
                 Solicitar propuesta

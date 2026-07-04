@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${route.h1Title} | MeTransfers`,
     description: route.metaDescription || `Reserva tu traslado desde ${route.originName} hasta ${route.destinationName} con precio cerrado.`,
     alternates: {
-      canonical: `https://metransfers.es/rutas/${route.slug}`,
+      canonical: `https://transfersinbarcelona.com/rutas/${route.slug}`,
     },
   };
 }

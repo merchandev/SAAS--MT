@@ -14,7 +14,7 @@ export function SeoPreviewCard({
   title, 
   description, 
   slug, 
-  baseUrl = "https://metransfers.es" 
+  baseUrl = "https://transfersinbarcelona.com" 
 }: SeoPreviewCardProps) {
   // Truncate text as Google does
   const displayTitle = title || "Ejemplo de Título SEO para la Página | MeTransfers";

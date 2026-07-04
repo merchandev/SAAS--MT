@@ -221,7 +221,7 @@ export default async function HomePage() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: brandName,
-    url: "https://metransfers.es",
+    url: "https://transfersinbarcelona.com",
     description:
       "MeTransfers ofrece traslados privados, transfers de aeropuerto, tours y servicios de coche con chófer en Barcelona. Reserva online con precio cerrado y atención personalizada.",
     areaServed: [

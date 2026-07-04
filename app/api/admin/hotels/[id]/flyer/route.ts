@@ -22,7 +22,7 @@ export async function GET(
 
     // El enlace de reserva del hotel
     // Idealmente el NEXT_PUBLIC_APP_URL, pero si no hardcodeamos el default:
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://metransfers.es";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://transfersinbarcelona.com";
     const bookingUrl = `${baseUrl}/hotel/${hotel.slug}`;
 
     // Generar el código QR como buffer de PNG

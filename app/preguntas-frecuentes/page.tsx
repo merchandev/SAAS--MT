@@ -162,7 +162,7 @@ export default function FrequentlyAskedQuestionsPage() {
         </section>
 
         <MarketingCta
-          description="metransfers.es te ayuda a reservar online traslados privados, tours personalizados y servicio de chófer por horas con atención profesional."
+          description="transfersinbarcelona.com te ayuda a reservar online traslados privados, tours personalizados y servicio de chófer por horas con atención profesional."
         />
       </main>
 

@@ -102,9 +102,9 @@ export default function MarketingFooter() {
               <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">phone</span>
               +34 662 02 41 36
             </a>
-            <a href="mailto:info@metransfers.es" className="flex items-center gap-3 transition hover:text-gray-900 w-fit">
+            <a href="mailto:info@transfersinbarcelona.com" className="flex items-center gap-3 transition hover:text-gray-900 w-fit">
               <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">mail</span>
-              info@metransfers.es
+              info@transfersinbarcelona.com
             </a>
             <span className="flex items-center gap-3">
               <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">location_on</span>
