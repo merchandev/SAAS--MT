@@ -601,7 +601,7 @@ export default function BookingFormClient({
                     onChange={(e) => updateForm('termsAccepted', e.target.checked)}
                   />
                   <span className="text-sm text-gray-600 font-medium leading-tight">
-                    He leído y acepto los <a href="#" className="text-[#D4AF37] hover:text-[#AA8B2C] underline font-bold">Términos y Condiciones</a> de la web y estoy de acuerdo en continuar.
+                    He leído y acepto los <a href="/terminos-y-condiciones" target="_blank" rel="noopener noreferrer" className="text-[#D4AF37] hover:text-[#AA8B2C] underline font-bold">Términos y Condiciones</a> de la web y estoy de acuerdo en continuar.
                   </span>
                 </label>
               </div>
