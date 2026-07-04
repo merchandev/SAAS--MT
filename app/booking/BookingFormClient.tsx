@@ -104,6 +104,11 @@ export default function BookingFormClient({
               distanceKm: estimation.distanceKm || 0, 
               durationMinutes: estimation.durationMinutes || 0 
             }));
+            
+            // Si viene con fecha y hora (desde la página de inicio), avanzar directamente al paso 2
+            if (formData.serviceDate && formData.serviceTime) {
+              setStep(2);
+            }
           } else {
             setError(estimation.error || "No se pudo calcular la ruta automáticamente.");
           }
