@@ -68,7 +68,6 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
     { name: "Vehículos", href: "/admin/vehicles", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: Car },
     { name: "Conductores", href: "/admin/drivers", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: UserCog },
     { name: "Hoteles", href: "/admin/hotels", roles: ["SUPER_ADMIN", "ADMIN"], icon: Hotel },
-    { name: "Agencias", href: "/admin/agencies", roles: ["SUPER_ADMIN", "ADMIN"], icon: Building2 },
     { name: "Pagos", href: "/admin/payments", roles: ["SUPER_ADMIN", "ADMIN"], icon: Banknote },
     { name: "Precios", href: "/admin/pricing", roles: ["SUPER_ADMIN", "ADMIN"], icon: Tags },
     { name: "Usuarios", href: "/admin/users", roles: ["SUPER_ADMIN", "ADMIN"], icon: Users },
@@ -76,7 +75,6 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
     { name: "Páginas (SEO)", href: "/admin/pages", roles: ["SUPER_ADMIN", "ADMIN"], icon: FileText },
     { name: "Blog (Entradas)", href: "/admin/posts", roles: ["SUPER_ADMIN", "ADMIN"], icon: FilePenLine },
     { name: "Medios", href: "/admin/media", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: Image },
-    { name: "Ajustes", href: "/admin/settings", roles: ["SUPER_ADMIN", "ADMIN"], icon: Settings },
     { name: "Sistema", href: "/admin/system", roles: ["SUPER_ADMIN", "ADMIN"], icon: HardDrive },
   ];
 

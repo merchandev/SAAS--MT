@@ -1,18 +1,30 @@
 import { SystemCacheButton } from "./SystemCacheButton";
+import { settingsQueries } from "@/modules/settings/settings.queries";
+import { SettingsForm } from "./SettingsForm";
 
 export const dynamic = "force-dynamic";
 
-export default function SystemPage() {
+export default async function SystemPage() {
+  const settings = await settingsQueries.getAllSettings();
+
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-10 max-w-5xl">
       <div>
-        <h3 className="text-2xl font-bold tracking-tight">Sistema y Mantenimiento</h3>
+        <h3 className="text-2xl font-bold tracking-tight">Sistema y Ajustes</h3>
         <p className="text-gray-500">
-          Herramientas de administración avanzada para el correcto funcionamiento de la plataforma.
+          Configuración global de la plataforma, reglas del negocio y mantenimiento avanzado.
         </p>
       </div>
 
-      <SystemCacheButton />
+      <div className="space-y-6">
+        <h4 className="text-xl font-semibold border-b pb-2">Mantenimiento</h4>
+        <SystemCacheButton />
+      </div>
+
+      <div className="space-y-6">
+        <h4 className="text-xl font-semibold border-b pb-2">Ajustes Generales</h4>
+        <SettingsForm initialData={settings} />
+      </div>
     </div>
   );
 }
