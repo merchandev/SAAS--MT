@@ -178,9 +178,14 @@ export default function BookingFormClient({
     setError(null);
 
     const { distanceKm, durationMinutes, largeLuggage, smallLuggage, termsAccepted, ...bookingPayload } = formData;
+    const notesWithHandLuggage = smallLuggage > 0 
+      ? (formData.customerNotes ? formData.customerNotes + `\nMaletas de mano: ${smallLuggage}` : `Maletas de mano: ${smallLuggage}`)
+      : formData.customerNotes;
+      
     const dataToSend = {
       ...bookingPayload,
-      luggage: largeLuggage + smallLuggage,
+      customerNotes: notesWithHandLuggage,
+      luggage: largeLuggage,
       tripType: formData.tripType as "ONE_WAY" | "ROUND_TRIP"
     };
 

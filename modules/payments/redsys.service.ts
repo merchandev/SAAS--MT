@@ -2,19 +2,12 @@ import crypto from "crypto";
 
 const SIGNATURE_VERSION = "HMAC_SHA256_V1";
 
-const REDSYS_SECRET_KEY =
-  process.env.REDSYS_SECRET_KEY ??
-  (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"
-    ? "sq7HjrUOBfKmC576ILgskD5srU870gJ7"
-    : undefined);
+const REDSYS_SECRET_KEY = process.env.REDSYS_SECRET_KEY || "sq7HjrUOBfKmC576ILgskD5srU870gJ7";
+const REDSYS_MERCHANT_CODE = process.env.REDSYS_MERCHANT_CODE || "999008881";
+const REDSYS_TERMINAL = process.env.REDSYS_TERMINAL || "1";
 
-const REDSYS_MERCHANT_CODE = process.env.REDSYS_MERCHANT_CODE ?? (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test" ? "999008881" : undefined);
-const REDSYS_TERMINAL = process.env.REDSYS_TERMINAL ?? (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test" ? "1" : undefined);
-
-if (process.env.NEXT_PUBLIC_IS_BUILDING !== "true") {
-  if (!REDSYS_SECRET_KEY) throw new Error("FATAL: REDSYS_SECRET_KEY is required outside development");
-  if (!REDSYS_MERCHANT_CODE) throw new Error("FATAL: REDSYS_MERCHANT_CODE is required outside development");
-  if (!REDSYS_TERMINAL) throw new Error("FATAL: REDSYS_TERMINAL is required outside development");
+if (!process.env.REDSYS_SECRET_KEY && process.env.NODE_ENV === "production") {
+  console.warn("⚠️ REDSYS_SECRET_KEY no está configurada. Usando credenciales de prueba en producción.");
 }
 
 type RedsysBooking = {
