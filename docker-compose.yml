@@ -81,5 +81,22 @@ services:
       retries: 5
       start_period: 60s
 
+  traefik-bridge:
+    image: alpine
+    command: tail -f /dev/null
+    network_mode: host
+    restart: unless-stopped
+    depends_on:
+      - app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mt.rule=Host(`transfersinbarcelona.com`) || Host(`www.transfersinbarcelona.com`)"
+      - "traefik.http.routers.mt.entrypoints=websecure"
+      - "traefik.http.routers.mt.tls=true"
+      - "traefik.http.routers.mt.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.mt.tls.domains[0].main=transfersinbarcelona.com"
+      - "traefik.http.routers.mt.tls.domains[0].sans=www.transfersinbarcelona.com"
+      - "traefik.http.services.mt.loadbalancer.server.port=${APP_PORT:-3100}"
+
 volumes:
   postgres_data:
