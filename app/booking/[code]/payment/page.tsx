@@ -6,6 +6,8 @@ import { headers } from "next/headers";
 import { buildRateLimitKey, getRequestMeta } from "@/lib/request-meta";
 import { verifyReceiptAccessToken } from "@/modules/bookings/receipt-access";
 
+import AutoSubmitRedsysForm from "@/components/payments/AutoSubmitRedsysForm";
+
 export const dynamic = "force-dynamic";
 
 export default async function PaymentPage({
@@ -124,7 +126,7 @@ export default async function PaymentPage({
           </div>
 
           {/* Formulario invisible que se auto-envía */}
-          <div dangerouslySetInnerHTML={{ __html: redsysFormHtml }} />
+          <AutoSubmitRedsysForm html={redsysFormHtml} />
         </div>
       </div>
     );
