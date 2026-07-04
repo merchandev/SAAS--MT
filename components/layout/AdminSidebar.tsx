@@ -98,7 +98,7 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
       <div className={cn("flex h-16 items-center border-b border-gray-200", isCollapsed ? "justify-center px-0" : "px-4")}>
         <Link href="/admin/dashboard" className="relative block w-full h-10">
           <img
-            src="/images/Transfers in Barcelona-exp.png"
+            src="/images/MeTransfers-exp.png"
             alt={companyName}
             className={cn(
               "absolute top-1/2 -translate-y-1/2 left-0 h-9 w-auto object-contain transition-opacity duration-500 ease-in-out",
@@ -106,7 +106,7 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
             )}
           />
           <img
-            src="/images/Transfers in Barcelona-x.png"
+            src="/images/MeTransfers-x.png"
             alt="MT"
             className={cn(
               "absolute top-1/2 -translate-y-1/2 h-9 w-auto object-contain transition-opacity duration-500 ease-in-out",
