@@ -43,6 +43,16 @@ export default function PlaceAutocompleteInput({
     const scriptId = "google-maps-global-script";
     let script = document.getElementById(scriptId) as HTMLScriptElement;
 
+    const checkPlaces = () => {
+      const interval = setInterval(() => {
+        if (window.google && window.google.maps && window.google.maps.places) {
+          clearInterval(interval);
+          if (script) script.setAttribute("data-loaded", "true");
+          setIsLoaded(true);
+        }
+      }, 100);
+    };
+
     if (!script) {
       script = document.createElement("script");
       script.id = scriptId;
@@ -51,12 +61,16 @@ export default function PlaceAutocompleteInput({
       script.defer = true;
       
       script.onload = () => {
-        setIsLoaded(true);
+        checkPlaces();
       };
 
       document.head.appendChild(script);
     } else {
-      script.addEventListener("load", () => setIsLoaded(true));
+      if (script.getAttribute("data-loaded") === "true") {
+        setIsLoaded(true);
+      } else {
+        script.addEventListener("load", checkPlaces);
+      }
     }
   };
 
@@ -91,6 +105,16 @@ export default function PlaceAutocompleteInput({
         });
       }
     });
+
+    if (inputRef.current.value) {
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          const ev = new Event('input', { bubbles: true });
+          inputRef.current.dispatchEvent(ev);
+        }
+      }, 100);
+    }
 
     return () => {
       if (window.google && window.google.maps && window.google.maps.event) {
