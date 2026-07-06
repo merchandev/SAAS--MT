@@ -4,11 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import PlaceAutocompleteInput from "@/components/maps/PlaceAutocompleteInput";
 import { Label } from "@/components/ui/label";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { Clock } from "lucide-react";
+import { Clock, MapPin } from "lucide-react";
 import { getSpainToday } from "@/lib/utils";
 
 const timeOptions = Array.from({ length: 24 * 4 }).map((_, i) => {
@@ -51,50 +48,56 @@ export default function HomeBookingFormClient() {
         
         {/* Origin */}
         <div className="space-y-1">
-          <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Origen</Label>
-          <PlaceAutocompleteInput 
-            value={formData.originAddress}
-            onChange={(val) => updateForm('originAddress', val)}
-            onSelectPlace={(place) => {
-              updateForm('originAddress', place.address);
-              updateForm('originPlaceId', place.placeId);
-            }}
-            className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm"
-            enableGeolocation={true}
-          />
+          <Label htmlFor="booking-origin" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Origen</Label>
+          <div className="relative">
+            <Input 
+              id="booking-origin"
+              name="origin"
+              value={formData.originAddress}
+              onChange={(e) => updateForm('originAddress', e.target.value)}
+              placeholder="Ingresa origen o lugar de recogida..."
+              className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm pr-10"
+            />
+            <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
         </div>
 
         {/* Destination */}
         <div className="space-y-1">
-          <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Destino</Label>
-          <PlaceAutocompleteInput 
-            value={formData.destinationAddress}
-            onChange={(val) => updateForm('destinationAddress', val)}
-            onSelectPlace={(place) => {
-              updateForm('destinationAddress', place.address);
-              updateForm('destinationPlaceId', place.placeId);
-            }}
-            className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm"
-          />
+          <Label htmlFor="booking-destination" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Destino</Label>
+          <div className="relative">
+            <Input 
+              id="booking-destination"
+              name="destination"
+              value={formData.destinationAddress}
+              onChange={(e) => updateForm('destinationAddress', e.target.value)}
+              placeholder="Ingresa destino..."
+              className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm pr-10"
+            />
+            <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
         </div>
 
         {/* Date and Time (Full width like the design) */}
         <div className="space-y-1">
-          <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Fecha</Label>
-          <DatePicker
-            selected={formData.date ? new Date(formData.date + "T12:00:00") : null}
-            onChange={(date: Date | null) => updateForm('date', date ? date.toISOString().split('T')[0] : '')}
-            dateFormat="dd/MM/yyyy"
-            minDate={getSpainToday()}
-            customInput={<Input readOnly className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm text-gray-600 w-full cursor-pointer" />}
-            placeholderText="dd/mm/aaaa"
+          <Label htmlFor="booking-date" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Fecha</Label>
+          <input
+            id="booking-date"
+            name="date"
+            type="date"
+            min={getSpainToday().toISOString().split("T")[0]}
+            value={formData.date}
+            onChange={(e) => updateForm("date", e.target.value)}
+            className="h-12 w-full border border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm text-gray-600 px-4 outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
           />
         </div>
 
         <div className="space-y-1">
-          <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Hora</Label>
+          <Label htmlFor="booking-time" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Hora</Label>
           <div className="relative">
             <select
+              id="booking-time"
+              name="time"
               value={formData.time}
               onChange={(e) => updateForm('time', e.target.value)}
               className="h-12 w-full border border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm text-gray-600 appearance-none px-4 outline-none focus:ring-2 focus:ring-[#D4AF37]/50"

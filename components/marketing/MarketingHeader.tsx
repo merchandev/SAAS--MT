@@ -3,8 +3,8 @@ import MarketingLogo from "./MarketingLogo";
 import MobileMenu from "@/components/home/MobileMenu";
 import { authService } from "@/modules/auth/auth.service";
 import { settingsQueries } from "@/modules/settings/settings.queries";
-import GoogleTranslate from "@/components/ui/GoogleTranslate";
-
+import LanguageSwitcher from "./LanguageSwitcher";
+import { User, ChevronRight } from "lucide-react";
 export default async function MarketingHeader() {
   let settings;
   try {
@@ -37,8 +37,7 @@ export default async function MarketingHeader() {
         <Link href="/contacto" className="transition-colors hover:text-[#D4AF37]">
           Contacto
         </Link>
-        
-        <GoogleTranslate />
+        <LanguageSwitcher />
 
         {isCustomer ? (
           <Link
@@ -47,7 +46,7 @@ export default async function MarketingHeader() {
             style={{ backgroundColor: accentColor, color: "#111" }}
             title="Mi Panel"
           >
-            <span translate="no" className="notranslate material-symbols-outlined text-[20px]" aria-hidden="true">person</span>
+            <User className="h-5 w-5" aria-hidden="true" />
           </Link>
         ) : (
           <Link
@@ -56,7 +55,7 @@ export default async function MarketingHeader() {
             style={{ backgroundColor: accentColor }}
           >
             Reservar
-            <span translate="no" className="notranslate material-symbols-outlined text-[18px]" aria-hidden="true">chevron_right</span>
+            <ChevronRight className="h-[18px] w-[18px]" aria-hidden="true" />
           </Link>
         )}
       </nav>

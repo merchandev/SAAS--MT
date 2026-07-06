@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { SETTINGS_KEYS } from "./settings.schemas";
+import { unstable_cache } from "next/cache";
 
 export const settingsQueries = {
-  async getAllSettings() {
+  getAllSettings: unstable_cache(async () => {
     const settingsList = await prisma.systemSetting.findMany();
     
     // Convert to key-value map
@@ -29,7 +30,7 @@ export const settingsQueries = {
     };
 
     return { ...defaults, ...map };
-  },
+  }, ['all-settings'], { tags: ['settings'] }),
 
   async getSettingValue(key: typeof SETTINGS_KEYS[number], defaultValue: string) {
     const setting = await prisma.systemSetting.findUnique({

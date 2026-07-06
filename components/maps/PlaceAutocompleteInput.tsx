@@ -33,14 +33,13 @@ export default function PlaceAutocompleteInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  useEffect(() => {
-    // Check if script is already loaded
+  const loadScript = () => {
+    if (isLoaded) return;
     if (window.google && window.google.maps && window.google.maps.places) {
-      setTimeout(() => setIsLoaded(true), 0);
+      setIsLoaded(true);
       return;
     }
 
-    // Check if script tag already exists
     const scriptId = "google-maps-global-script";
     let script = document.getElementById(scriptId) as HTMLScriptElement;
 
@@ -58,6 +57,12 @@ export default function PlaceAutocompleteInput({
       document.head.appendChild(script);
     } else {
       script.addEventListener("load", () => setIsLoaded(true));
+    }
+  };
+
+  useEffect(() => {
+    if (window.google && window.google.maps && window.google.maps.places) {
+      setIsLoaded(true);
     }
   }, []);
 
@@ -124,19 +129,23 @@ export default function PlaceAutocompleteInput({
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" onMouseEnter={loadScript} onTouchStart={loadScript}>
       <Input
         ref={inputRef}
         name={name}
         placeholder={placeholder || label || "Ingresa una dirección..."}
         value={value}
         onChange={(e) => onChange && onChange(e.target.value)}
+        onFocus={loadScript}
         className={`${className} ${enableGeolocation ? 'pr-10' : ''}`}
       />
-      {enableGeolocation && isLoaded && (
+      {enableGeolocation && (
         <button
           type="button"
-          onClick={handleGeolocation}
+          onClick={() => {
+            loadScript();
+            if (isLoaded) handleGeolocation();
+          }}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#D4AF37] transition-colors"
           title="Usar mi ubicación actual"
         >

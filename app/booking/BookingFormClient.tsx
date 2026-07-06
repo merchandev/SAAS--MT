@@ -414,6 +414,7 @@ export default function BookingFormClient({
                     <select
                       value={formData.serviceTime}
                       onChange={(e) => updateForm('serviceTime', e.target.value)}
+                      aria-label="Hora del servicio"
                       className="h-12 w-full border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50 focus:bg-white transition-colors text-sm text-gray-900 appearance-none px-4 outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                     >
                       <option value="" disabled>--:--</option>

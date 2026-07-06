@@ -26,7 +26,7 @@ export default function GoogleTranslate() {
     };
 
     // Función para ocultar agresivamente el banner de Google
-    const hideGoogleBar = () => {
+    const hideGoogleBarAndFixAria = () => {
       const iframes = document.querySelectorAll<HTMLElement>(
         "iframe.goog-te-banner-frame, .goog-te-banner-frame, iframe.skiptranslate"
       );
@@ -41,16 +41,22 @@ export default function GoogleTranslate() {
       if (document.body.style.marginTop) {
         document.body.style.marginTop = "0px";
       }
+
+      // Add aria-label to select for Agentic Browsing / Accessibility
+      const select = document.querySelector("#google_translate_element select");
+      if (select && !select.getAttribute("aria-label")) {
+        select.setAttribute("aria-label", "Seleccionar idioma");
+      }
     };
 
     // Ejecutar múltiples veces como en el plugin original
-    setTimeout(hideGoogleBar, 100);
-    setTimeout(hideGoogleBar, 500);
-    setTimeout(hideGoogleBar, 1000);
-    setTimeout(hideGoogleBar, 2000);
+    setTimeout(hideGoogleBarAndFixAria, 100);
+    setTimeout(hideGoogleBarAndFixAria, 500);
+    setTimeout(hideGoogleBarAndFixAria, 1000);
+    setTimeout(hideGoogleBarAndFixAria, 2000);
     
     // Monitoreo continuo (limpiamos el intervalo al desmontar el componente)
-    const interval = setInterval(hideGoogleBar, 500);
+    const interval = setInterval(hideGoogleBarAndFixAria, 500);
 
     return () => clearInterval(interval);
   }, []);

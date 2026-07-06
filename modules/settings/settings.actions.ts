@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { updateSettingsSchema, UpdateSettingsInput } from "./settings.schemas";
 import { requireRole } from "../auth/permissions";
 import { authService } from "../auth/auth.service";
@@ -44,6 +44,8 @@ export async function upsertSettingsAction(data: UpdateSettingsInput) {
     revalidatePath("/admin/dashboard");
     revalidatePath("/admin/bookings/new");
     revalidatePath("/booking");
+    updateTag("settings");
+    updateTag("home-settings");
 
     return { success: true };
   } catch (error: any) {

@@ -2,6 +2,8 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Plane, Route, BriefcaseBusiness, Clock, CalendarCheck, Users, ChevronRight, MapPin, CheckCircle, Car } from "lucide-react";
+import { unstable_cache } from "next/cache";
 
 import MarketingLogo from "@/components/marketing/MarketingLogo";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
@@ -10,7 +12,7 @@ import MarketingHeader from "@/components/marketing/MarketingHeader";
 import { settingsQueries } from "@/modules/settings/settings.queries";
 import GygReviews from "@/components/home/GygReviews";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Traslados privados y chófer en Barcelona | Transfers in Barcelona",
@@ -50,37 +52,37 @@ const services = [
     title: "Transfers de aeropuerto",
     description:
       "Traslados privados desde y hacia Barcelona-El Prat, estaciones, hoteles, domicilios, oficinas y terminales de cruceros.",
-    Icon: "flight",
+    Icon: Plane,
   },
   {
     title: "Tours privados en Barcelona",
     description:
       "Coche con chófer por horas para visitas panorámicas, rutas culturales, excursiones privadas y planes a medida.",
-    Icon: "route",
+    Icon: Route,
   },
   {
     title: "Eventos corporativos",
     description:
       "Movilidad ejecutiva para congresos, reuniones, roadshows, cenas de empresa, ferias y atención a clientes internacionales.",
-    Icon: "work",
+    Icon: BriefcaseBusiness,
   },
   {
     title: "Alquiler por horas",
     description:
       "Disponga de un conductor privado durante el tiempo contratado, con flexibilidad para paradas y cambios de agenda.",
-    Icon: "schedule",
+    Icon: Clock,
   },
   {
     title: "Bodas y celebraciones",
     description:
       "Vehículos con chófer para novios, invitados, hoteles, fincas, restaurantes y traslados coordinados de grupos.",
-    Icon: "event_available",
+    Icon: CalendarCheck,
   },
   {
     title: "Servicios para grupos",
     description:
       "Minivans, minibuses y vehículos amplios para familias, equipos de trabajo, equipaje voluminoso y viajes compartidos.",
-    Icon: "group",
+    Icon: Users,
   },
 ];
 
@@ -176,18 +178,22 @@ type HomeSettings = {
   BRAND_ACCENT_COLOR?: string;
 };
 
-async function getHomeSettings(): Promise<HomeSettings> {
-  try {
-    return await settingsQueries.getAllSettings();
-  } catch {
-    return {
-      SITE_NAME: "Transfers in Barcelona",
-      COMPANY_NAME: "Transfers in Barcelona",
-      SITE_LOGO_URL: "",
-      BRAND_ACCENT_COLOR: "#D4AF37",
-    };
-  }
-}
+const getHomeSettings = unstable_cache(
+  async (): Promise<HomeSettings> => {
+    try {
+      return await settingsQueries.getAllSettings();
+    } catch {
+      return {
+        SITE_NAME: "Transfers in Barcelona",
+        COMPANY_NAME: "Transfers in Barcelona",
+        SITE_LOGO_URL: "",
+        BRAND_ACCENT_COLOR: "#D4AF37",
+      };
+    }
+  },
+  ["home-settings"],
+  { revalidate: 3600 }
+);
 
 function SectionIntro({
   eyebrow,
@@ -273,7 +279,9 @@ export default async function HomePage() {
             alt="Chófer privado de Transfers in Barcelona en Barcelona"
             fill
             priority
-            sizes="100vw"
+            fetchPriority="high"
+            loading="eager"
+            sizes="(max-width: 768px) 100vw, 55vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/30" />
@@ -298,14 +306,14 @@ export default async function HomePage() {
                   style={{ backgroundColor: accentColor }}
                 >
                   Reservar traslado
-                  <span translate="no" className="notranslate material-symbols-outlined text-[22px]" aria-hidden="true">chevron_right</span>
+                  <ChevronRight className="h-[22px] w-[22px]" aria-hidden="true" />
                 </Link>
                 <a
                   href="#servicios"
                   className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-7 py-3 font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:border-white/40"
                 >
                   Ver servicios
-                  <span translate="no" className="notranslate material-symbols-outlined text-[20px]" aria-hidden="true">location_on</span>
+                  <MapPin className="h-[20px] w-[20px]" aria-hidden="true" />
                 </a>
               </div>
 
@@ -345,7 +353,7 @@ export default async function HomePage() {
                   className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#D4AF37] hover:shadow-lg"
                 >
                   <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37]">
-                    <span translate="no" className="notranslate material-symbols-outlined text-[28px]" aria-hidden="true">{Icon}</span>
+                    <Icon className="h-7 w-7" aria-hidden="true" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-950">{title}</h3>
                   <p className="mt-3 leading-7 text-gray-600">{description}</p>
@@ -406,7 +414,7 @@ export default async function HomePage() {
               <div className="mt-8 grid gap-3">
                 {advantages.map((advantage) => (
                   <div key={advantage} className="flex gap-4 rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
-                    <span translate="no" className="notranslate material-symbols-outlined mt-0.5 text-[22px] shrink-0 text-[#D4AF37]" aria-hidden="true">check_circle</span>
+                    <CheckCircle className="mt-0.5 h-[22px] w-[22px] shrink-0 text-[#D4AF37]" aria-hidden="true" />
                     <p className="leading-7 text-gray-700 font-medium">{advantage}</p>
                   </div>
                 ))}
@@ -430,7 +438,7 @@ export default async function HomePage() {
               <div className="mt-8 grid gap-4">
                 {fleet.map((item) => (
                   <div key={item} className="flex items-start gap-4 rounded-xl border border-gray-200 bg-gray-50/50 p-5 transition hover:bg-white hover:shadow-sm">
-                    <span translate="no" className="notranslate material-symbols-outlined mt-0.5 text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">directions_car</span>
+                    <Car className="mt-0.5 h-6 w-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
                     <p className="leading-7 text-gray-700 font-medium">{item}</p>
                   </div>
                 ))}
@@ -468,7 +476,7 @@ export default async function HomePage() {
                     href={`/booking?origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}`}
                     className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-[#D4AF37]"
                   >
-                    <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">location_on</span>
+                    <MapPin className="h-6 w-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
                     <h3 className="text-lg font-semibold">{route.label}</h3>
                   </Link>
                 ))}
@@ -492,7 +500,7 @@ export default async function HomePage() {
                 <details key={question} className="group rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-semibold text-gray-950 [&::-webkit-details-marker]:hidden">
                     {question}
-                    <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 transition group-open:rotate-90" aria-hidden="true">chevron_right</span>
+                    <ChevronRight className="h-6 w-6 shrink-0 transition group-open:rotate-90" aria-hidden="true" />
                   </summary>
                   <p className="mt-4 leading-7 text-gray-600">{answer}</p>
                 </details>
@@ -519,7 +527,7 @@ export default async function HomePage() {
               style={{ backgroundColor: accentColor }}
             >
               Ver disponibilidad
-              <span translate="no" className="notranslate material-symbols-outlined text-[20px]" aria-hidden="true">chevron_right</span>
+              <ChevronRight className="h-5 w-5" aria-hidden="true" />
             </Link>
           </div>
         </section>

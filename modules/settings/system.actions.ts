@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { requireRole } from "@/modules/auth/permissions";
 
 export async function clearSystemCacheAction() {
@@ -9,6 +9,8 @@ export async function clearSystemCacheAction() {
   try {
     // Revalidar el layout principal invalida todas las páginas anidadas
     revalidatePath("/", "layout");
+    updateTag("settings");
+    updateTag("home-settings");
     
     return { success: true };
   } catch (error) {

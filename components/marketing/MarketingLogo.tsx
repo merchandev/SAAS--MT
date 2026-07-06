@@ -13,15 +13,14 @@ export default function MarketingLogo({
   const logoSrc = variant === "header" ? "/images/MT-MeTransfers.png" : "/images/MeTransfers-exp.png";
   return (
     <Link href="/" className={`inline-flex items-center gap-3 ${className}`} aria-label="Transfers in Barcelona inicio">
-      <div className="relative h-11 w-44">
-        <Image 
-          src={logoSrc}
-          alt="Transfers in Barcelona" 
-          fill 
-          className="object-contain object-left" 
-          priority 
-        />
-      </div>
+      <Image 
+        src={logoSrc}
+        alt="Transfers in Barcelona" 
+        width={176}
+        height={41}
+        className="object-contain object-left" 
+        priority={variant === "header"}
+      />
     </Link>
   );
 }
