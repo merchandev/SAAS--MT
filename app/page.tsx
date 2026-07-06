@@ -352,7 +352,7 @@ export default async function HomePage() {
                   key={title}
                   className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#D4AF37] hover:shadow-lg"
                 >
-                  <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37]">
+                  <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-[#9B7B26]">
                     <Icon className="h-7 w-7" aria-hidden="true" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-950">{title}</h3>
@@ -367,7 +367,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
               <div>
-                <p className="mb-3 text-sm font-semibold uppercase text-[#D4AF37]">Cómo funciona</p>
+                <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B26]">Cómo funciona</p>
                 <h2 className="text-3xl font-semibold sm:text-4xl">Reserve su chófer privado en Barcelona sin complicaciones</h2>
                 <p className="mt-5 leading-8 text-gray-600">
                   Transfers in Barcelona organiza cada servicio con información clara: ruta, horario, tipo de
@@ -414,7 +414,7 @@ export default async function HomePage() {
               <div className="mt-8 grid gap-3">
                 {advantages.map((advantage) => (
                   <div key={advantage} className="flex gap-4 rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
-                    <CheckCircle className="mt-0.5 h-[22px] w-[22px] shrink-0 text-[#D4AF37]" aria-hidden="true" />
+                    <CheckCircle className="mt-0.5 h-[22px] w-[22px] shrink-0 text-[#9B7B26]" aria-hidden="true" />
                     <p className="leading-7 text-gray-700 font-medium">{advantage}</p>
                   </div>
                 ))}
@@ -438,7 +438,7 @@ export default async function HomePage() {
               <div className="mt-8 grid gap-4">
                 {fleet.map((item) => (
                   <div key={item} className="flex items-start gap-4 rounded-xl border border-gray-200 bg-gray-50/50 p-5 transition hover:bg-white hover:shadow-sm">
-                    <Car className="mt-0.5 h-6 w-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
+                    <Car className="mt-0.5 h-6 w-6 shrink-0 text-[#9B7B26]" aria-hidden="true" />
                     <p className="leading-7 text-gray-700 font-medium">{item}</p>
                   </div>
                 ))}
@@ -461,7 +461,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
               <div>
-                <p className="mb-3 text-sm font-semibold uppercase text-[#D4AF37]">Rutas destacadas</p>
+                <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B26]">Rutas destacadas</p>
                 <h2 className="text-3xl font-semibold sm:text-4xl">Traslados privados desde Barcelona</h2>
                 <p className="mt-5 leading-8 text-gray-600">
                   Reserve transporte privado desde aeropuertos, estaciones, hoteles, puertos, oficinas,
@@ -476,7 +476,7 @@ export default async function HomePage() {
                     href={`/booking?origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}`}
                     className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-[#D4AF37]"
                   >
-                    <MapPin className="h-6 w-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
+                    <MapPin className="h-6 w-6 shrink-0 text-[#9B7B26]" aria-hidden="true" />
                     <h3 className="text-lg font-semibold">{route.label}</h3>
                   </Link>
                 ))}

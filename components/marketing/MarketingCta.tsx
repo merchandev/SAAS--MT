@@ -17,7 +17,7 @@ export default function MarketingCta({
   return (
     <section className="bg-white py-16">
       <div className="mx-auto max-w-5xl rounded-3xl border border-gray-200 bg-white px-6 py-12 text-center shadow-md sm:px-12">
-        <p className="mx-auto mb-5 inline-flex rounded-full bg-[#D4AF37]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#D4AF37]">
+        <p className="mx-auto mb-5 inline-flex rounded-full bg-[#D4AF37]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#9B7B26]">
           {eyebrow}
         </p>
         <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">{title}</h2>

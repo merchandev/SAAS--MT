@@ -129,7 +129,7 @@ export default function PlaceAutocompleteInput({
   };
 
   return (
-    <div className="relative w-full" onMouseEnter={loadScript} onTouchStart={loadScript}>
+    <div className="relative w-full">
       <Input
         ref={inputRef}
         name={name}

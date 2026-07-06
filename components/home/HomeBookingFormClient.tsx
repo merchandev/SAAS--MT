@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Clock, MapPin } from "lucide-react";
+import { Clock } from "lucide-react";
 import { getSpainToday } from "@/lib/utils";
+import PlaceAutocompleteInput from "@/components/maps/PlaceAutocompleteInput";
 
 const timeOptions = Array.from({ length: 24 * 4 }).map((_, i) => {
   const hours = Math.floor(i / 4).toString().padStart(2, '0');
@@ -49,33 +50,34 @@ export default function HomeBookingFormClient() {
         {/* Origin */}
         <div className="space-y-1">
           <Label htmlFor="booking-origin" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Origen</Label>
-          <div className="relative">
-            <Input 
-              id="booking-origin"
-              name="origin"
-              value={formData.originAddress}
-              onChange={(e) => updateForm('originAddress', e.target.value)}
-              placeholder="Ingresa origen o lugar de recogida..."
-              className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm pr-10"
-            />
-            <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-          </div>
+          <PlaceAutocompleteInput
+            name="origin"
+            value={formData.originAddress}
+            onChange={(value) => updateForm("originAddress", value)}
+            onSelectPlace={({ address, placeId }) => {
+              updateForm("originAddress", address);
+              updateForm("originPlaceId", placeId);
+            }}
+            placeholder="Ingresa origen o lugar de recogida..."
+            className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm"
+            enableGeolocation={true}
+          />
         </div>
 
         {/* Destination */}
         <div className="space-y-1">
           <Label htmlFor="booking-destination" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Destino</Label>
-          <div className="relative">
-            <Input 
-              id="booking-destination"
-              name="destination"
-              value={formData.destinationAddress}
-              onChange={(e) => updateForm('destinationAddress', e.target.value)}
-              placeholder="Ingresa destino..."
-              className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm pr-10"
-            />
-            <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-          </div>
+          <PlaceAutocompleteInput
+            name="destination"
+            value={formData.destinationAddress}
+            onChange={(value) => updateForm("destinationAddress", value)}
+            onSelectPlace={({ address, placeId }) => {
+              updateForm("destinationAddress", address);
+              updateForm("destinationPlaceId", placeId);
+            }}
+            placeholder="Ingresa destino..."
+            className="h-12 border-gray-200 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white transition-colors text-sm"
+          />
         </div>
 
         {/* Date and Time (Full width like the design) */}
