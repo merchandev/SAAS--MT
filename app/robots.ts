@@ -1,14 +1,16 @@
 import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://transfersinbarcelona.com";
+  const baseUrl = "https://transfersinbarcelona.com";
 
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/admin/", "/customer/", "/driver/", "/api/"],
-    },
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/admin/", "/customer/", "/driver/", "/api/"],
+      },
+    ],
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }
