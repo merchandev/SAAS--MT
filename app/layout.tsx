@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import { settingsQueries } from "@/modules/settings/settings.queries";
 import DeveloperCredits from "@/components/DeveloperCredits";
+import Script from "next/script";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -55,15 +56,44 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es"
       className={`${outfit.variable} ${inter.variable} h-full antialiased dark`}
     >
       <head>
+        {/* Hide Google Translate top bar */}
+        <style>{`
+          .goog-te-banner-frame, .skiptranslate iframe { display: none !important; }
+          body { top: 0px !important; margin-top: 0 !important; }
+          .goog-te-gadget { font-size: 0 !important; }
+          .goog-te-gadget span { display: none !important; }
+          #google_translate_element { display: none !important; }
+        `}</style>
       </head>
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-x-hidden">
         <DeveloperCredits />
         {children}
+        {/* Google Translate – loaded globally so the cookie mechanism works on all pages */}
+        <Script
+          id="google-translate-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.googleTranslateElementInit = function() {
+                new window.google.translate.TranslateElement(
+                  { pageLanguage: 'es', includedLanguages: 'es,en,fr,de,it,pt-PT,ru,sv,zh-CN', autoDisplay: false },
+                  'google_translate_element'
+                );
+              };
+            `,
+          }}
+        />
+        <Script
+          src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          strategy="afterInteractive"
+        />
+        <div id="google_translate_element" aria-hidden="true" style={{ display: "none" }} />
       </body>
     </html>
   );
 }
+
