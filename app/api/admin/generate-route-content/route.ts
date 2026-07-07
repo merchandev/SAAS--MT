@@ -3,10 +3,6 @@ import OpenAI from "openai";
 import { authService } from "@/modules/auth/auth.service";
 import { prisma } from "@/lib/prisma";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function POST(request: Request) {
   try {
     const session = await authService.getSession();
@@ -25,6 +21,10 @@ export async function POST(request: Request) {
         error: "No hay clave de OpenAI configurada en el servidor (.env). Por favor configura OPENAI_API_KEY." 
       }, { status: 500 });
     }
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     // Fetch the route details to give context to the AI
     const route = await prisma.routePage.findUnique({
