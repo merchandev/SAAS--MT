@@ -124,7 +124,20 @@ export async function middleware(request: NextRequest) {
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (pathnameHasLocale) return;
+  if (pathnameHasLocale) {
+    const currentLocale = pathname.split('/')[1];
+    const response = NextResponse.next();
+    
+    // Sincronizar la cookie de Google Translate con la URL actual
+    if (currentLocale === 'es') {
+      response.cookies.set('googtrans', '', { expires: new Date(0), path: '/' });
+    } else {
+      // Set the cookie for the root path
+      response.cookies.set('googtrans', `/es/${currentLocale}`, { path: '/' });
+    }
+    
+    return response;
+  }
 
   // Ignore static assets, api routes, and admin routes for i18n
   if (
@@ -138,7 +151,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/register') ||
     pathname.includes('.')
   ) {
-    return;
+    return NextResponse.next();
   }
 
   // Redirect if there is no locale
@@ -146,7 +159,13 @@ export async function middleware(request: NextRequest) {
   request.nextUrl.pathname = `/${locale}${pathname}`;
   
   // Use a 301 redirect for SEO
-  return NextResponse.redirect(request.nextUrl, 301);
+  const response = NextResponse.redirect(request.nextUrl, 301);
+  if (locale === 'es') {
+    response.cookies.set('googtrans', '', { expires: new Date(0), path: '/' });
+  } else {
+    response.cookies.set('googtrans', `/es/${locale}`, { path: '/' });
+  }
+  return response;
 }
 
 export const config = {

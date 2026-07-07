@@ -15,31 +15,31 @@ import GygReviews from "@/components/home/GygReviews";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Private Transfers in Barcelona | Airport, Cruise Port & Chauffeur",
+  title: "Traslados Privados en Barcelona | Aeropuerto, Puerto y Chófer",
   description:
-    "Book private transfers in Barcelona with fixed price, professional chauffeur, airport pickup, cruise port transfers and secure online payment.",
+    "Reserve traslados privados en Barcelona con precio fijo, chófer profesional, recogida en aeropuerto, traslados al puerto de cruceros y pago online seguro.",
   keywords: [
-    "barcelona airport transfer",
-    "private transfer barcelona airport",
-    "barcelona airport to city centre transfer",
-    "barcelona cruise port transfer",
-    "chauffeur service barcelona",
-    "private driver barcelona",
-    "corporate transfers barcelona",
-    "barcelona to andorra private transfer",
+    "traslado aeropuerto barcelona",
+    "traslado privado aeropuerto barcelona",
+    "traslado aeropuerto barcelona centro",
+    "traslado puerto cruceros barcelona",
+    "servicio de chofer barcelona",
+    "conductor privado barcelona",
+    "traslados corporativos barcelona",
+    "traslado privado barcelona andorra",
   ],
   openGraph: {
-    title: "Private Transfers in Barcelona",
+    title: "Traslados Privados en Barcelona",
     description:
-      "Book private transfers in Barcelona with fixed price, professional chauffeur, airport pickup, cruise port transfers and secure online payment.",
-    locale: "en_US",
+      "Reserve traslados privados en Barcelona con precio fijo, chófer profesional, recogida en aeropuerto, traslados al puerto de cruceros y pago online seguro.",
+    locale: "es_ES",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Private Transfers in Barcelona | Airport, Cruise Port & Chauffeur",
+    title: "Traslados Privados en Barcelona | Aeropuerto, Puerto y Chófer",
     description:
-      "Book private transfers in Barcelona with fixed price, professional chauffeur, airport pickup.",
+      "Reserve traslados privados en Barcelona con precio fijo, chófer profesional, recogida en aeropuerto.",
   },
   robots: {
     index: true,
@@ -49,27 +49,27 @@ export const metadata: Metadata = {
 
 const services = [
   {
-    title: "Barcelona Airport Transfers",
+    title: "Traslados al Aeropuerto de Barcelona",
     description:
-      "Private transfers from and to Barcelona-El Prat Airport, stations, hotels, and cruise terminals.",
+      "Traslados privados desde y hacia el Aeropuerto de Barcelona-El Prat, estaciones, hoteles y terminales de cruceros.",
     Icon: Plane,
   },
   {
-    title: "Private Tours with Driver",
+    title: "Tours Privados con Conductor",
     description:
-      "Hourly chauffeur service for panoramic visits, cultural routes, private excursions and tailored plans.",
+      "Servicio de chófer por horas para visitas panorámicas, rutas culturales, excursiones privadas y planes a medida.",
     Icon: Route,
   },
   {
-    title: "Corporate Transfers",
+    title: "Traslados Corporativos",
     description:
-      "Executive mobility for congresses, meetings, roadshows, business dinners, fairs and international clients.",
+      "Movilidad ejecutiva para congresos, reuniones, roadshows, cenas de negocios, ferias y clientes internacionales.",
     Icon: BriefcaseBusiness,
   },
   {
-    title: "Chauffeur Service in Barcelona",
+    title: "Servicio de Chófer en Barcelona",
     description:
-      "Hire a private driver for the contracted time, with flexibility for stops and schedule changes.",
+      "Alquile un conductor privado por el tiempo contratado, con flexibilidad para paradas y cambios de horario.",
     Icon: Clock,
   },
   {
@@ -291,12 +291,12 @@ export default async function HomePage() {
             <div className="max-w-3xl text-white contents lg:block">
               <div className="order-1 lg:order-none">
                 <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
-                  Private Transfers in Barcelona
+                  Traslados Privados en Barcelona
                 </h1>
               </div>
               <div className="order-3 lg:order-none">
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
-                  Book your private transfer in Barcelona. Airport transfers, cruise port, private tours, corporate events and hourly chauffeur service. Travel with fixed price and professional driver.
+                  Reserve su traslado privado en Barcelona. Traslados al aeropuerto, puerto de cruceros, tours privados, eventos corporativos y servicio de chófer por horas. Viaje con precio fijo y conductor profesional.
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -305,14 +305,14 @@ export default async function HomePage() {
                   className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-gray-900 shadow-lg transition hover:-translate-y-1"
                   style={{ backgroundColor: accentColor }}
                 >
-                  Book Transfer
+                  Reservar Traslado
                   <ChevronRight className="h-[22px] w-[22px]" aria-hidden="true" />
                 </Link>
                 <a
                   href="#servicios"
                   className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-7 py-3 font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:border-white/40"
                 >
-                  Our Services
+                  Nuestros Servicios
                   <MapPin className="h-[20px] w-[20px]" aria-hidden="true" />
                 </a>
               </div>
