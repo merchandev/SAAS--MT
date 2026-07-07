@@ -51,7 +51,7 @@ export default function LanguageSwitcher() {
   const currentLang = LANGUAGES.find((l) => l.code === current) ?? LANGUAGES[0];
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative notranslate">
       {/* Trigger button */}
       <button
         type="button"
