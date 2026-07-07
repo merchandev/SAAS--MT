@@ -1,60 +1,86 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+const routesToSeed = [
+  {
+    slug: "airport-transfer-barcelona",
+    originName: "Aeropuerto de Barcelona",
+    destinationName: "Barcelona",
+    h1Title: "Barcelona Airport Transfer",
+    seoKeywords: "barcelona airport transfer, aeropuerto barcelona a centro, transfer bcn",
+    isActive: true,
+  },
+  {
+    slug: "cruise-port-transfer-barcelona",
+    originName: "Puerto de Cruceros de Barcelona",
+    destinationName: "Barcelona",
+    h1Title: "Barcelona Cruise Port Transfer",
+    seoKeywords: "barcelona cruise port transfer, puerto barcelona a aeropuerto, transfer puerto",
+    isActive: true,
+  },
+  {
+    slug: "chauffeur-service-barcelona",
+    originName: "Barcelona",
+    destinationName: "Barcelona (Por horas)",
+    h1Title: "Chauffeur Service Barcelona",
+    seoKeywords: "chauffeur service barcelona, conductor privado barcelona, coche por horas",
+    isActive: true,
+  },
+  {
+    slug: "corporate-transfers-barcelona",
+    originName: "Barcelona",
+    destinationName: "Eventos Corporativos",
+    h1Title: "Corporate Transfers Barcelona",
+    seoKeywords: "corporate transfers barcelona, traslados congresos, traslados empresas",
+    isActive: true,
+  },
+  {
+    slug: "barcelona-to-andorra-transfer",
+    originName: "Barcelona",
+    destinationName: "Andorra",
+    h1Title: "Barcelona to Andorra Transfer",
+    seoKeywords: "barcelona to andorra transfer, traslado barcelona andorra, coche andorra",
+    isActive: true,
+  },
+  {
+    slug: "barcelona-to-sitges-transfer",
+    originName: "Barcelona",
+    destinationName: "Sitges",
+    h1Title: "Barcelona to Sitges Transfer",
+    seoKeywords: "barcelona to sitges transfer, traslado barcelona sitges, taxi sitges",
+    isActive: true,
+  },
+  {
+    slug: "barcelona-to-costa-brava-transfer",
+    originName: "Barcelona",
+    destinationName: "Costa Brava",
+    h1Title: "Barcelona to Costa Brava Transfer",
+    seoKeywords: "barcelona to costa brava transfer, traslado costa brava, taxi girona costa brava",
+    isActive: true,
+  },
+  {
+    slug: "montserrat-private-tour",
+    originName: "Barcelona",
+    destinationName: "Montserrat",
+    h1Title: "Montserrat Private Tour",
+    seoKeywords: "montserrat private tour, excursión montserrat privada, tour montserrat",
+    isActive: true,
+  }
+];
 
 export async function GET() {
-  const routes = [
-    {
-      slug: 'barcelona-airport-transfer',
-      originName: 'Barcelona Airport (BCN)',
-      destinationName: 'Barcelona City',
-      h1Title: 'Private Barcelona Airport Transfer',
-      metaDescription: 'Book your private transfer from Barcelona Airport with fixed price, professional chauffeur, flight monitoring and secure online payment.',
-      seoTitle: 'Barcelona Airport Transfer | Private Chauffeur & Fixed Price',
-      seoKeywords: 'barcelona airport transfer, private transfer barcelona airport, bcn airport taxi',
-      basePriceCache: 45.00
-    },
-    {
-      slug: 'barcelona-cruise-port-transfer',
-      originName: 'Barcelona Cruise Port',
-      destinationName: 'Barcelona Airport / City',
-      h1Title: 'Barcelona Cruise Port Transfers',
-      metaDescription: 'Reliable private transfers from and to Barcelona Cruise Port. Fixed prices, punctual service, and ample space for your cruise luggage.',
-      seoTitle: 'Barcelona Cruise Port Transfer | Private Chauffeur',
-      seoKeywords: 'barcelona cruise port transfer, private transfer from barcelona cruise port',
-      basePriceCache: 55.00
-    },
-    {
-      slug: 'barcelona-to-andorra-private-transfer',
-      originName: 'Barcelona',
-      destinationName: 'Andorra',
-      h1Title: 'Barcelona to Andorra Private Transfer',
-      metaDescription: 'Premium private transfer from Barcelona or BCN Airport to Andorra. Enjoy a comfortable ride with ski luggage space and professional chauffeurs.',
-      seoTitle: 'Barcelona to Andorra Private Transfer | Fixed Price',
-      seoKeywords: 'barcelona to andorra private transfer, taxi barcelona andorra',
-      basePriceCache: 290.00
-    },
-    {
-      slug: 'barcelona-to-sitges-private-transfer',
-      originName: 'Barcelona',
-      destinationName: 'Sitges',
-      h1Title: 'Barcelona to Sitges Private Transfer',
-      metaDescription: 'Book your direct private transfer from Barcelona to Sitges. Fixed rates, comfortable premium vehicles, and professional drivers.',
-      seoTitle: 'Barcelona to Sitges Private Transfer | Chauffeur Service',
-      seoKeywords: 'barcelona to sitges private transfer, taxi barcelona sitges',
-      basePriceCache: 85.00
-    }
-  ];
-
-  try {
-    for (const route of routes) {
-      await prisma.routePage.upsert({
-        where: { slug: route.slug },
-        update: route,
-        create: route,
+  const created = [];
+  for (const route of routesToSeed) {
+    const existing = await prisma.routePage.findUnique({
+      where: { slug: route.slug }
+    });
+    
+    if (!existing) {
+      await prisma.routePage.create({
+        data: route
       });
+      created.push(route.slug);
     }
-    return NextResponse.json({ success: true, message: "Routes seeded successfully" });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
+  return NextResponse.json({ success: true, created });
 }

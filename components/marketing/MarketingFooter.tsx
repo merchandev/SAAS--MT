@@ -22,17 +22,17 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 const services = [
-  { href: "/barcelona-airport-transfer", label: "Barcelona Airport Transfer" },
-  { href: "/barcelona-cruise-port-transfer", label: "Barcelona Cruise Port Transfer" },
-  { href: "/chauffeur-service-barcelona", label: "Chauffeur Service Barcelona" },
-  { href: "/corporate-transfers-barcelona", label: "Corporate Transfers Barcelona" },
+  { href: "/rutas/airport-transfer-barcelona", label: "Barcelona Airport Transfer" },
+  { href: "/rutas/cruise-port-transfer-barcelona", label: "Barcelona Cruise Port Transfer" },
+  { href: "/rutas/chauffeur-service-barcelona", label: "Chauffeur Service Barcelona" },
+  { href: "/rutas/corporate-transfers-barcelona", label: "Corporate Transfers Barcelona" },
 ];
 
 const tours = [
-  { href: "/barcelona-to-andorra-private-transfer", label: "Barcelona to Andorra Transfer" },
-  { href: "/barcelona-to-sitges-private-transfer", label: "Barcelona to Sitges Transfer" },
-  { href: "/barcelona-to-costa-brava-transfer", label: "Barcelona to Costa Brava Transfer" },
-  { href: "/barcelona-to-montserrat-private-tour", label: "Montserrat Private Tour" },
+  { href: "/rutas/barcelona-to-andorra-transfer", label: "Barcelona to Andorra Transfer" },
+  { href: "/rutas/barcelona-to-sitges-transfer", label: "Barcelona to Sitges Transfer" },
+  { href: "/rutas/barcelona-to-costa-brava-transfer", label: "Barcelona to Costa Brava Transfer" },
+  { href: "/rutas/montserrat-private-tour", label: "Montserrat Private Tour" },
 ];
 
 const legalLinks = [
