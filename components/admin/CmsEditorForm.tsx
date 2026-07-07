@@ -78,6 +78,33 @@ export function CmsEditorForm({
     }
   };
 
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleGenerateAI = async () => {
+    if (!formData.id) {
+      alert("Primero debes guardar la ruta para poder generar contenido con IA.");
+      return;
+    }
+    try {
+      setIsGenerating(true);
+      const res = await fetch("/api/admin/generate-route-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ routeId: formData.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error al generar contenido");
+      
+      handleChange("contentHtml", data.contentHtml);
+      setViewMode("html");
+      alert("¡Contenido generado exitosamente! Por favor, revisa el texto antes de guardar.");
+    } catch (error: any) {
+      alert(error.message || "Ocurrió un error al conectar con la IA.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   // Determine what fields to show based on type
   const isPage = type === "page";
 
@@ -159,9 +186,22 @@ export function CmsEditorForm({
             {/* EDITOR DE TEXTO / HTML */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Contenido de la Página
-                </label>
+                <div className="flex items-center gap-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Contenido de la Página
+                  </label>
+                  {isPage && (
+                    <Button 
+                      type="button"
+                      size="sm" 
+                      onClick={handleGenerateAI}
+                      disabled={isGenerating || !formData.id}
+                      className="bg-purple-600 hover:bg-purple-700 text-white h-7 text-xs px-3 rounded-full"
+                    >
+                      {isGenerating ? "✨ Generando..." : "✨ Mejorar con IA"}
+                    </Button>
+                  )}
+                </div>
                 <div className="flex bg-gray-100 rounded-lg p-1">
                   <button 
                     onClick={() => setViewMode("visual")}
