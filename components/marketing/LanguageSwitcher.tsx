@@ -72,7 +72,7 @@ export default function LanguageSwitcher() {
         aria-label="Cambiar idioma"
       >
         <Globe className="h-4 w-4 shrink-0" aria-hidden="true" />
-        <span>{currentLang.flag} {currentLang.code === "es" ? "ES" : currentLang.code.toUpperCase().slice(0, 2)}</span>
+        <span>{currentLang.code === "zh-CN" ? "ZH" : currentLang.code.toUpperCase().slice(0, 2)}</span>
         <ChevronDown
           className={`h-3 w-3 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
           aria-hidden="true"
