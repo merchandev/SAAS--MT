@@ -33,7 +33,7 @@ export default async function AdminLayout({
 
       {/* Main content */}
       <main className="flex-1 flex flex-col h-screen overflow-y-auto">
-        <header className="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
+        <header className="py-5 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
           <h2 className="text-lg font-semibold text-gray-800 capitalize">
             Panel de Control
           </h2>
