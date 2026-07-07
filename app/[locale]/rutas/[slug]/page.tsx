@@ -6,15 +6,17 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
 interface Props {
-  params: {
+  params: Promise<{
     locale: string;
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  
   const route = await prisma.routePage.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
   });
 
   if (!route || !route.isActive) {
@@ -37,8 +39,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function RouteDynamicPage({ params }: Props) {
+  const { slug } = await params;
+  
   const route = await prisma.routePage.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
   });
 
   // 404 if not found OR if it's a draft/scheduled page
