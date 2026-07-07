@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { FileText, Plus, Edit, Globe, RefreshCw } from "lucide-react";
+import { FileText, Plus, Edit, Globe, RefreshCw, Eye } from "lucide-react";
 import { seedStaticPagesAction } from "./actions";
 
 export default async function AdminPagesList() {
@@ -108,7 +108,12 @@ export default async function AdminPagesList() {
                   <td className="px-6 py-4 text-gray-500">
                     {new Date(page.updatedAt).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right space-x-2">
+                    <Link href={`/en${page.url}`} target="_blank">
+                      <Button variant="ghost" size="sm" className="text-gray-600 hover:text-blue-600" title="Ver página">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </Link>
                     <Link href={page.editUrl}>
                       <Button variant="ghost" size="sm" className="text-gray-600 hover:text-[#D4AF37]">
                         <Edit className="h-4 w-4 mr-2" />

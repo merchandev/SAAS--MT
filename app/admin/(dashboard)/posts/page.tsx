@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { FilePenLine, Plus, Edit } from "lucide-react";
+import { FilePenLine, Plus, Edit, Eye } from "lucide-react";
 
 export default async function AdminPostsList() {
   const posts = await prisma.post.findMany({
@@ -65,7 +65,12 @@ export default async function AdminPostsList() {
                   <td className="px-6 py-4 text-gray-500">
                     {new Date(post.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right space-x-2">
+                    <Link href={`/en/blog/${post.slug}`} target="_blank">
+                      <Button variant="ghost" size="sm" className="text-gray-600 hover:text-blue-600" title="Ver entrada">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </Link>
                     <Link href={`/admin/posts/${post.id}/edit`}>
                       <Button variant="ghost" size="sm" className="text-gray-600 hover:text-[#D4AF37]">
                         <Edit className="h-4 w-4 mr-2" />
