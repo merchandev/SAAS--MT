@@ -24,7 +24,9 @@ export function CmsEditorForm({
   const router = useRouter();
   const [formData, setFormData] = useState(initialData || {});
   const [isSaving, setIsSaving] = useState(false);
-  const [viewMode, setViewMode] = useState<"visual" | "html">("visual");
+  const [viewMode, setViewMode] = useState<"visual" | "html">(
+    type === "page" || (initialData?.contentHtml && initialData.contentHtml.includes("<section")) ? "html" : "visual"
+  );
   const [publishMode, setPublishMode] = useState<"immediate" | "draft" | "scheduled">(
     initialData?.scheduledAt
       ? "scheduled"
@@ -175,6 +177,12 @@ export function CmsEditorForm({
                   </button>
                 </div>
               </div>
+              
+              {type === "page" && viewMode === "visual" && (
+                <div className="mb-3 p-3 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-md">
+                  ⚠️ <strong>Aviso:</strong> El editor visual puede eliminar formatos avanzados (como etiquetas &lt;section&gt; o clases especiales). Para editar el diseño SEO avanzado, usa el modo HTML.
+                </div>
+              )}
               
               <div className="min-h-[400px] border border-gray-300 rounded-md overflow-hidden bg-white">
                 {viewMode === "visual" ? (
