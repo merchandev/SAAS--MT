@@ -155,7 +155,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect if there is no locale
-  const locale = defaultLocale; // For simplicity, default to EN as requested for SEO
+  const locale: string = defaultLocale; // Add type annotation to prevent TS error
   request.nextUrl.pathname = `/${locale}${pathname}`;
   
   // Use a 301 redirect for SEO
