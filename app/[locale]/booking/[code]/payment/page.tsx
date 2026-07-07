@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { buildRateLimitKey, getRequestMeta } from "@/lib/request-meta";
 import { verifyReceiptAccessToken } from "@/modules/bookings/receipt-access";
 
+import { Lock } from "lucide-react";
 import AutoSubmitRedsysForm from "@/components/payments/AutoSubmitRedsysForm";
 
 export const dynamic = "force-dynamic";
@@ -105,7 +106,7 @@ export default async function PaymentPage({
         <div className="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-xl p-8 text-center space-y-6">
           
           <div className="w-16 h-16 bg-[#111111] rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse shadow-lg">
-            <span translate="no" className="notranslate material-symbols-outlined text-white text-3xl">lock</span>
+            <Lock className="text-white h-8 w-8" />
           </div>
 
           <div>

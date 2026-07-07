@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import GoogleTranslate from "@/components/ui/GoogleTranslate";
 import MarketingLogo from "@/components/marketing/MarketingLogo";
 
@@ -102,7 +102,7 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
                   className="text-black font-bold px-4 py-4 rounded-xl transition-colors duration-300 text-center flex items-center justify-center gap-2 text-base"
                   style={{ backgroundColor: accentColor }}
                 >
-                  <span translate="no" className="notranslate material-symbols-outlined text-[24px]">person</span>
+                  <User className="h-6 w-6" />
                   Mi Panel de Cliente
                 </Link>
               ) : (

@@ -1,3 +1,4 @@
+import { Phone, Mail, MapPin, Star, Lock, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import MarketingLogo from "./MarketingLogo";
 
@@ -96,25 +97,31 @@ export default function MarketingFooter() {
         <div>
           <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Contact</h2>
           <div className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
-            <a href="tel:+34662024136" className="flex items-center gap-3 transition hover:text-gray-900 w-fit">
-              <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">phone</span>
-              +34 662 02 41 36
-            </a>
-            <a href="mailto:info@transfersinbarcelona.com" className="flex items-center gap-3 transition hover:text-gray-900 w-fit">
-              <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">mail</span>
-              info@transfersinbarcelona.com
-            </a>
-            <span className="flex items-center gap-3">
-              <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">location_on</span>
-              Barcelona, España
-            </span>
+            <ul className="space-y-4">
+              <li className="flex items-center gap-3">
+                <Phone className="h-[18px] w-[18px] text-gray-400" aria-hidden="true" />
+                <a href="tel:+34662024136" className="transition hover:text-gray-900">
+                  +34 662 02 41 36
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="h-[18px] w-[18px] text-gray-400" aria-hidden="true" />
+                <a href="mailto:info@transfersinbarcelona.com" className="transition hover:text-gray-900">
+                  info@transfersinbarcelona.com
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <MapPin className="h-[18px] w-[18px] text-gray-400" aria-hidden="true" />
+                Barcelona, España
+              </li>
+            </ul>
             <div className="flex gap-2 mt-2">
               <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1527] px-2.5 py-1.5 text-xs font-black text-white">
-                <span translate="no" className="notranslate material-symbols-outlined text-[16px] text-[#00C26D]" aria-hidden="true">star</span>
+                <Star className="h-4 w-4 text-[#00C26D] fill-[#00C26D]" aria-hidden="true" />
                 GetYourGuide Verified
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1527] px-2.5 py-1.5 text-xs font-black text-white">
-                <span translate="no" className="notranslate material-symbols-outlined text-[16px] text-[#F3C200]" aria-hidden="true">lock</span>
+                <Lock className="h-4 w-4 text-[#F3C200] fill-[#F3C200]" aria-hidden="true" />
                 Pago Seguro
               </span>
             </div>
@@ -124,7 +131,7 @@ export default function MarketingFooter() {
 
       <div className="border-t border-gray-200 bg-gray-100">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-8 text-sm font-semibold text-gray-500 md:flex-row md:items-center md:justify-between">
-          <p>© 2026 Transfers in Barcelona. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} Transfers in Barcelona. Todos los derechos reservados.</p>
           <nav className="flex flex-wrap gap-x-8 gap-y-3">
             {legalLinks.map((item) => (
               <Link key={item.label} href={item.href} className="transition hover:text-gray-900">
@@ -142,7 +149,7 @@ export default function MarketingFooter() {
         rel="noreferrer"
         target="_blank"
       >
-        <span translate="no" className="notranslate material-symbols-outlined text-[28px]" aria-hidden="true">chat</span>
+        <MessageCircle className="h-7 w-7" aria-hidden="true" />
       </a>
     </footer>
   );

@@ -13,7 +13,7 @@ import GoogleMapRoute from "@/components/maps/GoogleMapRoute";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Clock } from "lucide-react";
+import { Clock, MapPin, Flag } from "lucide-react";
 import { getSpainToday } from "@/lib/utils";
 import { getVehicleImageSrc } from "@/lib/fleet-images";
 
@@ -341,7 +341,7 @@ export default function BookingFormClient({
                             if (addr.placeId) updateForm('originPlaceId', addr.placeId);
                           }}
                         >
-                          <span translate="no" className="notranslate material-symbols-outlined text-[16px] mr-1">location_on</span>
+                          <MapPin className="text-[16px] h-4 w-4 mr-1" />
                           {addr.label} (Origen)
                         </Button>
                         <Button 
@@ -353,7 +353,7 @@ export default function BookingFormClient({
                             if (addr.placeId) updateForm('destinationPlaceId', addr.placeId);
                           }}
                         >
-                          <span translate="no" className="notranslate material-symbols-outlined text-[16px] mr-1">flag</span>
+                          <Flag className="text-[16px] h-4 w-4 mr-1" />
                           {addr.label} (Destino)
                         </Button>
                       </div>

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Search } from "lucide-react";
 
 interface SeoPreviewCardProps {
   title: string;
@@ -29,7 +30,7 @@ export function SeoPreviewCard({
     <Card className="border-gray-200 shadow-sm mt-6">
       <CardHeader className="bg-gray-50/50 pb-4 border-b border-gray-100">
         <CardTitle className="text-lg flex items-center gap-2">
-          <span translate="no" className="notranslate material-symbols-outlined text-[20px] text-green-600">search</span>
+          <Search className="h-5 w-5 text-green-600" />
           Vista previa de Google
         </CardTitle>
       </CardHeader>
