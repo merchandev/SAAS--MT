@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
+import { CheckCircle2, Users, Briefcase } from "lucide-react";
 
 interface Props {
   params: Promise<{
@@ -79,7 +80,7 @@ export default async function RouteDynamicPage({ params }: Props) {
               {/* Bloque de características estáticas para SEO */}
               <div className="mt-10 grid gap-4">
                 <div className="flex gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-5 shadow-sm">
-                  <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">check_circle</span>
+                  <CheckCircle2 className="w-6 h-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
                   <div>
                     <h3 className="font-semibold">Precio cerrado garantizado</h3>
                     <p className="text-sm text-gray-600 mt-1">
@@ -89,7 +90,7 @@ export default async function RouteDynamicPage({ params }: Props) {
                 </div>
                 
                 <div className="flex gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-5 shadow-sm">
-                  <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">group</span>
+                  <Users className="w-6 h-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
                   <div>
                     <h3 className="font-semibold">Vehículos premium y minivans</h3>
                     <p className="text-sm text-gray-600 mt-1">
@@ -99,7 +100,7 @@ export default async function RouteDynamicPage({ params }: Props) {
                 </div>
 
                 <div className="flex gap-4 rounded-xl border border-gray-100 bg-gray-50/50 p-5 shadow-sm">
-                  <span translate="no" className="notranslate material-symbols-outlined text-[24px] shrink-0 text-[#D4AF37]" aria-hidden="true">work</span>
+                  <Briefcase className="w-6 h-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
                   <div>
                     <h3 className="font-semibold">Chófer profesional</h3>
                     <p className="text-sm text-gray-600 mt-1">
@@ -120,9 +121,7 @@ export default async function RouteDynamicPage({ params }: Props) {
 
             {/* Formulario de reserva con prefill opcional */}
             <div className="lg:sticky lg:top-32">
-              <div className="rounded-2xl border border-gray-200 bg-white p-2 shadow-xl shadow-gray-200/50 ring-1 ring-gray-900/5">
-                <HomeBookingFormClient />
-              </div>
+              <HomeBookingFormClient variant="clean" />
             </div>
             
           </div>
