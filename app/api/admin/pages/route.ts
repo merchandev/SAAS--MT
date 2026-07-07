@@ -2,6 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authService } from "@/modules/auth/auth.service";
 
+function resolveScheduledStatus(body: any) {
+  const scheduledAt = body.scheduledAt ? new Date(body.scheduledAt) : null;
+  const now = new Date();
+
+  // If scheduledAt is in the future → save as draft until that date
+  // If scheduledAt is in the past or null → use the isActive flag directly
+  let isActive = body.isActive ?? true;
+  if (scheduledAt && scheduledAt > now) {
+    isActive = false; // Will be published when cron runs
+  }
+
+  return { scheduledAt, isActive };
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await authService.getSession();
@@ -10,6 +24,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    const { scheduledAt, isActive } = resolveScheduledStatus(body);
+
     const newPage = await prisma.routePage.create({
       data: {
         slug: body.slug,
@@ -22,7 +38,8 @@ export async function POST(request: NextRequest) {
         seoKeywords: body.seoKeywords,
         seoImage: body.seoImage,
         basePriceCache: body.basePriceCache ? Number(body.basePriceCache) : null,
-        isActive: body.isActive ?? true,
+        isActive,
+        scheduledAt,
       },
     });
 
@@ -41,6 +58,7 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json();
     const { id, ...data } = body;
+    const { scheduledAt, isActive } = resolveScheduledStatus(data);
 
     const updatedPage = await prisma.routePage.update({
       where: { id },
@@ -55,7 +73,8 @@ export async function PUT(request: NextRequest) {
         seoKeywords: data.seoKeywords,
         seoImage: data.seoImage,
         basePriceCache: data.basePriceCache ? Number(data.basePriceCache) : null,
-        isActive: data.isActive,
+        isActive,
+        scheduledAt,
       },
     });
 

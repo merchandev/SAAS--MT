@@ -582,9 +582,13 @@ model RoutePage {
 
   basePriceCache Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X €" rápido
 
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive    Boolean   @default(true)
+  scheduledAt DateTime? // Si tiene fecha futura, se publicará automáticamente en esa fecha
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([scheduledAt])
+  @@index([isActive])
 }
 
 model Post {
@@ -601,8 +605,12 @@ model Post {
 
   isActive    Boolean   @default(true)
   publishedAt DateTime?
+  scheduledAt DateTime? // Si tiene fecha futura, se publicará automáticamente en esa fecha
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([scheduledAt])
+  @@index([isActive])
 }
 
 model ContactMessage {

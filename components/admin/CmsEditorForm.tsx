@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { SeoPreviewCard } from "./SeoPreviewCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, ArrowLeft, Code } from "lucide-react";
+import { Save, ArrowLeft, Code, Clock, Globe, FileText, Calendar } from "lucide-react";
 import "react-quill-new/dist/quill.snow.css";
 
 // Dynamic import for React-Quill to avoid SSR issues
@@ -25,18 +25,42 @@ export function CmsEditorForm({
   const [formData, setFormData] = useState(initialData || {});
   const [isSaving, setIsSaving] = useState(false);
   const [viewMode, setViewMode] = useState<"visual" | "html">("visual");
+  const [publishMode, setPublishMode] = useState<"immediate" | "draft" | "scheduled">(
+    initialData?.scheduledAt
+      ? "scheduled"
+      : initialData?.isActive === false
+        ? "draft"
+        : "immediate"
+  );
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
+  // Derive the actual save payload based on publishMode
+  function buildSavePayload() {
+    const base = { ...formData };
+    if (publishMode === "immediate") {
+      base.isActive = true;
+      base.scheduledAt = null;
+    } else if (publishMode === "draft") {
+      base.isActive = false;
+      base.scheduledAt = null;
+    } else if (publishMode === "scheduled") {
+      base.isActive = false; // API will flip it when the time comes
+      // scheduledAt is already in formData
+    }
+    return base;
+  }
+
   const handleSave = async () => {
     try {
       setIsSaving(true);
+      const payload = buildSavePayload();
       const res = await fetch(apiEndpoint, {
-        method: formData.id ? "PUT" : "POST",
+        method: payload.id ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error("Error al guardar");
@@ -55,6 +79,18 @@ export function CmsEditorForm({
   // Determine what fields to show based on type
   const isPage = type === "page";
 
+  // Status label for header badge
+  function getStatusLabel() {
+    if (publishMode === "scheduled" && formData.scheduledAt) {
+      const d = new Date(formData.scheduledAt);
+      return { label: `Programado: ${d.toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}`, color: "bg-amber-100 text-amber-800" };
+    }
+    if (publishMode === "draft") return { label: "Borrador", color: "bg-gray-100 text-gray-700" };
+    return { label: "Publicado", color: "bg-green-100 text-green-800" };
+  }
+
+  const status = getStatusLabel();
+
   return (
     <div className="space-y-8 pb-12">
       {/* HEADER */}
@@ -67,6 +103,9 @@ export function CmsEditorForm({
           <h1 className="text-2xl font-bold text-gray-900">
             {formData.id ? "Editar" : "Crear"} {isPage ? "Página" : "Entrada"}
           </h1>
+          <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${status.color}`}>
+            {status.label}
+          </span>
         </div>
         <Button onClick={handleSave} disabled={isSaving} className="bg-[#D4AF37] hover:bg-[#b5952f] text-white">
           <Save className="h-4 w-4 mr-2" />
@@ -241,24 +280,126 @@ export function CmsEditorForm({
 
         {/* SIDEBAR COLUMN */}
         <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="font-medium text-gray-900 mb-4">Estado y Publicación</h3>
-            
-            <div className="flex items-center gap-2 mb-6">
-              <input 
-                type="checkbox" 
-                id="isActive"
-                checked={formData.isActive !== false}
-                onChange={(e) => handleChange("isActive", e.target.checked)}
-                className="rounded border-gray-300 text-[#D4AF37] focus:ring-[#D4AF37]"
-              />
-              <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
-                Público (Visible en la web)
+
+          {/* ========================= */}
+          {/*  PUBLICACIÓN / SCHEDULING */}
+          {/* ========================= */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+              <Globe className="h-4 w-4 text-[#D4AF37]" />
+              Estado y Publicación
+            </h3>
+
+            {/* Mode selector */}
+            <div className="space-y-2">
+              {/* Publish immediately */}
+              <label
+                className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                  publishMode === "immediate"
+                    ? "border-green-500 bg-green-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="publishMode"
+                  value="immediate"
+                  checked={publishMode === "immediate"}
+                  onChange={() => setPublishMode("immediate")}
+                  className="mt-0.5 text-green-500"
+                />
+                <div>
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-gray-900">
+                    <Globe className="h-3.5 w-3.5 text-green-600" />
+                    Publicar ahora
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">Visible en la web inmediatamente</p>
+                </div>
+              </label>
+
+              {/* Save as draft */}
+              <label
+                className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                  publishMode === "draft"
+                    ? "border-gray-500 bg-gray-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="publishMode"
+                  value="draft"
+                  checked={publishMode === "draft"}
+                  onChange={() => setPublishMode("draft")}
+                  className="mt-0.5 text-gray-500"
+                />
+                <div>
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-gray-900">
+                    <FileText className="h-3.5 w-3.5 text-gray-500" />
+                    Guardar como borrador
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">No se muestra en la web</p>
+                </div>
+              </label>
+
+              {/* Schedule */}
+              <label
+                className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                  publishMode === "scheduled"
+                    ? "border-amber-500 bg-amber-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="publishMode"
+                  value="scheduled"
+                  checked={publishMode === "scheduled"}
+                  onChange={() => setPublishMode("scheduled")}
+                  className="mt-0.5 text-amber-500"
+                />
+                <div className="flex-1">
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-gray-900">
+                    <Clock className="h-3.5 w-3.5 text-amber-600" />
+                    Programar publicación
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">Se publicará automáticamente en la fecha elegida</p>
+                </div>
               </label>
             </div>
 
-            {isPage && (
-              <div className="pt-4 border-t border-gray-100">
+            {/* Date/time picker — only shown when "scheduled" */}
+            {publishMode === "scheduled" && (
+              <div className="pt-2 border-t border-amber-100">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5 text-amber-600" />
+                  Fecha y hora de publicación
+                </label>
+                <Input
+                  type="datetime-local"
+                  value={
+                    formData.scheduledAt
+                      ? new Date(formData.scheduledAt).toISOString().slice(0, 16)
+                      : ""
+                  }
+                  min={new Date().toISOString().slice(0, 16)}
+                  onChange={(e) =>
+                    handleChange("scheduledAt", e.target.value ? new Date(e.target.value).toISOString() : null)
+                  }
+                  className="text-sm"
+                />
+                <p className="text-xs text-amber-700 mt-1.5 bg-amber-50 border border-amber-200 rounded p-2">
+                  ⏰ El sistema revisará y publicará automáticamente el contenido cuando llegue esta fecha.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Precio Base (Solo Páginas) */}
+          {isPage && (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="font-medium text-gray-900 mb-4">Precio</h3>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Precio Base Desde (€)</label>
                 <Input 
                   type="number"
@@ -268,11 +409,13 @@ export function CmsEditorForm({
                   placeholder="Ej. 85.00"
                 />
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
       </div>
     </div>
   );
 }
+
+

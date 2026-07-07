@@ -2,6 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authService } from "@/modules/auth/auth.service";
 
+function resolveScheduledStatus(body: any) {
+  const scheduledAt = body.scheduledAt ? new Date(body.scheduledAt) : null;
+  const now = new Date();
+  
+  // If scheduledAt is in the future → save as draft until that date
+  // If scheduledAt is in the past or null → use the isActive flag directly
+  let isActive = body.isActive ?? true;
+  if (scheduledAt && scheduledAt > now) {
+    isActive = false; // Will be published when cron runs
+  }
+
+  return { scheduledAt, isActive };
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await authService.getSession();
@@ -10,6 +24,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    const { scheduledAt, isActive } = resolveScheduledStatus(body);
+
     const newPost = await prisma.post.create({
       data: {
         slug: body.slug,
@@ -20,8 +36,9 @@ export async function POST(request: NextRequest) {
         metaDescription: body.metaDescription,
         seoKeywords: body.seoKeywords,
         imageUrl: body.imageUrl,
-        isActive: body.isActive ?? true,
-        publishedAt: body.isActive ? new Date() : null,
+        isActive,
+        scheduledAt,
+        publishedAt: isActive && !scheduledAt ? new Date() : null,
       },
     });
 
@@ -40,6 +57,13 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json();
     const { id, ...data } = body;
+    const { scheduledAt, isActive } = resolveScheduledStatus(data);
+
+    // If we're actively publishing now (no schedule, isActive=true), set publishedAt
+    const existingPost = await prisma.post.findUnique({ where: { id }, select: { publishedAt: true, isActive: true } });
+    const publishedAt = isActive && !existingPost?.publishedAt
+      ? new Date()
+      : existingPost?.publishedAt ?? null;
 
     const updatedPost = await prisma.post.update({
       where: { id },
@@ -52,7 +76,9 @@ export async function PUT(request: NextRequest) {
         metaDescription: data.metaDescription,
         seoKeywords: data.seoKeywords,
         imageUrl: data.imageUrl,
-        isActive: data.isActive,
+        isActive,
+        scheduledAt,
+        publishedAt,
       },
     });
 
