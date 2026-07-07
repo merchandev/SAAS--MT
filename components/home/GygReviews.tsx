@@ -1,5 +1,6 @@
 import React from 'react';
-import { Star } from 'lucide-react';
+import { Star, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
 
 interface Review {
   id: string;
@@ -14,109 +15,91 @@ interface Review {
 const reviews: Review[] = [
   {
     id: '1',
-    author: 'John D.',
-    initial: 'J',
-    color: 'bg-blue-500',
-    date: 'March 15, 2026',
+    author: 'Elena M.',
+    initial: 'E',
+    color: 'bg-slate-800',
+    date: 'Mayo 2026',
     rating: 5,
-    description: 'Excellent airport transfer. The driver was waiting for us at BCN arrivals with a sign and helped with our heavy luggage.'
+    description: 'Servicio impecable desde el aeropuerto hasta el hotel. El conductor nos estaba esperando con un cartel y nos ayudó con todo el equipaje. Coche premium y muy limpio.'
   },
   {
     id: '2',
-    author: 'Sarah M.',
-    initial: 'S',
-    color: 'bg-red-500',
-    date: 'February 28, 2026',
+    author: 'Carlos T.',
+    initial: 'C',
+    color: 'bg-slate-800',
+    date: 'Abril 2026',
     rating: 5,
-    description: 'We booked a transfer from our hotel to the Barcelona Cruise Port. Very punctual and the Mercedes V-Class was perfect for our family of 5.'
+    description: 'Contratamos el transfer para ir desde nuestro hotel en Barcelona al puerto de cruceros. Puntualidad británica y un trato exquisito. Repetiremos sin duda.'
   },
   {
     id: '3',
-    author: 'David & Emma',
-    initial: 'D',
-    color: 'bg-emerald-500',
-    date: 'February 10, 2026',
-    rating: 5,
-    description: 'Hired their chauffeur service for a day trip to Montserrat. The driver was knowledgeable, polite, and the car was immaculate.'
-  },
-  {
-    id: '4',
-    author: 'Michael T.',
+    author: 'María y José',
     initial: 'M',
-    color: 'bg-purple-500',
-    date: 'January 22, 2026',
+    color: 'bg-slate-800',
+    date: 'Marzo 2026',
     rating: 5,
-    description: 'Great corporate transfer service. We used them for Mobile World Congress and the executive car was exactly what we needed for our CEO.'
-  },
-  {
-    id: '5',
-    author: 'Lucia R.',
-    initial: 'L',
-    color: 'bg-amber-500',
-    date: 'January 5, 2026',
-    rating: 5,
-    description: 'Private transfer from Barcelona airport to Sitges. Much better and faster than waiting for a taxi. Highly recommended!'
-  },
-  {
-    id: '6',
-    author: 'Robert K.',
-    initial: 'R',
-    color: 'bg-indigo-500',
-    date: 'December 12, 2025',
-    rating: 5,
-    description: 'We needed a transfer with a child seat from the airport to the city centre. Everything was perfectly arranged.'
+    description: 'Reservamos un coche con chófer para ir a Montserrat. La experiencia fue de 10. Conducción muy suave y un conductor muy amable. Totalmente recomendable.'
   }
 ];
 
-// For a smooth marquee, we only duplicate once
-const marqueeReviews = [...reviews, ...reviews];
-
 export default function GygReviews() {
   return (
-    <section className="overflow-hidden bg-white py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 mb-12 text-center">
-        <p className="mb-3 text-sm font-semibold uppercase text-[#D4AF37]">Verified Reviews</p>
-        <h2 className="text-3xl font-semibold tracking-tight text-gray-950 sm:text-4xl">
-          What our clients say
-        </h2>
-        <p className="mt-4 text-lg leading-8 text-gray-600">
-          Hundreds of travelers trust us for their transfers in Barcelona.
-        </p>
-      </div>
-      
-      <div className="relative flex w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] py-4">
-        <div className="flex w-max animate-[marquee_40s_linear_infinite] hover:[animation-play-state:paused]">
-          {marqueeReviews.map((review, i) => (
+    <section className="bg-white py-20 sm:py-24 border-y border-gray-100">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center mb-16">
+          <p className="mb-3 text-sm font-semibold uppercase text-[#D4AF37]">Reseñas verificadas</p>
+          <h2 className="text-3xl font-semibold tracking-tight text-gray-950 sm:text-4xl">
+            La experiencia de nuestros clientes
+          </h2>
+          <p className="mt-4 text-lg leading-8 text-gray-600">
+            Valoraciones reales de viajeros que ya han confiado en nuestro servicio de traslado privado.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          {reviews.map((review) => (
             <div 
-              key={`${review.id}-${i}`}
-              className="mx-3 flex w-80 shrink-0 flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)]"
+              key={review.id}
+              className="flex flex-col rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-shadow hover:shadow-md"
             >
-              <div className="mb-4 flex items-center gap-4">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ${review.color}`}>
+              <div className="mb-6 flex items-center gap-4">
+                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-base font-bold text-white ${review.color}`}>
                   {review.initial}
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">{review.author}</h3>
-                  <p className="text-xs text-gray-500">{review.date} - Verified Booking</p>
+                  <h3 className="text-base font-semibold text-gray-900">{review.author}</h3>
+                  <p className="text-sm text-gray-500">{review.date} - Reserva Verificada</p>
                 </div>
               </div>
               
-              <div className="mb-3 flex text-[#D4AF37]">
+              <div className="mb-4 flex text-[#D4AF37]">
                 {[...Array(5)].map((_, index) => (
                   <Star 
                     key={index} 
-                    className={`h-4 w-4 ${index < review.rating ? 'fill-current' : 'text-gray-300'}`} 
+                    className={`h-5 w-5 ${index < review.rating ? 'fill-current' : 'text-gray-300'}`} 
                   />
                 ))}
               </div>
               
-              <div className="relative flex-1">
-                <p className="text-sm leading-relaxed text-gray-600 line-clamp-4">
+              <div className="flex-1">
+                <p className="text-base leading-relaxed text-gray-600">
                   "{review.description}"
                 </p>
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="text-center">
+          <Link 
+            href="https://www.getyourguide.com" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition hover:border-[#D4AF37] hover:text-[#D4AF37]"
+          >
+            Ver más reseñas verificadas en GetYourGuide
+            <ExternalLink className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>

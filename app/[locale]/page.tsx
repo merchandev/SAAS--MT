@@ -291,12 +291,12 @@ export default async function HomePage() {
             <div className="max-w-3xl text-white contents lg:block">
               <div className="order-1 lg:order-none">
                 <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
-                  Traslados Privados en Barcelona
+                  Traslados privados en Barcelona con precio cerrado
                 </h1>
               </div>
               <div className="order-3 lg:order-none">
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
-                  Reserve su traslado privado en Barcelona. Traslados al aeropuerto, puerto de cruceros, tours privados, eventos corporativos y servicio de chófer por horas. Viaje con precio fijo y conductor profesional.
+                  Recogida en aeropuerto, puerto, hoteles y eventos. Reserva online, conductor profesional y asistencia por WhatsApp.
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -315,6 +315,21 @@ export default async function HomePage() {
                   Nuestros Servicios
                   <MapPin className="h-[20px] w-[20px]" aria-hidden="true" />
                 </a>
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-white/90">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-[#D4AF37]" aria-hidden="true" />
+                  Precio cerrado
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-[#D4AF37]" aria-hidden="true" />
+                  Cancelación hasta 24h
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-[#D4AF37]" aria-hidden="true" />
+                  WhatsApp +34 662 02 41 36
+                </div>
               </div>
 
               <div className="mt-10 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
