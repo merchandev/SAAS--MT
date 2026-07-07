@@ -16,16 +16,35 @@ const LANGUAGES = [
   { code: "zh-CN", label: "中文",    flag: "🇨🇳" },
 ];
 
-export default function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  variant?: "dark" | "light";
+}
+
+function getGoogleLangCookie(): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(/googtrans=\/[a-z-]+\/([a-z-]+)/i);
+  return match ? match[1] : null;
+}
+
+export default function LanguageSwitcher({ variant = "dark" }: LanguageSwitcherProps = {}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<string>("es");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Sync the language button with the URL path segment
+    // Sync the language button with the URL path segment (for public routes)
     const segment = pathname?.split('/')[1] || '';
-    const match = LANGUAGES.find((l) => l.code.toLowerCase() === segment.toLowerCase());
+    let match = LANGUAGES.find((l) => l.code.toLowerCase() === segment.toLowerCase());
+    
+    // Fallback to cookie for admin/ignored routes where URL doesn't have locale
+    if (!match) {
+      const cookieLang = getGoogleLangCookie();
+      if (cookieLang) {
+        match = LANGUAGES.find((l) => l.code.toLowerCase() === cookieLang.toLowerCase());
+      }
+    }
+
     if (match) {
       setCurrent(match.code);
     } else {
@@ -47,13 +66,19 @@ export default function LanguageSwitcher() {
 
   const currentLang = LANGUAGES.find((l) => l.code === current) ?? LANGUAGES[0];
 
+  const isLight = variant === "light";
+
   return (
     <div ref={ref} className="relative notranslate">
       {/* Trigger button */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:border-[#D4AF37] hover:bg-white/15"
+        className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-semibold transition-colors ${
+          isLight
+            ? "border-gray-200 bg-white text-gray-700 hover:border-[#D4AF37] hover:bg-gray-50"
+            : "border-white/20 bg-white/10 text-white hover:border-[#D4AF37] hover:bg-white/15"
+        }`}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label="Cambiar idioma"
@@ -69,7 +94,11 @@ export default function LanguageSwitcher() {
       {/* Dropdown */}
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 w-44 overflow-hidden rounded-xl border border-white/15 bg-gray-900/95 shadow-2xl backdrop-blur-md z-[9999] animate-in fade-in slide-in-from-top-2 duration-150"
+          className={`absolute right-0 top-full mt-2 w-44 overflow-hidden rounded-xl border shadow-2xl backdrop-blur-md z-[9999] animate-in fade-in slide-in-from-top-2 duration-150 ${
+            isLight
+              ? "border-gray-200 bg-white"
+              : "border-white/15 bg-gray-900/95"
+          }`}
           role="listbox"
           aria-label="Seleccionar idioma"
         >
@@ -82,42 +111,62 @@ export default function LanguageSwitcher() {
                 setCurrent(lang.code);
                 setOpen(false);
 
-                // Update Next.js route if it uses [locale]
-                const pathParts = window.location.pathname.split("/");
-                const currentFirstSegment = pathParts[1];
-                const isCurrentFirstSegmentLocale = LANGUAGES.some(
-                  (l) => l.code.toLowerCase() === currentFirstSegment?.toLowerCase()
-                );
+                // Check if we are in an admin or ignored route
+                const isIgnoredRoute = 
+                  window.location.pathname.startsWith('/admin') || 
+                  window.location.pathname.startsWith('/customer') || 
+                  window.location.pathname.startsWith('/hotel');
 
-                if (isCurrentFirstSegmentLocale) {
-                  pathParts[1] = lang.code;
-                } else if (pathParts[1] !== "") {
-                  // If there was no locale but there is a path, we insert the locale
-                  pathParts.splice(1, 0, lang.code);
-                } else {
-                  // Root path
-                  pathParts[1] = lang.code;
+                let newPath = window.location.href;
+
+                if (!isIgnoredRoute) {
+                  // Update Next.js route if it uses [locale]
+                  const pathParts = window.location.pathname.split("/");
+                  const currentFirstSegment = pathParts[1];
+                  const isCurrentFirstSegmentLocale = LANGUAGES.some(
+                    (l) => l.code.toLowerCase() === currentFirstSegment?.toLowerCase()
+                  );
+
+                  if (isCurrentFirstSegmentLocale) {
+                    pathParts[1] = lang.code;
+                  } else if (pathParts[1] !== "") {
+                    // If there was no locale but there is a path, we insert the locale
+                    pathParts.splice(1, 0, lang.code);
+                  } else {
+                    // Root path
+                    pathParts[1] = lang.code;
+                  }
+                  newPath = pathParts.join("/") + window.location.search + window.location.hash;
                 }
-                const newPath = pathParts.join("/") + window.location.search + window.location.hash;
 
                 if (lang.code === "es") {
                   // Clear translation - reload without cookie
                   document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
                   document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
-                  window.location.href = newPath;
+                  if (!isIgnoredRoute) {
+                    window.location.href = newPath;
+                  } else {
+                    window.location.reload();
+                  }
                 } else {
                   // Set the googtrans cookie that Google Translate reads
                   const expires = new Date();
                   expires.setFullYear(expires.getFullYear() + 1);
                   document.cookie = `googtrans=/es/${lang.code}; expires=${expires.toUTCString()}; path=/`;
                   document.cookie = `googtrans=/es/${lang.code}; expires=${expires.toUTCString()}; path=/; domain=${window.location.hostname}`;
-                  window.location.href = newPath;
+                  if (!isIgnoredRoute) {
+                    window.location.href = newPath;
+                  } else {
+                    window.location.reload();
+                  }
                 }
               }}
               className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
                 current === lang.code
-                  ? "bg-[#D4AF37]/20 text-[#D4AF37]"
-                  : "text-white/85 hover:bg-white/10"
+                  ? "bg-[#D4AF37]/10 text-[#D4AF37]"
+                  : isLight
+                    ? "text-gray-700 hover:bg-gray-100"
+                    : "text-white/85 hover:bg-white/10"
               }`}
             >
               <span className="text-base">{lang.flag}</span>

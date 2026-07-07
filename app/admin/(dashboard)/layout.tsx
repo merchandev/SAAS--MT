@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { AdminSidebar } from "@/components/layout/AdminSidebar";
 import { authService } from "@/modules/auth/auth.service";
 import { settingsQueries } from "@/modules/settings/settings.queries";
+import LanguageSwitcher from "@/components/marketing/LanguageSwitcher";
 
 export default async function AdminLayout({
   children,
@@ -32,10 +33,13 @@ export default async function AdminLayout({
 
       {/* Main content */}
       <main className="flex-1 flex flex-col h-screen overflow-y-auto">
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center px-6 sticky top-0 z-10">
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
           <h2 className="text-lg font-semibold text-gray-800 capitalize">
             Panel de Control
           </h2>
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher variant="light" />
+          </div>
         </header>
         <div className="p-6">
           {children}
