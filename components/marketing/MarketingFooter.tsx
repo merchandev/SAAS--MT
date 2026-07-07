@@ -22,25 +22,24 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 const services = [
-  { href: "/booking", label: "Traslados Aeropuerto" },
-  { href: "/booking", label: "Traslados al Puerto" },
-  { href: "/contacto", label: "Transfers Corporativos" },
-  { href: "/tours-privados", label: "Tours Privados" },
-  { href: "/tours-privados", label: "Excursiones Barcelona" },
+  { href: "/barcelona-airport-transfer", label: "Barcelona Airport Transfer" },
+  { href: "/barcelona-cruise-port-transfer", label: "Barcelona Cruise Port Transfer" },
+  { href: "/chauffeur-service-barcelona", label: "Chauffeur Service Barcelona" },
+  { href: "/corporate-transfers-barcelona", label: "Corporate Transfers Barcelona" },
 ];
 
 const tours = [
-  { href: "/tours-privados#barcelona", label: "Tour en Barcelona" },
-  { href: "/tours-privados#montserrat", label: "Tour a Montserrat" },
-  { href: "/tours-privados#costa-brava", label: "Tour Costa Brava" },
-  { href: "/tours-privados#girona", label: "Tour a Girona" },
+  { href: "/barcelona-to-andorra-private-transfer", label: "Barcelona to Andorra Transfer" },
+  { href: "/barcelona-to-sitges-private-transfer", label: "Barcelona to Sitges Transfer" },
+  { href: "/barcelona-to-costa-brava-transfer", label: "Barcelona to Costa Brava Transfer" },
+  { href: "/barcelona-to-montserrat-private-tour", label: "Montserrat Private Tour" },
 ];
 
 const legalLinks = [
-  { href: "/politica-de-privacidad", label: "Política de Privacidad" },
-  { href: "/terminos-y-condiciones", label: "Términos y Condiciones" },
-  { href: "/aviso-legal", label: "Aviso Legal" },
-  { href: "/cookies", label: "Cookies" },
+  { href: "/politica-de-privacidad", label: "Privacy Policy" },
+  { href: "/terminos-y-condiciones", label: "Terms and Conditions" },
+  { href: "/aviso-legal", label: "Legal Notice" },
+  { href: "/cookies", label: "Cookies Policy" },
 ];
 
 export default function MarketingFooter() {
@@ -50,8 +49,7 @@ export default function MarketingFooter() {
         <div>
           <MarketingLogo className="mb-5" variant="footer" />
           <p className="max-w-xs text-base leading-7 text-gray-600">
-            Traslados privados y tours personalizados de lujo en Barcelona y toda España. Tu comodidad,
-            nuestra pasión.
+            Private transfers and personalized luxury tours in Barcelona and all of Spain. Your comfort, our passion.
           </p>
           <div className="mt-8 flex gap-3">
             {[
@@ -74,7 +72,7 @@ export default function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Servicios</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Services</h2>
           <nav className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
             {services.map((item) => (
               <Link key={item.label} href={item.href} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
@@ -85,7 +83,7 @@ export default function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Tours destacados</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Featured Tours</h2>
           <nav className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
             {tours.map((item) => (
               <Link key={item.label} href={item.href} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
@@ -96,7 +94,7 @@ export default function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Contacto</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Contact</h2>
           <div className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
             <a href="tel:+34662024136" className="flex items-center gap-3 transition hover:text-gray-900 w-fit">
               <span translate="no" className="notranslate material-symbols-outlined text-[18px] text-gray-400" aria-hidden="true">phone</span>

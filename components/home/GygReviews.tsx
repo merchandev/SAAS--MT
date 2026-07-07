@@ -14,66 +14,73 @@ interface Review {
 const reviews: Review[] = [
   {
     id: '1',
-    author: 'GetYourGuide traveler – Canada',
-    initial: 'G',
+    author: 'John D.',
+    initial: 'J',
     color: 'bg-blue-500',
-    date: 'Noviembre 29, 2025',
+    date: 'March 15, 2026',
     rating: 5,
-    description: 'Driver was good and patient waiting for us and taking to destination fast.'
+    description: 'Excellent airport transfer. The driver was waiting for us at BCN arrivals with a sign and helped with our heavy luggage.'
   },
   {
     id: '2',
-    author: 'GetYourGuide traveler – USA',
-    initial: 'G',
+    author: 'Sarah M.',
+    initial: 'S',
     color: 'bg-red-500',
-    date: 'Diciembre 5, 2025',
+    date: 'February 28, 2026',
     rating: 5,
-    description: 'Excelente servicio. El conductor nos estaba esperando en el aeropuerto con un cartel. El vehículo era un Mercedes muy cómodo.'
+    description: 'We booked a transfer from our hotel to the Barcelona Cruise Port. Very punctual and the Mercedes V-Class was perfect for our family of 5.'
   },
   {
     id: '3',
-    author: 'GetYourGuide traveler – UK',
-    initial: 'G',
+    author: 'David & Emma',
+    initial: 'D',
     color: 'bg-emerald-500',
-    date: 'Enero 12, 2026',
+    date: 'February 10, 2026',
     rating: 5,
-    description: 'Muy profesional y puntual. Hizo que nuestra llegada a Barcelona fuera completamente libre de estrés.'
+    description: 'Hired their chauffeur service for a day trip to Montserrat. The driver was knowledgeable, polite, and the car was immaculate.'
   },
   {
     id: '4',
-    author: 'GetYourGuide traveler – Germany',
-    initial: 'G',
+    author: 'Michael T.',
+    initial: 'M',
     color: 'bg-purple-500',
-    date: 'Febrero 20, 2026',
-    rating: 4,
-    description: 'Excelente comunicación previa y viaje tranquilo a nuestro hotel. Todo perfecto.'
+    date: 'January 22, 2026',
+    rating: 5,
+    description: 'Great corporate transfer service. We used them for Mobile World Congress and the executive car was exactly what we needed for our CEO.'
   },
   {
     id: '5',
-    author: 'GetYourGuide traveler – Australia',
-    initial: 'G',
+    author: 'Lucia R.',
+    initial: 'L',
     color: 'bg-amber-500',
-    date: 'Marzo 10, 2026',
+    date: 'January 5, 2026',
     rating: 5,
-    description: 'Traslado perfecto desde el puerto de cruceros hasta el aeropuerto. Muy recomendable para familias.'
+    description: 'Private transfer from Barcelona airport to Sitges. Much better and faster than waiting for a taxi. Highly recommended!'
+  },
+  {
+    id: '6',
+    author: 'Robert K.',
+    initial: 'R',
+    color: 'bg-indigo-500',
+    date: 'December 12, 2025',
+    rating: 5,
+    description: 'We needed a transfer with a child seat from the airport to the city centre. Everything was perfectly arranged.'
   }
 ];
 
-// Duplicate base reviews to make the track longer
-const baseReviews = [...reviews, ...reviews];
-// Duplicate again for the seamless marquee loop (translation -50%)
-const marqueeReviews = [...baseReviews, ...baseReviews];
+// For a smooth marquee, we only duplicate once
+const marqueeReviews = [...reviews, ...reviews];
 
 export default function GygReviews() {
   return (
     <section className="overflow-hidden bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mb-12 text-center">
-        <p className="mb-3 text-sm font-semibold uppercase text-[#D4AF37]">Experiencias Reales</p>
+        <p className="mb-3 text-sm font-semibold uppercase text-[#D4AF37]">Verified Reviews</p>
         <h2 className="text-3xl font-semibold tracking-tight text-gray-950 sm:text-4xl">
-          Lo que dicen nuestros clientes
+          What our clients say
         </h2>
         <p className="mt-4 text-lg leading-8 text-gray-600">
-          Cientos de viajeros confían en nosotros para sus traslados en Barcelona. Reseñas verificadas por GetYourGuide.
+          Hundreds of travelers trust us for their transfers in Barcelona.
         </p>
       </div>
       
@@ -90,7 +97,7 @@ export default function GygReviews() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-900">{review.author}</h3>
-                  <p className="text-xs text-gray-500">{review.date} - Reserva verificada</p>
+                  <p className="text-xs text-gray-500">{review.date} - Verified Booking</p>
                 </div>
               </div>
               

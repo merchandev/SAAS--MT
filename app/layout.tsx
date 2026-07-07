@@ -16,8 +16,8 @@ const inter = Inter({
 
 const fallbackMetadata: Metadata = {
   metadataBase: new URL("https://transfersinbarcelona.com"),
-  title: "Traslados privados y chófer en Barcelona | Transfers in Barcelona",
-  description: "Reserva transfers de aeropuerto, traslados privados, tours y coches con chófer en Barcelona. Precio cerrado, conductor profesional y vehículos premium.",
+  title: "Private Transfers in Barcelona | Airport, Cruise Port & Chauffeur",
+  description: "Book private transfers in Barcelona with fixed price, professional chauffeur, airport pickup, cruise port transfers and secure online payment.",
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -55,7 +55,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="es"
+      lang="en"
       className={`${outfit.variable} ${inter.variable} h-full antialiased dark`}
     >
       <head>
