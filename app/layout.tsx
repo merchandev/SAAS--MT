@@ -80,7 +80,7 @@ export default function RootLayout({
             __html: `
               window.googleTranslateElementInit = function() {
                 new window.google.translate.TranslateElement(
-                  { pageLanguage: 'es', includedLanguages: 'es,en,fr,de,it,pt-PT,ru,sv,zh-CN', autoDisplay: false },
+                  { pageLanguage: 'es', includedLanguages: 'es,en,fr,de,it,pt,ru,sv,zh-CN', autoDisplay: false },
                   'google_translate_element'
                 );
               };
