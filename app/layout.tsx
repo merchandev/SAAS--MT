@@ -68,6 +68,8 @@ export default function RootLayout({
           .goog-te-gadget span { display: none !important; }
           #google_translate_element { display: none !important; }
         `}</style>
+        {/* Material Symbols Outlined */}
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-x-hidden">
         <DeveloperCredits />
