@@ -21,17 +21,7 @@ function getGoogleLangCookie(): string | null {
   return match ? match[1] : null;
 }
 
-function setGoogleTranslateLang(langCode: string) {
-  // Set the googtrans cookie that Google Translate reads
-  const expires = new Date();
-  expires.setFullYear(expires.getFullYear() + 1);
-  document.cookie = `googtrans=/es/${langCode}; expires=${expires.toUTCString()}; path=/`;
-  // Also set for the domain
-  const host = window.location.hostname;
-  document.cookie = `googtrans=/es/${langCode}; expires=${expires.toUTCString()}; path=/; domain=${host}`;
-  // Reload to apply translation
-  window.location.reload();
-}
+
 
 export default function LanguageSwitcher() {
   const [open, setOpen] = useState(false);
@@ -94,13 +84,37 @@ export default function LanguageSwitcher() {
               onClick={() => {
                 setCurrent(lang.code);
                 setOpen(false);
+
+                // Update Next.js route if it uses [locale]
+                const pathParts = window.location.pathname.split("/");
+                const currentFirstSegment = pathParts[1];
+                const isCurrentFirstSegmentLocale = LANGUAGES.some(
+                  (l) => l.code.toLowerCase() === currentFirstSegment?.toLowerCase()
+                );
+
+                if (isCurrentFirstSegmentLocale) {
+                  pathParts[1] = lang.code;
+                } else if (pathParts[1] !== "") {
+                  // If there was no locale but there is a path, we insert the locale
+                  pathParts.splice(1, 0, lang.code);
+                } else {
+                  // Root path
+                  pathParts[1] = lang.code;
+                }
+                const newPath = pathParts.join("/") + window.location.search + window.location.hash;
+
                 if (lang.code === "es") {
                   // Clear translation - reload without cookie
                   document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
                   document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
-                  window.location.reload();
+                  window.location.href = newPath;
                 } else {
-                  setGoogleTranslateLang(lang.code);
+                  // Set the googtrans cookie that Google Translate reads
+                  const expires = new Date();
+                  expires.setFullYear(expires.getFullYear() + 1);
+                  document.cookie = `googtrans=/es/${lang.code}; expires=${expires.toUTCString()}; path=/`;
+                  document.cookie = `googtrans=/es/${lang.code}; expires=${expires.toUTCString()}; path=/; domain=${window.location.hostname}`;
+                  window.location.href = newPath;
                 }
               }}
               className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
