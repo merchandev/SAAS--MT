@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { FileText, Plus, Edit, Globe } from "lucide-react";
+import { FileText, Plus, Edit, Globe, RefreshCw } from "lucide-react";
+import { seedStaticPagesAction } from "./actions";
 
 export default async function AdminPagesList() {
   const routePages = await prisma.routePage.findMany({
@@ -36,7 +37,7 @@ export default async function AdminPagesList() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Globe className="h-6 w-6 text-[#D4AF37]" />
@@ -46,12 +47,20 @@ export default async function AdminPagesList() {
             Gestiona el SEO de las páginas estáticas y las rutas de traslado.
           </p>
         </div>
-        <Link href="/admin/pages/new">
-          <Button className="bg-[#D4AF37] hover:bg-[#b5952f] text-white">
-            <Plus className="mr-2 h-4 w-4" />
-            Nueva Ruta
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <form action={seedStaticPagesAction}>
+            <Button type="submit" variant="outline" className="text-gray-600 hover:text-gray-900">
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Sincronizar Páginas Base
+            </Button>
+          </form>
+          <Link href="/admin/pages/new">
+            <Button className="bg-[#D4AF37] hover:bg-[#b5952f] text-white">
+              <Plus className="mr-2 h-4 w-4" />
+              Nueva Ruta
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
