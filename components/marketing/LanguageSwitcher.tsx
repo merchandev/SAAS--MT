@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Globe, ChevronDown, Check } from "lucide-react";
 
 const LANGUAGES = [
@@ -15,26 +16,22 @@ const LANGUAGES = [
   { code: "zh-CN", label: "中文",    flag: "🇨🇳" },
 ];
 
-function getGoogleLangCookie(): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(/googtrans=\/[a-z-]+\/([a-z-]+)/i);
-  return match ? match[1] : null;
-}
-
-
-
 export default function LanguageSwitcher() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<string>("es");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const cookie = getGoogleLangCookie();
-    if (cookie) {
-      const match = LANGUAGES.find((l) => l.code === cookie);
-      if (match) setCurrent(match.code);
+    // Sync the language button with the URL path segment
+    const segment = pathname?.split('/')[1] || '';
+    const match = LANGUAGES.find((l) => l.code.toLowerCase() === segment.toLowerCase());
+    if (match) {
+      setCurrent(match.code);
+    } else {
+      setCurrent("es");
     }
-  }, []);
+  }, [pathname]);
 
   // Close on click outside
   useEffect(() => {
