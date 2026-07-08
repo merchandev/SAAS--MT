@@ -515,18 +515,47 @@ export async function updateBookingStatusAction(id: string, newStatus: any) {
       });
     });
 
-    // Send email notification if status changed to CONFIRMADA
-    if (validatedStatus === "CONFIRMADA" && booking.bookingStatus !== "CONFIRMADA") {
+    // ── Notificaciones por email según cambio de estado ──────────────────
+    const prevStatus = booking.bookingStatus;
+    if (prevStatus !== validatedStatus) {
       try {
         const { emailsService } = await import("../notifications/emails.service");
-        await emailsService.sendBookingConfirmation(
-          booking.customer.email,
-          booking.publicCode,
-          booking.customer.fullName,
-          booking
-        );
+        const email = booking.customer.email;
+        const name = booking.customer.fullName;
+        const code = booking.publicCode;
+
+        switch (validatedStatus) {
+          case "CONFIRMADA":
+            await emailsService.sendBookingConfirmed(email, code, name, booking);
+            break;
+          case "CANCELADA":
+            await emailsService.sendBookingCancelled(email, code, name, booking);
+            break;
+          case "REEMBOLSADA":
+            await emailsService.sendBookingRefunded(email, code, name, booking);
+            break;
+          case "EN_CURSO": {
+            let driver: { name: string; phone?: string | null } | undefined;
+            if (booking.driverId) {
+              const driverRecord = await prisma.driver.findUnique({
+                where: { id: booking.driverId },
+                include: { user: true },
+              });
+              if (driverRecord) {
+                driver = { name: driverRecord.user.fullName, phone: driverRecord.user.phone };
+              }
+            }
+            await emailsService.sendTripStarted(email, code, name, booking, driver);
+            break;
+          }
+          case "COMPLETADA":
+            await emailsService.sendTripCompleted(email, code, name, booking);
+            break;
+          default:
+            break;
+        }
       } catch (emailError) {
-        console.error("Error sending booking confirmation email:", emailError);
+        console.error("[EMAIL_ERROR] Error enviando email de estado:", emailError);
       }
     }
 

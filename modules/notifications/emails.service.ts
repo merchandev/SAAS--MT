@@ -1,130 +1,460 @@
-import { Resend } from 'resend';
-import { render } from '@react-email/render';
-import { BookingConfirmedEmail } from '@/components/emails/BookingConfirmedEmail';
-import { DriverAssignedEmail } from '@/components/emails/DriverAssignedEmail';
-import { AccountCreatedEmail } from '@/components/emails/AccountCreatedEmail';
-import { createReceiptAccessToken } from '@/modules/bookings/receipt-access';
-import React from 'react';
+/**
+ * emails.service.ts
+ * Servicio central de notificaciones por email.
+ * Usa Nodemailer + SMTP de Hostinger (lib/mailer.ts).
+ */
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-const SENDER_EMAIL = 'no-reply@transfersinbarcelona.com'; // Sustituir por dominio verificado en producción
+import { render } from "@react-email/render";
+import React from "react";
+import { sendEmail } from "@/lib/mailer";
+import { createReceiptAccessToken } from "@/modules/bookings/receipt-access";
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://transfersinbarcelona.com";
+const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "info@transfersinbarcelona.com";
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function formatDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return d.toLocaleDateString("es-ES", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function formatPrice(price: number | string): string {
+  return `€${Number(price).toFixed(2)}`;
+}
+
+async function buildReviewUrl(bookingId: string, publicCode: string): Promise<string> {
+  const { SignJWT } = await import("jose");
+  const secret = new TextEncoder().encode(
+    process.env.JWT_SECRET || "metransfers_jwt_dev_secret"
+  );
+  const token = await new SignJWT({ bookingId, publicCode })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("7d")
+    .sign(secret);
+  return `${APP_URL}/valorar/${encodeURIComponent(token)}`;
+}
+
+// ─── Servicio ─────────────────────────────────────────────────────────────────
 
 export const emailsService = {
-  async sendBookingConfirmation(email: string, publicCode: string, customerName: string, bookingDetails: any) {
-    if (!resend) {
-      console.log(`[EMAILS_MOCK] Simulando envío de confirmación a: ${email} (código ${publicCode})`);
-      return true;
-    }
-
+  /**
+   * BOOKING_PENDING_CONFIRMATION
+   * Se dispara cuando el pago se completa (status PAID / PENDING_PAYMENT confirmado).
+   * Destinatarios: cliente + admin.
+   */
+  async sendBookingPendingConfirmation(
+    email: string,
+    publicCode: string,
+    customerName: string,
+    booking: any
+  ): Promise<boolean> {
     try {
-      let receiptUrl: string | undefined;
-      if (bookingDetails?.id) {
-        const receiptToken = await createReceiptAccessToken({
-          id: bookingDetails.id,
+      const { BookingPendingEmail } = await import(
+        "@/components/emails/BookingPendingEmail"
+      );
+
+      const html = await render(
+        React.createElement(BookingPendingEmail, {
+          customerName,
           publicCode,
-        });
-        const url = new URL(`/booking/${publicCode}/receipt`, process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
-        url.searchParams.set("token", receiptToken);
-        receiptUrl = url.toString();
+          originAddress: booking.originAddress,
+          destinationAddress: booking.destinationAddress,
+          serviceDate: formatDate(booking.serviceDate),
+          serviceTime: booking.serviceTime,
+          passengers: booking.passengers,
+          totalPrice: formatPrice(booking.finalPrice),
+        })
+      );
+
+      const clientOk = await sendEmail({
+        to: email,
+        subject: `Reserva recibida — Pendiente de confirmación #${publicCode}`,
+        html,
+      });
+
+      // Notificación al admin
+      await emailsService.sendAdminNewBookingAlert(publicCode, customerName, booking);
+
+      return clientOk;
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendBookingPendingConfirmation:", err);
+      return false;
+    }
+  },
+
+  /**
+   * BOOKING_CONFIRMED
+   * Se dispara cuando el admin cambia el estado a CONFIRMADA.
+   */
+  async sendBookingConfirmed(
+    email: string,
+    publicCode: string,
+    customerName: string,
+    booking: any
+  ): Promise<boolean> {
+    try {
+      const { BookingConfirmedEmail } = await import(
+        "@/components/emails/BookingConfirmedEmail"
+      );
+
+      let receiptUrl: string | undefined;
+      if (booking?.id) {
+        const token = await createReceiptAccessToken({ id: booking.id, publicCode });
+        receiptUrl = `${APP_URL}/booking/${publicCode}/receipt?token=${token}`;
       }
 
       const html = await render(
         React.createElement(BookingConfirmedEmail, {
           customerName,
           publicCode,
-          originAddress: bookingDetails.originAddress,
-          destinationAddress: bookingDetails.destinationAddress,
-          serviceDate: bookingDetails.serviceDate.toISOString().split('T')[0],
-          serviceTime: bookingDetails.serviceTime,
-          passengers: bookingDetails.passengers,
+          originAddress: booking.originAddress,
+          destinationAddress: booking.destinationAddress,
+          serviceDate: formatDate(booking.serviceDate),
+          serviceTime: booking.serviceTime,
+          passengers: booking.passengers,
+          totalPrice: formatPrice(booking.finalPrice),
           receiptUrl,
         })
       );
 
-      await resend.emails.send({
-        from: `Transfers in Barcelona <${SENDER_EMAIL}>`,
+      return sendEmail({
         to: email,
-        subject: `Confirmación de Reserva - ${publicCode}`,
+        subject: `✅ Reserva Confirmada #${publicCode} — Transfers in Barcelona`,
         html,
       });
-
-      console.log(`[EMAIL_SENT] Confirmación enviada a ${email}`);
-      return true;
-    } catch (error) {
-      console.error("[EMAIL_ERROR] Error al enviar confirmación:", error);
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendBookingConfirmed:", err);
       return false;
     }
   },
 
-  async sendDriverAssignedNotification(email: string, publicCode: string, customerName: string, driverDetails: any, bookingDetails: any) {
-    if (!resend) {
-      console.log(`[EMAILS_MOCK] Simulando envío de chofer asignado a: ${email} (chofer: ${driverDetails.name})`);
-      return true;
-    }
-
+  /**
+   * BOOKING_CANCELLED
+   * Se dispara cuando el admin cambia el estado a CANCELADA.
+   */
+  async sendBookingCancelled(
+    email: string,
+    publicCode: string,
+    customerName: string,
+    booking: any,
+    cancellationReason?: string
+  ): Promise<boolean> {
     try {
+      const { BookingCancelledEmail } = await import(
+        "@/components/emails/BookingCancelledEmail"
+      );
+
       const html = await render(
-        React.createElement(DriverAssignedEmail, {
+        React.createElement(BookingCancelledEmail, {
           customerName,
           publicCode,
-          driverName: driverDetails.name,
-          driverPhone: driverDetails.phone,
-          originAddress: bookingDetails.originAddress,
-          serviceDate: bookingDetails.serviceDate.toISOString().split('T')[0],
-          serviceTime: bookingDetails.serviceTime,
+          serviceDate: formatDate(booking.serviceDate),
+          serviceTime: booking.serviceTime,
+          cancellationReason,
         })
       );
 
-      await resend.emails.send({
-        from: `Transfers in Barcelona <${SENDER_EMAIL}>`,
+      return sendEmail({
         to: email,
-        subject: `Conductor Asignado - ${publicCode}`,
+        subject: `Reserva Cancelada #${publicCode}`,
         html,
       });
-
-      console.log(`[EMAIL_SENT] Notificación de chofer enviada a ${email}`);
-      return true;
-    } catch (error) {
-      console.error("[EMAIL_ERROR] Error al enviar notificación de chofer:", error);
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendBookingCancelled:", err);
       return false;
     }
   },
 
-  async sendAccountCreatedEmail(email: string, fullName: string, temporaryPassword: string) {
-    if (!resend) {
-      console.log(`[EMAILS_MOCK] Simulando envío de creación de cuenta a: ${email} (pass: ${temporaryPassword})`);
-      return true;
-    }
-
+  /**
+   * BOOKING_REFUNDED
+   * Se dispara cuando el admin cambia el estado a REEMBOLSADA.
+   */
+  async sendBookingRefunded(
+    email: string,
+    publicCode: string,
+    customerName: string,
+    booking: any
+  ): Promise<boolean> {
     try {
-      const loginUrl = new URL(`/login`, process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").toString();
-      
+      const { BookingRefundedEmail } = await import(
+        "@/components/emails/BookingRefundedEmail"
+      );
+
+      const html = await render(
+        React.createElement(BookingRefundedEmail, {
+          customerName,
+          publicCode,
+          totalPrice: formatPrice(booking.finalPrice),
+        })
+      );
+
+      return sendEmail({
+        to: email,
+        subject: `Reembolso procesado para reserva #${publicCode}`,
+        html,
+      });
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendBookingRefunded:", err);
+      return false;
+    }
+  },
+
+  /**
+   * TRIP_STARTED
+   * Se dispara cuando el estado cambia a EN_CURSO.
+   */
+  async sendTripStarted(
+    email: string,
+    publicCode: string,
+    customerName: string,
+    booking: any,
+    driver?: { name: string; phone?: string | null }
+  ): Promise<boolean> {
+    try {
+      const { TripStartedEmail } = await import(
+        "@/components/emails/TripStartedEmail"
+      );
+
+      const html = await render(
+        React.createElement(TripStartedEmail, {
+          customerName,
+          publicCode,
+          driverName: driver?.name || "Tu conductor",
+          driverPhone: driver?.phone || undefined,
+          originAddress: booking.originAddress,
+          serviceTime: booking.serviceTime,
+        })
+      );
+
+      return sendEmail({
+        to: email,
+        subject: `🚗 Tu traslado ha comenzado — #${publicCode}`,
+        html,
+      });
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendTripStarted:", err);
+      return false;
+    }
+  },
+
+  /**
+   * TRIP_COMPLETED + REVIEW_REQUESTED
+   * Se dispara cuando el estado cambia a COMPLETADA.
+   * Envía primero el email de viaje completado y luego el de valoración.
+   */
+  async sendTripCompleted(
+    email: string,
+    publicCode: string,
+    customerName: string,
+    booking: any
+  ): Promise<boolean> {
+    try {
+      const { TripCompletedEmail } = await import(
+        "@/components/emails/TripCompletedEmail"
+      );
+
+      const html = await render(
+        React.createElement(TripCompletedEmail, {
+          customerName,
+          publicCode,
+          originAddress: booking.originAddress,
+          destinationAddress: booking.destinationAddress,
+          serviceDate: formatDate(booking.serviceDate),
+        })
+      );
+
+      const ok = await sendEmail({
+        to: email,
+        subject: `✅ Viaje completado — Gracias, ${customerName}`,
+        html,
+      });
+
+      // Enviar solicitud de valoración con un pequeño delay (evitar spam doble)
+      setTimeout(async () => {
+        await emailsService.sendReviewRequested(email, publicCode, customerName, booking);
+      }, 3 * 60 * 1000); // 3 minutos
+
+      return ok;
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendTripCompleted:", err);
+      return false;
+    }
+  },
+
+  /**
+   * REVIEW_REQUESTED
+   * Solicita al cliente que valore el servicio.
+   */
+  async sendReviewRequested(
+    email: string,
+    publicCode: string,
+    customerName: string,
+    booking: any
+  ): Promise<boolean> {
+    try {
+      const { ReviewRequestedEmail } = await import(
+        "@/components/emails/ReviewRequestedEmail"
+      );
+
+      const reviewUrl = await buildReviewUrl(booking.id, publicCode);
+
+      const html = await render(
+        React.createElement(ReviewRequestedEmail, {
+          customerName,
+          publicCode,
+          reviewUrl,
+          serviceDate: formatDate(booking.serviceDate),
+        })
+      );
+
+      return sendEmail({
+        to: email,
+        subject: `⭐ ¿Cómo fue tu traslado? Valóralo en 30 segundos`,
+        html,
+      });
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendReviewRequested:", err);
+      return false;
+    }
+  },
+
+  /**
+   * ADMIN — Nueva reserva
+   * Notificación interna cuando entra un pago nuevo.
+   */
+  async sendAdminNewBookingAlert(
+    publicCode: string,
+    customerName: string,
+    booking: any
+  ): Promise<boolean> {
+    try {
+      const { AdminNewBookingEmail } = await import(
+        "@/components/emails/AdminNewBookingEmail"
+      );
+
+      const adminUrl = `${APP_URL}/admin/bookings/${booking.id}`;
+
+      const html = await render(
+        React.createElement(AdminNewBookingEmail, {
+          publicCode,
+          customerName,
+          customerEmail: booking.customer?.email || booking.customerEmail || "—",
+          customerPhone: booking.customer?.phone || booking.customerPhone || "—",
+          originAddress: booking.originAddress,
+          destinationAddress: booking.destinationAddress,
+          serviceDate: formatDate(booking.serviceDate),
+          serviceTime: booking.serviceTime,
+          passengers: booking.passengers,
+          vehicleName: booking.vehicle?.name || "—",
+          totalPrice: formatPrice(booking.finalPrice),
+          adminUrl,
+        })
+      );
+
+      return sendEmail({
+        to: ADMIN_EMAIL,
+        subject: `🔔 Nueva reserva #${publicCode} — ${customerName} (${formatDate(booking.serviceDate)})`,
+        html,
+      });
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendAdminNewBookingAlert:", err);
+      return false;
+    }
+  },
+
+  /**
+   * Cuenta creada (mantener compatibilidad con código existente)
+   */
+  async sendAccountCreatedEmail(
+    email: string,
+    fullName: string,
+    temporaryPassword: string
+  ): Promise<boolean> {
+    try {
+      const { AccountCreatedEmail } = await import(
+        "@/components/emails/AccountCreatedEmail"
+      );
+
       const html = await render(
         React.createElement(AccountCreatedEmail, {
           customerName: fullName,
           email,
           temporaryPassword,
-          loginUrl,
+          loginUrl: `${APP_URL}/login`,
         })
       );
 
-      await resend.emails.send({
-        from: `Transfers in Barcelona <${SENDER_EMAIL}>`,
+      return sendEmail({
         to: email,
-        subject: `Bienvenido a Transfers in Barcelona - Tu cuenta ha sido creada`,
+        subject: `Bienvenido/a a Transfers in Barcelona — Tu cuenta ha sido creada`,
         html,
       });
-
-      console.log(`[EMAIL_SENT] Notificación de cuenta creada enviada a ${email}`);
-      return true;
-    } catch (error) {
-      console.error("[EMAIL_ERROR] Error al enviar notificación de creación de cuenta:", error);
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendAccountCreatedEmail:", err);
       return false;
     }
   },
 
-  async sendAdminNotification(publicCode: string) {
-    console.log(`[EMAILS_MOCK] Alerta a ADMIN: Nueva reserva confirmada con código ${publicCode}.`);
+  /**
+   * Conductor asignado (mantener compatibilidad)
+   */
+  async sendDriverAssignedNotification(
+    email: string,
+    publicCode: string,
+    customerName: string,
+    driverDetails: { name: string; phone?: string | null },
+    bookingDetails: any
+  ): Promise<boolean> {
+    try {
+      const { DriverAssignedEmail } = await import(
+        "@/components/emails/DriverAssignedEmail"
+      );
+
+      const html = await render(
+        React.createElement(DriverAssignedEmail, {
+          customerName,
+          publicCode,
+          driverName: driverDetails.name,
+          driverPhone: driverDetails.phone || undefined,
+          originAddress: bookingDetails.originAddress,
+          serviceDate:
+            typeof bookingDetails.serviceDate === "string"
+              ? bookingDetails.serviceDate
+              : bookingDetails.serviceDate.toISOString().split("T")[0],
+          serviceTime: bookingDetails.serviceTime,
+        })
+      );
+
+      return sendEmail({
+        to: email,
+        subject: `Tu conductor ha sido asignado — Reserva #${publicCode}`,
+        html,
+      });
+    } catch (err) {
+      console.error("[EMAIL_ERROR] sendDriverAssignedNotification:", err);
+      return false;
+    }
+  },
+
+  /** Stub para compatibilidad */
+  async sendAdminNotification(publicCode: string): Promise<boolean> {
+    console.log(`[EMAILS] Admin notification (stub) para: ${publicCode}`);
     return true;
-  }
+  },
+
+  /** Antiguo nombre — redirige al nuevo */
+  async sendBookingConfirmation(
+    email: string,
+    publicCode: string,
+    customerName: string,
+    booking: any
+  ): Promise<boolean> {
+    return emailsService.sendBookingConfirmed(email, publicCode, customerName, booking);
+  },
 };

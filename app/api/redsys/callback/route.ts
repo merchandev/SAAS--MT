@@ -140,15 +140,18 @@ export async function POST(req: NextRequest) {
 
     // Handle emails asynchronously without blocking the callback response
     if (isSuccess && payment.booking.customer) {
-      // Fire and forget or background worker. Here we just run it without awaiting the outer function to fail.
+      // El pago se ha procesado → notificar al cliente que está PENDIENTE DE CONFIRMACIÓN
+      // y alertar al admin para que confirme manualmente.
       Promise.allSettled([
-        emailsService.sendBookingConfirmation(
-          payment.booking.customer.email, 
-          payment.booking.publicCode, 
+        emailsService.sendBookingPendingConfirmation(
+          payment.booking.customer.email,
+          payment.booking.publicCode,
           payment.booking.customer.fullName,
-          payment.booking
+          {
+            ...payment.booking,
+            customer: payment.booking.customer,
+          }
         ),
-        emailsService.sendAdminNotification(payment.booking.publicCode)
       ]).catch(err => console.error("[Redsys] Email dispatch error:", err));
     }
 
