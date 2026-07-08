@@ -8,6 +8,7 @@ import { render } from "@react-email/render";
 import React from "react";
 import { sendEmail } from "@/lib/mailer";
 import { createReceiptAccessToken } from "@/modules/bookings/receipt-access";
+import { getDynamicEmailHtml } from "@/lib/email-templating";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://transfersinbarcelona.com";
 const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "info@transfersinbarcelona.com";
@@ -55,12 +56,9 @@ export const emailsService = {
     booking: any
   ): Promise<boolean> {
     try {
-      const { BookingPendingEmail } = await import(
-        "@/components/emails/BookingPendingEmail"
-      );
-
-      const html = await render(
-        React.createElement(BookingPendingEmail, {
+      const { html, subject } = await getDynamicEmailHtml(
+        "BOOKING_PENDING",
+        {
           customerName,
           publicCode,
           originAddress: booking.originAddress,
@@ -69,12 +67,29 @@ export const emailsService = {
           serviceTime: booking.serviceTime,
           passengers: booking.passengers,
           totalPrice: formatPrice(booking.finalPrice),
-        })
+        },
+        async () => {
+          const { BookingPendingEmail } = await import(
+            "@/components/emails/BookingPendingEmail"
+          );
+          return render(
+            React.createElement(BookingPendingEmail, {
+              customerName,
+              publicCode,
+              originAddress: booking.originAddress,
+              destinationAddress: booking.destinationAddress,
+              serviceDate: formatDate(booking.serviceDate),
+              serviceTime: booking.serviceTime,
+              passengers: booking.passengers,
+              totalPrice: formatPrice(booking.finalPrice),
+            })
+          );
+        }
       );
 
       const clientOk = await sendEmail({
         to: email,
-        subject: `Reserva recibida — Pendiente de confirmación #${publicCode}`,
+        subject: subject || `Reserva recibida — Pendiente de confirmación #${publicCode}`,
         html,
         eventType: "BOOKING_PENDING",
         bookingId: booking?.id,
@@ -101,18 +116,15 @@ export const emailsService = {
     booking: any
   ): Promise<boolean> {
     try {
-      const { BookingConfirmedEmail } = await import(
-        "@/components/emails/BookingConfirmedEmail"
-      );
-
       let receiptUrl: string | undefined;
       if (booking?.id) {
         const token = await createReceiptAccessToken({ id: booking.id, publicCode });
         receiptUrl = `${APP_URL}/booking/${publicCode}/receipt?token=${token}`;
       }
 
-      const html = await render(
-        React.createElement(BookingConfirmedEmail, {
+      const { html, subject } = await getDynamicEmailHtml(
+        "BOOKING_CONFIRMED",
+        {
           customerName,
           publicCode,
           originAddress: booking.originAddress,
@@ -122,12 +134,30 @@ export const emailsService = {
           passengers: booking.passengers,
           totalPrice: formatPrice(booking.finalPrice),
           receiptUrl,
-        })
+        },
+        async () => {
+          const { BookingConfirmedEmail } = await import(
+            "@/components/emails/BookingConfirmedEmail"
+          );
+          return render(
+            React.createElement(BookingConfirmedEmail, {
+              customerName,
+              publicCode,
+              originAddress: booking.originAddress,
+              destinationAddress: booking.destinationAddress,
+              serviceDate: formatDate(booking.serviceDate),
+              serviceTime: booking.serviceTime,
+              passengers: booking.passengers,
+              totalPrice: formatPrice(booking.finalPrice),
+              receiptUrl,
+            })
+          );
+        }
       );
 
       return sendEmail({
         to: email,
-        subject: `✅ Reserva Confirmada #${publicCode} — Transfers in Barcelona`,
+        subject: subject || `✅ Reserva Confirmada #${publicCode} — Transfers in Barcelona`,
         html,
         eventType: "BOOKING_CONFIRMED",
         bookingId: booking?.id,
