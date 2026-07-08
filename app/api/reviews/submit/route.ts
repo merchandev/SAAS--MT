@@ -15,9 +15,10 @@ const schema = z.object({
 
 async function verifyToken(token: string): Promise<{ bookingId: string } | null> {
   try {
-    const secret = new TextEncoder().encode(
-      process.env.JWT_SECRET || "metransfers_jwt_dev_secret"
-    );
+    if (!process.env.JWT_SECRET) {
+      return null;
+    }
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(decodeURIComponent(token), secret);
     return payload.bookingId ? { bookingId: payload.bookingId as string } : null;
   } catch {

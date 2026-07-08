@@ -267,7 +267,8 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
 
 export async function createPublicBookingAction(data: import("./bookings.schemas").PublicBookingInput, hotelToken?: string) {
   const requestMeta = getRequestMeta(await headers());
-  if (!(await publicBookingRateLimiter.check(buildRateLimitKey("public-booking-ip", requestMeta)))) {
+  const rlKey = buildRateLimitKey("public-booking-ip", requestMeta);
+  if (!(await publicBookingRateLimiter.check(rlKey))) {
     return { error: "Demasiadas peticiones. Inténtelo más tarde." };
   }
 

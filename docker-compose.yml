@@ -12,8 +12,8 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
-      DATABASE_URL: postgresql://${POSTGRES_USER:-metransfers}:${POSTGRES_PASSWORD:-change_me}@postgres:5432/${POSTGRES_DB:-metransfers_saas}?schema=public
-      JWT_SECRET: ${JWT_SECRET:-change_me_jwt_secret}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-metransfers}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-metransfers_saas}?schema=public
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
       AUTH_COOKIE_SECURE: ${AUTH_COOKIE_SECURE:-}
       RECEIPT_TOKEN_SECRET: ${RECEIPT_TOKEN_SECRET:-}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://72.61.77.167:3100}
@@ -25,9 +25,9 @@ services:
       REDSYS_URL: ${REDSYS_URL:-https://sis.redsys.es/sis/realizarPago}
       REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-change_me_redsys_merchant_code}
       REDSYS_TERMINAL: ${REDSYS_TERMINAL:-1}
-      REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:-change_me_redsys_secret_key}
+      REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:?REDSYS_SECRET_KEY is required}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@transfersinbarcelona.com}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin_secure_pwd_123}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}
     ports:
       - "0.0.0.0:${APP_PORT:-3100}:3000"
     volumes:
@@ -51,7 +51,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-metransfers}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       POSTGRES_DB: ${POSTGRES_DB:-metransfers_saas}
     volumes:
       - postgres_data:/var/lib/postgresql/data
