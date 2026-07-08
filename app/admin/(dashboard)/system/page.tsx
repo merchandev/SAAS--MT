@@ -18,7 +18,12 @@ export default async function SystemPage() {
 
       <div className="space-y-6">
         <h4 className="text-xl font-semibold border-b pb-2">Mantenimiento</h4>
-        <SystemCacheButton />
+        <div className="flex items-center gap-4">
+          <SystemCacheButton />
+          <a href="/admin/emails" className="text-xs text-gray-400 hover:text-gray-600 underline underline-offset-2">
+            Ver registro interno de emails
+          </a>
+        </div>
       </div>
 
       <div className="space-y-6">

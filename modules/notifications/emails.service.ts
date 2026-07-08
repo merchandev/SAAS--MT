@@ -76,6 +76,8 @@ export const emailsService = {
         to: email,
         subject: `Reserva recibida — Pendiente de confirmación #${publicCode}`,
         html,
+        eventType: "BOOKING_PENDING",
+        bookingId: booking?.id,
       });
 
       // Notificación al admin
@@ -127,6 +129,8 @@ export const emailsService = {
         to: email,
         subject: `✅ Reserva Confirmada #${publicCode} — Transfers in Barcelona`,
         html,
+        eventType: "BOOKING_CONFIRMED",
+        bookingId: booking?.id,
       });
     } catch (err) {
       console.error("[EMAIL_ERROR] sendBookingConfirmed:", err);
@@ -164,6 +168,8 @@ export const emailsService = {
         to: email,
         subject: `Reserva Cancelada #${publicCode}`,
         html,
+        eventType: "BOOKING_CANCELLED",
+        bookingId: booking?.id,
       });
     } catch (err) {
       console.error("[EMAIL_ERROR] sendBookingCancelled:", err);
@@ -198,6 +204,8 @@ export const emailsService = {
         to: email,
         subject: `Reembolso procesado para reserva #${publicCode}`,
         html,
+        eventType: "BOOKING_REFUNDED",
+        bookingId: booking?.id,
       });
     } catch (err) {
       console.error("[EMAIL_ERROR] sendBookingRefunded:", err);
@@ -236,6 +244,8 @@ export const emailsService = {
         to: email,
         subject: `🚗 Tu traslado ha comenzado — #${publicCode}`,
         html,
+        eventType: "TRIP_STARTED",
+        bookingId: booking?.id,
       });
     } catch (err) {
       console.error("[EMAIL_ERROR] sendTripStarted:", err);
@@ -273,6 +283,8 @@ export const emailsService = {
         to: email,
         subject: `✅ Viaje completado — Gracias, ${customerName}`,
         html,
+        eventType: "TRIP_COMPLETED",
+        bookingId: booking?.id,
       });
 
       // Enviar solicitud de valoración con un pequeño delay (evitar spam doble)
@@ -317,6 +329,8 @@ export const emailsService = {
         to: email,
         subject: `⭐ ¿Cómo fue tu traslado? Valóralo en 30 segundos`,
         html,
+        eventType: "REVIEW_REQUESTED",
+        bookingId: booking?.id,
       });
     } catch (err) {
       console.error("[EMAIL_ERROR] sendReviewRequested:", err);
@@ -361,6 +375,8 @@ export const emailsService = {
         to: ADMIN_EMAIL,
         subject: `🔔 Nueva reserva #${publicCode} — ${customerName} (${formatDate(booking.serviceDate)})`,
         html,
+        eventType: "ADMIN_NEW_BOOKING",
+        bookingId: booking?.id,
       });
     } catch (err) {
       console.error("[EMAIL_ERROR] sendAdminNewBookingAlert:", err);

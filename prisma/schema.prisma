@@ -453,11 +453,18 @@ model NotificationTemplate {
 model NotificationLog {
   id          String   @id @default(uuid())
   bookingId   String?
-  recipient   String // Email o Teléfono
-  type        String // EMAIL, WHATSAPP
-  status      String // SENT, FAILED
+  recipient   String   // Email o Teléfono
+  type        String   // EMAIL, WHATSAPP
+  eventType   String?  // BOOKING_PENDING, BOOKING_CONFIRMED, BOOKING_CANCELLED, etc.
+  subject     String?  // Asunto del email
+  status      String   // SENT, FAILED
   errorReason String?  @db.Text
   sentAt      DateTime @default(now())
+
+  @@index([sentAt])
+  @@index([status])
+  @@index([eventType])
+  @@index([bookingId])
 }
 
 model RateLimitBucket {
