@@ -205,3 +205,4 @@ export const publicBookingRateLimiter = new RateLimiter(5, 15 * 60 * 1000); // 5
 export const mapsRateLimiter = new RateLimiter(30, 15 * 60 * 1000); // 30 per 15 min
 export const paymentRateLimiter = new RateLimiter(10, 15 * 60 * 1000); // 10 per 15 min
 export const aiImageRateLimiter = new RateLimiter(10, 60 * 60 * 1000); // 10 per hour
+export const contactRateLimiter = new RateLimiter(3, 15 * 60 * 1000); // 3 per 15 min
