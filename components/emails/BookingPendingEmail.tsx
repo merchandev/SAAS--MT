@@ -32,7 +32,13 @@ export const BookingPendingEmail = ({
       <Container style={container}>
         {/* Header */}
         <Section style={header}>
-          <Text style={brandName}>TRANSFERS IN BARCELONA</Text>
+          <Img
+            src="https://transfersinbarcelona.com/images/MeTransfers-exp.png"
+            width="176"
+            height="41"
+            alt="Transfers in Barcelona"
+            style={logo}
+          />
           <Text style={headerTagline}>Traslados Privados de Lujo</Text>
         </Section>
 
@@ -104,7 +110,7 @@ export const BookingPendingEmail = ({
 const main = { backgroundColor: "#f4f4f5", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" };
 const container = { maxWidth: "600px", margin: "0 auto", backgroundColor: "#ffffff", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" };
 const header = { background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)", padding: "32px 40px", textAlign: "center" as const };
-const brandName = { color: "#D4AF37", fontSize: "22px", fontWeight: "800", letterSpacing: "4px", margin: "0", textTransform: "uppercase" as const };
+const logo = { margin: "0 auto", display: "block" as const };
 const headerTagline = { color: "#888", fontSize: "12px", letterSpacing: "2px", margin: "4px 0 0", textTransform: "uppercase" as const };
 const badgeSection = { textAlign: "center" as const, backgroundColor: "#fffbeb", padding: "12px 0" };
 const badge = { display: "inline-block", color: "#92400e", fontSize: "12px", fontWeight: "700", letterSpacing: "1px", margin: "0" };

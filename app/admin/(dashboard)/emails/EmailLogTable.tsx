@@ -193,9 +193,9 @@ export default function EmailLogTable({ logs }: { logs: EmailLog[] }) {
                     {/* Status */}
                     <td className="px-4 py-3">
                       {log.status === "SENT" ? (
-                        <CheckCircle2 className="h-4 w-4 text-green-500" title="Enviado" />
+                        <CheckCircle2 className="h-4 w-4 text-green-500" />
                       ) : (
-                        <XCircle className="h-4 w-4 text-red-500" title={log.errorReason || "Fallido"} />
+                        <XCircle className="h-4 w-4 text-red-500" />
                       )}
                     </td>
 

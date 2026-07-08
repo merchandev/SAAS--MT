@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
   Body, Container, Head, Heading, Html, Preview,
-  Section, Text, Hr, Link, Row, Column,
+  Section, Text, Hr, Link, Img, Row, Column,
 } from "@react-email/components";
 
 interface AdminNewBookingEmailProps {
@@ -39,7 +39,13 @@ export const AdminNewBookingEmail = ({
     <Body style={main}>
       <Container style={container}>
         <Section style={header}>
-          <Text style={brandName}>TRANSFERS IN BARCELONA</Text>
+          <Img
+            src="https://transfersinbarcelona.com/images/MeTransfers-exp.png"
+            width="176"
+            height="41"
+            alt="Transfers in Barcelona"
+            style={logo}
+          />
           <Text style={headerTagline}>Panel de Administración</Text>
         </Section>
 
@@ -129,7 +135,7 @@ export const AdminNewBookingEmail = ({
 const main = { backgroundColor: "#f4f4f5", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" };
 const container = { maxWidth: "600px", margin: "0 auto", backgroundColor: "#ffffff", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" };
 const header = { background: "linear-gradient(135deg, #1e3a5f 0%, #0f2340 100%)", padding: "32px 40px", textAlign: "center" as const };
-const brandName = { color: "#D4AF37", fontSize: "22px", fontWeight: "800", letterSpacing: "4px", margin: "0", textTransform: "uppercase" as const };
+const logo = { margin: "0 auto", display: "block" as const };
 const headerTagline = { color: "#93b4d4", fontSize: "12px", letterSpacing: "2px", margin: "4px 0 0", textTransform: "uppercase" as const };
 const badgeSection = { textAlign: "center" as const, backgroundColor: "#eff6ff", padding: "12px 0" };
 const badge = { color: "#1e3a8a", fontSize: "12px", fontWeight: "700", letterSpacing: "1px", margin: "0" };
