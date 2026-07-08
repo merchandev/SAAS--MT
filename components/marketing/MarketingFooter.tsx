@@ -23,24 +23,24 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 const services = [
-  { href: "/rutas/airport-transfer-barcelona", label: "Traslados Aeropuerto de Barcelona" },
-  { href: "/rutas/cruise-port-transfer-barcelona", label: "Traslados Puerto de Cruceros" },
-  { href: "/rutas/chauffeur-service-barcelona", label: "Coches con Chófer en Barcelona" },
-  { href: "/rutas/corporate-transfers-barcelona", label: "Traslados Corporativos y Eventos" },
+  { href: "/es/rutas/airport-transfer-barcelona", label: "Traslados Aeropuerto de Barcelona" },
+  { href: "/es/rutas/cruise-port-transfer-barcelona", label: "Traslados Puerto de Cruceros" },
+  { href: "/es/rutas/chauffeur-service-barcelona", label: "Coches con Chófer en Barcelona" },
+  { href: "/es/rutas/corporate-transfers-barcelona", label: "Traslados Corporativos y Eventos" },
 ];
 
 const tours = [
-  { href: "/rutas/barcelona-to-andorra-transfer", label: "Traslado de Barcelona a Andorra" },
-  { href: "/rutas/barcelona-to-sitges-transfer", label: "Traslado de Barcelona a Sitges" },
-  { href: "/rutas/barcelona-to-costa-brava-transfer", label: "Traslado a la Costa Brava" },
-  { href: "/rutas/montserrat-private-tour", label: "Tour Privado a Montserrat" },
+  { href: "/es/rutas/barcelona-to-andorra-transfer", label: "Traslado de Barcelona a Andorra" },
+  { href: "/es/rutas/barcelona-to-sitges-transfer", label: "Traslado de Barcelona a Sitges" },
+  { href: "/es/rutas/barcelona-to-costa-brava-transfer", label: "Traslado a la Costa Brava" },
+  { href: "/es/rutas/montserrat-private-tour", label: "Tour Privado a Montserrat" },
 ];
 
 const legalLinks = [
-  { href: "/politica-de-privacidad", label: "Política de Privacidad" },
-  { href: "/terminos-y-condiciones", label: "Términos y Condiciones" },
-  { href: "/aviso-legal", label: "Aviso Legal" },
-  { href: "/cookies", label: "Política de Cookies" },
+  { href: "/es/politica-de-privacidad", label: "Política de Privacidad" },
+  { href: "/es/terminos-y-condiciones", label: "Términos y Condiciones" },
+  { href: "/es/aviso-legal", label: "Aviso Legal" },
+  { href: "/es/cookies", label: "Política de Cookies" },
 ];
 
 export default function MarketingFooter() {
