@@ -23,13 +23,19 @@ const toolbarOptions = [
   ["clean"],
 ];
 
-export function TemplateEditorClient({ initialData }: { initialData: any }) {
+export function TemplateEditorClient({ initialData, defaultBody }: { initialData: any, defaultBody?: string }) {
   const [subject, setSubject] = useState(initialData.subject);
   const [body, setBody] = useState(initialData.body || "");
   const [isActive, setIsActive] = useState(initialData.isActive);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
+  const handleRestoreDefault = () => {
+    if (defaultBody && confirm("¿Estás seguro de que deseas sobreescribir el contenido actual con el diseño original predeterminado?")) {
+      setBody(defaultBody);
+    }
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -122,6 +128,16 @@ export function TemplateEditorClient({ initialData }: { initialData: any }) {
             <p className="text-xs text-gray-500 mt-2">
               Puedes usar variables: {'{{customerName}}, {{publicCode}}, {{serviceDate}}, {{serviceTime}}, {{originAddress}}, {{destinationAddress}}, {{totalPrice}}'}.
             </p>
+            {defaultBody && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="mt-4 text-xs text-gray-600" 
+                onClick={handleRestoreDefault}
+              >
+                🔄 Restaurar diseño original
+              </Button>
+            )}
           </div>
         </div>
 

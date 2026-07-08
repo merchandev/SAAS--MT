@@ -37,9 +37,12 @@ export default async function EditTemplatePage({
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-  } else if (!template.body || template.body === "<p><br></p>") {
-    // If it exists but body is empty, initialize with defaultBody
-    template.body = defaultDef.defaultBody || "";
+  } else {
+    // Check if body is just empty HTML tags (e.g. <p><br></p> or <p></p>)
+    const strippedBody = template.body.replace(/<[^>]*>?/gm, '').trim();
+    if (!strippedBody && defaultDef.defaultBody) {
+      template.body = defaultDef.defaultBody;
+    }
   }
 
   return (
@@ -53,7 +56,10 @@ export default async function EditTemplatePage({
         </p>
       </div>
 
-      <TemplateEditorClient initialData={template} />
+      <TemplateEditorClient 
+        initialData={template} 
+        defaultBody={defaultDef.defaultBody} 
+      />
     </div>
   );
 }
