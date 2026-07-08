@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/modules/auth/permissions";
-import { DEFAULT_TEMPLATES } from "../page";
+import { DEFAULT_TEMPLATES } from "@/config/email-templates";
 import { TemplateEditorClient } from "./TemplateEditorClient";
 import { notFound } from "next/navigation";
 
@@ -11,11 +11,11 @@ export const metadata = {
 export default async function EditTemplatePage({
   params,
 }: {
-  params: { name: string };
+  params: Promise<{ name: string }>;
 }) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
 
-  const templateName = params.name;
+  const { name: templateName } = await params;
   const defaultDef = DEFAULT_TEMPLATES.find((t) => t.name === templateName);
   
   if (!defaultDef) {
