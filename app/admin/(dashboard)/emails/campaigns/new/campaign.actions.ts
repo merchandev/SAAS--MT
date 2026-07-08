@@ -85,3 +85,48 @@ async function processCampaign(campaignId: string, subject: string, body: string
     },
   });
 }
+
+export async function resendCampaignAction(campaignId: string) {
+  try {
+    await requireRole(["SUPER_ADMIN", "ADMIN"]);
+
+    const original = await prisma.emailCampaign.findUnique({
+      where: { id: campaignId },
+    });
+
+    if (!original) throw new Error("Campaña original no encontrada");
+
+    // Array validation for JSON field
+    const recipientsArray = Array.isArray(original.recipients) 
+      ? original.recipients 
+      : typeof original.recipients === "string"
+      ? [original.recipients]
+      : [];
+
+    const newCampaign = await prisma.emailCampaign.create({
+      data: {
+        name: `${original.name} (Reenvío)`,
+        subject: original.subject,
+        content: original.content,
+        recipients: recipientsArray,
+        status: "SENDING",
+        startedAt: new Date(),
+      },
+    });
+
+    // Start background processing
+    processCampaign(
+      newCampaign.id,
+      newCampaign.subject,
+      newCampaign.content,
+      recipientsArray as string[]
+    ).catch(console.error);
+
+    revalidatePath("/admin/emails/campaigns");
+    
+    return { success: true, id: newCampaign.id };
+  } catch (error: any) {
+    console.error("[RESEND_CAMPAIGN_ERROR]", error);
+    return { error: error.message || "Error al reenviar campaña" };
+  }
+}

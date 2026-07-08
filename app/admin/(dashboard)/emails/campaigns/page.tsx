@@ -60,7 +60,9 @@ export default async function CampaignsPage() {
                 return (
                   <tr key={camp.id} className="hover:bg-gray-50/50">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-gray-900">{camp.name}</div>
+                      <Link href={`/admin/emails/campaigns/${camp.id}`} className="font-semibold text-blue-600 hover:text-blue-800 hover:underline">
+                        {camp.name}
+                      </Link>
                       <div className="text-gray-500 text-xs mt-1 truncate max-w-[250px]">
                         Asunto: {camp.subject}
                       </div>
