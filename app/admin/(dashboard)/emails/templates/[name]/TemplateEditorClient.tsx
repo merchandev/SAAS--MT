@@ -120,7 +120,17 @@ export function TemplateEditorClient({ initialData, defaultBody }: { initialData
               <ReactQuill
                 theme="snow"
                 value={body}
-                onChange={setBody}
+                onChange={(content, delta, source, editor) => {
+                  // Only update state if the change was made by the user
+                  // This prevents Quill from wiping out the state on initial mount
+                  // when it parses and sanitizes the HTML.
+                  if (source === 'user') {
+                    setBody(content);
+                  } else if (source === 'api' && body === '') {
+                    // Sometimes on first load body is empty and Quill initializes it
+                    setBody(content);
+                  }
+                }}
                 modules={{ toolbar: toolbarOptions }}
                 className="min-h-[450px]"
               />
