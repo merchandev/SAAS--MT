@@ -591,6 +591,17 @@ model CustomerSuggestion {
   @@index([status])
 }
 
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([email])
+}
+
 model RoutePage {
   id              String  @id @default(uuid())
   slug            String  @unique // Ejemplo: traslados-aeropuerto-mallorca-alcudia

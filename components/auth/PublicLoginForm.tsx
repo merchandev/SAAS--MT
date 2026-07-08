@@ -68,7 +68,7 @@ export default function PublicLoginForm() {
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <label className="text-sm font-medium text-gray-300">Contraseña</label>
-              <Link href="#" className="text-xs text-[#D4AF37] hover:underline">¿Olvidaste tu contraseña?</Link>
+              <Link href="/forgot-password" className="text-xs text-[#D4AF37] hover:underline">¿Olvidaste tu contraseña?</Link>
             </div>
             <Input
               name="password"
