@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import xml2js from "xml2js";
+import DOMPurify from "isomorphic-dompurify";
 import { authService } from "@/modules/auth/auth.service";
 
 export async function POST(request: Request) {
@@ -64,7 +65,11 @@ export async function POST(request: Request) {
       const h1Title = page.h1Title || page.h1 || page.title || `${originName} to ${destinationName} Transfer`;
       const seoTitle = page.seoTitle || page.meta_title || h1Title;
       const metaDescription = page.metaDescription || page.meta_description || page.description || "";
-      const contentHtml = page.contentHtml || page.content_html || page.content || "";
+      const rawContentHtml = page.contentHtml || page.content_html || page.content || "";
+      const contentHtml = rawContentHtml ? DOMPurify.sanitize(rawContentHtml, {
+        ALLOWED_TAGS: ['h2', 'h3', 'p', 'ul', 'li', 'strong', 'em', 'a', 'br', 'span', 'div'],
+        ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'style'],
+      }) : "";
       const seoKeywords = page.seoKeywords || page.keywords || "";
       const basePriceCache = parseFloat(page.basePriceCache || page.price || "0") || null;
       const seoImage = page.seoImage || page.image || null;

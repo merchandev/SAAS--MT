@@ -23,8 +23,8 @@ services:
       RATE_LIMIT_BACKEND: ${RATE_LIMIT_BACKEND:-database}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       REDSYS_URL: ${REDSYS_URL:-https://sis.redsys.es/sis/realizarPago}
-      REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:-change_me_redsys_merchant_code}
-      REDSYS_TERMINAL: ${REDSYS_TERMINAL:-1}
+      REDSYS_MERCHANT_CODE: ${REDSYS_MERCHANT_CODE:?REDSYS_MERCHANT_CODE is required}
+      REDSYS_TERMINAL: ${REDSYS_TERMINAL:?REDSYS_TERMINAL is required}
       REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:?REDSYS_SECRET_KEY is required}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@transfersinbarcelona.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}

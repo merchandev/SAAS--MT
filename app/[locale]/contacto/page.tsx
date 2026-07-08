@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: seo?.metaDescription || "Contacta con Transfers in Barcelona para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona.",
     keywords: seo?.seoKeywords || undefined,
     alternates: {
-      canonical: "/contacto",
+      canonical: "https://transfersinbarcelona.com/es/contacto",
     },
   };
 }

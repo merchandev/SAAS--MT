@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: seo?.metaDescription || "Respuestas sobre reservas, vehículos, pagos, cancelaciones, aeropuerto, tours privados y coches con chófer en Barcelona.",
     keywords: seo?.seoKeywords || undefined,
     alternates: {
-      canonical: "/preguntas-frecuentes",
+      canonical: "https://transfersinbarcelona.com/es/preguntas-frecuentes",
     },
   };
 }

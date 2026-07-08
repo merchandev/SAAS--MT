@@ -28,6 +28,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: post.metaTitle || `${post.title} | Blog Transfers in Barcelona`,
     description: post.metaDescription || post.excerpt,
+    alternates: {
+      canonical: `https://transfersinbarcelona.com/es/blog/${post.slug}`,
+    },
     openGraph: {
       title: post.metaTitle || `${post.title} | Blog Transfers in Barcelona`,
       description: post.metaDescription || post.excerpt,

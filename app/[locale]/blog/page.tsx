@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description:
     "Consejos sobre traslados privados, aeropuerto de Barcelona, tours, eventos corporativos y coches con chofer.",
   alternates: {
-    canonical: "/blog",
+    canonical: "https://transfersinbarcelona.com/es/blog",
   },
 };
 

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import DOMPurify from "isomorphic-dompurify";
 import { authService } from "@/modules/auth/auth.service";
 import { prisma } from "@/lib/prisma";
 
@@ -76,9 +77,15 @@ Requisitos del contenido:
     // Clean up potential markdown formatting that OpenAI might output despite instructions
     generatedHtml = generatedHtml.replace(/^```html\n?/, "").replace(/\n?```$/, "");
 
+    // Sanitize the HTML to prevent XSS
+    const cleanHtml = DOMPurify.sanitize(generatedHtml, {
+      ALLOWED_TAGS: ['h2', 'h3', 'p', 'ul', 'li', 'strong', 'em', 'a', 'br', 'span', 'div'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'style'],
+    });
+
     return NextResponse.json({ 
       success: true, 
-      contentHtml: generatedHtml 
+      contentHtml: cleanHtml 
     });
 
   } catch (error: any) {

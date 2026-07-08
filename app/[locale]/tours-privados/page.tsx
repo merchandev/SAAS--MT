@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Tours privados desde Barcelona a Montserrat, Costa Brava, Girona y rutas personalizadas con vehículo premium y chófer profesional.",
   alternates: {
-    canonical: "/tours-privados",
+    canonical: "https://transfersinbarcelona.com/es/tours-privados",
   },
 };
 
