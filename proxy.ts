@@ -157,8 +157,6 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/hotel') ||
     pathname.startsWith('/login') ||
     pathname.startsWith('/register') ||
-    pathname.startsWith('/forgot-password') ||
-    pathname.startsWith('/reset-password') ||
     pathname.includes('.')
   ) {
     return NextResponse.next();
