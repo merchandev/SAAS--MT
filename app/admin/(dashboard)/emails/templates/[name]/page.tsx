@@ -31,12 +31,15 @@ export default async function EditTemplatePage({
       id: "new",
       name: templateName,
       subject: defaultDef.subject,
-      body: "",
+      body: defaultDef.defaultBody || "",
       type: "EMAIL",
       isActive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+  } else if (!template.body || template.body === "<p><br></p>") {
+    // If it exists but body is empty, initialize with defaultBody
+    template.body = defaultDef.defaultBody || "";
   }
 
   return (

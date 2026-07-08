@@ -72,62 +72,104 @@ export function TemplateEditorClient({ initialData }: { initialData: any }) {
         </div>
       )}
 
-      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="active-mode"
-              checked={isActive}
-              onCheckedChange={setIsActive}
-            />
-            <Label htmlFor="active-mode">
-              {isActive ? "Plantilla Activa" : "Plantilla Inactiva (Usa React Email base)"}
-            </Label>
-          </div>
+      <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="active-mode"
+            checked={isActive}
+            onCheckedChange={setIsActive}
+          />
+          <Label htmlFor="active-mode" className="font-semibold cursor-pointer">
+            {isActive ? "Usar diseño personalizado (Activo)" : "Usar plantilla base del sistema (Inactivo)"}
+          </Label>
+        </div>
+        <div className="flex space-x-4">
           <Button variant="outline" onClick={handleTest} disabled={isTesting || isSaving}>
             {isTesting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Play className="h-4 w-4 mr-2" />}
             Enviar Prueba
           </Button>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="subject">Asunto del correo</Label>
-          <Input
-            id="subject"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            placeholder="Ej: Reserva Confirmada #{{publicCode}}"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Cuerpo del correo (Contenido)</Label>
-          <div className="border rounded-md overflow-hidden bg-white">
-            <ReactQuill
-              theme="snow"
-              value={body}
-              onChange={setBody}
-              modules={{ toolbar: toolbarOptions }}
-              className="min-h-[400px]"
-            />
-          </div>
-          <p className="text-xs text-gray-500 mt-2">
-            Puedes pegar imágenes, usar enlaces y texto enriquecido. Todo este contenido irá dentro del diseño base con fondo corporativo.
-          </p>
+          <Button onClick={handleSave} disabled={isSaving || isTesting}>
+            {isSaving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+            Guardar Cambios
+          </Button>
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Editor (Left Column) */}
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="subject">Asunto del correo</Label>
+            <Input
+              id="subject"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="Ej: Reserva Confirmada #{{publicCode}}"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Contenido del mensaje</Label>
+            <div className="border rounded-md overflow-hidden bg-white">
+              <ReactQuill
+                theme="snow"
+                value={body}
+                onChange={setBody}
+                modules={{ toolbar: toolbarOptions }}
+                className="min-h-[450px]"
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Puedes usar variables: {'{{customerName}}, {{publicCode}}, {{serviceDate}}, {{serviceTime}}, {{originAddress}}, {{destinationAddress}}, {{totalPrice}}'}.
+            </p>
+          </div>
+        </div>
+
+        {/* Live Preview (Right Column) */}
+        <div className="bg-gray-100 p-6 rounded-xl border border-gray-200 shadow-inner flex flex-col items-center">
+          <h3 className="w-full text-center text-sm font-semibold text-gray-500 mb-4 uppercase tracking-widest">
+            Vista Previa del Correo
+          </h3>
+          
+          {/* Simulated Email Wrapper */}
+          <div className="w-full max-w-[600px] bg-white rounded-xl overflow-hidden shadow-lg" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+            {/* Header */}
+            <div className="bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] p-8 text-center">
+              <img 
+                src="/images/MeTransfers-exp.png" 
+                alt="Transfers in Barcelona"
+                className="h-10 mx-auto object-contain"
+              />
+              <p className="text-[#888888] text-[12px] tracking-[2px] mt-2 uppercase">
+                Traslados Privados de Lujo
+              </p>
+            </div>
+
+            {/* Simulated Body */}
+            <div className="p-8">
+              <div 
+                className="prose prose-sm max-w-none text-gray-700"
+                dangerouslySetInnerHTML={{ __html: body || "<p class='text-gray-400 italic text-center'>Empieza a escribir para ver la vista previa...</p>" }} 
+              />
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 p-6 text-center bg-gray-50">
+              <p className="text-gray-500 text-sm">¿Necesitas modificar tu reserva?</p>
+              <p className="text-[#D4AF37] text-sm mt-1">info@transfersinbarcelona.com · +34 662 02 41 36</p>
+              <p className="text-gray-400 text-xs mt-4">© {new Date().getFullYear()} Transfers in Barcelona</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-start">
         <Link href="/admin/emails/templates">
           <Button variant="ghost">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver
+            Volver a plantillas
           </Button>
         </Link>
-        <Button onClick={handleSave} disabled={isSaving || isTesting}>
-          {isSaving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
-          Guardar Cambios
-        </Button>
       </div>
     </div>
   );
