@@ -6,7 +6,7 @@ const REDSYS_SECRET_KEY = process.env.REDSYS_SECRET_KEY || "sq7HjrUOBfKmC576ILgs
 const REDSYS_MERCHANT_CODE = process.env.REDSYS_MERCHANT_CODE || "999008881";
 const REDSYS_TERMINAL = process.env.REDSYS_TERMINAL || "1";
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_IS_BUILDING !== "true") {
   if (!process.env.REDSYS_SECRET_KEY) throw new Error("REDSYS_SECRET_KEY is required in production");
   if (!process.env.REDSYS_MERCHANT_CODE) throw new Error("REDSYS_MERCHANT_CODE is required in production");
   if (!process.env.REDSYS_TERMINAL) throw new Error("REDSYS_TERMINAL is required in production");
@@ -44,7 +44,7 @@ function getRedsysSecretKey(): string {
   // Validar si la clave tiene la longitud correcta (24 bytes al decodificar base64 = 32 caracteres en base64)
   const decoded = Buffer.from(key, "base64");
   if (decoded.length !== 24) {
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_IS_BUILDING !== "true") {
       throw new Error("REDSYS_SECRET_KEY tiene una longitud inválida.");
     }
     console.warn("⚠️ REDSYS_SECRET_KEY tiene una longitud inválida. Usando credenciales de prueba por seguridad.");
