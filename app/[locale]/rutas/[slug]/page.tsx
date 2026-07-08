@@ -5,6 +5,7 @@ import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 import { CheckCircle2, Users, Briefcase } from "lucide-react";
+import DOMPurify from "isomorphic-dompurify";
 
 interface Props {
   params: Promise<{
@@ -114,7 +115,7 @@ export default async function RouteDynamicPage({ params }: Props) {
               {route.contentHtml && (
                 <div 
                   className="mt-10 prose prose-gray max-w-none"
-                  dangerouslySetInnerHTML={{ __html: route.contentHtml }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(route.contentHtml) }}
                 />
               )}
             </div>
