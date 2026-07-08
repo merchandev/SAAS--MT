@@ -23,24 +23,24 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 const services = [
-  { href: "/rutas/airport-transfer-barcelona", label: "Barcelona Airport Transfer" },
-  { href: "/rutas/cruise-port-transfer-barcelona", label: "Barcelona Cruise Port Transfer" },
-  { href: "/rutas/chauffeur-service-barcelona", label: "Chauffeur Service Barcelona" },
-  { href: "/rutas/corporate-transfers-barcelona", label: "Corporate Transfers Barcelona" },
+  { href: "/rutas/airport-transfer-barcelona", label: "Traslados Aeropuerto de Barcelona" },
+  { href: "/rutas/cruise-port-transfer-barcelona", label: "Traslados Puerto de Cruceros" },
+  { href: "/rutas/chauffeur-service-barcelona", label: "Coches con Chófer en Barcelona" },
+  { href: "/rutas/corporate-transfers-barcelona", label: "Traslados Corporativos y Eventos" },
 ];
 
 const tours = [
-  { href: "/rutas/barcelona-to-andorra-transfer", label: "Barcelona to Andorra Transfer" },
-  { href: "/rutas/barcelona-to-sitges-transfer", label: "Barcelona to Sitges Transfer" },
-  { href: "/rutas/barcelona-to-costa-brava-transfer", label: "Barcelona to Costa Brava Transfer" },
-  { href: "/rutas/montserrat-private-tour", label: "Montserrat Private Tour" },
+  { href: "/rutas/barcelona-to-andorra-transfer", label: "Traslado de Barcelona a Andorra" },
+  { href: "/rutas/barcelona-to-sitges-transfer", label: "Traslado de Barcelona a Sitges" },
+  { href: "/rutas/barcelona-to-costa-brava-transfer", label: "Traslado a la Costa Brava" },
+  { href: "/rutas/montserrat-private-tour", label: "Tour Privado a Montserrat" },
 ];
 
 const legalLinks = [
-  { href: "/politica-de-privacidad", label: "Privacy Policy" },
-  { href: "/terminos-y-condiciones", label: "Terms and Conditions" },
-  { href: "/aviso-legal", label: "Legal Notice" },
-  { href: "/cookies", label: "Cookies Policy" },
+  { href: "/politica-de-privacidad", label: "Política de Privacidad" },
+  { href: "/terminos-y-condiciones", label: "Términos y Condiciones" },
+  { href: "/aviso-legal", label: "Aviso Legal" },
+  { href: "/cookies", label: "Política de Cookies" },
 ];
 
 export default function MarketingFooter() {
@@ -50,7 +50,7 @@ export default function MarketingFooter() {
         <div>
           <MarketingLogo className="mb-5" variant="footer" />
           <p className="max-w-xs text-base leading-7 text-gray-600">
-            Private transfers and personalized luxury tours in Barcelona and all of Spain. Your comfort, our passion.
+            Traslados privados y tours de lujo personalizados en Barcelona y toda España. Tu comodidad, nuestra pasión.
           </p>
           <div className="mt-8 flex gap-3">
             {[
@@ -73,7 +73,7 @@ export default function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Services</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Servicios</h2>
           <nav className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
             {services.map((item) => (
               <Link key={item.label} href={item.href} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
@@ -84,7 +84,7 @@ export default function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Featured Tours</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Rutas Destacadas</h2>
           <nav className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
             {tours.map((item) => (
               <Link key={item.label} href={item.href} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
@@ -95,7 +95,7 @@ export default function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Contact</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Contacto</h2>
           <div className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
             <ul className="space-y-4">
               <li className="flex items-center gap-3">

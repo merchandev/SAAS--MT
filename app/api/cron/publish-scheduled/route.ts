@@ -12,13 +12,16 @@ import { prisma } from "@/lib/prisma";
  *   Authorization: Bearer <CRON_SECRET>
  */
 export async function GET(request: NextRequest) {
-  // Simple bearer token auth
+  // Strict bearer token auth (fail-closed)
   const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret) {
-    const authHeader = request.headers.get("authorization");
-    if (authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  
+  if (!cronSecret) {
+    return NextResponse.json({ error: "Cron secret not configured in environment" }, { status: 500 });
+  }
+
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const now = new Date();

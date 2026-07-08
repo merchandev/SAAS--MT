@@ -20,21 +20,21 @@ const BASE_URL = "https://transfersinbarcelona.com";
 
 // Static pages included in every sitemap build
 const STATIC_ROUTES = [
-  { url: BASE_URL, priority: 1.0, changeFrequency: "daily" as const },
-  { url: `${BASE_URL}/transfer-aeropuerto-barcelona`, priority: 0.9, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/traslados-privados-barcelona`, priority: 0.9, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/coche-con-chofer-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/traslados-puerto-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/tours-privados-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/traslados-corporativos-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/faqs`, priority: 0.6, changeFrequency: "monthly" as const },
-  { url: `${BASE_URL}/blog`, priority: 0.7, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/contacto`, priority: 0.5, changeFrequency: "monthly" as const },
-  { url: `${BASE_URL}/booking`, priority: 0.7, changeFrequency: "monthly" as const },
-  { url: `${BASE_URL}/aviso-legal`, priority: 0.2, changeFrequency: "yearly" as const },
-  { url: `${BASE_URL}/politica-de-privacidad`, priority: 0.2, changeFrequency: "yearly" as const },
-  { url: `${BASE_URL}/terminos-y-condiciones`, priority: 0.2, changeFrequency: "yearly" as const },
-  { url: `${BASE_URL}/cookies`, priority: 0.2, changeFrequency: "yearly" as const },
+  { url: `${BASE_URL}/es`, priority: 1.0, changeFrequency: "daily" as const },
+  { url: `${BASE_URL}/es/transfer-aeropuerto-barcelona`, priority: 0.9, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/traslados-privados-barcelona`, priority: 0.9, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/coche-con-chofer-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/traslados-puerto-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/tours-privados-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/traslados-corporativos-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/faqs`, priority: 0.6, changeFrequency: "monthly" as const },
+  { url: `${BASE_URL}/es/blog`, priority: 0.7, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/contacto`, priority: 0.5, changeFrequency: "monthly" as const },
+  { url: `${BASE_URL}/es/booking`, priority: 0.7, changeFrequency: "monthly" as const },
+  { url: `${BASE_URL}/es/aviso-legal`, priority: 0.2, changeFrequency: "yearly" as const },
+  { url: `${BASE_URL}/es/politica-de-privacidad`, priority: 0.2, changeFrequency: "yearly" as const },
+  { url: `${BASE_URL}/es/terminos-y-condiciones`, priority: 0.2, changeFrequency: "yearly" as const },
+  { url: `${BASE_URL}/es/cookies`, priority: 0.2, changeFrequency: "yearly" as const },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -64,14 +64,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]);
 
     const routeEntries: MetadataRoute.Sitemap = routePages.map((r) => ({
-      url: `${BASE_URL}/rutas/${r.slug}`,
+      url: `${BASE_URL}/es/rutas/${r.slug}`,
       lastModified: r.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     }));
 
     const blogEntries: MetadataRoute.Sitemap = blogPosts.map((p) => ({
-      url: `${BASE_URL}/blog/${p.slug}`,
+      url: `${BASE_URL}/es/blog/${p.slug}`,
       lastModified: p.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6,
