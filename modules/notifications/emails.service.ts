@@ -180,23 +180,34 @@ export const emailsService = {
     cancellationReason?: string
   ): Promise<boolean> {
     try {
-      const { BookingCancelledEmail } = await import(
-        "@/components/emails/BookingCancelledEmail"
-      );
-
-      const html = await render(
-        React.createElement(BookingCancelledEmail, {
+      const { html, subject } = await getDynamicEmailHtml(
+        "BOOKING_CANCELLED",
+        {
           customerName,
           publicCode,
           serviceDate: formatDate(booking.serviceDate),
           serviceTime: booking.serviceTime,
           cancellationReason,
-        })
+        },
+        async () => {
+          const { BookingCancelledEmail } = await import(
+            "@/components/emails/BookingCancelledEmail"
+          );
+          return render(
+            React.createElement(BookingCancelledEmail, {
+              customerName,
+              publicCode,
+              serviceDate: formatDate(booking.serviceDate),
+              serviceTime: booking.serviceTime,
+              cancellationReason,
+            })
+          );
+        }
       );
 
       return sendEmail({
         to: email,
-        subject: `Reserva Cancelada #${publicCode}`,
+        subject: subject || `Reserva Cancelada #${publicCode}`,
         html,
         eventType: "BOOKING_CANCELLED",
         bookingId: booking?.id,
@@ -218,21 +229,30 @@ export const emailsService = {
     booking: any
   ): Promise<boolean> {
     try {
-      const { BookingRefundedEmail } = await import(
-        "@/components/emails/BookingRefundedEmail"
-      );
-
-      const html = await render(
-        React.createElement(BookingRefundedEmail, {
+      const { html, subject } = await getDynamicEmailHtml(
+        "BOOKING_REFUNDED",
+        {
           customerName,
           publicCode,
           totalPrice: formatPrice(booking.finalPrice),
-        })
+        },
+        async () => {
+          const { BookingRefundedEmail } = await import(
+            "@/components/emails/BookingRefundedEmail"
+          );
+          return render(
+            React.createElement(BookingRefundedEmail, {
+              customerName,
+              publicCode,
+              totalPrice: formatPrice(booking.finalPrice),
+            })
+          );
+        }
       );
 
       return sendEmail({
         to: email,
-        subject: `Reembolso procesado para reserva #${publicCode}`,
+        subject: subject || `Reembolso procesado para reserva #${publicCode}`,
         html,
         eventType: "BOOKING_REFUNDED",
         bookingId: booking?.id,
@@ -255,24 +275,36 @@ export const emailsService = {
     driver?: { name: string; phone?: string | null }
   ): Promise<boolean> {
     try {
-      const { TripStartedEmail } = await import(
-        "@/components/emails/TripStartedEmail"
-      );
-
-      const html = await render(
-        React.createElement(TripStartedEmail, {
+      const { html, subject } = await getDynamicEmailHtml(
+        "TRIP_STARTED",
+        {
           customerName,
           publicCode,
           driverName: driver?.name || "Tu conductor",
-          driverPhone: driver?.phone || undefined,
+          driverPhone: driver?.phone || "",
           originAddress: booking.originAddress,
           serviceTime: booking.serviceTime,
-        })
+        },
+        async () => {
+          const { TripStartedEmail } = await import(
+            "@/components/emails/TripStartedEmail"
+          );
+          return render(
+            React.createElement(TripStartedEmail, {
+              customerName,
+              publicCode,
+              driverName: driver?.name || "Tu conductor",
+              driverPhone: driver?.phone || undefined,
+              originAddress: booking.originAddress,
+              serviceTime: booking.serviceTime,
+            })
+          );
+        }
       );
 
       return sendEmail({
         to: email,
-        subject: `🚗 Tu traslado ha comenzado — #${publicCode}`,
+        subject: subject || `🚗 Tu traslado ha comenzado — #${publicCode}`,
         html,
         eventType: "TRIP_STARTED",
         bookingId: booking?.id,
@@ -295,23 +327,34 @@ export const emailsService = {
     booking: any
   ): Promise<boolean> {
     try {
-      const { TripCompletedEmail } = await import(
-        "@/components/emails/TripCompletedEmail"
-      );
-
-      const html = await render(
-        React.createElement(TripCompletedEmail, {
+      const { html, subject } = await getDynamicEmailHtml(
+        "TRIP_COMPLETED",
+        {
           customerName,
           publicCode,
           originAddress: booking.originAddress,
           destinationAddress: booking.destinationAddress,
           serviceDate: formatDate(booking.serviceDate),
-        })
+        },
+        async () => {
+          const { TripCompletedEmail } = await import(
+            "@/components/emails/TripCompletedEmail"
+          );
+          return render(
+            React.createElement(TripCompletedEmail, {
+              customerName,
+              publicCode,
+              originAddress: booking.originAddress,
+              destinationAddress: booking.destinationAddress,
+              serviceDate: formatDate(booking.serviceDate),
+            })
+          );
+        }
       );
 
       const ok = await sendEmail({
         to: email,
-        subject: `✅ Viaje completado — Gracias, ${customerName}`,
+        subject: subject || `✅ Viaje completado — Gracias, ${customerName}`,
         html,
         eventType: "TRIP_COMPLETED",
         bookingId: booking?.id,
@@ -340,24 +383,34 @@ export const emailsService = {
     booking: any
   ): Promise<boolean> {
     try {
-      const { ReviewRequestedEmail } = await import(
-        "@/components/emails/ReviewRequestedEmail"
-      );
-
       const reviewUrl = await buildReviewUrl(booking.id, publicCode);
 
-      const html = await render(
-        React.createElement(ReviewRequestedEmail, {
+      const { html, subject } = await getDynamicEmailHtml(
+        "REVIEW_REQUESTED",
+        {
           customerName,
           publicCode,
           reviewUrl,
           serviceDate: formatDate(booking.serviceDate),
-        })
+        },
+        async () => {
+          const { ReviewRequestedEmail } = await import(
+            "@/components/emails/ReviewRequestedEmail"
+          );
+          return render(
+            React.createElement(ReviewRequestedEmail, {
+              customerName,
+              publicCode,
+              reviewUrl,
+              serviceDate: formatDate(booking.serviceDate),
+            })
+          );
+        }
       );
 
       return sendEmail({
         to: email,
-        subject: `⭐ ¿Cómo fue tu traslado? Valóralo en 30 segundos`,
+        subject: subject || `⭐ ¿Cómo fue tu traslado? Valóralo en 30 segundos`,
         html,
         eventType: "REVIEW_REQUESTED",
         bookingId: booking?.id,
@@ -378,14 +431,11 @@ export const emailsService = {
     booking: any
   ): Promise<boolean> {
     try {
-      const { AdminNewBookingEmail } = await import(
-        "@/components/emails/AdminNewBookingEmail"
-      );
-
       const adminUrl = `${APP_URL}/admin/bookings/${booking.id}`;
 
-      const html = await render(
-        React.createElement(AdminNewBookingEmail, {
+      const { html, subject } = await getDynamicEmailHtml(
+        "ADMIN_NEW_BOOKING",
+        {
           publicCode,
           customerName,
           customerEmail: booking.customer?.email || booking.customerEmail || "—",
@@ -398,12 +448,33 @@ export const emailsService = {
           vehicleName: booking.vehicle?.name || "—",
           totalPrice: formatPrice(booking.finalPrice),
           adminUrl,
-        })
+        },
+        async () => {
+          const { AdminNewBookingEmail } = await import(
+            "@/components/emails/AdminNewBookingEmail"
+          );
+          return render(
+            React.createElement(AdminNewBookingEmail, {
+              publicCode,
+              customerName,
+              customerEmail: booking.customer?.email || booking.customerEmail || "—",
+              customerPhone: booking.customer?.phone || booking.customerPhone || "—",
+              originAddress: booking.originAddress,
+              destinationAddress: booking.destinationAddress,
+              serviceDate: formatDate(booking.serviceDate),
+              serviceTime: booking.serviceTime,
+              passengers: booking.passengers,
+              vehicleName: booking.vehicle?.name || "—",
+              totalPrice: formatPrice(booking.finalPrice),
+              adminUrl,
+            })
+          );
+        }
       );
 
       return sendEmail({
         to: ADMIN_EMAIL,
-        subject: `🔔 Nueva reserva #${publicCode} — ${customerName} (${formatDate(booking.serviceDate)})`,
+        subject: subject || `🔔 Nueva reserva #${publicCode} — ${customerName} (${formatDate(booking.serviceDate)})`,
         html,
         eventType: "ADMIN_NEW_BOOKING",
         bookingId: booking?.id,
