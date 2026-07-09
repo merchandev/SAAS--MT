@@ -7,10 +7,11 @@ const smtpUser = cleanEnv(process.env.SMTP_USER);
 const smtpPass = cleanEnv(process.env.SMTP_PASS);
 
 // Singleton transporter — se crea una sola vez y se reutiliza
+const port = Number(process.env.SMTP_PORT) || 465;
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtp.hostinger.com",
-  port: Number(process.env.SMTP_PORT) || 465,
-  secure: true, // Puerto 465 usa SSL directo
+  port,
+  secure: port === 465, // True para 465 (SSL directo), False para 587 (STARTTLS)
   auth: {
     user: smtpUser,
     pass: smtpPass,
@@ -18,6 +19,9 @@ const transporter = nodemailer.createTransport({
   tls: {
     rejectUnauthorized: false,
   },
+  connectionTimeout: 10000, // 10 seconds max to connect
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
 });
 
 const FROM_ADDRESS = `${cleanEnv(process.env.SMTP_FROM_NAME) || "Transfers in Barcelona"} <${smtpUser || "info@transfersinbarcelona.com"}>`;
