@@ -5,6 +5,8 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { sendEmail } from "@/lib/mailer";
 
+import { headers } from "next/headers";
+
 export async function forgotPasswordAction(email: string) {
   try {
     const user = await prisma.user.findUnique({ where: { email } });
@@ -28,8 +30,11 @@ export async function forgotPasswordAction(email: string) {
       },
     });
 
-    // Generate Reset URL
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://tu-dominio.com";
+    // Detect domain dynamically to avoid localhost in production if NEXT_PUBLIC_APP_URL is baked
+    const headersList = await headers();
+    const host = headersList.get("host") || "transfersinbarcelona.com";
+    const protocol = headersList.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
+    const baseUrl = `${protocol}://${host}`;
     const resetUrl = `${baseUrl}/es/reset-password?token=${token}`;
 
     // Send email
@@ -37,15 +42,31 @@ export async function forgotPasswordAction(email: string) {
       to: email,
       subject: "Recuperación de Contraseña - Transfers in Barcelona",
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #D4AF37;">Recuperación de Contraseña</h2>
-          <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta asociada a este correo.</p>
-          <p>Para crear una nueva contraseña, haz clic en el siguiente botón:</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetUrl}" style="background-color: #D4AF37; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #000000; color: #ffffff; padding: 40px; border-radius: 8px; border: 1px solid #222;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.5px;">
+              Me<span style="color: #D4AF37;">Transfers</span>
+            </h1>
+            <p style="color: #888; font-size: 12px; margin-top: 5px; text-transform: uppercase; letter-spacing: 2px;">Barcelona</p>
           </div>
-          <p style="color: #666; font-size: 14px;">Este enlace expirará en 1 hora.</p>
-          <p style="color: #666; font-size: 14px;">Si no solicitaste este cambio, puedes ignorar este correo con seguridad.</p>
+          
+          <div style="background-color: #111111; padding: 30px; border-radius: 6px; border: 1px solid #1a1a1a;">
+            <h2 style="color: #D4AF37; margin-top: 0; font-size: 20px;">Recuperación de Acceso</h2>
+            <p style="color: #cccccc; line-height: 1.6; font-size: 15px;">Hemos recibido una solicitud para restablecer la contraseña de tu cuenta asociada a este correo electrónico.</p>
+            <p style="color: #cccccc; line-height: 1.6; font-size: 15px;">Para crear una nueva contraseña de forma segura, haz clic en el botón inferior:</p>
+            
+            <div style="text-align: center; margin: 40px 0;">
+              <a href="${resetUrl}" style="background-color: #D4AF37; color: #000000; text-decoration: none; padding: 14px 28px; border-radius: 4px; font-weight: 600; display: inline-block; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Restablecer Contraseña</a>
+            </div>
+            
+            <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;" />
+            <p style="color: #666666; font-size: 13px; line-height: 1.5; margin: 0;">Este enlace de seguridad expirará automáticamente en 1 hora por motivos de protección.</p>
+            <p style="color: #666666; font-size: 13px; line-height: 1.5; margin-top: 10px;">Si no solicitaste este cambio, puedes ignorar este correo con total seguridad.</p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #444; font-size: 12px;">&copy; ${new Date().getFullYear()} Transfers in Barcelona. Todos los derechos reservados.</p>
+          </div>
         </div>
       `,
       eventType: "SYSTEM",
