@@ -283,3 +283,119 @@ export async function createAgencyUserAction(data: AgencyUserCreationInput) {
     return { error: "Error al crear el usuario de agencia" };
   }
 }
+
+export async function toggleHotelStatusAction(hotelId: string) {
+  await requireRole(['SUPER_ADMIN', 'ADMIN']);
+
+  try {
+    const current = await prisma.hotel.findUnique({ where: { id: hotelId } });
+    if (!current) return { error: 'Hotel no encontrado' };
+
+    const hotel = await prisma.hotel.update({
+      where: { id: hotelId },
+      data: { isActive: !current.isActive },
+    });
+
+    await audit('Hotel', hotel.id, 'TOGGLE_STATUS', { isActive: hotel.isActive });
+    revalidatePath('/admin/hotels');
+    return { success: true };
+  } catch (error) {
+    return { error: 'Error al cambiar el estado del hotel' };
+  }
+}
+
+export async function softDeleteHotelAction(hotelId: string) {
+  await requireRole(['SUPER_ADMIN', 'ADMIN']);
+  try {
+    const hotel = await prisma.hotel.update({
+      where: { id: hotelId },
+      data: { deletedAt: new Date(), isActive: false },
+    });
+    await audit('Hotel', hotel.id, 'SOFT_DELETE');
+    revalidatePath('/admin/hotels');
+    return { success: true };
+  } catch (error) {
+    return { error: 'Error al mover el hotel a la papelera' };
+  }
+}
+
+export async function restoreHotelAction(hotelId: string) {
+  await requireRole(['SUPER_ADMIN', 'ADMIN']);
+  try {
+    const hotel = await prisma.hotel.update({
+      where: { id: hotelId },
+      data: { deletedAt: null, isActive: true },
+    });
+    await audit('Hotel', hotel.id, 'RESTORE');
+    revalidatePath('/admin/hotels');
+    return { success: true };
+  } catch (error) {
+    return { error: 'Error al restaurar el hotel' };
+  }
+}
+
+export async function hardDeleteHotelAction(hotelId: string) {
+  await requireRole(['SUPER_ADMIN', 'ADMIN']);
+  try {
+    await prisma.hotel.delete({
+      where: { id: hotelId },
+    });
+    await audit('Hotel', hotelId, 'HARD_DELETE');
+    revalidatePath('/admin/hotels');
+    return { success: true };
+  } catch (error: any) {
+    if (error.code === 'P2003') {
+      return { error: 'No se puede eliminar permanentemente porque tiene reservas asociadas. Mantenlo en la papelera.' };
+    }
+    return { error: 'Error al eliminar el hotel permanentemente' };
+  }
+}
+
+
+export async function softDeleteAgencyAction(agencyId: string) {
+  await requireRole(['SUPER_ADMIN', 'ADMIN']);
+  try {
+    const agency = await prisma.agency.update({
+      where: { id: agencyId },
+      data: { deletedAt: new Date(), isActive: false },
+    });
+    await audit('Agency', agency.id, 'SOFT_DELETE');
+    revalidatePath('/admin/agencies');
+    return { success: true };
+  } catch (error) {
+    return { error: 'Error al mover la agencia a la papelera' };
+  }
+}
+
+export async function restoreAgencyAction(agencyId: string) {
+  await requireRole(['SUPER_ADMIN', 'ADMIN']);
+  try {
+    const agency = await prisma.agency.update({
+      where: { id: agencyId },
+      data: { deletedAt: null, isActive: true },
+    });
+    await audit('Agency', agency.id, 'RESTORE');
+    revalidatePath('/admin/agencies');
+    return { success: true };
+  } catch (error) {
+    return { error: 'Error al restaurar la agencia' };
+  }
+}
+
+export async function hardDeleteAgencyAction(agencyId: string) {
+  await requireRole(['SUPER_ADMIN', 'ADMIN']);
+  try {
+    await prisma.agency.delete({
+      where: { id: agencyId },
+    });
+    await audit('Agency', agencyId, 'HARD_DELETE');
+    revalidatePath('/admin/agencies');
+    return { success: true };
+  } catch (error: any) {
+    if (error.code === 'P2003') {
+      return { error: 'No se puede eliminar permanentemente porque tiene reservas asociadas. Mantenla en la papelera.' };
+    }
+    return { error: 'Error al eliminar la agencia permanentemente' };
+  }
+}
+

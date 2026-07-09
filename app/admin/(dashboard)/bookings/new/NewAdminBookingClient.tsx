@@ -48,6 +48,9 @@ export default function NewAdminBookingClient({ vehicles }: { vehicles: Vehicle[
       luggage: Number(formData.get("luggage")),
       flightNumber: formData.get("flightNumber") as string,
       internalNotes: formData.get("internalNotes") as string,
+      babySeats: 0,
+      wheelchair: false,
+      pickupSign: "",
     };
 
     try {

@@ -94,7 +94,7 @@ export const b2bQueries = {
   },
 
   async getHotelByToken(token: string) {
-    return prisma.hotel.findUnique({
+    const hotel = await prisma.hotel.findUnique({
       where: { token },
       include: {
         bookings: {
@@ -104,6 +104,8 @@ export const b2bQueries = {
         }
       }
     });
+    if (!hotel || hotel.deletedAt) return null;
+    return hotel;
   },
 
   async getHotelDashboardData(hotelId: string) {

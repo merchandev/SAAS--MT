@@ -29,8 +29,8 @@ export default function CampaignComposerClient() {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [recipientsRaw, setRecipientsRaw] = useState("");
+  const [contactPhone, setContactPhone] = useState("+34 662 02 41 36");
 
-  
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
@@ -63,6 +63,7 @@ export default function CampaignComposerClient() {
       subject,
       body,
       recipients,
+      contactPhone,
     });
 
     setIsSending(false);
@@ -95,14 +96,26 @@ export default function CampaignComposerClient() {
 
       <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
         
-        <div className="space-y-2">
-          <Label htmlFor="name">Nombre interno de la campaña</Label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Ej: Promo Verano 2026 (No visible para el cliente)"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="name">Nombre interno de la campaña</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ej: Promo Verano 2026"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="contactPhone">Teléfono de contacto (Pie de correo)</Label>
+            <Input
+              id="contactPhone"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              placeholder="+34 662 02 41 36"
+            />
+          </div>
         </div>
 
         <div className="space-y-2">

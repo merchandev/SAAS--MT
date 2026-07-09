@@ -7,11 +7,13 @@ import {
 interface DynamicLayoutEmailProps {
   previewText?: string;
   dynamicHtml: string;
+  contactPhone?: string;
 }
 
 export const DynamicLayoutEmail = ({
   previewText = "Novedades de Transfers in Barcelona",
   dynamicHtml,
+  contactPhone = "+34 662 02 41 36"
 }: DynamicLayoutEmailProps) => {
   return (
     <Html>
@@ -41,7 +43,7 @@ export const DynamicLayoutEmail = ({
           <Section style={footer}>
             <Text style={footerText}>
               ¿Necesitas ayuda? Responde a este correo o llámanos al{" "}
-              <a href="tel:+34900000000" style={link}>+34 900 000 000</a>
+              <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} style={link}>{contactPhone}</a>
             </Text>
             <Text style={footerAddress}>
               Transfers in Barcelona<br />
@@ -57,21 +59,26 @@ export const DynamicLayoutEmail = ({
 export default DynamicLayoutEmail;
 
 const main = {
-  backgroundColor: "#f6f9fc",
+  backgroundColor: "#f3f4f6",
   fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+  padding: "40px 0",
 };
 
 const container = {
   backgroundColor: "#ffffff",
   margin: "0 auto",
-  padding: "20px 0 48px",
-  marginBottom: "64px",
+  padding: "0",
+  borderRadius: "12px",
+  overflow: "hidden",
+  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+  maxWidth: "600px",
 };
 
 const header = {
-  padding: "32px",
-  backgroundColor: "#000000",
+  padding: "40px 32px",
+  backgroundColor: "#111827",
   textAlign: "center" as const,
+  borderBottom: "3px solid #D4AF37",
 };
 
 const logo = { 
@@ -80,28 +87,32 @@ const logo = {
 };
 
 const contentSection = {
-  padding: "32px",
+  padding: "40px 32px",
+  color: "#374151",
+  fontSize: "16px",
+  lineHeight: "1.6",
 };
 
 const hr = {
-  borderColor: "#e6ebf1",
-  margin: "20px 0",
+  borderColor: "#e5e7eb",
+  margin: "0 32px",
 };
 
 const footer = {
-  padding: "0 32px",
+  padding: "32px",
+  backgroundColor: "#f9fafb",
   textAlign: "center" as const,
 };
 
 const footerText = {
-  color: "#8898aa",
+  color: "#6b7280",
   fontSize: "14px",
   lineHeight: "24px",
-  marginTop: "12px",
+  margin: "0",
 };
 
 const footerAddress = {
-  color: "#8898aa",
+  color: "#9ca3af",
   fontSize: "12px",
   lineHeight: "16px",
   marginTop: "12px",
@@ -109,5 +120,6 @@ const footerAddress = {
 
 const link = {
   color: "#D4AF37",
-  textDecoration: "underline",
+  textDecoration: "none",
+  fontWeight: "500",
 };

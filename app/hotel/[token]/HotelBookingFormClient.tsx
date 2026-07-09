@@ -210,7 +210,10 @@ export default function HotelBookingFormClient({
     const dataToSend = {
       ...bookingPayload,
       luggage: largeLuggage + smallLuggage,
-      tripType: formData.tripType as "ONE_WAY" | "ROUND_TRIP"
+      tripType: formData.tripType as "ONE_WAY" | "ROUND_TRIP",
+      babySeats: 0,
+      wheelchair: false,
+      pickupSign: ""
     };
 
     const result = await createPublicBookingAction(dataToSend, hotel.token);
