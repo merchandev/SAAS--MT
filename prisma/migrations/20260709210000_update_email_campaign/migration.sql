@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "EmailCampaign" ADD COLUMN IF NOT EXISTS "contactPhone" TEXT DEFAULT '+34 662 02 41 36';
+ALTER TABLE "EmailCampaign" ADD COLUMN IF NOT EXISTS "deletedAt" TIMESTAMP(3);
