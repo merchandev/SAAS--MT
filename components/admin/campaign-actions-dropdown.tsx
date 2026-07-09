@@ -19,21 +19,18 @@ import {
 } from "@/app/admin/(dashboard)/emails/campaigns/new/campaign.actions";
 
 interface CampaignActionsDropdownProps {
-  campaign: {
-    id: string;
-    status: string;
-    deletedAt: Date | null;
-  };
+  campaignId: string;
+  isDeleted: boolean;
 }
 
-export function CampaignActionsDropdown({ campaign }: CampaignActionsDropdownProps) {
+export function CampaignActionsDropdown({ campaignId, isDeleted }: CampaignActionsDropdownProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSoftDelete = async () => {
     if (!confirm("¿Mover esta campaña a la papelera?")) return;
     setIsLoading(true);
-    const res = await softDeleteCampaignAction(campaign.id);
+    const res = await softDeleteCampaignAction(campaignId);
     if (res?.error) alert(res.error);
     setIsLoading(false);
     router.refresh();
@@ -41,7 +38,7 @@ export function CampaignActionsDropdown({ campaign }: CampaignActionsDropdownPro
 
   const handleRestore = async () => {
     setIsLoading(true);
-    const res = await restoreCampaignAction(campaign.id);
+    const res = await restoreCampaignAction(campaignId);
     if (res?.error) alert(res.error);
     setIsLoading(false);
     router.refresh();
@@ -50,7 +47,7 @@ export function CampaignActionsDropdown({ campaign }: CampaignActionsDropdownPro
   const handleHardDelete = async () => {
     if (!confirm("¿Eliminar definitivamente? Esta acción es irreversible.")) return;
     setIsLoading(true);
-    const res = await hardDeleteCampaignAction(campaign.id);
+    const res = await hardDeleteCampaignAction(campaignId);
     if (res?.error) alert(res.error);
     setIsLoading(false);
     router.refresh();
@@ -59,7 +56,7 @@ export function CampaignActionsDropdown({ campaign }: CampaignActionsDropdownPro
   const handleResend = async () => {
     if (!confirm("¿Volver a enviar esta campaña a todos los destinatarios originales?")) return;
     setIsLoading(true);
-    const res = await resendCampaignAction(campaign.id);
+    const res = await resendCampaignAction(campaignId);
     if (res?.error) {
       alert(res.error);
     } else {
@@ -79,10 +76,10 @@ export function CampaignActionsDropdown({ campaign }: CampaignActionsDropdownPro
         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        {!campaign.deletedAt ? (
+        {!isDeleted ? (
           // Acciones para campañas Activas
           <>
-            <DropdownMenuItem onClick={() => router.push(`/admin/emails/campaigns/${campaign.id}`)}>
+            <DropdownMenuItem onClick={() => router.push(`/admin/emails/campaigns/${campaignId}`)}>
               <Eye className="mr-2 h-4 w-4" /> Ver Detalles
             </DropdownMenuItem>
 

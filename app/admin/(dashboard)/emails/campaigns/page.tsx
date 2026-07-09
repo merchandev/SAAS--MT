@@ -101,7 +101,7 @@ export default async function CampaignsPage() {
                     })}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <CampaignActionsDropdown campaign={camp} />
+                    <CampaignActionsDropdown campaignId={camp.id} isDeleted={!!camp.deletedAt} />
                   </td>
                 </tr>
               );
