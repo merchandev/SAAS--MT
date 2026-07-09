@@ -1,20 +1,26 @@
 import nodemailer from "nodemailer";
 
+// Helper to strip quotes if Docker passed them verbatim
+const cleanEnv = (val?: string) => val?.replace(/^"|"$/g, '').replace(/^'|'$/g, '');
+
+const smtpUser = cleanEnv(process.env.SMTP_USER);
+const smtpPass = cleanEnv(process.env.SMTP_PASS);
+
 // Singleton transporter — se crea una sola vez y se reutiliza
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtp.hostinger.com",
   port: Number(process.env.SMTP_PORT) || 465,
   secure: true, // Puerto 465 usa SSL directo
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: smtpUser,
+    pass: smtpPass,
   },
   tls: {
     rejectUnauthorized: false,
   },
 });
 
-const FROM_ADDRESS = `${process.env.SMTP_FROM_NAME || "Transfers in Barcelona"} <${process.env.SMTP_USER || "info@transfersinbarcelona.com"}>`;
+const FROM_ADDRESS = `${cleanEnv(process.env.SMTP_FROM_NAME) || "Transfers in Barcelona"} <${smtpUser || "info@transfersinbarcelona.com"}>`;
 
 export interface SendEmailOptions {
   to: string | string[];
@@ -78,7 +84,7 @@ export async function sendEmail({
 
   const recipient = Array.isArray(to) ? to.join(", ") : to;
 
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  if (!smtpUser || !smtpPass) {
     console.warn(`[MAILER_MOCK] SMTP no configurado. Email simulado para: ${recipient} | ${subject}`);
     await logEmailAttempt({ recipient, subject, eventType, bookingId, status: "SENT", errorReason: "MOCK_MODE" });
     return true;
