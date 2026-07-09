@@ -49,14 +49,29 @@ export default async function MarketingHeader() {
             <User className="h-5 w-5" aria-hidden="true" />
           </Link>
         ) : (
-          <Link
-            href="/booking"
-            className="inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-bold text-gray-900 shadow-lg transition-transform hover:-translate-y-0.5"
-            style={{ backgroundColor: accentColor }}
-          >
-            Reservar
-            <ChevronRight className="h-[18px] w-[18px]" aria-hidden="true" />
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="text-sm font-semibold text-white/90 transition-colors hover:text-[#D4AF37]"
+            >
+              Acceder
+            </Link>
+            <span className="text-white/20">|</span>
+            <Link
+              href="/register"
+              className="text-sm font-semibold text-white/90 transition-colors hover:text-[#D4AF37] mr-1"
+            >
+              Registro
+            </Link>
+            <Link
+              href="/booking"
+              className="inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-bold text-gray-900 shadow-lg transition-transform hover:-translate-y-0.5"
+              style={{ backgroundColor: accentColor }}
+            >
+              Reservar
+              <ChevronRight className="h-[18px] w-[18px]" aria-hidden="true" />
+            </Link>
+          </div>
         )}
       </nav>
 
