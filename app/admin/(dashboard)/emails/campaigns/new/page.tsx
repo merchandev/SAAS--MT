@@ -7,10 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Save, ArrowLeft, Loader2, Send } from "lucide-react";
+import { Save, ArrowLeft, Loader2, Send, Eye, Code, Type } from "lucide-react";
 import Link from "next/link";
-import { sendCampaignAction } from "./campaign.actions";
+import { sendCampaignAction, previewCampaignHtmlAction } from "./campaign.actions";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -31,8 +37,25 @@ export default function CampaignComposerClient() {
   const [recipientsRaw, setRecipientsRaw] = useState("");
   const [contactPhone, setContactPhone] = useState("+34 662 02 41 36");
 
+  const [editorMode, setEditorMode] = useState<"visual" | "html">("visual");
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
+  const handlePreview = async () => {
+    setIsPreviewLoading(true);
+    setIsPreviewOpen(true);
+    const res = await previewCampaignHtmlAction(subject, body, contactPhone);
+    if (res.success && res.html) {
+      setPreviewHtml(res.html);
+    } else {
+      setPreviewHtml("<p style='color:red;'>Error al generar la previsualización.</p>");
+    }
+    setIsPreviewLoading(false);
+  };
 
   const handleSend = async () => {
     // Validate
@@ -86,6 +109,10 @@ export default function CampaignComposerClient() {
             Redacta y envía correos masivos usando el diseño corporativo.
           </p>
         </div>
+        <Button onClick={handlePreview} variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+          <Eye className="h-4 w-4 mr-2" />
+          Previsualizar Correo
+        </Button>
       </div>
 
       {message && (
@@ -143,15 +170,51 @@ export default function CampaignComposerClient() {
         </div>
 
         <div className="space-y-2">
-          <Label>Cuerpo del correo</Label>
+          <div className="flex items-center justify-between">
+            <Label>Cuerpo del correo</Label>
+            <div className="flex bg-gray-100 p-1 rounded-md">
+              <button
+                type="button"
+                onClick={() => setEditorMode("visual")}
+                className={`flex items-center px-3 py-1.5 text-xs font-medium rounded-sm transition-all ${
+                  editorMode === "visual"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                <Type className="w-3 h-3 mr-1.5" /> Visual
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditorMode("html")}
+                className={`flex items-center px-3 py-1.5 text-xs font-medium rounded-sm transition-all ${
+                  editorMode === "html"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                <Code className="w-3 h-3 mr-1.5" /> HTML Puro
+              </button>
+            </div>
+          </div>
+
           <div className="border rounded-md overflow-hidden bg-white">
-            <ReactQuill
-              theme="snow"
-              value={body}
-              onChange={setBody}
-              modules={{ toolbar: toolbarOptions }}
-              className="min-h-[400px]"
-            />
+            {editorMode === "visual" ? (
+              <ReactQuill
+                theme="snow"
+                value={body}
+                onChange={setBody}
+                modules={{ toolbar: toolbarOptions }}
+                className="min-h-[400px]"
+              />
+            ) : (
+              <Textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                className="min-h-[400px] font-mono text-sm border-0 focus-visible:ring-0 p-4 rounded-none"
+                placeholder="Escribe o pega aquí tu código HTML..."
+              />
+            )}
           </div>
         </div>
 
@@ -169,6 +232,30 @@ export default function CampaignComposerClient() {
           Enviar Campaña
         </Button>
       </div>
+
+      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+        <DialogContent className="max-w-4xl w-full h-[90vh] flex flex-col p-0 overflow-hidden">
+          <DialogHeader className="p-4 border-b bg-gray-50/80 backdrop-blur-sm sticky top-0 z-10">
+            <DialogTitle>Previsualización del Correo</DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-hidden bg-gray-100 flex items-center justify-center p-4">
+            {isPreviewLoading ? (
+              <div className="flex flex-col items-center text-gray-500">
+                <Loader2 className="h-8 w-8 animate-spin mb-4" />
+                <p>Generando vista previa...</p>
+              </div>
+            ) : (
+              <div className="w-full max-w-[600px] h-full bg-white shadow-xl rounded-md overflow-hidden border border-gray-200">
+                <iframe
+                  srcDoc={previewHtml || ""}
+                  title="Preview"
+                  className="w-full h-full border-0"
+                />
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
