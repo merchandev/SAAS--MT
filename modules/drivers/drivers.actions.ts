@@ -1,9 +1,9 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { driverCreationSchema, DriverCreationInput } from "./drivers.schemas";
-import { requireRole } from "../auth/permissions";
+import { requireRoleAction as requireRole } from "../auth/permissions";
 import { authService } from "../auth/auth.service";
 import bcrypt from "bcryptjs";
 
@@ -12,7 +12,7 @@ export async function createDriverAction(data: DriverCreationInput) {
 
   const parsed = driverCreationSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -43,7 +43,7 @@ export async function createDriverAction(data: DriverCreationInput) {
     return { success: true, data: driver };
   } catch (error: any) {
     if (error.code === 'P2002') {
-      return { error: "El correo ya está en uso." };
+      return { error: "El correo ya estÃ¡ en uso." };
     }
     return { error: "Error al registrar el conductor" };
   }

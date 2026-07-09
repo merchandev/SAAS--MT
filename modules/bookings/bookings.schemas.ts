@@ -39,6 +39,9 @@ export const adminBookingSchema = z.object({
   passengers: z.coerce.number().int().min(1, "Debe haber al menos 1 pasajero"),
   luggage: z.coerce.number().int().min(0, "El equipaje no puede ser negativo"),
   flightNumber: z.string().optional(),
+  pickupSign: z.string().optional(),
+  babySeats: z.coerce.number().int().min(0).optional().default(0),
+  wheelchair: z.boolean().optional().default(false),
   
   internalNotes: z.string().optional(),
   customerNotes: z.string().optional(),

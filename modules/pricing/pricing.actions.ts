@@ -1,8 +1,8 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { requireRole } from "../auth/permissions";
+import { requireRoleAction as requireRole } from "../auth/permissions";
 import { authService } from "../auth/auth.service";
 import { discountCodeSchema, priceRuleSchema } from "./pricing.schemas";
 
@@ -28,7 +28,7 @@ export async function createDiscountCode(data: {
 
   const parsed = discountCodeSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, error: "Datos inválidos" };
+    return { success: false, error: "Datos invÃ¡lidos" };
   }
 
   try {
@@ -51,7 +51,7 @@ export async function createDiscountCode(data: {
     return { success: true };
   } catch (error) {
     console.error("Error creating discount code:", error);
-    return { success: false, error: "No se pudo crear el código de descuento. Es posible que el código ya exista." };
+    return { success: false, error: "No se pudo crear el cÃ³digo de descuento. Es posible que el cÃ³digo ya exista." };
   }
 }
 
@@ -69,7 +69,7 @@ export async function updateDiscountCode(id: string, data: {
 
   const parsed = discountCodeSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, error: "Datos inválidos" };
+    return { success: false, error: "Datos invÃ¡lidos" };
   }
 
   try {
@@ -93,7 +93,7 @@ export async function updateDiscountCode(id: string, data: {
     return { success: true };
   } catch (error) {
     console.error("Error updating discount code:", error);
-    return { success: false, error: "No se pudo actualizar el código de descuento." };
+    return { success: false, error: "No se pudo actualizar el cÃ³digo de descuento." };
   }
 }
 
@@ -164,7 +164,7 @@ export async function createPriceRule(data: {
 
   const parsed = priceRuleSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, error: "Datos inválidos" };
+    return { success: false, error: "Datos invÃ¡lidos" };
   }
 
   try {
@@ -198,7 +198,7 @@ export async function updatePriceRule(id: string, data: {
 
   const parsed = priceRuleSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, error: "Datos inválidos" };
+    return { success: false, error: "Datos invÃ¡lidos" };
   }
 
   try {

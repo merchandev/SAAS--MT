@@ -47,6 +47,26 @@ export async function POST(req: Request) {
       },
     });
 
+    try {
+      const { sendEmail } = await import("@/lib/mailer");
+      const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || "info@transfersinbarcelona.com";
+      await sendEmail({
+        to: adminEmail,
+        subject: `Nuevo mensaje de contacto de ${validatedData.name}`,
+        html: `
+          <h3>Has recibido un nuevo mensaje de contacto</h3>
+          <p><strong>Nombre:</strong> ${validatedData.name}</p>
+          <p><strong>Email:</strong> ${validatedData.email}</p>
+          <p><strong>Teléfono:</strong> ${validatedData.phone || "No proporcionado"}</p>
+          <p><strong>Asunto:</strong> ${validatedData.subject || "Sin asunto"}</p>
+          <p><strong>Mensaje:</strong></p>
+          <p>${validatedData.message.replace(/\\n/g, "<br/>")}</p>
+        `,
+      });
+    } catch (e) {
+      console.error("No se pudo enviar el correo de notificación de contacto", e);
+    }
+
     return NextResponse.json(contactMessage, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {

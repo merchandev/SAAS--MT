@@ -1,10 +1,10 @@
-"use server";
+﻿"use server";
 
 import bcrypt from "bcryptjs";
 import type { Prisma, Role, User } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/modules/auth/permissions";
+import { requireRoleAction as requireRole } from "@/modules/auth/permissions";
 import {
   adminUserCreateSchema,
   adminUserUpdateSchema,
@@ -190,7 +190,7 @@ export async function createUserAction(input: AdminUserCreateInput) {
   const parsed = adminUserCreateSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { error: "Datos de usuario inválidos", details: parsed.error.flatten() };
+    return { error: "Datos de usuario invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   const data = parsed.data;
@@ -246,7 +246,7 @@ export async function updateUserAction(userId: string, input: AdminUserUpdateInp
   const parsed = adminUserUpdateSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { error: "Datos de usuario inválidos", details: parsed.error.flatten() };
+    return { error: "Datos de usuario invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   const existing = await getExistingUserForGuard(userId);
@@ -345,7 +345,7 @@ export async function resetUserPasswordAction(userId: string, input: PasswordRes
   const parsed = passwordResetSchema.safeParse(input);
 
   if (!parsed.success) {
-    return { error: "Contraseña inválida", details: parsed.error.flatten() };
+    return { error: "ContraseÃ±a invÃ¡lida", details: parsed.error.flatten() };
   }
 
   const existing = await prisma.user.findUnique({ where: { id: userId } });
@@ -416,7 +416,7 @@ export async function forceLogoutUserAction(userId: string) {
   if (!existing) return { error: "Usuario no encontrado." };
   
   if (!canManageRole(session, existing.role, existing.role)) {
-    return { error: "Solo un super administrador puede cerrar la sesión de super administradores." };
+    return { error: "Solo un super administrador puede cerrar la sesiÃ³n de super administradores." };
   }
 
   await prisma.$transaction(async (tx) => {

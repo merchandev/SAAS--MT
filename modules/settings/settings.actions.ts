@@ -1,9 +1,9 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath, updateTag } from "next/cache";
 import { updateSettingsSchema, UpdateSettingsInput } from "./settings.schemas";
-import { requireRole } from "../auth/permissions";
+import { requireRoleAction as requireRole } from "../auth/permissions";
 import { authService } from "../auth/auth.service";
 
 export async function upsertSettingsAction(data: UpdateSettingsInput) {
@@ -11,7 +11,7 @@ export async function upsertSettingsAction(data: UpdateSettingsInput) {
 
   const parsed = updateSettingsSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -50,6 +50,6 @@ export async function upsertSettingsAction(data: UpdateSettingsInput) {
     return { success: true };
   } catch (error: any) {
     console.error("Settings Update Error:", error);
-    return { error: "Error al guardar la configuración global." };
+    return { error: "Error al guardar la configuraciÃ³n global." };
   }
 }

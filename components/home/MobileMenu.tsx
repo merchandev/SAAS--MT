@@ -4,10 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, User } from "lucide-react";
 import GoogleTranslate from "@/components/ui/GoogleTranslate";
+import { useParams } from "next/navigation";
+import { localizedPath } from "@/lib/i18n-utils";
 import MarketingLogo from "@/components/marketing/MarketingLogo";
 
 export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false }: { accentColor?: string; isCustomer?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
+  const params = useParams();
+  const currentLocale = (params.locale as string) || "es";
 
   useEffect(() => {
     if (isOpen) {
@@ -61,28 +65,28 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
               Cómo funciona
             </a>
             <Link
-              href="/tours-privados"
+              href={localizedPath("/tours-privados", currentLocale)}
               onClick={() => setIsOpen(false)}
               className="hover:text-[#D4AF37] transition-colors duration-300 py-2 border-b border-white/5"
             >
               Tours Privados
             </Link>
             <Link
-              href="/blog"
+              href={localizedPath("/blog", currentLocale)}
               onClick={() => setIsOpen(false)}
               className="hover:text-[#D4AF37] transition-colors duration-300 py-2 border-b border-white/5"
             >
               Blog
             </Link>
             <Link
-              href="/preguntas-frecuentes"
+              href={localizedPath("/preguntas-frecuentes", currentLocale)}
               onClick={() => setIsOpen(false)}
               className="hover:text-[#D4AF37] transition-colors duration-300 py-2 border-b border-white/5"
             >
               Preguntas Frecuentes
             </Link>
             <Link
-              href="/contacto"
+              href={localizedPath("/contacto", currentLocale)}
               onClick={() => setIsOpen(false)}
               className="hover:text-[#D4AF37] transition-colors duration-300 py-2 border-b border-white/5"
             >
@@ -97,7 +101,7 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
             <div className="mt-4 flex flex-col gap-3">
               {isCustomer ? (
                 <Link
-                  href="/customer/dashboard"
+                  href={localizedPath("/customer/dashboard", currentLocale)}
                   onClick={() => setIsOpen(false)}
                   className="text-black font-bold px-4 py-4 rounded-xl transition-colors duration-300 text-center flex items-center justify-center gap-2 text-base"
                   style={{ backgroundColor: accentColor }}
@@ -108,7 +112,7 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
               ) : (
                 <>
                   <Link
-                    href="/booking"
+                    href={localizedPath("/booking", currentLocale)}
                     onClick={() => setIsOpen(false)}
                     className="text-black font-bold px-4 py-4 rounded-xl transition-transform active:scale-95 duration-300 text-center text-base shadow-lg"
                     style={{ backgroundColor: accentColor }}
@@ -117,14 +121,14 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
                   </Link>
                   <div className="grid grid-cols-2 gap-3 mt-2">
                     <Link 
-                      href="/login" 
+                      href={localizedPath("/login", currentLocale)}
                       onClick={() => setIsOpen(false)}
                       className="text-white font-semibold px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-transparent transition-colors duration-300 text-center"
                     >
                       Ingresar
                     </Link>
                     <Link 
-                      href="/register" 
+                      href={localizedPath("/register", currentLocale)}
                       onClick={() => setIsOpen(false)}
                       className="text-white font-semibold px-4 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors duration-300 text-center"
                     >

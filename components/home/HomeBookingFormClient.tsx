@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Clock } from "lucide-react";
 import { getSpainToday } from "@/lib/utils";
 import PlaceAutocompleteInput from "@/components/maps/PlaceAutocompleteInput";
+import { localizedPath } from "@/lib/i18n-utils";
 
 const timeOptions = Array.from({ length: 24 * 4 }).map((_, i) => {
   const hours = Math.floor(i / 4).toString().padStart(2, '0');
@@ -21,6 +22,8 @@ interface BookingFormProps {
 
 export default function HomeBookingFormClient({ variant = "hero" }: BookingFormProps) {
   const router = useRouter();
+  const urlParams = useParams();
+  const currentLocale = (urlParams.locale as string) || "es";
   const [formData, setFormData] = useState({
     originAddress: "",
     originPlaceId: "",
@@ -44,7 +47,7 @@ export default function HomeBookingFormClient({ variant = "hero" }: BookingFormP
     if (formData.date) params.append("date", formData.date);
     if (formData.time) params.append("time", formData.time);
 
-    router.push(`/booking?${params.toString()}`);
+    router.push(localizedPath(`/booking?${params.toString()}`, currentLocale));
   };
 
   const isClean = variant === "clean";

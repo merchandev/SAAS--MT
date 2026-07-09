@@ -1,11 +1,11 @@
-"use server";
+﻿"use server";
 
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { authService } from "../auth/auth.service";
-import { requireRole } from "../auth/permissions";
+import { requireRoleAction as requireRole } from "../auth/permissions";
 import {
   agencyCreationSchema,
   agencyUserCreationSchema,
@@ -52,7 +52,7 @@ export async function createHotelAction(data: HotelCreationInput) {
 
   const parsed = hotelCreationSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -80,7 +80,7 @@ export async function updateHotelAction(hotelId: string, data: HotelUpdateInput)
 
   const parsed = updateHotelSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -126,7 +126,7 @@ export async function createHotelUserAction(data: HotelUserCreationInput) {
 
   const parsed = hotelUserCreationSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -150,7 +150,7 @@ export async function createHotelUserAction(data: HotelUserCreationInput) {
     return { success: true, userId: user.id };
   } catch (error: any) {
     if (error.code === "P2002") {
-      return { error: "El correo ya está en uso." };
+      return { error: "El correo ya estÃ¡ en uso." };
     }
     return { error: "Error al crear el usuario B2B" };
   }
@@ -161,7 +161,7 @@ export async function createAgencyAction(data: AgencyCreationInput) {
 
   const parsed = agencyCreationSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -189,7 +189,7 @@ export async function updateAgencyAction(agencyId: string, data: AgencyUpdateInp
 
   const parsed = updateAgencySchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -254,7 +254,7 @@ export async function createAgencyUserAction(data: AgencyUserCreationInput) {
 
   const parsed = agencyUserCreationSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -278,7 +278,7 @@ export async function createAgencyUserAction(data: AgencyUserCreationInput) {
     return { success: true, userId: user.id };
   } catch (error: any) {
     if (error.code === "P2002") {
-      return { error: "El correo ya está en uso." };
+      return { error: "El correo ya estÃ¡ en uso." };
     }
     return { error: "Error al crear el usuario de agencia" };
   }

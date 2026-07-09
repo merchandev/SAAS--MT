@@ -1,14 +1,14 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/modules/auth/permissions";
+import { requireRoleAction as requireRole } from "@/modules/auth/permissions";
 import { authService } from "@/modules/auth/auth.service";
 
 /**
- * Guarda la posición actual del conductor autenticado en la base de datos
+ * Guarda la posiciÃ³n actual del conductor autenticado en la base de datos
  */
 export async function updateDriverLocationAction(lat: number, lng: number) {
-  // Solo los conductores pueden actualizar su propia ubicación
+  // Solo los conductores pueden actualizar su propia ubicaciÃ³n
   await requireRole(["DRIVER"]);
   
   const session = await authService.getSession();
@@ -37,17 +37,17 @@ export async function updateDriverLocationAction(lat: number, lng: number) {
     return { success: true };
   } catch (error) {
     console.error("Error updating driver location:", error);
-    return { error: "Error al actualizar ubicación" };
+    return { error: "Error al actualizar ubicaciÃ³n" };
   }
 }
 
 /**
- * Obtiene la última posición conocida de un conductor por su ID
+ * Obtiene la Ãºltima posiciÃ³n conocida de un conductor por su ID
  * (Utilizado por el Administrador o Cliente para ver el mapa en vivo)
  */
 export async function getDriverLocationAction(driverId: string) {
-  // Idealmente, requerimos algún rol o validamos si es el cliente asociado al viaje
-  // Por ahora lo permitimos a ADMIN y OPERATOR. (Si lo quieres abrir al cliente público habría que revisar)
+  // Idealmente, requerimos algÃºn rol o validamos si es el cliente asociado al viaje
+  // Por ahora lo permitimos a ADMIN y OPERATOR. (Si lo quieres abrir al cliente pÃºblico habrÃ­a que revisar)
   // await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]); 
   
   try {
@@ -61,7 +61,7 @@ export async function getDriverLocationAction(driverId: string) {
     });
 
     if (!driver || !driver.currentLat || !driver.currentLng) {
-      return { error: "Ubicación no disponible" };
+      return { error: "UbicaciÃ³n no disponible" };
     }
 
     return { 
@@ -71,6 +71,6 @@ export async function getDriverLocationAction(driverId: string) {
       updatedAt: driver.lastLocationUpdate 
     };
   } catch (error) {
-    return { error: "Error al obtener ubicación" };
+    return { error: "Error al obtener ubicaciÃ³n" };
   }
 }

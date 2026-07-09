@@ -1,13 +1,14 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { adminBookingSchema, AdminBookingInput } from "./bookings.schemas";
 import { pricingService } from "../pricing/pricing.service";
 import { generateUniquePublicCode } from "./public-code";
 import { mapsService } from "../maps/maps.service";
-import { requireRole } from "../auth/permissions";
+import { requireRoleAction as requireRole } from "../auth/permissions";
 import { distanceInputSchema, type DistanceInput } from "../maps/maps.schemas";
 
 import { settingsQueries } from "../settings/settings.queries";
@@ -101,7 +102,7 @@ export async function getDistanceEstimationAction(input: DistanceInput) {
   ].join("->");
   const rateLimitKey = buildRateLimitKey("maps-estimate", requestMeta, routeKey);
   if (!(await mapsRateLimiter.check(rateLimitKey))) {
-    return { success: false as const, error: "Demasiadas peticiones. Inténtelo más tarde." };
+    return { success: false as const, error: "Demasiadas peticiones. IntÃ©ntelo mÃ¡s tarde." };
   }
 
   try {
@@ -114,7 +115,7 @@ export async function getDistanceEstimationAction(input: DistanceInput) {
     console.error("Distance estimation error:", error);
     return {
       success: false as const,
-      error: "No se pudo calcular la ruta real. Revisa las direcciones o la configuración de Google Maps.",
+      error: "No se pudo calcular la ruta real. Revisa las direcciones o la configuraciÃ³n de Google Maps.",
     };
   }
 }
@@ -124,14 +125,14 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
 
   const parsed = adminBookingSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos inválidos", details: parsed.error.flatten() };
+    return { error: "Datos invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   const {
     customerName, customerEmail, customerPhone,
     vehicleId, originAddress, originPlaceId, destinationAddress, destinationPlaceId,
     serviceDate, serviceTime,
-    tripType, passengers, luggage, flightNumber, internalNotes, customerNotes
+    tripType, passengers, luggage, flightNumber, pickupSign, babySeats, wheelchair, internalNotes, customerNotes
   } = parsed.data;
 
   try {
@@ -150,16 +151,16 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
 
     const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
     if (!vehicle || !vehicle.isActive) {
-      throw new Error("El vehículo no está disponible.");
+      throw new Error("El vehÃ­culo no estÃ¡ disponible.");
     }
     if (passengers > vehicle.passengerCapacity) {
-      throw new Error(`Número de pasajeros supera la capacidad del vehículo (${vehicle.passengerCapacity}).`);
+      throw new Error(`NÃºmero de pasajeros supera la capacidad del vehÃ­culo (${vehicle.passengerCapacity}).`);
     }
     if (luggage > vehicle.luggageCapacity) {
-      throw new Error(`Número de maletas supera la capacidad del vehículo (${vehicle.luggageCapacity}).`);
+      throw new Error(`NÃºmero de maletas supera la capacidad del vehÃ­culo (${vehicle.luggageCapacity}).`);
     }
 
-    // 1. Usar el motor de precios (Principio de Responsabilidad Única)
+    // 1. Usar el motor de precios (Principio de Responsabilidad Ãšnica)
     const pricingResult = await pricingService.calculateBookingPrice({
       vehicleId,
       distanceKm: finalDistanceKm,
@@ -168,22 +169,30 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
       isAirportTrip: tripContext.isAirportTrip,
     });
 
-    // 2. Transacción de creación (Cliente + Reserva + Auditoría)
+    // 2. TransacciÃ³n de creaciÃ³n (Cliente + Reserva + AuditorÃ­a)
     const booking = await prisma.$transaction(async (tx) => {
-      // 2.1 Buscar o crear usuario
       let user = await tx.user.findUnique({ where: { email: customerEmail } });
-      let temporaryPassword = null;
+      let resetToken = null;
       
       if (!user) {
-        temporaryPassword = Math.random().toString(36).slice(-8);
-        const passwordHash = await bcrypt.hash(temporaryPassword, 10);
+        // Generate a random secure hash for the initial password
+        const initialPasswordHash = await bcrypt.hash(crypto.randomBytes(32).toString("hex"), 10);
         user = await tx.user.create({
           data: {
             email: customerEmail,
-            passwordHash,
+            passwordHash: initialPasswordHash,
             fullName: customerName,
             phone: customerPhone,
             role: "CUSTOMER",
+          }
+        });
+        
+        resetToken = crypto.randomBytes(32).toString("hex");
+        await tx.passwordResetToken.create({
+          data: {
+            email: customerEmail,
+            token: resetToken,
+            expiresAt: new Date(Date.now() + 1000 * 60 * 60),
           }
         });
       }
@@ -195,7 +204,7 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
         create: { email: customerEmail, fullName: customerName, phone: customerPhone, userId: user.id },
       });
 
-      // Generar código público único para seguimiento y pagos
+      // Generar cÃ³digo pÃºblico Ãºnico para seguimiento y pagos
       const publicCode = await generateUniquePublicCode(tx);
 
       // Crear Booking
@@ -216,6 +225,9 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
           passengers,
           luggage,
           flightNumber,
+          pickupSign,
+          babySeats,
+          wheelchair,
           basePrice: pricingResult.basePrice,
           surchargeAmount: pricingResult.surcharges.total,
           discountAmount: pricingResult.discounts,
@@ -230,7 +242,7 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
         }
       });
 
-      // Auditoría
+      // AuditorÃ­a
       await tx.auditLog.create({
         data: {
           entityType: "Booking",
@@ -245,15 +257,15 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
         }
       });
 
-      return { newBooking, temporaryPassword };
+      return { newBooking, resetToken };
     });
 
-    if (booking.temporaryPassword) {
+    if (booking.resetToken) {
       try {
         const { emailsService } = await import("../notifications/emails.service");
-        await emailsService.sendAccountCreatedEmail(customerEmail, customerName, booking.temporaryPassword);
+        await emailsService.sendWelcomeAndSetPasswordEmail(customerEmail, customerName, booking.resetToken);
       } catch (err) {
-        console.error("Error al enviar email de cuenta creada:", err);
+        console.error("Error al enviar email de bienvenida y contraseña:", err);
       }
     }
 
@@ -269,26 +281,26 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
   const requestMeta = getRequestMeta(await headers());
   const rlKey = buildRateLimitKey("public-booking-ip", requestMeta);
   if (!(await publicBookingRateLimiter.check(rlKey))) {
-    return { error: "Demasiadas peticiones. Inténtelo más tarde." };
+    return { error: "Demasiadas peticiones. IntÃ©ntelo mÃ¡s tarde." };
   }
 
   const { publicBookingSchema } = await import("./bookings.schemas");
   const parsed = publicBookingSchema.safeParse(data);
   if (!parsed.success) {
     const fieldErrors = Object.values(parsed.error.flatten().fieldErrors).flat().join(", ");
-    return { error: `Datos inválidos: ${fieldErrors}`, details: parsed.error.flatten() };
+    return { error: `Datos invÃ¡lidos: ${fieldErrors}`, details: parsed.error.flatten() };
   }
 
   const {
     customerName, customerEmail, customerPhone,
     vehicleId, originAddress, originPlaceId, destinationAddress, destinationPlaceId,
     serviceDate, serviceTime,
-    tripType, passengers, luggage, flightNumber, customerNotes
+    tripType, passengers, luggage, flightNumber, pickupSign, babySeats, wheelchair, customerNotes
   } = parsed.data;
 
   const emailRateLimitKey = buildRateLimitKey("public-booking-email", requestMeta, customerEmail);
   if (!(await publicBookingRateLimiter.check(emailRateLimitKey))) {
-    return { error: "Demasiadas peticiones. Inténtelo más tarde." };
+    return { error: "Demasiadas peticiones. IntÃ©ntelo mÃ¡s tarde." };
   }
 
   // Validate MIN_HOURS_AHEAD_BOOKING
@@ -298,7 +310,7 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
     const now = new Date();
     const diffHours = (serviceDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
     if (diffHours < minHours) {
-      return { error: `Las reservas deben hacerse con al menos ${minHours} horas de antelación.` };
+      return { error: `Las reservas deben hacerse con al menos ${minHours} horas de antelaciÃ³n.` };
     }
   }
 
@@ -330,13 +342,13 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
 
     const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId } });
     if (!vehicle || !vehicle.isActive) {
-      throw new Error("El vehículo no está disponible.");
+      throw new Error("El vehÃ­culo no estÃ¡ disponible.");
     }
     if (passengers > vehicle.passengerCapacity) {
-      throw new Error(`Número de pasajeros supera la capacidad del vehículo (${vehicle.passengerCapacity}).`);
+      throw new Error(`NÃºmero de pasajeros supera la capacidad del vehÃ­culo (${vehicle.passengerCapacity}).`);
     }
     if (luggage > vehicle.luggageCapacity) {
-      throw new Error(`Número de maletas supera la capacidad del vehículo (${vehicle.luggageCapacity}).`);
+      throw new Error(`NÃºmero de maletas supera la capacidad del vehÃ­culo (${vehicle.luggageCapacity}).`);
     }
 
     const mapResult = await mapsService.calculateDistanceAndDuration(
@@ -365,18 +377,27 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
     const booking = await prisma.$transaction(async (tx) => {
       // 1. Buscar o crear usuario
       let user = await tx.user.findUnique({ where: { email: customerEmail } });
-      let temporaryPassword = null;
+      let resetToken = null;
       
       if (!user) {
-        temporaryPassword = Math.random().toString(36).slice(-8);
-        const passwordHash = await bcrypt.hash(temporaryPassword, 10);
+        // Generate a random secure hash for the initial password
+        const initialPasswordHash = await bcrypt.hash(crypto.randomBytes(32).toString("hex"), 10);
         user = await tx.user.create({
           data: {
             email: customerEmail,
-            passwordHash,
+            passwordHash: initialPasswordHash,
             fullName: customerName,
             phone: customerPhone,
             role: "CUSTOMER",
+          }
+        });
+        
+        resetToken = crypto.randomBytes(32).toString("hex");
+        await tx.passwordResetToken.create({
+          data: {
+            email: customerEmail,
+            token: resetToken,
+            expiresAt: new Date(Date.now() + 1000 * 60 * 60),
           }
         });
       }
@@ -407,6 +428,9 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
           passengers,
           luggage,
           flightNumber,
+          pickupSign,
+          babySeats,
+          wheelchair,
           basePrice: pricingResult.basePrice,
           surchargeAmount: pricingResult.surcharges.total,
           discountAmount: pricingResult.discounts,
@@ -442,7 +466,7 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
             data: { usedCount: { increment: 1 } }
           });
           if (updateResult.count === 0) {
-             throw new Error("El código de descuento acaba de alcanzar su límite de usos simultáneos.");
+             throw new Error("El cÃ³digo de descuento acaba de alcanzar su lÃ­mite de usos simultÃ¡neos.");
           }
         } else {
           await tx.discountCode.update({
@@ -452,17 +476,17 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
         }
       }
 
-      return { newBooking, temporaryPassword };
+      return { newBooking, resetToken };
     });
 
     const receiptToken = await createReceiptAccessToken(booking.newBooking);
 
-    if (booking.temporaryPassword) {
+    if (booking.resetToken) {
       try {
         const { emailsService } = await import("../notifications/emails.service");
-        await emailsService.sendAccountCreatedEmail(customerEmail, customerName, booking.temporaryPassword);
+        await emailsService.sendWelcomeAndSetPasswordEmail(customerEmail, customerName, booking.resetToken);
       } catch (err) {
-        console.error("Error al enviar email de cuenta creada:", err);
+        console.error("Error al enviar email de bienvenida y contraseña:", err);
       }
     }
 
@@ -483,7 +507,7 @@ export async function updateBookingStatusAction(id: string, newStatus: any) {
   
   const parsedStatus = updateStatusSchema.safeParse(newStatus);
   if (!parsedStatus.success) {
-    return { error: "Estado inválido" };
+    return { error: "Estado invÃ¡lido" };
   }
   
   const validatedStatus = parsedStatus.data;
@@ -516,7 +540,7 @@ export async function updateBookingStatusAction(id: string, newStatus: any) {
       });
     });
 
-    // ── Notificaciones por email según cambio de estado ──────────────────
+    // â”€â”€ Notificaciones por email segÃºn cambio de estado â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const prevStatus = booking.bookingStatus;
     if (prevStatus !== validatedStatus) {
       try {
@@ -685,7 +709,7 @@ export async function moveBookingToTrashAction(id: string) {
         data: {
           deletedAt,
           deletedBy: session.userId,
-          deletedReason: "Movida a la papelera desde el panel de administración",
+          deletedReason: "Movida a la papelera desde el panel de administraciÃ³n",
         },
       });
 

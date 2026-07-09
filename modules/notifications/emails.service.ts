@@ -486,34 +486,51 @@ export const emailsService = {
   },
 
   /**
-   * Cuenta creada (mantener compatibilidad con código existente)
+   * Cuenta creada - Flujo de seguridad sin contraseña en claro
    */
-  async sendAccountCreatedEmail(
+  async sendWelcomeAndSetPasswordEmail(
     email: string,
     fullName: string,
-    temporaryPassword: string
+    resetToken: string
   ): Promise<boolean> {
     try {
-      const { AccountCreatedEmail } = await import(
-        "@/components/emails/AccountCreatedEmail"
-      );
+      const resetUrl = `${APP_URL}/es/reset-password?token=${resetToken}`;
 
-      const html = await render(
-        React.createElement(AccountCreatedEmail, {
-          customerName: fullName,
-          email,
-          temporaryPassword,
-          loginUrl: `${APP_URL}/login`,
-        })
-      );
+      const html = `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #000000; color: #ffffff; padding: 40px; border-radius: 8px; border: 1px solid #222;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.5px;">
+              Me<span style="color: #D4AF37;">Transfers</span>
+            </h1>
+            <p style="color: #888; font-size: 12px; margin-top: 5px; text-transform: uppercase; letter-spacing: 2px;">Barcelona</p>
+          </div>
+          
+          <div style="background-color: #111111; padding: 30px; border-radius: 6px; border: 1px solid #1a1a1a;">
+            <h2 style="color: #D4AF37; margin-top: 0; font-size: 20px;">Bienvenido/a, ${fullName}</h2>
+            <p style="color: #cccccc; line-height: 1.6; font-size: 15px;">Hemos creado tu cuenta tras tu reserva.</p>
+            <p style="color: #cccccc; line-height: 1.6; font-size: 15px;">Para acceder a tu panel de cliente y gestionar tus traslados, por favor establece tu contraseña segura haciendo clic en el botón inferior:</p>
+            
+            <div style="text-align: center; margin: 40px 0;">
+              <a href="${resetUrl}" style="background-color: #D4AF37; color: #000000; text-decoration: none; padding: 14px 28px; border-radius: 4px; font-weight: 600; display: inline-block; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Crear Mi Contraseña</a>
+            </div>
+            
+            <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;" />
+            <p style="color: #666666; font-size: 13px; line-height: 1.5; margin: 0;">Este enlace de seguridad expirará automáticamente en 1 hora por motivos de protección.</p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #444; font-size: 12px;">&copy; ${new Date().getFullYear()} Transfers in Barcelona. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      `;
 
       return sendEmail({
         to: email,
-        subject: `Bienvenido/a a Transfers in Barcelona — Tu cuenta ha sido creada`,
+        subject: \`Bienvenido/a a Transfers in Barcelona — Establece tu contraseña\`,
         html,
       });
     } catch (err) {
-      console.error("[EMAIL_ERROR] sendAccountCreatedEmail:", err);
+      console.error("[EMAIL_ERROR] sendWelcomeAndSetPasswordEmail:", err);
       return false;
     }
   },

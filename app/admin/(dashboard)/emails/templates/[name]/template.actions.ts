@@ -1,7 +1,7 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/modules/auth/permissions";
+import { requireRoleAction as requireRole } from "@/modules/auth/permissions";
 import { sendEmail } from "@/lib/mailer";
 import { getDynamicEmailHtml } from "@/lib/email-templating";
 import { revalidatePath } from "next/cache";
@@ -51,14 +51,14 @@ export async function testTemplateAction(data: {
 
     // Use dummy data for testing
     const dummyVariables = {
-      customerName: "Juan Pérez (Test)",
+      customerName: "Juan PÃ©rez (Test)",
       publicCode: "MT-TEST-1234",
-      serviceDate: "Sábado, 15 de julio de 2026",
+      serviceDate: "SÃ¡bado, 15 de julio de 2026",
       serviceTime: "14:30",
       originAddress: "Aeropuerto BCN",
       destinationAddress: "Hotel W Barcelona",
       passengers: 2,
-      totalPrice: "€45.00",
+      totalPrice: "â‚¬45.00",
       receiptUrl: "https://transfersinbarcelona.com",
     };
 

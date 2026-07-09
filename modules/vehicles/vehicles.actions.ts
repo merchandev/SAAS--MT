@@ -1,7 +1,7 @@
-import { revalidatePath } from "next/cache";
+﻿import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { vehicleSchema, type VehicleInput } from "./vehicles.schemas";
-import { requireRole } from "@/modules/auth/permissions";
+import { requireRoleAction as requireRole } from "@/modules/auth/permissions";
 import { authService } from "@/modules/auth/auth.service";
 
 export async function createVehicleAction(data: VehicleInput) {
@@ -10,7 +10,7 @@ export async function createVehicleAction(data: VehicleInput) {
 
   const parsed = vehicleSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos de vehículo inválidos", details: parsed.error.flatten() };
+    return { error: "Datos de vehÃ­culo invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -30,7 +30,7 @@ export async function createVehicleAction(data: VehicleInput) {
     revalidatePath("/admin/vehicles");
     return { success: true, data: vehicle };
   } catch (error: any) {
-    return { error: "Error al crear el vehículo. Asegúrate de que el slug sea único." };
+    return { error: "Error al crear el vehÃ­culo. AsegÃºrate de que el slug sea Ãºnico." };
   }
 }
 
@@ -40,7 +40,7 @@ export async function updateVehicleAction(id: string, data: VehicleInput) {
 
   const parsed = vehicleSchema.safeParse(data);
   if (!parsed.success) {
-    return { error: "Datos de vehículo inválidos", details: parsed.error.flatten() };
+    return { error: "Datos de vehÃ­culo invÃ¡lidos", details: parsed.error.flatten() };
   }
 
   try {
@@ -59,10 +59,10 @@ export async function updateVehicleAction(id: string, data: VehicleInput) {
     });
     
     revalidatePath("/admin/vehicles");
-    revalidatePath("/booking"); // Purgar la caché de la vista pública también
+    revalidatePath("/booking"); // Purgar la cachÃ© de la vista pÃºblica tambiÃ©n
     return { success: true, data: vehicle };
   } catch (error: any) {
-    return { error: "Error al actualizar el vehículo." };
+    return { error: "Error al actualizar el vehÃ­culo." };
   }
 }
 
@@ -89,6 +89,6 @@ export async function toggleVehicleStatusAction(id: string, currentStatus: boole
     revalidatePath("/booking");
     return { success: true, isActive: vehicle.isActive };
   } catch (error: any) {
-    return { error: "Error al cambiar el estado del vehículo." };
+    return { error: "Error al cambiar el estado del vehÃ­culo." };
   }
 }

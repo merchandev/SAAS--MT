@@ -1,7 +1,7 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/modules/auth/permissions";
+import { requireRoleAction as requireRole } from "@/modules/auth/permissions";
 import { sendEmail } from "@/lib/mailer";
 import { revalidatePath } from "next/cache";
 
@@ -37,7 +37,7 @@ export async function sendCampaignAction(data: {
     return { success: true, id: campaign.id };
   } catch (error: any) {
     console.error("[CAMPAIGN_ERROR]", error);
-    return { error: error.message || "Error al iniciar campaña" };
+    return { error: error.message || "Error al iniciar campaÃ±a" };
   }
 }
 
@@ -94,7 +94,7 @@ export async function resendCampaignAction(campaignId: string) {
       where: { id: campaignId },
     });
 
-    if (!original) throw new Error("Campaña original no encontrada");
+    if (!original) throw new Error("CampaÃ±a original no encontrada");
 
     // Array validation for JSON field
     const recipientsArray = Array.isArray(original.recipients) 
@@ -105,7 +105,7 @@ export async function resendCampaignAction(campaignId: string) {
 
     const newCampaign = await prisma.emailCampaign.create({
       data: {
-        name: `${original.name} (Reenvío)`,
+        name: `${original.name} (ReenvÃ­o)`,
         subject: original.subject,
         content: original.content,
         recipients: recipientsArray,
@@ -127,6 +127,6 @@ export async function resendCampaignAction(campaignId: string) {
     return { success: true, id: newCampaign.id };
   } catch (error: any) {
     console.error("[RESEND_CAMPAIGN_ERROR]", error);
-    return { error: error.message || "Error al reenviar campaña" };
+    return { error: error.message || "Error al reenviar campaÃ±a" };
   }
 }
