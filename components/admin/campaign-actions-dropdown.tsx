@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Trash, ArchiveRestore, Send } from "lucide-react";
+import { MoreHorizontal, Eye, Trash, RefreshCw, Send } from "lucide-react";
 import { 
   softDeleteCampaignAction, 
   restoreCampaignAction, 
@@ -99,7 +99,7 @@ export function CampaignActionsDropdown({ campaign }: CampaignActionsDropdownPro
           // Acciones para campañas en Papelera
           <>
             <DropdownMenuItem onClick={handleRestore}>
-              <ArchiveRestore className="mr-2 h-4 w-4" /> Restaurar
+              <RefreshCw className="mr-2 h-4 w-4" /> Restaurar
             </DropdownMenuItem>
             
             <DropdownMenuSeparator />
