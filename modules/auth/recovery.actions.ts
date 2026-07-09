@@ -44,10 +44,7 @@ export async function forgotPasswordAction(email: string) {
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #000000; color: #ffffff; padding: 40px; border-radius: 8px; border: 1px solid #222;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.5px;">
-              Me<span style="color: #D4AF37;">Transfers</span>
-            </h1>
-            <p style="color: #888; font-size: 12px; margin-top: 5px; text-transform: uppercase; letter-spacing: 2px;">Barcelona</p>
+            <img src="https://transfersinbarcelona.com/images/MeTransfers-exp.png" alt="MeTransfers Barcelona" style="max-width: 180px; height: auto; margin: 0 auto; display: block;" />
           </div>
           
           <div style="background-color: #111111; padding: 30px; border-radius: 6px; border: 1px solid #1a1a1a;">
