@@ -158,6 +158,12 @@ export async function restoreCampaignAction(id: string) {
       data: { deletedAt: null },
     });
     revalidatePath("/admin/emails/campaigns");
+    return { success: true };
+  } catch (error: any) {
+    return { error: error.message || "Error al restaurar" };
+  }
+}
+
 export async function hardDeleteCampaignAction(id: string) {
   try {
     await requireRole(["SUPER_ADMIN", "ADMIN"]);
