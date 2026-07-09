@@ -526,7 +526,7 @@ export const emailsService = {
 
       return sendEmail({
         to: email,
-        subject: \`Bienvenido/a a Transfers in Barcelona — Establece tu contraseña\`,
+        subject: `Bienvenido/a a Transfers in Barcelona — Establece tu contraseña`,
         html,
       });
     } catch (err) {

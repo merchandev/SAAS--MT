@@ -5,7 +5,7 @@ test.describe('Booking Flow', () => {
     await page.goto('/es');
     
     // Check main title
-    await expect(page.locator('h1')).toContainText('Transfers in Barcelona');
+    await expect(page.locator('h1')).toContainText('Traslados privados en Barcelona con precio cerrado');
     
     // Fill origin and destination (simulated)
     // We would need to mock Google Maps for this, so just checking UI presence
@@ -25,6 +25,6 @@ test.describe('Booking Flow', () => {
     await page.goto('/es/booking?origin=Airport&originId=id1&destination=Hotel&destinationId=id2&date=2028-01-01&time=10:00');
     
     // The page should eventually show pricing or a skeleton
-    await expect(page.getByText('Resumen de tu Viaje')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Resumen del Viaje')).toBeVisible({ timeout: 10000 });
   });
 });

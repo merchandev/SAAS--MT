@@ -11,6 +11,6 @@ test.describe('Redsys Payment Flow', () => {
     
     // We expect some text or button related to payment to eventually show up if form is filled
     // Or we can just verify the page loads correctly without errors
-    await expect(page.getByText('Resumen de tu Viaje')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Resumen del Viaje')).toBeVisible({ timeout: 10000 });
   });
 });
