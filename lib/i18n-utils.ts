@@ -7,6 +7,12 @@ export function localizedPath(path: string, currentLocale: string = "es"): strin
   // Asegurarse de que el path comience con "/"
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
+  // Ignorar rutas que no están bajo [locale] en la estructura de Next.js
+  const globalPrefixes = ["/admin", "/customer", "/driver", "/hotel", "/api", "/login", "/register"];
+  if (globalPrefixes.some(prefix => normalizedPath.startsWith(prefix) || normalizedPath === prefix)) {
+    return normalizedPath;
+  }
+
   // Si ya tiene el locale al principio (ej: /es/booking), no añadirlo doble
   if (normalizedPath.startsWith(`/${currentLocale}/`) || normalizedPath === `/${currentLocale}`) {
     return normalizedPath;
