@@ -77,7 +77,7 @@ export async function sendEmail({
   bookingId,
 }: SendEmailOptions): Promise<boolean> {
   // En build time no intentamos enviar emails
-  if (process.env.NEXT_PUBLIC_IS_BUILDING === "true") {
+  if (process.env.IS_BUILDING === "true") {
     console.log(`[MAILER_BUILD_SKIP] Skipping email to: ${to}`);
     return true;
   }
