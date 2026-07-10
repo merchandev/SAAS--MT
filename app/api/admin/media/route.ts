@@ -88,9 +88,9 @@ export async function POST(req: Request) {
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error uploading file:", error);
-    return NextResponse.json({ error: "Error interno al subir el archivo" }, { status: 500 });
+    return NextResponse.json({ error: "Error interno al subir el archivo: " + (error.message || String(error)) }, { status: 500 });
   }
 }
 
