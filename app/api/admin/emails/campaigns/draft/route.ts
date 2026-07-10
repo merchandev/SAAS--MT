@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       content: body || "",
       recipients: recipients || [],
       contactPhone: contactPhone || "+34 662 02 41 36",
-      sendingRate: sendingRate || 50,
+      sendingRate: sendingRate || 30,
       sendFromHour: sendFromHour || null,
       sendToHour: sendToHour || null,
       status: "DRAFT",

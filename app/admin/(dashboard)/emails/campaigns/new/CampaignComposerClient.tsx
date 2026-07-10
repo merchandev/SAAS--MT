@@ -36,7 +36,7 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
   const [body, setBody] = useState(initialData?.body || "");
   const [recipientsRaw, setRecipientsRaw] = useState(initialData?.recipientsRaw || "");
   const [contactPhone, setContactPhone] = useState(initialData?.contactPhone || "+34 662 02 41 36");
-  const [sendingRate, setSendingRate] = useState<number>(initialData?.sendingRate || 50);
+  const [sendingRate, setSendingRate] = useState<number>(initialData?.sendingRate || 30);
   const [sendFromHour, setSendFromHour] = useState(initialData?.sendFromHour || "");
   const [sendToHour, setSendToHour] = useState(initialData?.sendToHour || "");
 
@@ -118,8 +118,8 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
       return;
     }
 
-    if (sendingRate < 1 || sendingRate > 50) {
-      setMessage({ text: "La velocidad de envío debe estar entre 1 y 50", type: "error" });
+    if (sendingRate < 1 || sendingRate > 500) {
+      setMessage({ text: "La velocidad de envío debe estar entre 1 y 500 correos por hora", type: "error" });
       return;
     }
 
@@ -219,16 +219,16 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t">
           <div className="space-y-2">
-            <Label htmlFor="sendingRate">Velocidad (Mails por minuto)</Label>
+            <Label htmlFor="sendingRate">Velocidad (Mails por hora)</Label>
             <Input
               id="sendingRate"
               type="number"
               min={1}
-              max={50}
+              max={500}
               value={sendingRate}
               onChange={(e) => setSendingRate(Number(e.target.value))}
             />
-            <p className="text-xs text-gray-500">Máximo recomendado: 50</p>
+            <p className="text-xs text-gray-500">Máximo recomendado: 100 (Hostinger)</p>
           </div>
 
           <div className="space-y-2">

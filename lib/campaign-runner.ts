@@ -60,10 +60,11 @@ export async function runCampaign(campaignId: string) {
 
     if (recipientsRaw.length === 0) return;
 
-    // Determine safe rate limit delay
-    const sendingRate = campaign.sendingRate || 50;
-    const safeRate = Math.min(Math.max(sendingRate, 1), 50);
-    const delayMs = Math.floor(60000 / safeRate);
+    // Determine safe rate limit delay (Mails per hour)
+    const sendingRate = campaign.sendingRate || 30;
+    const safeRate = Math.min(Math.max(sendingRate, 1), 500); // max 500 per hour
+    // 1 hour = 3,600,000 ms. 
+    const delayMs = Math.floor(3600000 / safeRate);
 
     // Filter recipients that haven't been sent yet
     const existingLogs = await prisma.notificationLog.findMany({

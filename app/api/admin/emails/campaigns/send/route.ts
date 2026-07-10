@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         content: data.body,
         recipients: data.recipients,
         contactPhone: data.contactPhone || "+34 662 02 41 36",
-        sendingRate: data.sendingRate || 50,
+        sendingRate: data.sendingRate || 30,
         sendFromHour: data.sendFromHour || null,
         sendToHour: data.sendToHour || null,
         status: "SENDING",
