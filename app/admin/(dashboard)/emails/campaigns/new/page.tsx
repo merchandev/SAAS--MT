@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Save, ArrowLeft, Loader2, Send, Eye, Code, Type } from "lucide-react";
 import Link from "next/link";
-import { sendCampaignAction, previewCampaignHtmlAction } from "./campaign.actions";
 import { useRouter } from "next/navigation";
 import {
   Dialog,

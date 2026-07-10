@@ -6,14 +6,14 @@ import { DynamicLayoutEmail } from "@/components/emails/DynamicLayoutEmail";
 import { render } from "@react-email/render";
 import * as React from "react";
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requireRoleApi(["SUPER_ADMIN", "ADMIN"]);
     if (!auth.ok) {
       return NextResponse.json({ error: auth.error }, { status: auth.status });
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     const original = await prisma.emailCampaign.findUnique({
       where: { id },
