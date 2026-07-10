@@ -25,12 +25,12 @@ export async function GET(
       orderBy: { sentAt: "desc" },
     });
 
-    const recipients = Array.isArray(campaign.recipients) ? campaign.recipients : [];
+    const recipients = (Array.isArray(campaign.recipients) ? campaign.recipients : []) as string[];
     
     // Create CSV header
     let csvContent = "Destinatario,Estado,Fecha de Envio,Razon de Error\n";
 
-    recipients.forEach((email: string) => {
+    recipients.forEach((email) => {
       const log = logs.find(l => l.recipient === email);
       
       const recipientSafe = `"${email}"`;
