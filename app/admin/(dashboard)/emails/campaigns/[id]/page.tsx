@@ -2,8 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/modules/auth/permissions";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Users, Send, CheckCircle2, XCircle, Calendar, AlertCircle } from "lucide-react";
+import { ArrowLeft, Users, Send, CheckCircle2, XCircle, Calendar, AlertCircle, Pause } from "lucide-react";
 import ResendButton from "./ResendButton";
+import CampaignControls from "./CampaignControls";
 
 export const metadata = {
   title: "Detalles de Campaña | Admin",
@@ -32,6 +33,10 @@ export default async function CampaignDetailsPage({
 
   const recipients = (Array.isArray(campaign.recipients) ? campaign.recipients : []) as string[];
 
+  // Dynamic stats calculated from real logs
+  const sentCount = logs.filter(l => l.status === "SENT").length;
+  const failedCount = logs.filter(l => l.status === "FAILED").length;
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex items-center gap-4">
@@ -56,7 +61,10 @@ export default async function CampaignDetailsPage({
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
               <h2 className="font-semibold text-gray-900">Información General</h2>
-              <ResendButton campaignId={campaign.id} />
+              <div className="flex gap-2">
+                <CampaignControls campaignId={campaign.id} initialStatus={campaign.status} />
+                <ResendButton campaignId={campaign.id} />
+              </div>
             </div>
             <div className="p-6 space-y-4 text-sm">
               <div className="grid grid-cols-[120px_1fr] gap-4 border-b pb-4">
@@ -74,6 +82,11 @@ export default async function CampaignDetailsPage({
                   {campaign.status === "SENDING" && (
                     <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
                       <Send className="h-3 w-3 mr-1 animate-pulse" /> Enviando...
+                    </span>
+                  )}
+                  {campaign.status === "PAUSED" && (
+                    <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
+                      <Pause className="h-3 w-3 mr-1" /> Pausada
                     </span>
                   )}
                   {campaign.status === "COMPLETED" && (
@@ -103,8 +116,8 @@ export default async function CampaignDetailsPage({
                   <AlertCircle className="w-4 h-4 mr-2" /> Estadísticas:
                 </span>
                 <span className="text-gray-900 flex gap-4">
-                  <span className="text-green-600 font-semibold">{campaign.sentCount} Enviados</span>
-                  <span className="text-red-600 font-semibold">{campaign.failedCount} Fallidos</span>
+                  <span className="text-green-600 font-semibold">{sentCount} Enviados</span>
+                  <span className="text-red-600 font-semibold">{failedCount} Fallidos</span>
                 </span>
               </div>
             </div>
