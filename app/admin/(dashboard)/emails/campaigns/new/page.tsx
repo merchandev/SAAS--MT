@@ -252,7 +252,7 @@ export default function CampaignComposerClient() {
       </div>
 
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="max-w-4xl w-full h-[90vh] flex flex-col p-0 overflow-hidden">
+        <DialogContent className="sm:max-w-4xl w-full h-[90vh] flex flex-col p-0 overflow-hidden">
           <DialogHeader className="p-4 border-b bg-gray-50/80 backdrop-blur-sm sticky top-0 z-10">
             <DialogTitle>Previsualización del Correo</DialogTitle>
           </DialogHeader>
