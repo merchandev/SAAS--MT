@@ -64,8 +64,8 @@ async function processCampaign(campaignId: string, subject: string, body: string
       failedCount++;
     }
 
-    // Small delay to avoid rate limiting
-    await new Promise(res => setTimeout(res, 500));
+    // Small delay to avoid rate limiting (aprox 50 emails/min)
+    await new Promise(res => setTimeout(res, 1200));
   }
 
   // Update Campaign
