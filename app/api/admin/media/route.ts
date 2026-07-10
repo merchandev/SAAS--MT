@@ -84,7 +84,8 @@ export async function POST(req: Request) {
         name: uniqueName,
         url: `/uploads/${uniqueName}`,
         size: file.size,
-        type: getFileType(uniqueName)
+        type: getFileType(uniqueName),
+        createdAt: new Date().toISOString()
       }
     });
 
