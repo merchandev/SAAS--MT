@@ -5,7 +5,8 @@ import {
   getTrafficTrend,
   getTrafficCountries,
   getTrafficDevices,
-  getEmailCampaignTraffic
+  getEmailCampaignTraffic,
+  getUserTimes
 } from "@/lib/google-analytics";
 import { requireRole } from "@/modules/auth/permissions";
 import { Users, Eye, MousePointerClick, ArrowUpRight, Mail, Globe, Smartphone, Clock } from "lucide-react";
@@ -34,14 +35,15 @@ export default async function AnalyticsPage({
     : days === "120daysAgo" ? "Últimos 120 días"
     : "Desde siempre";
 
-  const [kpis, sources, topPages, trend, countries, devices, emailTraffic] = await Promise.all([
+  const [kpis, sources, topPages, trend, countries, devices, emailTraffic, userTimes] = await Promise.all([
     getAnalyticsKPIs(days),
     getTrafficSources(days),
     getTopPages(days),
     getTrafficTrend(days),
     getTrafficCountries(days),
     getTrafficDevices(days),
-    getEmailCampaignTraffic(days)
+    getEmailCampaignTraffic(days),
+    getUserTimes(days)
   ]);
 
   if (!kpis) {
@@ -70,7 +72,7 @@ export default async function AnalyticsPage({
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-2 text-gray-500">
             <Users className="w-5 h-5 text-blue-600" />
@@ -101,14 +103,6 @@ export default async function AnalyticsPage({
             <h3 className="font-semibold text-sm">Vistas de Página</h3>
           </div>
           <p className="text-3xl font-black text-gray-900">{parseInt(kpis.pageViews).toLocaleString()}</p>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-2 text-gray-500">
-            <Clock className="w-5 h-5 text-teal-600" />
-            <h3 className="font-semibold text-sm">Tiempo Promedio</h3>
-          </div>
-          <p className="text-3xl font-black text-gray-900">{kpis.avgSessionDuration}</p>
         </div>
       </div>
 
@@ -197,6 +191,40 @@ export default async function AnalyticsPage({
               {topPages.length === 0 && (
                 <tr>
                   <td colSpan={3} className="px-6 py-8 text-center text-gray-500">No hay datos suficientes</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* User Times Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-6 py-5 border-b border-gray-100">
+          <h3 className="text-lg font-bold text-gray-900">Tiempo Promedio de Sesión (por Origen)</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">País</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Ciudad</th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Sesiones</th>
+                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Tiempo Promedio</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {userTimes.map((item, i) => (
+                <tr key={i} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.country}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.city}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">{item.sessions.toLocaleString()}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-teal-600 text-right">{item.time}</td>
+                </tr>
+              ))}
+              {userTimes.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">No hay datos suficientes</td>
                 </tr>
               )}
             </tbody>

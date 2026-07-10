@@ -201,3 +201,34 @@ export async function getEmailCampaignTraffic(startDate = '30daysAgo') {
     return { sessions: '0', activeUsers: '0' };
   }
 }
+
+export async function getUserTimes(startDate = '30daysAgo') {
+  if (!propertyId) return [];
+
+  try {
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate, endDate: 'today' }],
+      dimensions: [{ name: 'country' }, { name: 'city' }],
+      metrics: [{ name: 'sessions' }, { name: 'averageSessionDuration' }],
+      orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+      limit: 10,
+    });
+
+    return response.rows?.map(row => {
+      const avgSeconds = parseFloat(row.metricValues?.[1]?.value || '0');
+      const minutes = Math.floor(avgSeconds / 60);
+      const seconds = Math.floor(avgSeconds % 60);
+      
+      return {
+        country: row.dimensionValues?.[0].value || 'Unknown',
+        city: row.dimensionValues?.[1].value || 'Unknown',
+        sessions: parseInt(row.metricValues?.[0].value || '0', 10),
+        time: `${minutes}m ${seconds}s`,
+      };
+    }) || [];
+  } catch (error) {
+    console.error('Error fetching GA4 User Times:', error);
+    return [];
+  }
+}
