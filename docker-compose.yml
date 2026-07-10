@@ -33,6 +33,9 @@ services:
       REDSYS_SECRET_KEY: ${REDSYS_SECRET_KEY:?REDSYS_SECRET_KEY is required}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@transfersinbarcelona.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}
+      GA4_PROPERTY_ID: ${GA4_PROPERTY_ID:-}
+      GA4_CLIENT_EMAIL: ${GA4_CLIENT_EMAIL:-}
+      GA4_PRIVATE_KEY: ${GA4_PRIVATE_KEY:-}
     ports:
       - "0.0.0.0:${APP_PORT:-3100}:3000"
     volumes:
