@@ -22,17 +22,24 @@ export async function getAnalyticsKPIs(startDate = '30daysAgo') {
         { name: 'activeUsers' },
         { name: 'sessions' },
         { name: 'screenPageViews' },
+        { name: 'averageSessionDuration' }
       ],
     });
 
     const row = response.rows?.[0];
     if (!row) return null;
 
+    const avgSeconds = parseFloat(row.metricValues?.[4]?.value || '0');
+    const minutes = Math.floor(avgSeconds / 60);
+    const seconds = Math.floor(avgSeconds % 60);
+    const formattedDuration = `${minutes}m ${seconds}s`;
+
     return {
       totalUsers: row.metricValues?.[0].value || '0',
       activeUsers: row.metricValues?.[1].value || '0',
       sessions: row.metricValues?.[2].value || '0',
       pageViews: row.metricValues?.[3].value || '0',
+      avgSessionDuration: formattedDuration,
     };
   } catch (error) {
     console.error('Error fetching GA4 KPIs:', error);

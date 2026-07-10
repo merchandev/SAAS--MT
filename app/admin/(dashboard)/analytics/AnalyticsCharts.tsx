@@ -77,7 +77,7 @@ export default function AnalyticsCharts({
   if (type === "sources") {
     return (
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 0, left: 10, bottom: 0 }}>
+        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 20, left: 20, bottom: 0 }}>
           <CartesianGrid horizontal={false} stroke="#f3f4f6" />
           <XAxis type="number" hide />
           <YAxis 
@@ -86,7 +86,7 @@ export default function AnalyticsCharts({
             axisLine={false}
             tickLine={false}
             tick={{ fontSize: 12, fill: '#4b5563' }}
-            width={100}
+            width={120}
           />
           <Tooltip 
             cursor={{ fill: '#f9fafb' }}
@@ -101,7 +101,7 @@ export default function AnalyticsCharts({
   if (type === "countries") {
     return (
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 0, left: 10, bottom: 0 }}>
+        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 20, left: 20, bottom: 0 }}>
           <CartesianGrid horizontal={false} stroke="#f3f4f6" />
           <XAxis type="number" hide />
           <YAxis 
@@ -110,7 +110,7 @@ export default function AnalyticsCharts({
             axisLine={false}
             tickLine={false}
             tick={{ fontSize: 12, fill: '#4b5563' }}
-            width={100}
+            width={120}
           />
           <Tooltip 
             cursor={{ fill: '#f9fafb' }}
@@ -129,9 +129,9 @@ export default function AnalyticsCharts({
           <Pie
             data={data}
             cx="50%"
-            cy="50%"
-            innerRadius={60}
-            outerRadius={80}
+            cy="45%"
+            innerRadius={50}
+            outerRadius={70}
             paddingAngle={5}
             dataKey="sessions"
             nameKey="device"
@@ -143,7 +143,7 @@ export default function AnalyticsCharts({
           <Tooltip 
             contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
           />
-          <Legend verticalAlign="bottom" height={36} iconType="circle" />
+          <Legend verticalAlign="bottom" height={20} iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
         </PieChart>
       </ResponsiveContainer>
     );

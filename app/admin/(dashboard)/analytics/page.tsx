@@ -8,7 +8,7 @@ import {
   getEmailCampaignTraffic
 } from "@/lib/google-analytics";
 import { requireRole } from "@/modules/auth/permissions";
-import { Users, Eye, MousePointerClick, ArrowUpRight, Mail, Globe, Smartphone } from "lucide-react";
+import { Users, Eye, MousePointerClick, ArrowUpRight, Mail, Globe, Smartphone, Clock } from "lucide-react";
 import AnalyticsCharts from "./AnalyticsCharts";
 import DateFilter from "./DateFilter";
 
@@ -70,7 +70,7 @@ export default async function AnalyticsPage({
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-2 text-gray-500">
             <Users className="w-5 h-5 text-blue-600" />
@@ -101,6 +101,14 @@ export default async function AnalyticsPage({
             <h3 className="font-semibold text-sm">Vistas de Página</h3>
           </div>
           <p className="text-3xl font-black text-gray-900">{parseInt(kpis.pageViews).toLocaleString()}</p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3 mb-2 text-gray-500">
+            <Clock className="w-5 h-5 text-teal-600" />
+            <h3 className="font-semibold text-sm">Tiempo Promedio</h3>
+          </div>
+          <p className="text-3xl font-black text-gray-900">{kpis.avgSessionDuration}</p>
         </div>
       </div>
 
@@ -137,7 +145,7 @@ export default async function AnalyticsPage({
               <Smartphone className="w-5 h-5 text-pink-500" />
               Dispositivos
             </h3>
-            <div className="h-[180px]">
+            <div className="h-[220px]">
               <AnalyticsCharts type="devices" data={devices} />
             </div>
           </div>
