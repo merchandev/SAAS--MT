@@ -18,6 +18,31 @@ export default async function CampaignsPage() {
     orderBy: { createdAt: "desc" },
   });
 
+  const logs = await prisma.notificationLog.groupBy({
+    by: ['campaignId', 'status'],
+    where: {
+      campaignId: { in: allCampaigns.map(c => c.id) }
+    },
+    _count: {
+      id: true
+    }
+  });
+
+  const campaignStats = allCampaigns.reduce((acc, camp) => {
+    acc[camp.id] = { sent: 0, failed: 0 };
+    return acc;
+  }, {} as Record<string, { sent: number; failed: number }>);
+
+  logs.forEach(log => {
+    if (log.campaignId && campaignStats[log.campaignId]) {
+      if (log.status === 'SENT' || log.status === 'DELIVERED' || log.status === 'OPENED' || log.status === 'CLICKED') {
+        campaignStats[log.campaignId].sent += log._count.id;
+      } else if (log.status === 'FAILED' || log.status === 'BOUNCED') {
+        campaignStats[log.campaignId].failed += log._count.id;
+      }
+    }
+  });
+
   const activeCampaigns = allCampaigns.filter((c) => c.deletedAt === null);
   const trashedCampaigns = allCampaigns.filter((c) => c.deletedAt !== null);
 
@@ -65,8 +90,8 @@ export default async function CampaignsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-4 text-xs">
-                      <span className="text-green-600 font-medium">✓ {camp.sentCount}</span>
-                      <span className="text-red-600 font-medium">✗ {camp.failedCount}</span>
+                      <span className="text-green-600 font-medium">✓ {campaignStats[camp.id].sent}</span>
+                      <span className="text-red-600 font-medium">✗ {campaignStats[camp.id].failed}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
