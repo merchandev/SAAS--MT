@@ -490,6 +490,7 @@ model EmailCampaign {
 model NotificationLog {
   id          String   @id @default(uuid())
   bookingId   String?
+  campaignId  String?  // Relación opcional con EmailCampaign
   recipient   String // Email o Teléfono
   type        String // EMAIL, WHATSAPP
   eventType   String? // BOOKING_PENDING, BOOKING_CONFIRMED, BOOKING_CANCELLED, etc.
@@ -502,6 +503,7 @@ model NotificationLog {
   @@index([status])
   @@index([eventType])
   @@index([bookingId])
+  @@index([campaignId])
 }
 
 model RateLimitBucket {

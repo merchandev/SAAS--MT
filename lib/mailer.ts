@@ -35,6 +35,8 @@ export interface SendEmailOptions {
   eventType?: string;
   /** ID de reserva para trazabilidad */
   bookingId?: string;
+  /** ID de campaña para correos masivos */
+  campaignId?: string;
 }
 
 /**
@@ -45,6 +47,7 @@ async function logEmailAttempt(opts: {
   subject: string;
   eventType?: string;
   bookingId?: string;
+  campaignId?: string;
   status: "SENT" | "FAILED";
   errorReason?: string;
 }) {
@@ -58,6 +61,7 @@ async function logEmailAttempt(opts: {
         eventType: opts.eventType || null,
         subject: opts.subject,
         bookingId: opts.bookingId || null,
+        campaignId: opts.campaignId || null,
         status: opts.status,
         errorReason: opts.errorReason || null,
       },
@@ -79,6 +83,7 @@ export async function sendEmail({
   replyTo,
   eventType,
   bookingId,
+  campaignId,
 }: SendEmailOptions): Promise<boolean> {
   // En build time no intentamos enviar emails
   if (process.env.IS_BUILDING === "true") {
@@ -90,7 +95,7 @@ export async function sendEmail({
 
   if (!smtpUser || !smtpPass) {
     console.warn(`[MAILER_MOCK] SMTP no configurado. Email simulado para: ${recipient} | ${subject}`);
-    await logEmailAttempt({ recipient, subject, eventType, bookingId, status: "SENT", errorReason: "MOCK_MODE" });
+    await logEmailAttempt({ recipient, subject, eventType, bookingId, campaignId, status: "SENT", errorReason: "MOCK_MODE" });
     return true;
   }
 
@@ -104,7 +109,7 @@ export async function sendEmail({
     });
 
     console.log(`[MAILER_OK] Email enviado a ${recipient} | ID: ${info.messageId}`);
-    await logEmailAttempt({ recipient, subject, eventType, bookingId, status: "SENT" });
+    await logEmailAttempt({ recipient, subject, eventType, bookingId, campaignId, status: "SENT" });
     return true;
   } catch (error: any) {
     console.error(`[MAILER_ERROR] Fallo al enviar email a ${recipient}:`, error);
@@ -113,6 +118,7 @@ export async function sendEmail({
       subject,
       eventType,
       bookingId,
+      campaignId,
       status: "FAILED",
       errorReason: error?.message || "Unknown error",
     });

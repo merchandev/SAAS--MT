@@ -109,6 +109,7 @@ async function processCampaign(
       subject,
       html,
       eventType: "CAMPAIGN",
+      campaignId,
     });
 
     if (ok) {

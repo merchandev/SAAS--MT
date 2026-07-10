@@ -25,7 +25,12 @@ export default async function CampaignDetailsPage({
 
   if (!campaign) notFound();
 
-  const recipients = Array.isArray(campaign.recipients) ? campaign.recipients : [];
+  const logs = await prisma.notificationLog.findMany({
+    where: { campaignId: id },
+    orderBy: { sentAt: 'desc' }
+  });
+
+  const recipients = (Array.isArray(campaign.recipients) ? campaign.recipients : []) as string[];
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -118,32 +123,77 @@ export default async function CampaignDetailsPage({
           </div>
         </div>
 
-        {/* Columna Derecha: Lista de Destinatarios */}
+        {/* Columna Derecha: Lista de Destinatarios y Logs */}
         <div className="space-y-6">
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[600px]">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
               <h2 className="font-semibold text-gray-900 flex items-center">
                 <Users className="w-4 h-4 mr-2 text-gray-500" />
-                Destinatarios
+                Registro de Envíos
               </h2>
               <span className="bg-gray-200 text-gray-700 py-0.5 px-2 rounded-full text-xs font-semibold">
-                {recipients.length}
+                {recipients.length} Destinatarios
               </span>
             </div>
+            
             <div className="p-0 overflow-y-auto flex-1">
-              {recipients.length === 0 ? (
-                <div className="p-6 text-center text-gray-500 text-sm">
-                  No hay destinatarios registrados.
-                </div>
-              ) : (
-                <ul className="divide-y divide-gray-100">
-                  {recipients.map((email: any, i: number) => (
-                    <li key={i} className="px-6 py-3 text-sm text-gray-600 hover:bg-gray-50">
-                      {email}
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <table className="min-w-full divide-y divide-gray-200 text-sm text-left">
+                <thead className="bg-gray-50 sticky top-0">
+                  <tr>
+                    <th className="px-4 py-3 font-medium text-gray-500">Destinatario</th>
+                    <th className="px-4 py-3 font-medium text-gray-500">Estado</th>
+                    <th className="px-4 py-3 font-medium text-gray-500 hidden xl:table-cell">Hora</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 bg-white">
+                  {recipients.map((email: string, i: number) => {
+                    const log = logs.find(l => l.recipient === email);
+                    
+                    return (
+                      <tr key={i} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-gray-900 font-medium truncate max-w-[150px]" title={email}>
+                          {email}
+                        </td>
+                        <td className="px-4 py-3">
+                          {!log ? (
+                            <span className="inline-flex items-center text-gray-500 text-xs">
+                              <span className="w-2 h-2 rounded-full bg-gray-300 mr-1.5"></span>
+                              Pendiente
+                            </span>
+                          ) : log.status === "SENT" ? (
+                            <span className="inline-flex items-center text-green-700 text-xs">
+                              <span className="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span>
+                              Enviado
+                            </span>
+                          ) : (
+                            <div className="flex flex-col">
+                              <span className="inline-flex items-center text-red-700 text-xs">
+                                <span className="w-2 h-2 rounded-full bg-red-500 mr-1.5"></span>
+                                Rechazado
+                              </span>
+                              {log.errorReason && (
+                                <span className="text-[10px] text-gray-500 mt-0.5 truncate max-w-[100px]" title={log.errorReason}>
+                                  {log.errorReason}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-gray-500 text-xs hidden xl:table-cell whitespace-nowrap">
+                          {log ? log.sentAt.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "-"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {recipients.length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
+                        No hay destinatarios registrados.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
