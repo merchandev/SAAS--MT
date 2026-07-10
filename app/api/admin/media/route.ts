@@ -13,23 +13,34 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   const session = await authService.getSession();
   if (!session || !["SUPER_ADMIN", "ADMIN", "OPERATOR"].includes(session.role)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
   try {
-    const files = fs.readdirSync(UPLOADS_DIR);
+    const { searchParams } = new URL(req.url);
+    const isTrash = searchParams.get("status") === "trash";
+    
+    let targetDir = UPLOADS_DIR;
+    if (isTrash) {
+      targetDir = path.join(UPLOADS_DIR, "trash");
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+    }
+
+    const files = fs.readdirSync(targetDir);
     
     const fileData = files
-      .filter((file) => !file.startsWith("."))
+      .filter((file) => !file.startsWith(".") && fs.statSync(path.join(targetDir, file)).isFile())
       .map((file) => {
-        const filePath = path.join(UPLOADS_DIR, file);
+        const filePath = path.join(targetDir, file);
         const stats = fs.statSync(filePath);
         return {
           name: file,
-          url: `/uploads/${file}`,
+          url: `/api/uploads/${isTrash ? "trash/" : ""}${file}`,
           size: stats.size,
           createdAt: stats.mtime,
           type: getFileType(file),
@@ -82,7 +93,7 @@ export async function POST(req: Request) {
       success: true,
       file: {
         name: uniqueName,
-        url: `/uploads/${uniqueName}`,
+        url: `/api/uploads/${uniqueName}`,
         size: file.size,
         type: getFileType(uniqueName),
         createdAt: new Date().toISOString()
