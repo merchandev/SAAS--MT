@@ -36,6 +36,9 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
   const [body, setBody] = useState(initialData?.body || "");
   const [recipientsRaw, setRecipientsRaw] = useState(initialData?.recipientsRaw || "");
   const [contactPhone, setContactPhone] = useState(initialData?.contactPhone || "+34 662 02 41 36");
+  const [sendingRate, setSendingRate] = useState<number>(initialData?.sendingRate || 50);
+  const [sendFromHour, setSendFromHour] = useState(initialData?.sendFromHour || "");
+  const [sendToHour, setSendToHour] = useState(initialData?.sendToHour || "");
 
   const [editorMode, setEditorMode] = useState<"visual" | "html">("visual");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -86,6 +89,9 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
           body,
           recipients,
           contactPhone,
+          sendingRate,
+          sendFromHour,
+          sendToHour,
         }),
       });
       const data = await res.json();
@@ -108,7 +114,12 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
   const handleSend = async () => {
     // Validate
     if (!name || !subject || !body || !recipientsRaw) {
-      setMessage({ text: "Todos los campos son obligatorios", type: "error" });
+      setMessage({ text: "Todos los campos principales son obligatorios", type: "error" });
+      return;
+    }
+
+    if (sendingRate < 1 || sendingRate > 50) {
+      setMessage({ text: "La velocidad de envío debe estar entre 1 y 50", type: "error" });
       return;
     }
 
@@ -139,6 +150,9 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
           body,
           recipients,
           contactPhone,
+          sendingRate,
+          sendFromHour,
+          sendToHour,
         }),
       });
       
@@ -202,6 +216,45 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
             />
           </div>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t">
+          <div className="space-y-2">
+            <Label htmlFor="sendingRate">Velocidad (Mails por minuto)</Label>
+            <Input
+              id="sendingRate"
+              type="number"
+              min={1}
+              max={50}
+              value={sendingRate}
+              onChange={(e) => setSendingRate(Number(e.target.value))}
+            />
+            <p className="text-xs text-gray-500">Máximo recomendado: 50</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="sendFromHour">Enviar desde las (Opcional)</Label>
+            <Input
+              id="sendFromHour"
+              type="time"
+              value={sendFromHour}
+              onChange={(e) => setSendFromHour(e.target.value)}
+            />
+            <p className="text-xs text-gray-500">Ej: 09:00</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="sendToHour">Hasta las (Opcional)</Label>
+            <Input
+              id="sendToHour"
+              type="time"
+              value={sendToHour}
+              onChange={(e) => setSendToHour(e.target.value)}
+            />
+            <p className="text-xs text-gray-500">Ej: 18:00</p>
+          </div>
+        </div>
+
+        <div className="pt-4 border-t"></div>
 
         <div className="space-y-2">
           <Label htmlFor="subject">Asunto del correo</Label>

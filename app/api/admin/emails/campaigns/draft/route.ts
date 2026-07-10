@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: auth.error }, { status: auth.status });
     }
 
-    const { id, name, subject, body, recipients, contactPhone } = await req.json();
+    const { id, name, subject, body, recipients, contactPhone, sendingRate, sendFromHour, sendToHour } = await req.json();
 
     const data = {
       name: name || "Campaña sin nombre",
@@ -17,6 +17,9 @@ export async function POST(req: Request) {
       content: body || "",
       recipients: recipients || [],
       contactPhone: contactPhone || "+34 662 02 41 36",
+      sendingRate: sendingRate || 50,
+      sendFromHour: sendFromHour || null,
+      sendToHour: sendToHour || null,
       status: "DRAFT",
     };
 

@@ -477,9 +477,12 @@ model EmailCampaign {
   createdBy   String?
   scheduledAt DateTime?
   startedAt   DateTime?
-  completedAt DateTime?
+  completedAt  DateTime?
   contactPhone String?   @default("+34 662 02 41 36")
-  deletedAt   DateTime?
+  sendingRate  Int       @default(50)
+  sendFromHour String?   // Ej. "09:00"
+  sendToHour   String?   // Ej. "18:00"
+  deletedAt    DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
