@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Users, Send, CheckCircle2, XCircle, Calendar, AlertCircle, Pause } from "lucide-react";
 import ResendButton from "./ResendButton";
 import CampaignControls from "./CampaignControls";
+import CampaignLogTable from "./CampaignLogTable";
 
 export const metadata = {
   title: "Detalles de Campaña | Admin",
@@ -54,11 +55,11 @@ export default async function CampaignDetailsPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="space-y-6">
         
-        {/* Columna Izquierda: Detalles */}
-        <div className="md:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        {/* Superior: Detalles y HTML */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
               <h2 className="font-semibold text-gray-900">Información General</h2>
               <div className="flex gap-2">
@@ -66,7 +67,7 @@ export default async function CampaignDetailsPage({
                 <ResendButton campaignId={campaign.id} />
               </div>
             </div>
-            <div className="p-6 space-y-4 text-sm">
+            <div className="p-6 space-y-4 text-sm flex-1">
               <div className="grid grid-cols-[120px_1fr] gap-4 border-b pb-4">
                 <span className="text-gray-500 font-medium">Asunto:</span>
                 <span className="text-gray-900 font-semibold">{campaign.subject}</span>
@@ -123,7 +124,7 @@ export default async function CampaignDetailsPage({
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[500px]">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[400px]">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
               <h2 className="font-semibold text-gray-900">Vista Previa del Contenido (HTML)</h2>
             </div>
@@ -136,81 +137,12 @@ export default async function CampaignDetailsPage({
           </div>
         </div>
 
-        {/* Columna Derecha: Lista de Destinatarios y Logs */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[600px]">
-            <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-              <h2 className="font-semibold text-gray-900 flex items-center">
-                <Users className="w-4 h-4 mr-2 text-gray-500" />
-                Registro de Envíos
-              </h2>
-              <span className="bg-gray-200 text-gray-700 py-0.5 px-2 rounded-full text-xs font-semibold">
-                {recipients.length} Destinatarios
-              </span>
-            </div>
-            
-            <div className="p-0 overflow-y-auto flex-1">
-              <table className="min-w-full divide-y divide-gray-200 text-sm text-left">
-                <thead className="bg-gray-50 sticky top-0">
-                  <tr>
-                    <th className="px-4 py-3 font-medium text-gray-500">Destinatario</th>
-                    <th className="px-4 py-3 font-medium text-gray-500">Estado</th>
-                    <th className="px-4 py-3 font-medium text-gray-500 hidden xl:table-cell">Hora</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 bg-white">
-                  {recipients.map((email: string, i: number) => {
-                    const log = logs.find(l => l.recipient === email);
-                    
-                    return (
-                      <tr key={i} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 text-gray-900 font-medium truncate max-w-[150px]" title={email}>
-                          {email}
-                        </td>
-                        <td className="px-4 py-3">
-                          {!log ? (
-                            <span className="inline-flex items-center text-gray-500 text-xs">
-                              <span className="w-2 h-2 rounded-full bg-gray-300 mr-1.5"></span>
-                              Pendiente
-                            </span>
-                          ) : log.status === "SENT" ? (
-                            <span className="inline-flex items-center text-green-700 text-xs">
-                              <span className="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span>
-                              Enviado
-                            </span>
-                          ) : (
-                            <div className="flex flex-col">
-                              <span className="inline-flex items-center text-red-700 text-xs">
-                                <span className="w-2 h-2 rounded-full bg-red-500 mr-1.5"></span>
-                                Rechazado
-                              </span>
-                              {log.errorReason && (
-                                <span className="text-[10px] text-gray-500 mt-0.5 truncate max-w-[100px]" title={log.errorReason}>
-                                  {log.errorReason}
-                                </span>
-                              )}
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-gray-500 text-xs hidden xl:table-cell whitespace-nowrap">
-                          {log ? log.sentAt.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "-"}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {recipients.length === 0 && (
-                    <tr>
-                      <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
-                        No hay destinatarios registrados.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
+        {/* Inferior: Lista de Destinatarios y Logs */}
+        <CampaignLogTable 
+          campaignId={campaign.id} 
+          recipients={recipients} 
+          logs={logs} 
+        />
       </div>
     </div>
   );
