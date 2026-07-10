@@ -24,6 +24,7 @@ import {
   FilePenLine,
   AlertCircle,
   Image,
+  LineChart,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { logoutAction } from "@/modules/auth/auth.actions";
@@ -75,6 +76,7 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
     { name: "Páginas (SEO)", href: "/admin/pages", roles: ["SUPER_ADMIN", "ADMIN"], icon: FileText },
     { name: "Blog (Entradas)", href: "/admin/posts", roles: ["SUPER_ADMIN", "ADMIN"], icon: FilePenLine },
     { name: "Medios", href: "/admin/media", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: Image },
+    { name: "Estadísticas Web", href: "/admin/analytics", roles: ["SUPER_ADMIN", "ADMIN"], icon: LineChart },
     { name: "Sistema", href: "/admin/system", roles: ["SUPER_ADMIN", "ADMIN"], icon: HardDrive },
   ];
 
