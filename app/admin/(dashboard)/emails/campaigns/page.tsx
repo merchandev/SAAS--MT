@@ -47,7 +47,10 @@ export default async function CampaignsPage() {
               return (
                 <tr key={camp.id} className="hover:bg-gray-50/50">
                   <td className="px-6 py-4">
-                    <Link href={`/admin/emails/campaigns/${camp.id}`} className="font-semibold text-blue-600 hover:text-blue-800 hover:underline">
+                    <Link 
+                      href={camp.status === "DRAFT" ? `/admin/emails/campaigns/new?draftId=${camp.id}` : `/admin/emails/campaigns/${camp.id}`} 
+                      className="font-semibold text-blue-600 hover:text-blue-800 hover:underline"
+                    >
                       {camp.name}
                     </Link>
                     <div className="text-gray-500 text-xs mt-1 truncate max-w-[250px]">
@@ -101,7 +104,7 @@ export default async function CampaignsPage() {
                     })}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <CampaignActionsDropdown campaignId={camp.id} isDeleted={!!camp.deletedAt} />
+                    <CampaignActionsDropdown campaignId={camp.id} isDeleted={!!camp.deletedAt} isDraft={camp.status === "DRAFT"} />
                   </td>
                 </tr>
               );

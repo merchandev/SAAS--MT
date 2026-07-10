@@ -20,9 +20,10 @@ import {
 interface CampaignActionsDropdownProps {
   campaignId: string;
   isDeleted: boolean;
+  isDraft?: boolean;
 }
 
-export function CampaignActionsDropdown({ campaignId, isDeleted }: CampaignActionsDropdownProps) {
+export function CampaignActionsDropdown({ campaignId, isDeleted, isDraft }: CampaignActionsDropdownProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -86,13 +87,21 @@ export function CampaignActionsDropdown({ campaignId, isDeleted }: CampaignActio
         {!isDeleted ? (
           // Acciones para campañas Activas
           <>
-            <DropdownMenuItem onClick={() => router.push(`/admin/emails/campaigns/${campaignId}`)}>
-              <Eye className="mr-2 h-4 w-4" /> Ver Detalles
-            </DropdownMenuItem>
+            {isDraft ? (
+              <DropdownMenuItem onClick={() => router.push(`/admin/emails/campaigns/new?draftId=${campaignId}`)}>
+                <Eye className="mr-2 h-4 w-4" /> Editar Borrador
+              </DropdownMenuItem>
+            ) : (
+              <>
+                <DropdownMenuItem onClick={() => router.push(`/admin/emails/campaigns/${campaignId}`)}>
+                  <Eye className="mr-2 h-4 w-4" /> Ver Detalles
+                </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={handleResend}>
-              <Send className="mr-2 h-4 w-4" /> Reenviar
-            </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleResend}>
+                  <Send className="mr-2 h-4 w-4" /> Reenviar
+                </DropdownMenuItem>
+              </>
+            )}
 
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSoftDelete} className="text-red-600 focus:text-red-600">
