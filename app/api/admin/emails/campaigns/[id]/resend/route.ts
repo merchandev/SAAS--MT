@@ -36,6 +36,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         content: original.content,
         recipients: recipientsArray,
         contactPhone: original.contactPhone,
+        sendingRate: original.sendingRate,
+        sendFromHour: original.sendFromHour,
+        sendToHour: original.sendToHour,
         status: "SENDING",
         startedAt: new Date(),
       },
@@ -47,7 +50,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       newCampaign.subject,
       newCampaign.content,
       recipientsArray as string[],
-      newCampaign.contactPhone || "+34 662 02 41 36"
+      newCampaign.contactPhone || "+34 662 02 41 36",
+      newCampaign.sendingRate,
+      newCampaign.sendFromHour,
+      newCampaign.sendToHour
     ).catch(console.error);
 
     return NextResponse.json({ success: true, id: newCampaign.id });
@@ -57,7 +63,37 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 }
 
-async function processCampaign(campaignId: string, subject: string, body: string, recipients: string[], contactPhone: string) {
+// Verifica si la hora actual está dentro de las franjas permitidas
+function isWithinAllowedHours(sendFromHour: string | null, sendToHour: string | null): boolean {
+  if (!sendFromHour || !sendToHour) return true;
+  
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  const currentTotal = currentHour * 60 + currentMinute;
+
+  const [fromH, fromM] = sendFromHour.split(":").map(Number);
+  const [toH, toM] = sendToHour.split(":").map(Number);
+  const fromTotal = fromH * 60 + fromM;
+  const toTotal = toH * 60 + toM;
+
+  if (fromTotal < toTotal) {
+    return currentTotal >= fromTotal && currentTotal <= toTotal;
+  } else {
+    return currentTotal >= fromTotal || currentTotal <= toTotal;
+  }
+}
+
+async function processCampaign(
+  campaignId: string, 
+  subject: string, 
+  body: string, 
+  recipients: string[], 
+  contactPhone: string,
+  sendingRate: number = 50,
+  sendFromHour: string | null = null,
+  sendToHour: string | null = null
+) {
   const html = await render(
     React.createElement(DynamicLayoutEmail, {
       previewText: subject,
@@ -68,13 +104,21 @@ async function processCampaign(campaignId: string, subject: string, body: string
 
   let sentCount = 0;
   let failedCount = 0;
+  
+  const safeRate = Math.min(Math.max(sendingRate, 1), 50);
+  const delayMs = Math.floor(60000 / safeRate);
 
   for (const email of recipients) {
+    while (!isWithinAllowedHours(sendFromHour, sendToHour)) {
+      await new Promise(res => setTimeout(res, 60000));
+    }
+
     const ok = await sendEmail({
       to: email,
       subject,
       html,
       eventType: "CAMPAIGN",
+      campaignId,
     });
 
     if (ok) {
@@ -83,8 +127,7 @@ async function processCampaign(campaignId: string, subject: string, body: string
       failedCount++;
     }
 
-    // Small delay to avoid rate limiting
-    await new Promise(res => setTimeout(res, 500));
+    await new Promise(res => setTimeout(res, delayMs));
   }
 
   // Update Campaign
