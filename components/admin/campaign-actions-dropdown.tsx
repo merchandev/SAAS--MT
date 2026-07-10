@@ -14,8 +14,7 @@ import { MoreHorizontal, Eye, Trash, RefreshCw, Send } from "lucide-react";
 import { 
   softDeleteCampaignAction, 
   restoreCampaignAction, 
-  hardDeleteCampaignAction,
-  resendCampaignAction
+  hardDeleteCampaignAction
 } from "@/app/admin/(dashboard)/emails/campaigns/new/campaign.actions";
 
 interface CampaignActionsDropdownProps {
@@ -56,14 +55,22 @@ export function CampaignActionsDropdown({ campaignId, isDeleted }: CampaignActio
   const handleResend = async () => {
     if (!confirm("¿Volver a enviar esta campaña a todos los destinatarios originales?")) return;
     setIsLoading(true);
-    const res = await resendCampaignAction(campaignId);
-    if (res?.error) {
-      alert(res.error);
-    } else {
-      alert("Reenvío de campaña iniciado");
+    try {
+      const res = await fetch(`/api/admin/emails/campaigns/${campaignId}/resend`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        alert(data.error || "Error al reenviar");
+      } else {
+        alert("Reenvío de campaña iniciado");
+        router.refresh();
+      }
+    } catch (err) {
+      alert("Error de conexión");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-    router.refresh();
   };
 
   return (

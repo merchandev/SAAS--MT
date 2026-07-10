@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Send, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export default function ResendButton({ campaignId }: { campaignId: string }) {
   const [isPending, setIsPending] = useState(false);
@@ -21,13 +20,13 @@ export default function ResendButton({ campaignId }: { campaignId: string }) {
       const data = await res.json();
       
       if (!res.ok || data.error) {
-        toast.error(data.error || "Error al reenviar");
+        alert(data.error || "Error al reenviar");
       } else {
-        toast.success("Campaña reenviada / encolada");
+        alert("Campaña reenviada / encolada");
         router.refresh();
       }
     } catch (err) {
-      toast.error("Error de conexión");
+      alert("Error de conexión");
     } finally {
       setIsPending(false);
     }
