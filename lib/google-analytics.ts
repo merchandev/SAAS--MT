@@ -10,18 +10,13 @@ const analyticsDataClient = new BetaAnalyticsDataClient({
   },
 });
 
-export async function getAnalyticsKPIs() {
+export async function getAnalyticsKPIs(startDate = '30daysAgo') {
   if (!propertyId) return null;
 
   try {
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${propertyId}`,
-      dateRanges: [
-        {
-          startDate: '30daysAgo',
-          endDate: 'today',
-        },
-      ],
+      dateRanges: [{ startDate, endDate: 'today' }],
       metrics: [
         { name: 'totalUsers' },
         { name: 'activeUsers' },
@@ -45,26 +40,16 @@ export async function getAnalyticsKPIs() {
   }
 }
 
-export async function getTrafficSources() {
+export async function getTrafficSources(startDate = '30daysAgo') {
   if (!propertyId) return [];
 
   try {
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${propertyId}`,
-      dateRanges: [
-        {
-          startDate: '30daysAgo',
-          endDate: 'today',
-        },
-      ],
+      dateRanges: [{ startDate, endDate: 'today' }],
       dimensions: [{ name: 'sessionDefaultChannelGroup' }],
       metrics: [{ name: 'sessions' }],
-      orderBys: [
-        {
-          metric: { metricName: 'sessions' },
-          desc: true,
-        },
-      ],
+      orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
       limit: 5,
     });
 
@@ -78,26 +63,16 @@ export async function getTrafficSources() {
   }
 }
 
-export async function getTopPages() {
+export async function getTopPages(startDate = '30daysAgo') {
   if (!propertyId) return [];
 
   try {
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${propertyId}`,
-      dateRanges: [
-        {
-          startDate: '30daysAgo',
-          endDate: 'today',
-        },
-      ],
+      dateRanges: [{ startDate, endDate: 'today' }],
       dimensions: [{ name: 'pagePath' }, { name: 'pageTitle' }],
       metrics: [{ name: 'screenPageViews' }],
-      orderBys: [
-        {
-          metric: { metricName: 'screenPageViews' },
-          desc: true,
-        },
-      ],
+      orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
       limit: 10,
     });
 
@@ -112,25 +87,16 @@ export async function getTopPages() {
   }
 }
 
-export async function getTrafficTrend() {
+export async function getTrafficTrend(startDate = '30daysAgo') {
   if (!propertyId) return [];
 
   try {
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${propertyId}`,
-      dateRanges: [
-        {
-          startDate: '30daysAgo',
-          endDate: 'today',
-        },
-      ],
+      dateRanges: [{ startDate, endDate: 'today' }],
       dimensions: [{ name: 'date' }],
       metrics: [{ name: 'sessions' }],
-      orderBys: [
-        {
-          dimension: { dimensionName: 'date' },
-        },
-      ],
+      orderBys: [{ dimension: { dimensionName: 'date' } }],
     });
 
     return response.rows?.map(row => {
@@ -148,5 +114,83 @@ export async function getTrafficTrend() {
   } catch (error) {
     console.error('Error fetching GA4 Trend:', error);
     return [];
+  }
+}
+
+export async function getTrafficCountries(startDate = '30daysAgo') {
+  if (!propertyId) return [];
+
+  try {
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate, endDate: 'today' }],
+      dimensions: [{ name: 'country' }],
+      metrics: [{ name: 'sessions' }],
+      orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+      limit: 7,
+    });
+
+    return response.rows?.map(row => ({
+      country: row.dimensionValues?.[0].value || 'Unknown',
+      sessions: parseInt(row.metricValues?.[0].value || '0', 10),
+    })) || [];
+  } catch (error) {
+    console.error('Error fetching GA4 Countries:', error);
+    return [];
+  }
+}
+
+export async function getTrafficDevices(startDate = '30daysAgo') {
+  if (!propertyId) return [];
+
+  try {
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate, endDate: 'today' }],
+      dimensions: [{ name: 'deviceCategory' }],
+      metrics: [{ name: 'sessions' }],
+      orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+      limit: 4,
+    });
+
+    return response.rows?.map(row => ({
+      device: row.dimensionValues?.[0].value || 'Unknown',
+      sessions: parseInt(row.metricValues?.[0].value || '0', 10),
+    })) || [];
+  } catch (error) {
+    console.error('Error fetching GA4 Devices:', error);
+    return [];
+  }
+}
+
+export async function getEmailCampaignTraffic(startDate = '30daysAgo') {
+  if (!propertyId) return { sessions: '0', activeUsers: '0' };
+
+  try {
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate, endDate: 'today' }],
+      dimensionFilter: {
+        filter: {
+          fieldName: 'sessionDefaultChannelGroup',
+          stringFilter: {
+            matchType: 'EXACT',
+            value: 'Email'
+          }
+        }
+      },
+      metrics: [{ name: 'sessions' }, { name: 'activeUsers' }],
+    });
+
+    const row = response.rows?.[0];
+    if (!row) return { sessions: '0', activeUsers: '0' };
+
+    return {
+      sessions: row.metricValues?.[0].value || '0',
+      activeUsers: row.metricValues?.[1].value || '0',
+    };
+  } catch (error) {
+    console.error('Error fetching GA4 Email Traffic:', error);
+    return { sessions: '0', activeUsers: '0' };
   }
 }

@@ -1,7 +1,16 @@
-import { getAnalyticsKPIs, getTrafficSources, getTopPages, getTrafficTrend } from "@/lib/google-analytics";
+import { 
+  getAnalyticsKPIs, 
+  getTrafficSources, 
+  getTopPages, 
+  getTrafficTrend,
+  getTrafficCountries,
+  getTrafficDevices,
+  getEmailCampaignTraffic
+} from "@/lib/google-analytics";
 import { requireRole } from "@/modules/auth/permissions";
-import { Users, Eye, MousePointerClick, Clock, ArrowUpRight } from "lucide-react";
+import { Users, Eye, MousePointerClick, ArrowUpRight, Mail, Globe, Smartphone } from "lucide-react";
 import AnalyticsCharts from "./AnalyticsCharts";
+import DateFilter from "./DateFilter";
 
 export const dynamic = "force-dynamic";
 
@@ -9,14 +18,30 @@ export const metadata = {
   title: "Estadísticas Web | Admin",
 };
 
-export default async function AnalyticsPage() {
+export default async function AnalyticsPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
 
-  const [kpis, sources, topPages, trend] = await Promise.all([
-    getAnalyticsKPIs(),
-    getTrafficSources(),
-    getTopPages(),
-    getTrafficTrend(),
+  const days = typeof searchParams.days === "string" ? searchParams.days : "30daysAgo";
+  
+  const titleText = days === "7daysAgo" ? "Últimos 7 días" 
+    : days === "30daysAgo" ? "Últimos 30 días"
+    : days === "60daysAgo" ? "Últimos 60 días"
+    : days === "90daysAgo" ? "Últimos 90 días"
+    : days === "120daysAgo" ? "Últimos 120 días"
+    : "Desde siempre";
+
+  const [kpis, sources, topPages, trend, countries, devices, emailTraffic] = await Promise.all([
+    getAnalyticsKPIs(days),
+    getTrafficSources(days),
+    getTopPages(days),
+    getTrafficTrend(days),
+    getTrafficCountries(days),
+    getTrafficDevices(days),
+    getEmailCampaignTraffic(days)
   ]);
 
   if (!kpis) {
@@ -36,9 +61,12 @@ export default async function AnalyticsPage() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Estadísticas Web (Últimos 30 días)</h1>
-        <p className="text-gray-500">Datos obtenidos en tiempo real desde Google Analytics 4</p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Estadísticas Web ({titleText})</h1>
+          <p className="text-gray-500">Datos obtenidos en tiempo real desde Google Analytics 4</p>
+        </div>
+        <DateFilter />
       </div>
 
       {/* KPI Cards */}
@@ -76,12 +104,55 @@ export default async function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Gráficos */}
+      {/* Traffic Summary Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-6">Tráfico de los últimos 30 días</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-6">Tráfico ({titleText})</h3>
           <div className="h-[300px]">
             <AnalyticsCharts type="trend" data={trend} />
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col gap-6">
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <Mail className="w-5 h-5 text-indigo-500" />
+              Impacto de Campañas Email
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-indigo-50 rounded-lg p-4">
+                <p className="text-sm text-indigo-600 font-medium mb-1">Sesiones</p>
+                <p className="text-2xl font-black text-indigo-900">{parseInt(emailTraffic.sessions).toLocaleString()}</p>
+              </div>
+              <div className="bg-blue-50 rounded-lg p-4">
+                <p className="text-sm text-blue-600 font-medium mb-1">Usuarios</p>
+                <p className="text-2xl font-black text-blue-900">{parseInt(emailTraffic.activeUsers).toLocaleString()}</p>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-4 text-center">Datos basados en tráfico etiquetado como "Email" por Google Analytics.</p>
+          </div>
+          <hr className="border-gray-100" />
+          <div className="flex-1">
+             <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Smartphone className="w-5 h-5 text-pink-500" />
+              Dispositivos
+            </h3>
+            <div className="h-[180px]">
+              <AnalyticsCharts type="devices" data={devices} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Secondary Metrics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Globe className="w-5 h-5 text-green-500" />
+            Top Países
+          </h3>
+          <div className="h-[300px]">
+            <AnalyticsCharts type="countries" data={countries} />
           </div>
         </div>
         

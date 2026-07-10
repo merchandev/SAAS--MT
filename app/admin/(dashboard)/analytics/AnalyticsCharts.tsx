@@ -10,13 +10,19 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  PieChart,
+  Pie,
+  Cell,
+  Legend
 } from "recharts";
+
+const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#6366f1', '#ec4899'];
 
 export default function AnalyticsCharts({ 
   type, 
   data 
 }: { 
-  type: "trend" | "sources"; 
+  type: "trend" | "sources" | "countries" | "devices"; 
   data: any[] 
 }) {
   if (!data || data.length === 0) {
@@ -88,6 +94,57 @@ export default function AnalyticsCharts({
           />
           <Bar dataKey="sessions" name="Sesiones" fill="#8b5cf6" radius={[0, 4, 4, 0]} barSize={24} />
         </BarChart>
+      </ResponsiveContainer>
+    );
+  }
+
+  if (type === "countries") {
+    return (
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 0, left: 10, bottom: 0 }}>
+          <CartesianGrid horizontal={false} stroke="#f3f4f6" />
+          <XAxis type="number" hide />
+          <YAxis 
+            dataKey="country" 
+            type="category" 
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 12, fill: '#4b5563' }}
+            width={100}
+          />
+          <Tooltip 
+            cursor={{ fill: '#f9fafb' }}
+            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+          />
+          <Bar dataKey="sessions" name="Sesiones" fill="#10b981" radius={[0, 4, 4, 0]} barSize={20} />
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  }
+
+  if (type === "devices") {
+    return (
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius={80}
+            paddingAngle={5}
+            dataKey="sessions"
+            nameKey="device"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip 
+            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+          />
+          <Legend verticalAlign="bottom" height={36} iconType="circle" />
+        </PieChart>
       </ResponsiveContainer>
     );
   }
