@@ -48,11 +48,20 @@ export default function CampaignComposerClient() {
   const handlePreview = async () => {
     setIsPreviewLoading(true);
     setIsPreviewOpen(true);
-    const res = await previewCampaignHtmlAction(subject, body, contactPhone);
-    if (res.success && res.html) {
-      setPreviewHtml(res.html);
-    } else {
-      setPreviewHtml("<p style='color:red;'>Error al generar la previsualización.</p>");
+    try {
+      const res = await fetch("/api/admin/emails/preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject, body, contactPhone }),
+      });
+      const data = await res.json();
+      if (data.success && data.html) {
+        setPreviewHtml(data.html);
+      } else {
+        setPreviewHtml(`<p style="color:red;">Error al generar vista previa: ${data.error || 'Unknown'}</p>`);
+      }
+    } catch (err) {
+      setPreviewHtml(`<p style="color:red;">Error de conexión.</p>`);
     }
     setIsPreviewLoading(false);
   };
@@ -81,22 +90,32 @@ export default function CampaignComposerClient() {
     setIsSending(true);
     setMessage(null);
 
-    const res = await sendCampaignAction({
-      name,
-      subject,
-      body,
-      recipients,
-      contactPhone,
-    });
-
-    setIsSending(false);
-    if (res.error) {
-      setMessage({ text: res.error, type: "error" });
-    } else {
-      setMessage({ text: "Campaña enviada / encolada exitosamente.", type: "success" });
-      setTimeout(() => {
+    try {
+      const res = await fetch("/api/admin/emails/campaigns/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          subject,
+          body,
+          recipients,
+          contactPhone,
+        }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok || data.error) {
+        setMessage({ text: data.error || "Error al enviar la campaña", type: "error" });
+      } else {
+        setMessage({ text: "Campaña iniciada", type: "success" });
         router.push("/admin/emails/campaigns");
-      }, 1500);
+        router.refresh();
+      }
+    } catch (err) {
+      setMessage({ text: "Error de conexión", type: "error" });
+    } finally {
+      setIsSending(false);
     }
   };
 
