@@ -798,10 +798,43 @@ export async function restoreBookingFromTrashAction(id: string) {
     revalidatePath("/admin/bookings");
     revalidatePath("/admin/bookings/trash");
     revalidatePath(`/admin/bookings/${id}`);
-    revalidatePath("/admin/dashboard");
+    revalidatePath("/admin/bookings/trash");
     return { success: true };
-  } catch (err) {
+  } catch (err: any) {
     console.error("Restore booking from trash error:", err);
-    return { error: "Error al restaurar la reserva" };
+    return { error: err.message || "Error al restaurar reserva" };
+  }
+}
+
+export async function emptyTrashAction() {
+  await requireRole(["SUPER_ADMIN", "ADMIN"]);
+
+  try {
+    const deletedBookings = await prisma.booking.findMany({
+      where: { deletedAt: { not: null } },
+      select: { id: true }
+    });
+
+    if (deletedBookings.length === 0) {
+      return { success: true };
+    }
+
+    const bookingIds = deletedBookings.map(b => b.id);
+
+    await prisma.$transaction([
+      prisma.payment.deleteMany({ where: { bookingId: { in: bookingIds } } }),
+      prisma.bookingStatusHistory.deleteMany({ where: { bookingId: { in: bookingIds } } }),
+      prisma.notificationLog.deleteMany({ where: { bookingId: { in: bookingIds } } }),
+      prisma.receiptAccess.deleteMany({ where: { bookingId: { in: bookingIds } } }),
+      prisma.invoice.deleteMany({ where: { bookingId: { in: bookingIds } } }),
+      prisma.review.deleteMany({ where: { bookingId: { in: bookingIds } } }),
+      prisma.booking.deleteMany({ where: { id: { in: bookingIds } } })
+    ]);
+
+    revalidatePath("/admin/bookings/trash");
+    return { success: true };
+  } catch (err: any) {
+    console.error("Empty trash error:", err);
+    return { error: err.message || "Error al vaciar la papelera" };
   }
 }

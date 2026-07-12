@@ -3,6 +3,7 @@ import { ArrowLeft, Eye, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { bookingsQueries } from "@/modules/bookings/bookings.queries";
 import { BookingTrashActions } from "../BookingTrashActions";
+import { EmptyTrashButton } from "./EmptyTrashButton";
 
 export const dynamic = "force-dynamic";
 
@@ -20,9 +21,7 @@ export default async function BookingTrashPage() {
           <h3 className="mt-2 text-2xl font-bold tracking-tight">Papelera de traslados</h3>
           <p className="text-gray-500">Reservas ocultas del listado principal que todavía pueden restaurarse.</p>
         </div>
-        <div className="h-10 w-10 rounded-lg bg-red-50 text-red-700 flex items-center justify-center">
-          <Trash2 className="w-5 h-5" />
-        </div>
+        <EmptyTrashButton />
       </div>
 
       <div className="border border-gray-200 rounded-xl shadow-sm bg-white overflow-x-auto">
