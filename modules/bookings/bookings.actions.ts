@@ -801,6 +801,201 @@ export async function restoreBookingFromTrashAction(id: string) {
     revalidatePath("/admin/bookings/trash");
     return { success: true };
   } catch (err: any) {
+          driverId,
+          driverStatus: driverId ? "ASIGNADO" : null,
+        }
+      });
+      await tx.auditLog.create({
+        data: {
+          entityType: "Booking",
+          entityId: id,
+          action: "ASSIGN_DRIVER",
+          oldValue: JSON.stringify({ driverId: booking.driverId }),
+          newValue: JSON.stringify({ driverId }),
+        }
+      });
+    });
+
+    // Send email notification if a driver was assigned
+    if (driverId && booking.driverId !== driverId) {
+      try {
+        const driver = await prisma.driver.findUnique({
+          where: { id: driverId },
+          include: { user: true }
+        });
+        
+        if (driver) {
+          const { emailsService } = await import("../notifications/emails.service");
+          await emailsService.sendDriverAssignedNotification(
+            booking.customer.email,
+            booking.publicCode,
+            booking.customer.fullName,
+            { name: driver.user.fullName, phone: driver.user.phone },
+            booking
+          );
+        }
+      } catch (emailError) {
+        console.error("Error sending driver assignment email:", emailError);
+      }
+    }
+
+    revalidatePath(`/admin/bookings/${id}`);
+    revalidatePath("/admin/bookings");
+    return { success: true };
+  } catch (err) {
+    return { error: "Error al asignar el conductor" };
+  }
+}
+
+export async function updateInternalNotesAction(id: string, internalNotes: string) {
+  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+  try {
+    const booking = await prisma.booking.findUnique({ where: { id } });
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id },
+        data: { internalNotes }
+      });
+      await tx.auditLog.create({
+        data: {
+          entityType: "Booking",
+          entityId: id,
+          action: "UPDATE_NOTES",
+          oldValue: JSON.stringify({ internalNotes: booking?.internalNotes }),
+          newValue: JSON.stringify({ internalNotes }),
+        }
+      });
+    });
+    revalidatePath(`/admin/bookings/${id}`);
+    return { success: true };
+  } catch (err) {
+    return { error: "Error al actualizar las notas" };
+  }
+}
+
+export async function moveBookingToTrashAction(id: string) {
+  const session = await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+
+  try {
+    const booking = await prisma.booking.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        publicCode: true,
+        deletedAt: true,
+        bookingStatus: true,
+        paymentStatus: true,
+      },
+    });
+
+    if (!booking) {
+      return { error: "Reserva no encontrada" };
+    }
+
+    if (booking.deletedAt) {
+      return { success: true };
+    }
+
+    const deletedAt = new Date();
+
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id },
+        data: {
+          deletedAt,
+          deletedBy: session.userId,
+          deletedReason: "Movida a la papelera desde el panel de administraciÃ³n",
+        },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          userId: session.userId,
+          entityType: "Booking",
+          entityId: id,
+          action: "MOVE_TO_TRASH",
+          oldValue: JSON.stringify({
+            publicCode: booking.publicCode,
+            bookingStatus: booking.bookingStatus,
+            paymentStatus: booking.paymentStatus,
+            deletedAt: null,
+          }),
+          newValue: JSON.stringify({
+            deletedAt,
+            deletedBy: session.userId,
+          }),
+        },
+      });
+    });
+
+    revalidatePath("/admin/bookings");
+    revalidatePath("/admin/bookings/trash");
+    revalidatePath(`/admin/bookings/${id}`);
+    revalidatePath("/admin/dashboard");
+    return { success: true };
+  } catch (err) {
+    console.error("Move booking to trash error:", err);
+    return { error: "Error al mover la reserva a la papelera" };
+  }
+}
+
+export async function restoreBookingFromTrashAction(id: string) {
+  const session = await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
+
+  try {
+    const booking = await prisma.booking.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        publicCode: true,
+        deletedAt: true,
+        deletedBy: true,
+      },
+    });
+
+    if (!booking) {
+      return { error: "Reserva no encontrada" };
+    }
+
+    if (!booking.deletedAt) {
+      return { success: true };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.booking.update({
+        where: { id },
+        data: {
+          deletedAt: null,
+          deletedBy: null,
+          deletedReason: null,
+        },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          userId: session.userId,
+          entityType: "Booking",
+          entityId: id,
+          action: "RESTORE_FROM_TRASH",
+          oldValue: JSON.stringify({
+            publicCode: booking.publicCode,
+            deletedAt: booking.deletedAt,
+            deletedBy: booking.deletedBy,
+          }),
+          newValue: JSON.stringify({
+            deletedAt: null,
+            restoredBy: session.userId,
+          }),
+        },
+      });
+    });
+
+    revalidatePath("/admin/bookings");
+    revalidatePath("/admin/bookings/trash");
+    revalidatePath(`/admin/bookings/${id}`);
+    revalidatePath("/admin/bookings/trash");
+    return { success: true };
+  } catch (err: any) {
     console.error("Restore booking from trash error:", err);
     return { error: err.message || "Error al restaurar reserva" };
   }
@@ -825,7 +1020,6 @@ export async function emptyTrashAction() {
       prisma.payment.deleteMany({ where: { bookingId: { in: bookingIds } } }),
       prisma.bookingStatusHistory.deleteMany({ where: { bookingId: { in: bookingIds } } }),
       prisma.notificationLog.deleteMany({ where: { bookingId: { in: bookingIds } } }),
-      prisma.receiptAccess.deleteMany({ where: { bookingId: { in: bookingIds } } }),
       prisma.invoice.deleteMany({ where: { bookingId: { in: bookingIds } } }),
       prisma.review.deleteMany({ where: { bookingId: { in: bookingIds } } }),
       prisma.booking.deleteMany({ where: { id: { in: bookingIds } } })
