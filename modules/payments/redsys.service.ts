@@ -64,6 +64,18 @@ function escapeHtml(value: string): string {
 }
 
 function createOrderId(booking: RedsysBooking): string {
+  // If publicCode is our new sequential numeric format (e.g., "10000")
+  if (booking.publicCode && /^\d+$/.test(booking.publicCode)) {
+    const attempt = (booking.payments?.filter((payment) => payment.providerOrderId).length ?? 0);
+    if (attempt === 0) {
+       return booking.publicCode;
+    }
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const suffix = letters[(attempt - 1) % letters.length];
+    return `${booking.publicCode}${suffix}`.slice(0, 12); // Redsys max 12 chars
+  }
+
+  // Fallback for older bookings with "MT-2026-..." format
   const year = new Date(booking.createdAt ?? Date.now()).getUTCFullYear().toString();
   const source = (booking.id || booking.publicCode).replace(/[^A-Za-z0-9]/g, "").toUpperCase();
   const uniquePart = source.slice(-6).padStart(6, "0");

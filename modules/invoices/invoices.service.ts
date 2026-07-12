@@ -20,11 +20,12 @@ export const invoicesService = {
       }
     });
 
-    let nextNumber = 1;
+    let nextNumber = 10000;
     if (lastInvoice) {
       const parts = lastInvoice.invoiceNumber.split('-');
       if (parts.length === 3) {
-        nextNumber = parseInt(parts[2], 10) + 1;
+        const parsed = parseInt(parts[2], 10);
+        nextNumber = isNaN(parsed) ? 10000 : parsed + 1;
       }
     }
 
@@ -88,11 +89,12 @@ export const invoicesService = {
         where: { invoiceNumber: { startsWith: prefix } },
         orderBy: { invoiceNumber: "desc" }
       });
-      let nextNumber = 1;
+      let nextNumber = 10000;
       if (lastInvoice) {
         const parts = lastInvoice.invoiceNumber.split('-');
         if (parts.length === 3) {
-          nextNumber = parseInt(parts[2], 10) + 1;
+          const parsed = parseInt(parts[2], 10);
+          nextNumber = isNaN(parsed) ? 10000 : parsed + 1;
         }
       }
       const invoiceNumber = `${prefix}${nextNumber.toString().padStart(4, "0")}`;
