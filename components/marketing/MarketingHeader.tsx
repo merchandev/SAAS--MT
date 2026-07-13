@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import Link from "next/link";
 import MarketingLogo from "./MarketingLogo";
 import MobileMenu from "@/components/home/MobileMenu";
@@ -7,6 +8,9 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { User, ChevronRight } from "lucide-react";
 import { localizedPath } from "@/lib/i18n-utils";
 export default async function MarketingHeader() {
+  const headersList = await headers();
+  const currentLocale = headersList.get("x-locale") || "es";
+
   let settings;
   try {
     settings = await settingsQueries.getAllSettings();
@@ -20,29 +24,29 @@ export default async function MarketingHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-7xl items-center justify-between rounded-lg border border-white/15 bg-black/55 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-6">
-      <MarketingLogo />
+      <MarketingLogo locale={currentLocale} />
 
       <nav className="hidden items-center gap-7 text-sm font-semibold text-white/85 md:flex">
-        <Link href={localizedPath("/#servicios")} className="transition-colors hover:text-[#D4AF37]">
+        <Link href={localizedPath("/#servicios", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
           Servicios
         </Link>
-        <Link href={localizedPath("/tours-privados")} className="transition-colors hover:text-[#D4AF37]">
+        <Link href={localizedPath("/tours-privados", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
           Tours
         </Link>
-        <Link href={localizedPath("/blog")} className="transition-colors hover:text-[#D4AF37]">
+        <Link href={localizedPath("/blog", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
           Blog
         </Link>
-        <Link href={localizedPath("/preguntas-frecuentes")} className="transition-colors hover:text-[#D4AF37]">
+        <Link href={localizedPath("/preguntas-frecuentes", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
           FAQ
         </Link>
-        <Link href={localizedPath("/contacto")} className="transition-colors hover:text-[#D4AF37]">
+        <Link href={localizedPath("/contacto", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
           Contacto
         </Link>
         <LanguageSwitcher />
 
         {isCustomer ? (
           <Link
-            href={localizedPath("/customer/dashboard")}
+            href={localizedPath("/customer/dashboard", currentLocale)}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full transition-transform hover:-translate-y-0.5"
             style={{ backgroundColor: accentColor, color: "#111" }}
             title="Mi Panel"
@@ -52,20 +56,20 @@ export default async function MarketingHeader() {
         ) : (
           <div className="flex items-center gap-3">
             <Link
-              href={localizedPath("/login")}
+              href={localizedPath("/login", currentLocale)}
               className="text-sm font-semibold text-white/90 transition-colors hover:text-[#D4AF37]"
             >
               Acceder
             </Link>
             <span className="text-white/20">|</span>
             <Link
-              href={localizedPath("/register")}
-              className="text-sm font-semibold text-white/90 transition-colors hover:text-[#D4AF37] mr-1"
+              href={localizedPath("/register", currentLocale)}
+              className="text-sm font-semibold text-white/90 transition-colors hover:text-[#D4AF37]"
             >
               Registro
             </Link>
             <Link
-              href={localizedPath("/booking")}
+              href={localizedPath("/booking", currentLocale)}
               className="inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-bold text-gray-900 shadow-lg transition-transform hover:-translate-y-0.5"
               style={{ backgroundColor: accentColor }}
             >

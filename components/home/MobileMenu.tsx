@@ -39,7 +39,7 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
         <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col overflow-y-auto">
           {/* Header inside menu */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
-            <MarketingLogo />
+            <MarketingLogo locale={currentLocale} />
             <button 
               onClick={() => setIsOpen(false)}
               className="text-white p-2 focus:outline-none rounded-full bg-white/5 hover:bg-white/10 transition-colors"

@@ -127,14 +127,14 @@ export async function middleware(request: NextRequest) {
   if (pathnameHasLocale) {
     const currentLocale = pathname.split('/')[1];
     
-    // REDIRECT ALL NON-ES LOCALES TO ES (TEMPORARY UNTIL PROPER TRANSLATIONS ARE ADDED)
-    if (currentLocale !== 'es') {
-      const restOfPath = pathname.substring(currentLocale.length + 1);
-      request.nextUrl.pathname = `/es${restOfPath}`;
-      return NextResponse.redirect(request.nextUrl, 301);
-    }
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-locale', currentLocale);
 
-    const response = NextResponse.next();
+    const response = NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
     
     // Sincronizar la cookie de Google Translate con la URL actual
     if (currentLocale === 'es') {

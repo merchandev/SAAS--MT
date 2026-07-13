@@ -178,17 +178,44 @@ export async function getEmailCampaignTraffic(startDate = '30daysAgo') {
       property: `properties/${propertyId}`,
       dateRanges: [{ startDate, endDate: 'today' }],
       dimensionFilter: {
-        filter: {
-          fieldName: 'sessionDefaultChannelGroup',
-          stringFilter: {
-            matchType: 'EXACT',
-            value: 'Email'
-          }
+        orGroup: {
+          expressions: [
+            {
+              filter: {
+                fieldName: 'sessionDefaultChannelGroup',
+                stringFilter: {
+                  matchType: 'EXACT',
+                  value: 'Email'
+                }
+              }
+            },
+            {
+              filter: {
+                fieldName: 'sessionMedium',
+                stringFilter: {
+                  matchType: 'CONTAINS',
+                  value: 'email',
+                  caseSensitive: false
+                }
+              }
+            },
+            {
+              filter: {
+                fieldName: 'sessionSource',
+                stringFilter: {
+                  matchType: 'CONTAINS',
+                  value: 'newsletter',
+                  caseSensitive: false
+                }
+              }
+            }
+          ]
         }
       },
       metrics: [{ name: 'sessions' }, { name: 'activeUsers' }],
     });
 
+    // Sumar todos los resultados en caso de múltiples filas devueltas (aunque al no tener dimensión en el query, debería venir en una sola fila con el agregado)
     const row = response.rows?.[0];
     if (!row) return { sessions: '0', activeUsers: '0' };
 

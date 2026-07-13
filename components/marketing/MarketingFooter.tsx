@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { Phone, Mail, MapPin, Star, Lock, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import MarketingLogo from "./MarketingLogo";
@@ -44,12 +45,15 @@ const legalLinks = [
   { href: "/cookies", label: "Política de Cookies" },
 ];
 
-export default function MarketingFooter() {
+export default async function MarketingFooter() {
+  const headersList = await headers();
+  const currentLocale = headersList.get("x-locale") || "es";
+
   return (
     <footer className="relative bg-gray-50 text-gray-900 border-t border-gray-200">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 lg:grid-cols-[1.2fr_0.9fr_0.9fr_1.1fr]">
         <div>
-          <MarketingLogo className="mb-5" variant="footer" />
+          <MarketingLogo className="mb-5" variant="footer" locale={currentLocale} />
           <p className="max-w-xs text-base leading-7 text-gray-600">
             Traslados privados y tours de lujo personalizados en Barcelona y toda España. Tu comodidad, nuestra pasión.
           </p>
@@ -75,7 +79,7 @@ export default function MarketingFooter() {
           <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Servicios</h2>
           <nav className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
             {services.map((item) => (
-              <Link key={item.label} href={localizedPath(item.href)} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
+              <Link key={item.label} href={localizedPath(item.href, currentLocale)} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
                 {item.label}
               </Link>
             ))}
@@ -86,7 +90,7 @@ export default function MarketingFooter() {
           <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Rutas Destacadas</h2>
           <nav className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
             {tours.map((item) => (
-              <Link key={item.label} href={localizedPath(item.href)} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
+              <Link key={item.label} href={localizedPath(item.href, currentLocale)} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
                 {item.label}
               </Link>
             ))}
@@ -129,7 +133,7 @@ export default function MarketingFooter() {
           <p>© {new Date().getFullYear()} Transfers in Barcelona. Todos los derechos reservados.</p>
           <nav className="flex flex-wrap gap-x-8 gap-y-3">
             {legalLinks.map((item) => (
-              <Link key={item.label} href={localizedPath(item.href)} className="transition hover:text-gray-900">
+              <Link key={item.label} href={localizedPath(item.href, currentLocale)} className="transition hover:text-gray-900">
                 {item.label}
               </Link>
             ))}
