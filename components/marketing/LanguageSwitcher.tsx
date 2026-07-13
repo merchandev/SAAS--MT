@@ -6,6 +6,7 @@ import { Globe, ChevronDown, Check } from "lucide-react";
 
 const LANGUAGES = [
   { code: "es", label: "Español",    flag: "🇪🇸" },
+  { code: "ca", label: "Català",     flag: "" },
   { code: "en", label: "English",    flag: "🇬🇧" },
   { code: "fr", label: "Français",   flag: "🇫🇷" },
   { code: "de", label: "Deutsch",    flag: "🇩🇪" },

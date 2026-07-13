@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const locales = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'sv', 'zh-CN'];
+const locales = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'sv', 'zh-CN', 'ca'];
 const defaultLocale = 'es';
 
 const adminRoutes = [
