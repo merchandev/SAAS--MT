@@ -38,12 +38,16 @@ export function getTranslatedField(
   if (!entity) return fallbackValue || "";
   
   if (currentLocale !== "es" && entity.translations) {
-    const translationsObj = typeof entity.translations === "string" 
-      ? JSON.parse(entity.translations) 
-      : entity.translations;
-      
-    if (translationsObj && translationsObj[currentLocale] && translationsObj[currentLocale][fieldName]) {
-      return translationsObj[currentLocale][fieldName];
+    try {
+      const translationsObj = typeof entity.translations === "string" 
+        ? JSON.parse(entity.translations) 
+        : entity.translations;
+        
+      if (translationsObj && translationsObj[currentLocale] && translationsObj[currentLocale][fieldName]) {
+        return translationsObj[currentLocale][fieldName];
+      }
+    } catch (e) {
+      console.error("Error parsing translations:", e);
     }
   }
 
