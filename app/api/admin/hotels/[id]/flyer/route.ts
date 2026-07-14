@@ -5,6 +5,8 @@ import QRCode from "qrcode";
 import fs from "fs";
 import path from "path";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -67,9 +69,9 @@ export async function GET(
       
       // Basado en el diseño "HABLADOR - METRANSFERS.PNG"
       // Dimensiones de la imagen: 2362 x 2953 (aprox)
-      const qrSize = width * 0.31; // 31% del ancho para encajar perfectamente
-      const qrX = width * 0.130;   // movido a la izquierda (era 0.145)
-      const qrY = height * 0.325;  // movido hacia abajo (era 0.345)
+      const qrSize = width * 0.29; // 29% del ancho para dar más margen interno
+      const qrX = width * 0.105;   // movido a la izquierda (era 0.130)
+      const qrY = height * 0.29;   // movido hacia abajo (era 0.325)
       
       // Ya que la imagen base tiene el recuadro en blanco, incrustamos el QR directamente
       const qrImage = await pdfDoc.embedPng(qrBuffer);
@@ -121,6 +123,7 @@ export async function GET(
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="Hablador-${hotel.slug}.pdf"`,
+        "Cache-Control": "no-store, max-age=0",
       },
     });
 
