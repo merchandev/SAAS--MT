@@ -12,7 +12,7 @@ export default function MarketingLogo({
   variant?: "header" | "footer";
   locale?: string;
 }) {
-  const logoSrc = variant === "header" ? "/images/MT-MeTransfers.png" : "/images/MeTransfers-exp.png";
+  const logoSrc = variant === "header" ? "/images/TIB_B.png" : "/images/TIB.png";
   // Evitar url con doble barra si el locale no está definido
   const href = locale ? `/${locale}` : "/";
   return (
