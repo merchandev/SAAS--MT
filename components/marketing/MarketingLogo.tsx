@@ -20,8 +20,8 @@ export default function MarketingLogo({
       <Image 
         src={logoSrc}
         alt="Transfers in Barcelona" 
-        width={176}
-        height={41}
+        width={140}
+        height={32}
         className="object-contain object-left" 
         priority={variant === "header"}
       />
