@@ -67,11 +67,18 @@ export async function GET(
         height,
       });
       
-      // Basado en el diseño "HABLADOR - METRANSFERS.PNG"
-      // Dimensiones de la imagen: 2362 x 2953 (aprox)
-      const qrSize = width * 0.29; // 29% del ancho para dar más margen interno
-      const qrX = width * 0.105;   // movido a la izquierda (era 0.130)
-      const qrY = height * 0.29;   // movido hacia abajo (era 0.325)
+      // Basado en el diseño del PSD original (2362 x 2953)
+      // QR Box en PSD: Ancho/Alto: 799px, X: 134px, Y (desde arriba): 1253px
+      const psdWidth = 2362;
+      const psdHeight = 2953;
+      const qrPsdWidth = 799;
+      const qrPsdX = 134;
+      const qrPsdYTop = 1253;
+      const qrPsdYBottom = psdHeight - (qrPsdYTop + qrPsdWidth); // 901px desde abajo
+
+      const qrSize = width * (qrPsdWidth / psdWidth);
+      const qrX = width * (qrPsdX / psdWidth);
+      const qrY = height * (qrPsdYBottom / psdHeight);
       
       // Ya que la imagen base tiene el recuadro en blanco, incrustamos el QR directamente
       const qrImage = await pdfDoc.embedPng(qrBuffer);
