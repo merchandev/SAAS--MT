@@ -45,8 +45,8 @@ export default async function ReceiptPage({
               <p className="text-gray-500 mt-1">Ref: {booking.publicCode}</p>
             </div>
             <div className="text-right">
-              <img src="/logo.png" alt="Transfers in Barcelona" className="h-10 w-auto object-contain ml-auto mb-2" />
-              <p className="font-bold text-gray-800">Transfers in Barcelona</p>
+              <img src="/images/MeTransfers-exp.png" alt="METRANSFERS GESTION SL" className="h-10 w-auto object-contain ml-auto mb-2" />
+              <p className="font-bold text-gray-800">METRANSFERS GESTION SL</p>
             </div>
           </div>
 
@@ -86,9 +86,12 @@ export default async function ReceiptPage({
             <p className="text-gray-500 mt-1">Ref: {booking.publicCode}</p>
           </div>
           <div className="text-right">
-            <img src="/logo.png" alt="Transfers in Barcelona" className="h-10 w-auto object-contain ml-auto mb-2" />
-            <p className="font-bold text-gray-800">Transfers in Barcelona</p>
-            <p className="text-sm text-gray-500">Barcelona, España</p>
+            <img src="/images/MeTransfers-exp.png" alt="METRANSFERS GESTION SL" className="h-10 w-auto object-contain ml-auto mb-2" />
+            <p className="font-bold text-gray-800">METRANSFERS GESTION SL</p>
+            <p className="text-xs text-gray-500">NIF: B22522353</p>
+            <p className="text-xs text-gray-500">AVDA MARE DE DEU DE MONTSERRAT, NUM 18</p>
+            <p className="text-xs text-gray-500">08970 SANT JOAN DESPÍ – (BARCELONA)</p>
+            <p className="text-xs text-gray-500 mt-1">info@metransfers.es</p>
           </div>
         </div>
 
