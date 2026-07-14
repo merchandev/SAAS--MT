@@ -49,14 +49,19 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function RootLayout({
+import { headers } from "next/headers";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const locale = headersList.get("x-locale") || "es";
+
   return (
     <html
-      lang="es"
+      lang={locale}
       className={`${outfit.variable} ${inter.variable} h-full antialiased dark`}
     >
       <head>

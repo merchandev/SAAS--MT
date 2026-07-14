@@ -148,8 +148,8 @@ model Hotel {
   bookings Booking[]
   users    User[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -171,8 +171,8 @@ model Agency {
   bookings Booking[]
   users    User[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -466,31 +466,31 @@ model NotificationTemplate {
 }
 
 model EmailCampaign {
-  id          String    @id @default(uuid())
-  name        String // Nombre interno de la campaña
-  subject     String
-  content     String    @db.Text // Contenido HTML
-  status      String    @default("DRAFT") // DRAFT, SENDING, COMPLETED, FAILED
-  recipients  Json // Arreglo de emails
-  sentCount   Int       @default(0)
-  failedCount Int       @default(0)
-  createdBy   String?
-  scheduledAt DateTime?
-  startedAt   DateTime?
+  id           String    @id @default(uuid())
+  name         String // Nombre interno de la campaña
+  subject      String
+  content      String    @db.Text // Contenido HTML
+  status       String    @default("DRAFT") // DRAFT, SENDING, COMPLETED, FAILED
+  recipients   Json // Arreglo de emails
+  sentCount    Int       @default(0)
+  failedCount  Int       @default(0)
+  createdBy    String?
+  scheduledAt  DateTime?
+  startedAt    DateTime?
   completedAt  DateTime?
   contactPhone String?   @default("+34 662 02 41 36")
   sendingRate  Int       @default(50)
-  sendFromHour String?   // Ej. "09:00"
-  sendToHour   String?   // Ej. "18:00"
+  sendFromHour String? // Ej. "09:00"
+  sendToHour   String? // Ej. "18:00"
   deletedAt    DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model NotificationLog {
   id          String   @id @default(uuid())
   bookingId   String?
-  campaignId  String?  // Relación opcional con EmailCampaign
+  campaignId  String? // Relación opcional con EmailCampaign
   recipient   String // Email o Teléfono
   type        String // EMAIL, WHATSAPP
   eventType   String? // BOOKING_PENDING, BOOKING_CONFIRMED, BOOKING_CANCELLED, etc.
@@ -638,6 +638,8 @@ model RoutePage {
   seoKeywords String?
   seoImage    String?
 
+  translations Json? // { "en": { "h1Title": "...", "contentHtml": "...", "metaDescription": "...", "seoTitle": "...", "seoKeywords": "..." }, "fr": { ... } }
+
   basePriceCache Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X €" rápido
 
   isActive    Boolean   @default(true)
@@ -660,6 +662,8 @@ model Post {
   metaDescription String? @db.Text
   seoKeywords     String?
   imageUrl        String?
+
+  translations Json? // { "en": { "title": "...", "excerpt": "...", "contentHtml": "...", "metaTitle": "...", "metaDescription": "..." }, "fr": { ... } }
 
   isActive    Boolean   @default(true)
   publishedAt DateTime?
@@ -690,6 +694,7 @@ model StaticPage {
   title           String?
   metaDescription String?
   seoKeywords     String?
+  translations    Json? // { "en": { "title": "...", "metaDescription": "...", "seoKeywords": "..." }, "fr": { ... } }
   isActive        Boolean  @default(true)
   updatedAt       DateTime @updatedAt
 }

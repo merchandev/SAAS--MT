@@ -322,6 +322,19 @@ export function CmsEditorForm({
                   Esta imagen se verá al compartir el enlace por WhatsApp, Facebook o Twitter. Se recomienda usar una relación de aspecto 1:1 (cuadrada).
                 </p>
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Traducciones (JSON SEO)</label>
+                <textarea 
+                  value={typeof formData.translations === 'string' ? formData.translations : JSON.stringify(formData.translations || {}, null, 2)}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange("translations", e.target.value)}
+                  placeholder={'{\n  "en": {\n    "seoTitle": "...",\n    "metaDescription": "..."\n  }\n}'}
+                  className="flex w-full rounded-md border border-input bg-gray-50 px-3 py-2 text-sm shadow-sm font-mono h-48 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Añade traducciones para "title", "metaDescription", "seoTitle", "seoKeywords", "contentHtml". Idiomas: en, fr, ca.
+                </p>
+              </div>
             </div>
           </div>
         </div>

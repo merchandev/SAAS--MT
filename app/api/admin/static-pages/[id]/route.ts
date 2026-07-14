@@ -16,6 +16,7 @@ export async function PUT(
         title,
         metaDescription,
         seoKeywords,
+        translations: typeof body.translations === 'string' && body.translations ? JSON.parse(body.translations) : body.translations,
       },
     });
 

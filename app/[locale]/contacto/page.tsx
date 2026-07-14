@@ -8,14 +8,30 @@ import ContactForm from "@/components/home/ContactForm";
 
 import { prisma } from "@/lib/prisma";
 
-export async function generateMetadata(): Promise<Metadata> {
+import { getTranslatedField } from "@/lib/i18n-utils";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
   const seo = await prisma.staticPage.findUnique({ where: { slug: "contacto" } });
+  
+  const title = getTranslatedField(seo, "title", locale, seo?.title) || "Contacto | Transfers in Barcelona";
+  const metaDesc = getTranslatedField(seo, "metaDescription", locale, seo?.metaDescription) || "Contacta con Transfers in Barcelona para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona.";
+  const seoKw = getTranslatedField(seo, "seoKeywords", locale, seo?.seoKeywords);
+
+  // Generar alternates dinámicos
+  const languages = ["es", "en", "fr", "ca"];
+  const alternates: Record<string, string> = {};
+  languages.forEach((lang) => {
+    alternates[lang] = `https://transfersinbarcelona.com/${lang}/contacto`;
+  });
+
   return {
-    title: seo?.title || "Contacto | Transfers in Barcelona",
-    description: seo?.metaDescription || "Contacta con Transfers in Barcelona para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona.",
-    keywords: seo?.seoKeywords || undefined,
+    title,
+    description: metaDesc,
+    keywords: seoKw || undefined,
     alternates: {
-      canonical: "https://transfersinbarcelona.com/es/contacto",
+      canonical: `https://transfersinbarcelona.com/${locale}/contacto`,
+      languages: alternates,
     },
   };
 }

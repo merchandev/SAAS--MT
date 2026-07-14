@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
         isActive,
         scheduledAt,
         publishedAt: isActive && !scheduledAt ? new Date() : null,
+        translations: typeof body.translations === 'string' ? JSON.parse(body.translations || '{}') : body.translations,
       },
     });
 
@@ -79,6 +80,7 @@ export async function PUT(request: NextRequest) {
         isActive,
         scheduledAt,
         publishedAt,
+        translations: typeof data.translations === 'string' && data.translations ? JSON.parse(data.translations) : data.translations,
       },
     });
 

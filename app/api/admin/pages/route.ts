@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
         basePriceCache: body.basePriceCache ? Number(body.basePriceCache) : null,
         isActive,
         scheduledAt,
+        translations: typeof body.translations === 'string' ? JSON.parse(body.translations || '{}') : body.translations,
       },
     });
 
@@ -75,6 +76,7 @@ export async function PUT(request: NextRequest) {
         basePriceCache: data.basePriceCache ? Number(data.basePriceCache) : null,
         isActive,
         scheduledAt,
+        translations: typeof data.translations === 'string' && data.translations ? JSON.parse(data.translations) : data.translations,
       },
     });
 

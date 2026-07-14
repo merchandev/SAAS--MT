@@ -24,3 +24,29 @@ export function localizedPath(path: string, currentLocale: string = "es"): strin
   // Limpiar posibles barras dobles (ej: /es//booking -> /es/booking)
   return finalPath.replace(/\/+/g, "/");
 }
+
+/**
+ * Obtiene el valor traducido de un campo dentro del objeto JSON translations,
+ * o hace fallback al valor original si no hay traducción disponible para el locale.
+ */
+export function getTranslatedField(
+  entity: { translations?: any } | null,
+  fieldName: string,
+  currentLocale: string,
+  fallbackValue: string | null = null
+): string {
+  if (!entity) return fallbackValue || "";
+  
+  if (currentLocale !== "es" && entity.translations) {
+    const translationsObj = typeof entity.translations === "string" 
+      ? JSON.parse(entity.translations) 
+      : entity.translations;
+      
+    if (translationsObj && translationsObj[currentLocale] && translationsObj[currentLocale][fieldName]) {
+      return translationsObj[currentLocale][fieldName];
+    }
+  }
+
+  // Si es "es" o no hay traducción, usamos el fallback origin
+  return fallbackValue || "";
+}

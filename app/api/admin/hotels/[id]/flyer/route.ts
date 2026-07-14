@@ -68,8 +68,8 @@ export async function GET(
       // Basado en el diseño "HABLADOR - METRANSFERS.PNG"
       // Dimensiones de la imagen: 2362 x 2953 (aprox)
       const qrSize = width * 0.31; // 31% del ancho para encajar perfectamente
-      const qrX = width * 0.145;    // 14.5% de margen izquierdo para centrar horizontalmente en la caja
-      const qrY = height * 0.345;  // 34.5% desde abajo (ajustado ligeramente hacia abajo sin el texto)
+      const qrX = width * 0.130;   // movido a la izquierda (era 0.145)
+      const qrY = height * 0.325;  // movido hacia abajo (era 0.345)
       
       // Ya que la imagen base tiene el recuadro en blanco, incrustamos el QR directamente
       const qrImage = await pdfDoc.embedPng(qrBuffer);

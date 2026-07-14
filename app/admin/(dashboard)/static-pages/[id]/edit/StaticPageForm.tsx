@@ -14,6 +14,7 @@ export default function StaticPageForm({ page }: { page: any }) {
     title: page.title || "",
     metaDescription: page.metaDescription || "",
     seoKeywords: page.seoKeywords || "",
+    translations: page.translations || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,6 +80,20 @@ export default function StaticPageForm({ page }: { page: any }) {
             className="mt-1"
           />
           <p className="text-xs text-gray-500 mt-1">Opcional. Separadas por comas.</p>
+        </div>
+
+        <div>
+          <Label htmlFor="translations">Traducciones (JSON SEO)</Label>
+          <textarea
+            id="translations"
+            value={typeof formData.translations === 'string' ? formData.translations : JSON.stringify(formData.translations || {}, null, 2)}
+            onChange={(e) => setFormData({ ...formData, translations: e.target.value })}
+            placeholder={'{\n  "en": {\n    "title": "...",\n    "metaDescription": "..."\n  }\n}'}
+            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm font-mono h-48 mt-1 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Añade traducciones para "title", "metaDescription", "seoKeywords". Idiomas: en, fr, ca.
+          </p>
         </div>
       </div>
 

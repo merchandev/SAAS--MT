@@ -6,6 +6,7 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 import { CheckCircle2, Users, Briefcase } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
+import { getTranslatedField } from "@/lib/i18n-utils";
 
 interface Props {
   params: Promise<{
@@ -15,7 +16,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   
   const route = await prisma.routePage.findUnique({
     where: { slug },
@@ -25,23 +26,35 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {};
   }
 
+  const seoTitle = getTranslatedField(route, "seoTitle", locale, route.seoTitle) || getTranslatedField(route, "h1Title", locale, route.h1Title) || route.slug;
+  const metaDesc = getTranslatedField(route, "metaDescription", locale, route.metaDescription) || `Reserva tu traslado desde ${route.originName} hasta ${route.destinationName} con precio cerrado.`;
+  const seoKw = getTranslatedField(route, "seoKeywords", locale, route.seoKeywords);
+
+  // Generar alternates dinámicos
+  const languages = ["es", "en", "fr", "ca"];
+  const alternates: Record<string, string> = {};
+  languages.forEach((lang) => {
+    alternates[lang] = `https://transfersinbarcelona.com/${lang}/rutas/${route.slug}`;
+  });
+
   return {
-    title: `${route.seoTitle || route.h1Title || route.slug} | Transfers in Barcelona`,
-    description: route.metaDescription || `Reserva tu traslado desde ${route.originName} hasta ${route.destinationName} con precio cerrado.`,
+    title: `${seoTitle} | Transfers in Barcelona`,
+    description: metaDesc,
     alternates: {
-      canonical: `https://transfersinbarcelona.com/es/rutas/${route.slug}`,
+      canonical: `https://transfersinbarcelona.com/${locale}/rutas/${route.slug}`,
+      languages: alternates,
     },
-    keywords: route.seoKeywords || undefined,
+    keywords: seoKw || undefined,
     openGraph: {
-      title: route.seoTitle || route.h1Title || route.slug,
-      description: route.metaDescription || "",
+      title: seoTitle,
+      description: metaDesc,
       images: route.seoImage ? [route.seoImage] : [],
     },
   };
 }
 
 export default async function RouteDynamicPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   
   const route = await prisma.routePage.findUnique({
     where: { slug },
@@ -52,9 +65,10 @@ export default async function RouteDynamicPage({ params }: Props) {
     notFound();
   }
 
-  const title = route.h1Title || route.seoTitle || route.slug;
+  const title = getTranslatedField(route, "h1Title", locale, route.h1Title) || getTranslatedField(route, "seoTitle", locale, route.seoTitle) || route.slug;
   const origin = route.originName || "Barcelona";
   const destination = route.destinationName || "";
+  const metaDesc = getTranslatedField(route, "metaDescription", locale, route.metaDescription);
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-950 selection:bg-[var(--brand-accent)] selection:text-white" style={{ "--brand-accent": "#D4AF37" } as any}>
@@ -72,9 +86,9 @@ export default async function RouteDynamicPage({ params }: Props) {
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
                 {title}
               </h1>
-              {route.metaDescription && (
+              {metaDesc && (
                 <p className="mt-6 text-lg leading-8 text-gray-600">
-                  {route.metaDescription}
+                  {metaDesc}
                 </p>
               )}
               

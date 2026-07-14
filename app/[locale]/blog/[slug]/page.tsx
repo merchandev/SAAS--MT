@@ -7,10 +7,11 @@ import { ArrowLeft, Calendar } from "lucide-react";
 import Link from "next/link";
 import MarketingCta from "@/components/marketing/MarketingCta";
 import { getBlogImage } from "@/lib/fleet-images";
+import { getTranslatedField, localizedPath } from "@/lib/i18n-utils";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string, locale: string }> }) {
   const resolvedParams = await params;
   const post = await prisma.post.findUnique({
     where: { slug: resolvedParams.slug },
@@ -22,22 +23,34 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
+  const title = getTranslatedField(post, "title", resolvedParams.locale, post.title);
+  const metaTitle = getTranslatedField(post, "metaTitle", resolvedParams.locale, post.metaTitle) || `${title} | Blog Transfers in Barcelona`;
+  const metaDesc = getTranslatedField(post, "metaDescription", resolvedParams.locale, post.metaDescription) || getTranslatedField(post, "excerpt", resolvedParams.locale, post.excerpt);
+
   // mock image object for seo
-  const image = getBlogImage({ slug: post.slug, title: post.title });
+  const image = getBlogImage({ slug: post.slug, title });
+
+  // Generar alternates dinámicos
+  const languages = ["es", "en", "fr", "ca"];
+  const alternates: Record<string, string> = {};
+  languages.forEach((lang) => {
+    alternates[lang] = `https://transfersinbarcelona.com/${lang}/blog/${post.slug}`;
+  });
 
   return {
-    title: post.metaTitle || `${post.title} | Blog Transfers in Barcelona`,
-    description: post.metaDescription || post.excerpt,
+    title: metaTitle,
+    description: metaDesc,
     alternates: {
-      canonical: `https://transfersinbarcelona.com/es/blog/${post.slug}`,
+      canonical: `https://transfersinbarcelona.com/${resolvedParams.locale}/blog/${post.slug}`,
+      languages: alternates,
     },
     openGraph: {
-      title: post.metaTitle || `${post.title} | Blog Transfers in Barcelona`,
-      description: post.metaDescription || post.excerpt,
+      title: metaTitle,
+      description: metaDesc,
       images: [
         {
           url: post.imageUrl || image.src,
-          alt: post.title,
+          alt: title,
         },
       ],
     },
@@ -48,7 +61,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BlogPost({ params }: { params: Promise<{ slug: string, locale: string }> }) {
   const resolvedParams = await params;
   const post = await prisma.post.findUnique({
     where: { slug: resolvedParams.slug },
@@ -57,6 +70,9 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   if (!post || !post.isActive) {
     notFound();
   }
+
+  const title = getTranslatedField(post, "title", resolvedParams.locale, post.title);
+  const contentHtml = getTranslatedField(post, "contentHtml", resolvedParams.locale, post.contentHtml);
 
   // Format date
   const date = new Date(post.publishedAt || post.createdAt).toLocaleDateString("es-ES", {
@@ -92,14 +108,14 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
             </div>
             
             <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 mb-6">
-              {post.title}
+              {title}
             </h1>
           </header>
 
           <div className="relative aspect-[21/9] bg-white rounded-3xl overflow-hidden mb-12 border border-gray-200 shadow-sm">
             <Image
-              src={image.src}
-              alt={image.alt}
+              src={post.imageUrl || image.src}
+              alt={title}
               fill
               priority
               sizes="(min-width: 1024px) 896px, 100vw"
@@ -110,7 +126,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
           <div 
             className="prose prose-lg prose-gray max-w-none prose-headings:font-black prose-a:text-[#D4AF37] prose-img:rounded-2xl"
-            dangerouslySetInnerHTML={{ __html: post.contentHtml || "" }}
+            dangerouslySetInnerHTML={{ __html: contentHtml || "" }}
           />
         </article>
 

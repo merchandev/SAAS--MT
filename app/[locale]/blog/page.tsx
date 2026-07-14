@@ -6,6 +6,7 @@ import MarketingCta from "@/components/marketing/MarketingCta";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import PageHero from "@/components/marketing/PageHero";
 import { getBlogImage } from "@/lib/fleet-images";
+import { getTranslatedField } from "@/lib/i18n-utils";
 
 import { prisma } from "@/lib/prisma";
 
@@ -27,7 +28,8 @@ const guides = [
 
 export const dynamic = "force-dynamic";
 
-export default async function BlogPage() {
+export default async function BlogPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const allPosts = await prisma.post.findMany({
     where: { isActive: true },
     orderBy: { publishedAt: "desc" },
@@ -36,9 +38,9 @@ export default async function BlogPage() {
 
   // Map to the format expected by the UI, providing fallbacks
   const posts = allPosts.map(post => ({
-    title: post.title,
+    title: getTranslatedField(post, "title", locale, post.title),
     slug: post.slug,
-    excerpt: post.excerpt || "",
+    excerpt: getTranslatedField(post, "excerpt", locale, post.excerpt || ""),
     category: "Transfersinbarcelona-Blog",
     pubDate: post.publishedAt ? post.publishedAt.toISOString() : post.createdAt.toISOString()
   }));
