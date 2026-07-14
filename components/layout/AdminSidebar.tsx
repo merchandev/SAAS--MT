@@ -103,7 +103,7 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
             src="/images/TIB.png"
             alt={companyName}
             className={cn(
-              "absolute top-1/2 -translate-y-1/2 left-0 w-[140px] h-auto object-contain transition-opacity duration-500 ease-in-out",
+              "absolute top-1/2 -translate-y-1/2 left-0 h-7 w-auto object-contain transition-opacity duration-500 ease-in-out",
               isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
             )}
           />
