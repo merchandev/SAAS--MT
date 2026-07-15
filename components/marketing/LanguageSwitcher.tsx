@@ -20,6 +20,7 @@ const LANGUAGES = [
 interface LanguageSwitcherProps {
   variant?: "dark" | "light";
   align?: "left" | "right";
+  direction?: "up" | "down";
 }
 
 function getGoogleLangCookie(): string | null {
@@ -28,7 +29,7 @@ function getGoogleLangCookie(): string | null {
   return match ? match[1] : null;
 }
 
-export default function LanguageSwitcher({ variant = "dark", align = "right" }: LanguageSwitcherProps = {}) {
+export default function LanguageSwitcher({ variant = "dark", align = "right", direction = "down" }: LanguageSwitcherProps = {}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<string>("es");
@@ -96,7 +97,7 @@ export default function LanguageSwitcher({ variant = "dark", align = "right" }: 
       {/* Dropdown */}
       {open && (
         <div
-          className={`absolute ${align === "right" ? "right-0" : "left-0"} top-full mt-2 w-44 overflow-hidden rounded-xl border shadow-2xl backdrop-blur-md z-[9999] animate-in fade-in slide-in-from-top-2 duration-150 ${
+          className={`absolute ${align === "right" ? "right-0" : "left-0"} ${direction === "down" ? "top-full mt-2 slide-in-from-top-2" : "bottom-full mb-2 slide-in-from-bottom-2"} w-44 overflow-hidden rounded-xl border shadow-2xl backdrop-blur-md z-[9999] animate-in fade-in duration-150 ${
             isLight
               ? "border-gray-200 bg-white"
               : "border-white/15 bg-gray-900/95"

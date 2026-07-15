@@ -82,6 +82,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           .goog-te-gadget { font-size: 0 !important; }
           .goog-te-gadget span { display: none !important; }
           #google_translate_element { display: none !important; }
+          #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+          .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
         `}</style>
         {/* Material Symbols Outlined */}
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
