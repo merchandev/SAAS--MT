@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Menu, X, User } from "lucide-react";
 import GoogleTranslate from "@/components/ui/GoogleTranslate";
@@ -10,8 +11,13 @@ import MarketingLogo from "@/components/marketing/MarketingLogo";
 
 export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false }: { accentColor?: string; isCustomer?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const params = useParams();
   const currentLocale = (params.locale as string) || "es";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -35,7 +41,7 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
       </button>
 
       {/* Full screen overlay */}
-      {isOpen && (
+      {isOpen && mounted && createPortal(
         <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col overflow-y-auto">
           {/* Header inside menu */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
@@ -139,7 +145,8 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
