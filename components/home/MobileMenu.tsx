@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Menu, X, User } from "lucide-react";
-import GoogleTranslate from "@/components/ui/GoogleTranslate";
+import LanguageSwitcher from "@/components/marketing/LanguageSwitcher";
 import { useParams } from "next/navigation";
 import { localizedPath } from "@/lib/i18n-utils";
 import MarketingLogo from "@/components/marketing/MarketingLogo";
@@ -101,7 +101,7 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
             
             <div className="py-4">
               <p className="text-sm text-gray-400 mb-3 uppercase tracking-wider font-bold">Idioma</p>
-              <GoogleTranslate />
+              <LanguageSwitcher />
             </div>
 
             <div className="mt-4 flex flex-col gap-3">
