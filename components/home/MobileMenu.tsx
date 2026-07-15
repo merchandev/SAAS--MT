@@ -101,7 +101,7 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
             
             <div className="py-4">
               <p className="text-sm text-gray-400 mb-3 uppercase tracking-wider font-bold">Idioma</p>
-              <LanguageSwitcher />
+              <LanguageSwitcher align="left" />
             </div>
 
             <div className="mt-4 flex flex-col gap-3">

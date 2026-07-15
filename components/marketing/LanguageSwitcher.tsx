@@ -19,6 +19,7 @@ const LANGUAGES = [
 
 interface LanguageSwitcherProps {
   variant?: "dark" | "light";
+  align?: "left" | "right";
 }
 
 function getGoogleLangCookie(): string | null {
@@ -27,7 +28,7 @@ function getGoogleLangCookie(): string | null {
   return match ? match[1] : null;
 }
 
-export default function LanguageSwitcher({ variant = "dark" }: LanguageSwitcherProps = {}) {
+export default function LanguageSwitcher({ variant = "dark", align = "right" }: LanguageSwitcherProps = {}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<string>("es");
@@ -95,7 +96,7 @@ export default function LanguageSwitcher({ variant = "dark" }: LanguageSwitcherP
       {/* Dropdown */}
       {open && (
         <div
-          className={`absolute right-0 top-full mt-2 w-44 overflow-hidden rounded-xl border shadow-2xl backdrop-blur-md z-[9999] animate-in fade-in slide-in-from-top-2 duration-150 ${
+          className={`absolute ${align === "right" ? "right-0" : "left-0"} top-full mt-2 w-44 overflow-hidden rounded-xl border shadow-2xl backdrop-blur-md z-[9999] animate-in fade-in slide-in-from-top-2 duration-150 ${
             isLight
               ? "border-gray-200 bg-white"
               : "border-white/15 bg-gray-900/95"
@@ -170,7 +171,7 @@ export default function LanguageSwitcher({ variant = "dark" }: LanguageSwitcherP
                     : "text-white/85 hover:bg-white/10"
               }`}
             >
-              <span className="text-base">{lang.flag}</span>
+              <span className="w-6 shrink-0 text-center text-base">{lang.flag}</span>
               <span className="flex-1 text-left">{lang.label}</span>
               {current === lang.code && (
                 <Check className="h-3.5 w-3.5 shrink-0 text-[#D4AF37]" aria-hidden="true" />
