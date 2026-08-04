@@ -34,7 +34,7 @@ export async function claimEmails(batchSize: number = emailConfig.worker.batchSi
         AND oe."attempts" < oe."maxAttempts"
         AND (c."id" IS NULL OR c."status" NOT IN ('PAUSED', 'CANCELLED', 'FAILED'))
       ORDER BY oe."priority" ASC, oe."availableAt" ASC
-      FOR UPDATE SKIP LOCKED
+      FOR UPDATE OF oe SKIP LOCKED
       LIMIT ${batchSize}
     )
     RETURNING *;
