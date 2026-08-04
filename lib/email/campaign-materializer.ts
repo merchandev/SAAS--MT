@@ -152,7 +152,7 @@ export async function materializeCampaign(campaignId: string) {
       where: { id: campaign.id },
       data: {
         status: "SENDING",
-        legacyRecipients: null,
+        legacyRecipients: null as any,
         totalCount: contacts.length
       }
     });

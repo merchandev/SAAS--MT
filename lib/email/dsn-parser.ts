@@ -26,7 +26,7 @@ export async function parseMailEvent(rawEmlPath: string, rawEmlContent: Buffer) 
 
       const actionMatch = block.match(/^Action:\s*(.+)$/im);
       const statusMatch = block.match(/^Status:\s*(.+)$/im);
-      const diagnosticMatch = block.match(/^Diagnostic-Code:\s*(.+)$/ims);
+      const diagnosticMatch = block.match(/^Diagnostic-Code:\s*([\s\S]+)$/im);
       
       const action = actionMatch ? actionMatch[1].trim() : null; // "failed", "delayed", "delivered"
       const status = statusMatch ? statusMatch[1].trim() : null; // Ej: "5.1.1"

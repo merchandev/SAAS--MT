@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         name: data.name,
         subject: data.subject,
         content: data.body,
-        legacyRecipients: data.recipients,
+        legacyRecipients: data.recipients ? (data.recipients as any) : undefined,
         marketingSegmentId: data.marketingSegmentId,
         marketingListId: data.marketingListId,
         emailTemplateId: data.emailTemplateId,

@@ -25,7 +25,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         name: `${original.name} (Reenvío)`,
         subject: original.subject,
         content: original.content,
-        legacyRecipients: original.legacyRecipients,
+        legacyRecipients: original.legacyRecipients ? (original.legacyRecipients as any) : undefined,
         marketingSegmentId: original.marketingSegmentId,
         marketingListId: original.marketingListId,
         emailTemplateId: original.emailTemplateId,

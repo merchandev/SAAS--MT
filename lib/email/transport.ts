@@ -70,14 +70,14 @@ export async function submitToMta(email: OutboundEmail): Promise<{ accepted: boo
         "X-Email-ID": email.id,
         "X-Campaign-ID": email.campaignId || "",
         "X-Idempotency-Key": email.idempotencyKey,
-        ...(typeof email.headers === 'object' && email.headers !== null ? email.headers : {})
-      }
+        ...(typeof email.headers === 'object' && email.headers !== null ? (email.headers as Record<string, string>) : {})
+      } as any
     });
 
     return {
-      accepted: !!info.messageId,
-      messageId: info.messageId,
-      response: info.response,
+      accepted: !!(info as any).messageId,
+      messageId: (info as any).messageId,
+      response: (info as any).response,
     };
   } catch (error: any) {
     return {
