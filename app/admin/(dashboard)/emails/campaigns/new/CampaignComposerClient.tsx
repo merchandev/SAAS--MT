@@ -28,17 +28,38 @@ const toolbarOptions = [
   ["clean"],
 ];
 
-export default function CampaignComposerClient({ initialData }: { initialData?: any }) {
+export default function CampaignComposerClient({ 
+  initialData, 
+  segments = [], 
+  lists = [], 
+  templates = [] 
+}: { 
+  initialData?: any;
+  segments?: any[];
+  lists?: any[];
+  templates?: any[];
+}) {
   const router = useRouter();
   const [draftId, setDraftId] = useState<string | null>(initialData?.id || null);
   const [name, setName] = useState(initialData?.name || "");
   const [subject, setSubject] = useState(initialData?.subject || "");
   const [body, setBody] = useState(initialData?.body || "");
-  const [recipientsRaw, setRecipientsRaw] = useState(initialData?.recipientsRaw || "");
   const [contactPhone, setContactPhone] = useState(initialData?.contactPhone || "+34 662 02 41 36");
   const [sendingRate, setSendingRate] = useState<number>(initialData?.sendingRate || 30);
   const [sendFromHour, setSendFromHour] = useState(initialData?.sendFromHour || "");
   const [sendToHour, setSendToHour] = useState(initialData?.sendToHour || "");
+
+  // Audience
+  const [audienceType, setAudienceType] = useState<"segment" | "list" | "raw">(
+    initialData?.marketingSegmentId ? "segment" :
+    initialData?.marketingListId ? "list" : "raw"
+  );
+  const [segmentId, setSegmentId] = useState(initialData?.marketingSegmentId || "");
+  const [listId, setListId] = useState(initialData?.marketingListId || "");
+  const [recipientsRaw, setRecipientsRaw] = useState(initialData?.recipientsRaw || "");
+
+  // Template
+  const [templateId, setTemplateId] = useState(initialData?.emailTemplateId || "");
 
   const [editorMode, setEditorMode] = useState<"visual" | "html">("visual");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -48,6 +69,18 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
   const [isSending, setIsSending] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
+  const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value;
+    setTemplateId(id);
+    if (id) {
+      const template = templates.find((t) => t.id === id);
+      if (template) {
+        setSubject(template.subject);
+        setBody(template.html);
+      }
+    }
+  };
 
   const handlePreview = async () => {
     setIsPreviewLoading(true);
@@ -70,29 +103,36 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
     setIsPreviewLoading(false);
   };
 
+  const getPayload = () => {
+    const recipients = recipientsRaw
+      .split(",")
+      .map((e: string) => e.trim())
+      .filter((e: string) => e.includes("@"));
+
+    return {
+      name,
+      subject,
+      body,
+      recipients: audienceType === "raw" ? recipients : null,
+      marketingSegmentId: audienceType === "segment" ? segmentId : null,
+      marketingListId: audienceType === "list" ? listId : null,
+      emailTemplateId: templateId || null,
+      contactPhone,
+      sendingRate,
+      sendFromHour,
+      sendToHour,
+    };
+  };
+
   const handleSaveDraft = async () => {
     setIsSaving(true);
     setMessage(null);
     try {
-      const recipients = recipientsRaw
-        .split(",")
-        .map((e: string) => e.trim())
-        .filter((e: string) => e.includes("@"));
-
+      const payload = getPayload();
       const res = await fetch("/api/admin/emails/campaigns/draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: draftId,
-          name,
-          subject,
-          body,
-          recipients,
-          contactPhone,
-          sendingRate,
-          sendFromHour,
-          sendToHour,
-        }),
+        body: JSON.stringify({ id: draftId, ...payload }),
       });
       const data = await res.json();
       if (!res.ok || data.error) {
@@ -105,35 +145,34 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
         }
       }
     } catch (err) {
-      setMessage({ text: "Error de conexión al guardar el borrador", type: "error" });
+      setMessage({ text: "Error de conexión", type: "error" });
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleSend = async () => {
-    // Validate
-    if (!name || !subject || !body || !recipientsRaw) {
-      setMessage({ text: "Todos los campos principales son obligatorios", type: "error" });
+    if (!name || !subject || !body) {
+      setMessage({ text: "Los campos de nombre, asunto y cuerpo son obligatorios", type: "error" });
       return;
     }
 
-    if (sendingRate < 1 || sendingRate > 500) {
-      setMessage({ text: "La velocidad de envío debe estar entre 1 y 500 correos por hora", type: "error" });
+    if (audienceType === "raw" && !recipientsRaw) {
+      setMessage({ text: "Ingresa al menos un destinatario", type: "error" });
       return;
     }
 
-    const recipients = recipientsRaw
-      .split(",")
-      .map((e: string) => e.trim())
-      .filter((e: string) => e.includes("@"));
-
-    if (recipients.length === 0) {
-      setMessage({ text: "No se encontraron correos válidos", type: "error" });
+    if (audienceType === "segment" && !segmentId) {
+      setMessage({ text: "Selecciona un segmento", type: "error" });
       return;
     }
 
-    if (!confirm(`¿Estás seguro de enviar esta campaña a ${recipients.length} destinatarios?`)) {
+    if (audienceType === "list" && !listId) {
+      setMessage({ text: "Selecciona una lista", type: "error" });
+      return;
+    }
+
+    if (!confirm("¿Estás seguro de iniciar la materialización y envío de esta campaña?")) {
       return;
     }
 
@@ -141,19 +180,11 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
     setMessage(null);
 
     try {
+      const payload = getPayload();
       const res = await fetch("/api/admin/emails/campaigns/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          subject,
-          body,
-          recipients,
-          contactPhone,
-          sendingRate,
-          sendFromHour,
-          sendToHour,
-        }),
+        body: JSON.stringify(payload),
       });
       
       const data = await res.json();
@@ -161,7 +192,7 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
       if (!res.ok || data.error) {
         setMessage({ text: data.error || "Error al enviar la campaña", type: "error" });
       } else {
-        setMessage({ text: "Campaña iniciada", type: "success" });
+        setMessage({ text: "Campaña encolada para envío", type: "success" });
         router.push("/admin/emails/campaigns");
         router.refresh();
       }
@@ -178,7 +209,7 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{draftId ? "Editar Borrador" : "Nueva Campaña"}</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Redacta y envía correos masivos usando el diseño corporativo.
+            Configura la audiencia, el diseño y programa el envío de tu campaña.
           </p>
         </div>
         <Button onClick={handlePreview} variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
@@ -194,7 +225,7 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
       )}
 
       <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
-        
+        <h2 className="text-lg font-semibold border-b pb-2">1. Configuración Básica</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="name">Nombre interno de la campaña</Label>
@@ -205,7 +236,6 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
               placeholder="Ej: Promo Verano 2026"
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="contactPhone">Teléfono de contacto (Pie de correo)</Label>
             <Input
@@ -216,45 +246,82 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
             />
           </div>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t">
-          <div className="space-y-2">
-            <Label htmlFor="sendingRate">Velocidad (Mails por hora)</Label>
-            <Input
-              id="sendingRate"
-              type="number"
-              min={1}
-              max={500}
-              value={sendingRate}
-              onChange={(e) => setSendingRate(Number(e.target.value))}
-            />
-            <p className="text-xs text-gray-500">Máximo recomendado: 100 (Hostinger)</p>
+      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+        <h2 className="text-lg font-semibold border-b pb-2">2. Audiencia</h2>
+        <div className="space-y-4">
+          <div className="flex space-x-4">
+            <label className="flex items-center space-x-2">
+              <input type="radio" checked={audienceType === "segment"} onChange={() => setAudienceType("segment")} />
+              <span>Segmento Dinámico</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="radio" checked={audienceType === "list"} onChange={() => setAudienceType("list")} />
+              <span>Lista Estática</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="radio" checked={audienceType === "raw"} onChange={() => setAudienceType("raw")} />
+              <span>Pegar Correos</span>
+            </label>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="sendFromHour">Enviar desde las (Opcional)</Label>
-            <Input
-              id="sendFromHour"
-              type="time"
-              value={sendFromHour}
-              onChange={(e) => setSendFromHour(e.target.value)}
-            />
-            <p className="text-xs text-gray-500">Ej: 09:00</p>
-          </div>
+          {audienceType === "segment" && (
+            <div className="space-y-2 max-w-md">
+              <Label>Selecciona un Segmento</Label>
+              <select 
+                className="w-full border-gray-300 rounded-md shadow-sm"
+                value={segmentId}
+                onChange={(e) => setSegmentId(e.target.value)}
+              >
+                <option value="">-- Seleccionar Segmento --</option>
+                {segments.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+          )}
 
-          <div className="space-y-2">
-            <Label htmlFor="sendToHour">Hasta las (Opcional)</Label>
-            <Input
-              id="sendToHour"
-              type="time"
-              value={sendToHour}
-              onChange={(e) => setSendToHour(e.target.value)}
-            />
-            <p className="text-xs text-gray-500">Ej: 18:00</p>
-          </div>
+          {audienceType === "list" && (
+            <div className="space-y-2 max-w-md">
+              <Label>Selecciona una Lista</Label>
+              <select 
+                className="w-full border-gray-300 rounded-md shadow-sm"
+                value={listId}
+                onChange={(e) => setListId(e.target.value)}
+              >
+                <option value="">-- Seleccionar Lista --</option>
+                {lists.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+              </select>
+            </div>
+          )}
+
+          {audienceType === "raw" && (
+            <div className="space-y-2">
+              <Label>Destinatarios (Separados por coma)</Label>
+              <Textarea
+                value={recipientsRaw}
+                onChange={(e) => setRecipientsRaw(e.target.value)}
+                placeholder="cliente1@gmail.com, cliente2@hotmail.com"
+                rows={3}
+              />
+            </div>
+          )}
         </div>
+      </div>
 
-        <div className="pt-4 border-t"></div>
+      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+        <h2 className="text-lg font-semibold border-b pb-2">3. Diseño y Contenido</h2>
+        
+        <div className="space-y-2 max-w-md">
+          <Label>Usar una Plantilla (Opcional)</Label>
+          <select 
+            className="w-full border-gray-300 rounded-md shadow-sm"
+            value={templateId}
+            onChange={handleTemplateChange}
+          >
+            <option value="">-- Sin Plantilla --</option>
+            {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+        </div>
 
         <div className="space-y-2">
           <Label htmlFor="subject">Asunto del correo</Label>
@@ -264,20 +331,6 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
             onChange={(e) => setSubject(e.target.value)}
             placeholder="Ej: Oferta especial en tus traslados en Barcelona"
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="recipients">Destinatarios (Separados por coma)</Label>
-          <Textarea
-            id="recipients"
-            value={recipientsRaw}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRecipientsRaw(e.target.value)}
-            placeholder="cliente1@gmail.com, cliente2@hotmail.com"
-            rows={3}
-          />
-          <p className="text-xs text-gray-500">
-            Pega aquí la lista de correos de tus clientes. Los correos mal formados serán ignorados.
-          </p>
         </div>
 
         <div className="space-y-2">
@@ -327,8 +380,10 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
               />
             )}
           </div>
+          <p className="text-xs text-gray-500 mt-2">
+            Puedes usar las siguientes variables: {'{{firstName}}'}, {'{{lastName}}'}, {'{{email}}'}, {'{{phone}}'}, {'{{country}}'}
+          </p>
         </div>
-
       </div>
 
       <div className="flex items-center justify-between">
@@ -345,7 +400,7 @@ export default function CampaignComposerClient({ initialData }: { initialData?: 
           </Button>
           <Button onClick={handleSend} disabled={isSending || isSaving} className="bg-blue-600 hover:bg-blue-700">
             {isSending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
-            Enviar Campaña
+            Materializar y Enviar
           </Button>
         </div>
       </div>

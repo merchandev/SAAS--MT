@@ -91,6 +91,8 @@ services:
       retries: 5
       start_period: 60s
 
+
+
   traefik-bridge:
     image: alpine
     command: tail -f /dev/null
@@ -108,6 +110,69 @@ services:
       - "traefik.http.routers.mt.tls.domains[0].sans=www.transfersinbarcelona.com"
       - "traefik.http.services.mt.loadbalancer.server.port=${APP_PORT:-3100}"
 
+  migrate:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-metransfers}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-metransfers_saas}?schema=public
+    command: sh -c "npm install -g prisma && npx prisma migrate deploy"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - migrate
+
+  postfix:
+    build:
+      context: ./services/postfix
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      MAIL_DOMAIN: ${MAIL_DOMAIN:-transfersinbarcelona.com}
+      MAIL_HOSTNAME: ${MAIL_HOSTNAME:-mail.transfersinbarcelona.com}
+      DKIM_SELECTOR: ${DKIM_SELECTOR:-s1}
+    volumes:
+      - postfix_dkim:/etc/opendkim/keys
+      - mail_events:/var/spool/mail-events
+    ports:
+      - "25:25"
+      - "587:587"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "25"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  email-worker:
+    build:
+      context: .
+      dockerfile: services/email-worker/Dockerfile.worker
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-metransfers}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-metransfers_saas}?schema=public
+      SMTP_HOST: postfix
+      SMTP_PORT: 25
+      MAIL_INFRA_MODE: ${MAIL_INFRA_MODE:-hostinger_vps}
+      MAIL_SEND_ENABLED: ${MAIL_SEND_ENABLED:-false}
+      MAIL_DOMAIN: ${MAIL_DOMAIN:-transfersinbarcelona.com}
+      EMAIL_EVENT_SPOOL: /var/spool/mail-events
+      MAIL_FROM_TRANSACTIONAL: ${MAIL_FROM_TRANSACTIONAL:-reservas@transfersinbarcelona.com}
+      MAIL_FROM_MARKETING: ${MAIL_FROM_MARKETING:-novedades@transfersinbarcelona.com}
+      MAIL_REPLY_TO: ${MAIL_REPLY_TO:-info@transfersinbarcelona.com}
+      MAIL_APP_URL: ${MAIL_APP_URL:-https://transfersinbarcelona.com}
+      MAIL_UNSUBSCRIBE_SECRET: ${MAIL_UNSUBSCRIBE_SECRET:?MAIL_UNSUBSCRIBE_SECRET is required}
+    volumes:
+      - mail_events:/var/spool/mail-events
+    depends_on:
+      postgres:
+        condition: service_healthy
+      postfix:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   media_uploads:
+  postfix_dkim:
+  mail_events:

@@ -1,0 +1,20 @@
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Instalar dependencias necesarias
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Copiar el código fuente
+COPY tsconfig.json ./
+COPY prisma ./prisma
+COPY lib ./lib
+COPY services ./services
+
+# Generar Prisma Client
+RUN npx prisma generate
+
+# Usamos tsx para ejecutar el index de forma directa, 
+# ya que es un worker de Node simple que depende de los mismos módulos que Next.js
+CMD ["npx", "tsx", "services/email-worker/index.ts"]

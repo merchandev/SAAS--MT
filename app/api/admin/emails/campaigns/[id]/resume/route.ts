@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRoleApi } from "@/modules/auth/permissions";
-import { runCampaign } from "@/lib/campaign-runner";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -28,9 +27,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       where: { id },
       data: { status: "SENDING" }
     });
-
-    // Fire and forget
-    runCampaign(id).catch(console.error);
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

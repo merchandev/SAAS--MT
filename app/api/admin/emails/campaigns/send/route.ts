@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRoleApi } from "@/modules/auth/permissions";
-import { runCampaign } from "@/lib/campaign-runner";
+import { materializeCampaign } from "@/lib/email/campaign-materializer";
+import { emailConfig } from "@/lib/email/config";
 
 export async function POST(req: Request) {
   try {
@@ -18,18 +19,21 @@ export async function POST(req: Request) {
         name: data.name,
         subject: data.subject,
         content: data.body,
-        recipients: data.recipients,
+        legacyRecipients: data.recipients,
+        marketingSegmentId: data.marketingSegmentId,
+        marketingListId: data.marketingListId,
+        emailTemplateId: data.emailTemplateId,
         contactPhone: data.contactPhone || "+34 662 02 41 36",
-        sendingRate: data.sendingRate || 30,
+        sendingRate: data.sendingRate || emailConfig.limits.maxCampaignRatePerHour,
         sendFromHour: data.sendFromHour || null,
         sendToHour: data.sendToHour || null,
-        status: "SENDING",
+        status: "QUEUING", // It will be materializing in the background
         startedAt: new Date(),
       },
     });
 
-    // Fire and forget processing
-    runCampaign(campaign.id).catch(console.error);
+    // Fire and forget materialization processing
+    materializeCampaign(campaign.id).catch(console.error);
 
     return NextResponse.json({ success: true, id: campaign.id });
   } catch (error: any) {

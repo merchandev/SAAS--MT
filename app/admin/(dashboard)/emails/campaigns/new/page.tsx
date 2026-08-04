@@ -7,11 +7,11 @@ export const dynamic = "force-dynamic";
 export default async function NewCampaignPage({
   searchParams,
 }: {
-  searchParams: Promise<{ draftId?: string }>;
+  searchParams: { draftId?: string };
 }) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
   
-  const { draftId } = await searchParams;
+  const draftId = searchParams.draftId;
 
   let initialData = null;
 
@@ -21,17 +21,36 @@ export default async function NewCampaignPage({
     });
 
     if (draft && draft.status === "DRAFT") {
-      const recipientsArray = Array.isArray(draft.recipients) ? draft.recipients as string[] : [];
+      const recipientsArray = Array.isArray(draft.legacyRecipients) ? draft.legacyRecipients as string[] : [];
       initialData = {
         id: draft.id,
         name: draft.name,
         subject: draft.subject,
         body: draft.content,
         recipientsRaw: recipientsArray.join(", "),
+        marketingSegmentId: draft.marketingSegmentId || "",
+        marketingListId: draft.marketingListId || "",
+        emailTemplateId: draft.emailTemplateId || "",
         contactPhone: draft.contactPhone || "+34 662 02 41 36",
+        sendingRate: draft.sendingRate,
+        sendFromHour: draft.sendFromHour || "",
+        sendToHour: draft.sendToHour || "",
       };
     }
   }
 
-  return <CampaignComposerClient initialData={initialData} />;
+  const [segments, lists, templates] = await Promise.all([
+    prisma.marketingSegment.findMany({ where: { isActive: true } }),
+    prisma.marketingList.findMany({ where: { isActive: true } }),
+    prisma.emailTemplate.findMany({ where: { isActive: true } }),
+  ]);
+
+  return (
+    <CampaignComposerClient 
+      initialData={initialData} 
+      segments={segments} 
+      lists={lists} 
+      templates={templates} 
+    />
+  );
 }

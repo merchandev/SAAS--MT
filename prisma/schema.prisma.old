@@ -57,12 +57,11 @@ model Customer {
   country           String?
   preferredLanguage String? @default("en")
 
-  bookings         Booking[]
-  invoices         Invoice[]
-  reviews          Review[]
-  suggestions      CustomerSuggestion[]
-  addresses        CustomerAddress[]
-  marketingContact MarketingContact?
+  bookings    Booking[]
+  invoices    Invoice[]
+  reviews     Review[]
+  suggestions CustomerSuggestion[]
+  addresses   CustomerAddress[]
 
   totalSpent    Decimal @default(0) @db.Decimal(10, 2)
   totalBookings Int     @default(0)
@@ -84,7 +83,7 @@ model CustomerAddress {
 }
 
 // ==========================================
-// 3. FLOTA Y VEHÍCULOS
+// 3. FLOTA Y VEH├ìCULOS
 // ==========================================
 model VehicleCategory {
   id          String    @id @default(uuid())
@@ -439,7 +438,7 @@ model Payment {
 }
 
 // ==========================================
-// 9. AUDITORÍA Y NOTIFICACIONES
+// 9. AUDITOR├ìA Y NOTIFICACIONES
 // ==========================================
 model AuditLog {
   id         String   @id @default(uuid())
@@ -467,28 +466,14 @@ model NotificationTemplate {
 }
 
 model EmailCampaign {
-  id      String @id @default(uuid())
-  name    String // Nombre interno de la campaña
-  subject String
-  content String @db.Text // Contenido HTML
-  status  String @default("DRAFT") // DRAFT, SCHEDULED, QUEUING, SENDING, PAUSED, COMPLETED, FAILED, CANCELLED
-
-  // Mapea la columna JSONB existente. Solo se usa como entrada temporal
-  // durante DRAFT/QUEUING y se vacía al materializar destinatarios.
-  legacyRecipients Json? @map("recipients")
-
-  sentCount       Int @default(0)
-  failedCount     Int @default(0)
-  deliveredCount  Int @default(0)
-  bouncedCount    Int @default(0)
-  deferredCount   Int @default(0)
-  suppressedCount Int @default(0)
-  totalCount      Int @default(0)
-
-  marketingListId    String?
-  marketingSegmentId String?
-  emailTemplateId    String?
-
+  id           String    @id @default(uuid())
+  name         String // Nombre interno de la campa├▒a
+  subject      String
+  content      String    @db.Text // Contenido HTML
+  status       String    @default("DRAFT") // DRAFT, SENDING, COMPLETED, FAILED
+  recipients   Json // Arreglo de emails
+  sentCount    Int       @default(0)
+  failedCount  Int       @default(0)
   createdBy    String?
   scheduledAt  DateTime?
   startedAt    DateTime?
@@ -497,230 +482,16 @@ model EmailCampaign {
   sendingRate  Int       @default(50)
   sendFromHour String? // Ej. "09:00"
   sendToHour   String? // Ej. "18:00"
-  timezone     String    @default("Europe/Madrid")
-  fromName     String?
-  fromAddress  String?
-  replyTo      String?
-  lastError    String?   @db.Text
   deletedAt    DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-
-  campaignRecipients CampaignRecipient[]
-  outboundEmails     OutboundEmail[]
-
-  @@index([status, scheduledAt])
-  @@index([deletedAt])
-  @@index([createdAt])
-}
-
-enum EmailMessageKind {
-  TRANSACTIONAL
-  MARKETING
-}
-
-enum OutboundEmailStatus {
-  QUEUED
-  PROCESSING
-  ACCEPTED
-  DEFERRED
-  DELIVERED
-  BOUNCED
-  SUPPRESSED
-  FAILED
-  CANCELLED
-}
-
-enum CampaignRecipientStatus {
-  QUEUED
-  PROCESSING
-  ACCEPTED
-  DEFERRED
-  DELIVERED
-  BOUNCED
-  SUPPRESSED
-  FAILED
-  CANCELLED
-}
-
-enum EmailEventType {
-  CREATED
-  QUEUED
-  PROCESSING
-  ACCEPTED
-  DEFERRED
-  DELIVERED
-  BOUNCED
-  SUPPRESSED
-  FAILED
-  CANCELLED
-  UNSUBSCRIBED
-}
-
-enum EmailSuppressionReason {
-  UNSUBSCRIBED
-  HARD_BOUNCE
-  SPAM_COMPLAINT
-  MANUAL_BLOCK
-  INVALID_ADDRESS
-}
-
-enum EmailSuppressionScope {
-  MARKETING
-  ALL
-}
-
-model CampaignRecipient {
-  id               String                  @id @default(uuid())
-  campaignId       String
-  campaign         EmailCampaign           @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  email            String
-  normalizedEmail  String
-  status           CampaignRecipientStatus @default(QUEUED)
-  unsubscribeToken String                  @unique
-  attempts         Int                     @default(0)
-  acceptedAt       DateTime?
-  deliveredAt      DateTime?
-  bouncedAt        DateTime?
-  suppressedAt     DateTime?
-  lastSmtpCode     Int?
-  lastEnhancedCode String?
-  lastError        String?                 @db.Text
-  createdAt        DateTime                @default(now())
-  updatedAt        DateTime                @updatedAt
-
-  outboundEmail OutboundEmail?
-
-  @@unique([campaignId, normalizedEmail])
-  @@index([campaignId, status])
-  @@index([normalizedEmail])
-  @@index([status, updatedAt])
-}
-
-model OutboundEmail {
-  id             String              @id @default(uuid())
-  idempotencyKey String              @unique
-  kind           EmailMessageKind
-  priority       Int                 @default(50)
-  status         OutboundEmailStatus @default(QUEUED)
-
-  toEmail           String
-  normalizedToEmail String
-  fromEmail         String
-  fromName          String?
-  replyTo           String?
-  envelopeFrom      String
-  subject           String
-
-  // Para transaccionales se guarda el snapshot.
-  // Para campañas puede ser null y renderizarse desde EmailCampaign.
-  html    String? @db.Text
-  text    String? @db.Text
-  headers Json?
-  payload Json?
-
-  eventType           String?
-  bookingId           String?
-  campaignId          String?
-  campaign            EmailCampaign?     @relation(fields: [campaignId], references: [id], onDelete: SetNull)
-  campaignRecipientId String?            @unique
-  campaignRecipient   CampaignRecipient? @relation(fields: [campaignRecipientId], references: [id], onDelete: SetNull)
-
-  availableAt DateTime  @default(now())
-  lockedAt    DateTime?
-  lockedUntil DateTime?
-  lockedBy    String?
-  attempts    Int       @default(0)
-  maxAttempts Int       @default(6)
-
-  messageId        String?
-  postfixQueueId   String?
-  smtpResponse     String? @db.Text
-  lastSmtpCode     Int?
-  lastEnhancedCode String?
-  lastError        String? @db.Text
-
-  acceptedAt  DateTime?
-  deliveredAt DateTime?
-  deferredAt  DateTime?
-  bouncedAt   DateTime?
-  failedAt    DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  events EmailEvent[]
-
-  @@index([status, availableAt, priority])
-  @@index([lockedUntil])
-  @@index([campaignId, status])
-  @@index([normalizedToEmail])
-  @@index([postfixQueueId])
-  @@index([acceptedAt])
-}
-
-model EmailEvent {
-  id              String         @id @default(uuid())
-  outboundEmailId String
-  outboundEmail   OutboundEmail  @relation(fields: [outboundEmailId], references: [id], onDelete: Cascade)
-  type            EmailEventType
-  smtpCode        Int?
-  enhancedCode    String?
-  action          String?
-  diagnostic      String?        @db.Text
-  remoteMta       String?
-  raw             Json?
-  occurredAt      DateTime       @default(now())
-
-  @@index([outboundEmailId, occurredAt])
-  @@index([type, occurredAt])
-}
-
-model EmailSuppression {
-  id              String                 @id @default(uuid())
-  email           String
-  normalizedEmail String
-  reason          EmailSuppressionReason
-  scope           EmailSuppressionScope  @default(MARKETING)
-  source          String?
-  campaignId      String?
-  outboundEmailId String?
-  notes           String?                @db.Text
-  expiresAt       DateTime?
-  createdAt       DateTime               @default(now())
-  updatedAt       DateTime               @updatedAt
-
-  @@unique([normalizedEmail, scope])
-  @@index([reason])
-  @@index([expiresAt])
-}
-
-model EmailDomainState {
-  key                  String    @id
-  pausedUntil          DateTime?
-  lastSubmittedAt      DateTime?
-  consecutiveDeferrals Int       @default(0)
-  lastEnhancedCode     String?
-  lastDiagnostic       String?   @db.Text
-  updatedAt            DateTime  @updatedAt
-}
-
-model EmailWorkerHeartbeat {
-  workerId       String   @id
-  hostname       String
-  pid            Int
-  version        String?
-  lastSeenAt     DateTime
-  lastError      String?  @db.Text
-  processedCount BigInt   @default(0)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
 }
 
 model NotificationLog {
   id          String   @id @default(uuid())
   bookingId   String?
-  campaignId  String? // Relación opcional con EmailCampaign
-  recipient   String // Email o Teléfono
+  campaignId  String? // Relaci├│n opcional con EmailCampaign
+  recipient   String // Email o Tel├®fono
   type        String // EMAIL, WHATSAPP
   eventType   String? // BOOKING_PENDING, BOOKING_CONFIRMED, BOOKING_CANCELLED, etc.
   subject     String? // Asunto del email
@@ -759,7 +530,7 @@ model MapsDistanceCache {
 }
 
 // ==========================================
-// 10. CONFIGURACIÓN DEL SISTEMA
+// 10. CONFIGURACI├ôN DEL SISTEMA
 // ==========================================
 model SystemSetting {
   id          String   @id @default(uuid())
@@ -770,7 +541,7 @@ model SystemSetting {
 }
 
 // ==========================================
-// 11. MODELOS ADICIONALES (Facturación, Reseñas, Logs)
+// 11. MODELOS ADICIONALES (Facturaci├│n, Rese├▒as, Logs)
 // ==========================================
 
 model BookingStatusHistory {
@@ -869,10 +640,10 @@ model RoutePage {
 
   translations Json? // { "en": { "h1Title": "...", "contentHtml": "...", "metaDescription": "...", "seoTitle": "...", "seoKeywords": "..." }, "fr": { ... } }
 
-  basePriceCache Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X €" rápido
+  basePriceCache Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X Ôé¼" r├ípido
 
   isActive    Boolean   @default(true)
-  scheduledAt DateTime? // Si tiene fecha futura, se publicará automáticamente en esa fecha
+  scheduledAt DateTime? // Si tiene fecha futura, se publicar├í autom├íticamente en esa fecha
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -896,7 +667,7 @@ model Post {
 
   isActive    Boolean   @default(true)
   publishedAt DateTime?
-  scheduledAt DateTime? // Si tiene fecha futura, se publicará automáticamente en esa fecha
+  scheduledAt DateTime? // Si tiene fecha futura, se publicar├í autom├íticamente en esa fecha
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -926,99 +697,4 @@ model StaticPage {
   translations    Json? // { "en": { "title": "...", "metaDescription": "...", "seoKeywords": "..." }, "fr": { ... } }
   isActive        Boolean  @default(true)
   updatedAt       DateTime @updatedAt
-}
-
-// ==========================================
-// 12. MARKETING Y AUDIENCIAS (V3)
-// ==========================================
-
-model MarketingContact {
-  id              String  @id @default(uuid())
-  email           String  @unique
-  normalizedEmail String  @unique
-  firstName       String?
-  lastName        String?
-  phone           String?
-  country         String?
-  language        String? @default("en")
-
-  customerId String?   @unique
-  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
-
-  hasConsent    Boolean   @default(false)
-  consentDate   DateTime?
-  consentSource String?
-
-  customFields Json?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  lists MarketingContactList[]
-  tags  MarketingContactTag[]
-}
-
-model MarketingList {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  contacts MarketingContactList[]
-}
-
-model MarketingContactList {
-  contactId String
-  listId    String
-  contact   MarketingContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  list      MarketingList    @relation(fields: [listId], references: [id], onDelete: Cascade)
-  addedAt   DateTime         @default(now())
-
-  @@id([contactId, listId])
-  @@index([listId])
-}
-
-model MarketingTag {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  color     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  contacts MarketingContactTag[]
-}
-
-model MarketingContactTag {
-  contactId String
-  tagId     String
-  contact   MarketingContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  tag       MarketingTag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  addedAt   DateTime         @default(now())
-
-  @@id([contactId, tagId])
-  @@index([tagId])
-}
-
-model MarketingSegment {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  rules       Json
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model EmailTemplate {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  subject     String
-  html        String   @db.Text
-  designJson  Json?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
