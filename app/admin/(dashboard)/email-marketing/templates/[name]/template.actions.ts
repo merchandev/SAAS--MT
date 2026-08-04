@@ -31,8 +31,8 @@ export async function saveTemplateAction(data: {
       },
     });
 
-    revalidatePath("/admin/emails/templates");
-    revalidatePath(`/admin/emails/templates/${data.name}`);
+    revalidatePath("/admin/email-marketing/templates");
+    revalidatePath(`/admin/email-marketing/templates/${data.name}`);
     
     return { success: true };
   } catch (error: any) {

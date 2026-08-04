@@ -37,7 +37,7 @@ export default async function CampaignReportsPage({
           <h1 className="text-2xl font-bold">Campaign Report: {campaign.name}</h1>
           <p className="text-sm text-gray-500 mt-1">Status: <span className="font-semibold text-gray-700">{campaign.status}</span></p>
         </div>
-        <Link href="/admin/emails/campaigns">
+        <Link href="/admin/email-marketing/campaigns">
           <button className="flex items-center text-gray-600 hover:text-gray-900 bg-gray-100 px-4 py-2 rounded-md">
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </button>

@@ -73,7 +73,7 @@ export default async function CampaignsPage() {
                 <tr key={camp.id} className="hover:bg-gray-50/50">
                   <td className="px-6 py-4">
                     <Link 
-                      href={camp.status === "DRAFT" ? `/admin/emails/campaigns/new?draftId=${camp.id}` : `/admin/emails/campaigns/${camp.id}`} 
+                      href={camp.status === "DRAFT" ? `/admin/email-marketing/campaigns/new?draftId=${camp.id}` : `/admin/email-marketing/campaigns/${camp.id}`} 
                       className="font-semibold text-blue-600 hover:text-blue-800 hover:underline"
                     >
                       {camp.name}
@@ -152,7 +152,7 @@ export default async function CampaignsPage() {
           </p>
         </div>
         <Link
-          href="/admin/emails/campaigns/new"
+          href="/admin/email-marketing/campaigns/new"
           className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-transparent bg-gray-900 text-white shadow-sm hover:bg-gray-800 h-9 px-4 py-2 transition-colors"
         >
           <Plus className="h-4 w-4 mr-2" />

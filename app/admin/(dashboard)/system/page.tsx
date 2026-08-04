@@ -34,7 +34,7 @@ export default async function SystemPage() {
               </div>
             </div>
             <div className="mt-6 flex">
-              <a href="/admin/emails" className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-gray-200 bg-white shadow-sm hover:bg-gray-50 hover:text-gray-900 h-10 px-4 py-2 transition-colors">
+              <a href="/admin/email-marketing" className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-gray-200 bg-white shadow-sm hover:bg-gray-50 hover:text-gray-900 h-10 px-4 py-2 transition-colors">
                 Ver registro de correos
               </a>
             </div>

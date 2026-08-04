@@ -28,7 +28,7 @@ export default function CampaignControls({
   const handlePause = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/emails/campaigns/${campaignId}/pause`, { method: "POST" });
+      const res = await fetch(`/api/admin/email-marketing/campaigns/${campaignId}/pause`, { method: "POST" });
       if (res.ok) {
         router.refresh();
       } else {
@@ -43,7 +43,7 @@ export default function CampaignControls({
   const handleResume = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/emails/campaigns/${campaignId}/resume`, { method: "POST" });
+      const res = await fetch(`/api/admin/email-marketing/campaigns/${campaignId}/resume`, { method: "POST" });
       if (res.ok) {
         router.refresh();
       } else {

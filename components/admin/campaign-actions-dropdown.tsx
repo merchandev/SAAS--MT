@@ -15,7 +15,7 @@ import {
   softDeleteCampaignAction, 
   restoreCampaignAction, 
   hardDeleteCampaignAction
-} from "@/app/admin/(dashboard)/emails/campaigns/new/campaign.actions";
+} from "@/app/admin/(dashboard)/email-marketing/campaigns/new/campaign.actions";
 
 interface CampaignActionsDropdownProps {
   campaignId: string;
@@ -57,7 +57,7 @@ export function CampaignActionsDropdown({ campaignId, isDeleted, isDraft }: Camp
     if (!confirm("¿Volver a enviar esta campaña a todos los destinatarios originales?")) return;
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/admin/emails/campaigns/${campaignId}/resend`, {
+      const res = await fetch(`/api/admin/email-marketing/campaigns/${campaignId}/resend`, {
         method: "POST",
       });
       const data = await res.json();
@@ -88,12 +88,12 @@ export function CampaignActionsDropdown({ campaignId, isDeleted, isDraft }: Camp
           // Acciones para campañas Activas
           <>
             {isDraft ? (
-              <DropdownMenuItem onClick={() => router.push(`/admin/emails/campaigns/new?draftId=${campaignId}`)}>
+              <DropdownMenuItem onClick={() => router.push(`/admin/email-marketing/campaigns/new?draftId=${campaignId}`)}>
                 <Eye className="mr-2 h-4 w-4" /> Editar Borrador
               </DropdownMenuItem>
             ) : (
               <>
-                <DropdownMenuItem onClick={() => router.push(`/admin/emails/campaigns/${campaignId}`)}>
+                <DropdownMenuItem onClick={() => router.push(`/admin/email-marketing/campaigns/${campaignId}`)}>
                   <Eye className="mr-2 h-4 w-4" /> Ver Detalles
                 </DropdownMenuItem>
 

@@ -190,7 +190,7 @@ export function TemplateEditorClient({ initialData, defaultBody }: { initialData
       </div>
 
       <div className="flex items-center justify-start">
-        <Link href="/admin/emails/templates">
+        <Link href="/admin/email-marketing/templates">
           <Button variant="ghost">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver a plantillas

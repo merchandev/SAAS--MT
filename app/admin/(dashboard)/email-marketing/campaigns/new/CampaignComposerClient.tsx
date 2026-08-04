@@ -86,7 +86,7 @@ export default function CampaignComposerClient({
     setIsPreviewLoading(true);
     setIsPreviewOpen(true);
     try {
-      const res = await fetch("/api/admin/emails/preview", {
+      const res = await fetch("/api/admin/email-marketing/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subject, body, contactPhone }),
@@ -129,7 +129,7 @@ export default function CampaignComposerClient({
     setMessage(null);
     try {
       const payload = getPayload();
-      const res = await fetch("/api/admin/emails/campaigns/draft", {
+      const res = await fetch("/api/admin/email-marketing/campaigns/draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: draftId, ...payload }),
@@ -141,7 +141,7 @@ export default function CampaignComposerClient({
         setMessage({ text: "Borrador guardado exitosamente", type: "success" });
         if (data.id && data.id !== draftId) {
           setDraftId(data.id);
-          window.history.replaceState(null, "", `/admin/emails/campaigns/new?draftId=${data.id}`);
+          window.history.replaceState(null, "", `/admin/email-marketing/campaigns/new?draftId=${data.id}`);
         }
       }
     } catch (err) {
@@ -181,7 +181,7 @@ export default function CampaignComposerClient({
 
     try {
       const payload = getPayload();
-      const res = await fetch("/api/admin/emails/campaigns/send", {
+      const res = await fetch("/api/admin/email-marketing/campaigns/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -193,7 +193,7 @@ export default function CampaignComposerClient({
         setMessage({ text: data.error || "Error al enviar la campaña", type: "error" });
       } else {
         setMessage({ text: "Campaña encolada para envío", type: "success" });
-        router.push("/admin/emails/campaigns");
+        router.push("/admin/email-marketing/campaigns");
         router.refresh();
       }
     } catch (err) {
@@ -387,7 +387,7 @@ export default function CampaignComposerClient({
       </div>
 
       <div className="flex items-center justify-between">
-        <Link href="/admin/emails/campaigns">
+        <Link href="/admin/email-marketing/campaigns">
           <Button variant="ghost">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Cancelar

@@ -46,7 +46,7 @@ export default async function CampaignDetailsPage({
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex items-center gap-4">
         <Link
-          href="/admin/emails/campaigns"
+          href="/admin/email-marketing/campaigns"
           className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-50 h-9 px-4 py-2 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />

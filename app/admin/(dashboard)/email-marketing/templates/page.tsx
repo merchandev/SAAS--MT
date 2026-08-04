@@ -76,7 +76,7 @@ export default async function EmailTemplatesPage() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <Link
-                    href={`/admin/emails/templates/${tpl.name}`}
+                    href={`/admin/email-marketing/templates/${tpl.name}`}
                     className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-gray-200 bg-white shadow-sm hover:bg-gray-50 hover:text-gray-900 h-9 px-4 py-2 transition-colors"
                   >
                     <FileEdit className="h-4 w-4 mr-2" />

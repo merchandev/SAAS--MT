@@ -11,7 +11,7 @@ export async function softDeleteCampaignAction(id: string) {
       where: { id },
       data: { deletedAt: new Date() },
     });
-    revalidatePath("/admin/emails/campaigns");
+    revalidatePath("/admin/email-marketing/campaigns");
     return { success: true };
   } catch (error: any) {
     return { error: error.message || "Error al mover a papelera" };
@@ -25,7 +25,7 @@ export async function restoreCampaignAction(id: string) {
       where: { id },
       data: { deletedAt: null },
     });
-    revalidatePath("/admin/emails/campaigns");
+    revalidatePath("/admin/email-marketing/campaigns");
     return { success: true };
   } catch (error: any) {
     return { error: error.message || "Error al restaurar" };
@@ -38,7 +38,7 @@ export async function hardDeleteCampaignAction(id: string) {
     await prisma.emailCampaign.delete({
       where: { id },
     });
-    revalidatePath("/admin/emails/campaigns");
+    revalidatePath("/admin/email-marketing/campaigns");
     return { success: true };
   } catch (error: any) {
     return { error: error.message || "Error al eliminar definitivamente" };

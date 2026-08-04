@@ -14,7 +14,7 @@ export default function ResendButton({ campaignId }: { campaignId: string }) {
     
     setIsPending(true);
     try {
-      const res = await fetch(`/api/admin/emails/campaigns/${campaignId}/resend`, {
+      const res = await fetch(`/api/admin/email-marketing/campaigns/${campaignId}/resend`, {
         method: "POST",
       });
       const data = await res.json();
