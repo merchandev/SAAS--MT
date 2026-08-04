@@ -187,7 +187,7 @@ export class ExponentialRateLimiter {
       return;
     }
     try {
-      await prisma.rateLimitBucket.delete({ where: { key } });
+      await prisma.rateLimitBucket.deleteMany({ where: { key } });
     } catch (e) {
       // Ignore if not exists
     }

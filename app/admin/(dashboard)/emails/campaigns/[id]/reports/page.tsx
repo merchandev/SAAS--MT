@@ -7,10 +7,10 @@ import { notFound } from "next/navigation";
 export default async function CampaignReportsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   await requireRolePage(["ADMIN", "SUPER_ADMIN"]);
-  const { id } = params;
+  const { id } = await params;
 
   const campaign = await prisma.emailCampaign.findUnique({
     where: { id },
