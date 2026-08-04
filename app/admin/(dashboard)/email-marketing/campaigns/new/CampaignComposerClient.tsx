@@ -291,10 +291,10 @@ export default function CampaignComposerClient({
           </div>
 
           {audienceType === "segment" && (
-            <div className="space-y-2 max-w-md">
-              <Label>Selecciona un Segmento</Label>
+            <div className="space-y-2 max-w-3xl">
+              <Label className="text-base">Selecciona un Segmento</Label>
               <select 
-                className="w-full border-gray-300 rounded-md shadow-sm"
+                className="w-full border-gray-300 rounded-md shadow-sm h-11 px-4 bg-gray-50 focus:bg-white transition-colors focus:ring-blue-500 focus:border-blue-500"
                 value={segmentId}
                 onChange={(e) => setSegmentId(e.target.value)}
               >
@@ -305,10 +305,10 @@ export default function CampaignComposerClient({
           )}
 
           {audienceType === "list" && (
-            <div className="space-y-2 max-w-md">
-              <Label>Selecciona una Lista</Label>
+            <div className="space-y-2 max-w-3xl">
+              <Label className="text-base">Selecciona una Lista</Label>
               <select 
-                className="w-full border-gray-300 rounded-md shadow-sm"
+                className="w-full border-gray-300 rounded-md shadow-sm h-11 px-4 bg-gray-50 focus:bg-white transition-colors focus:ring-blue-500 focus:border-blue-500"
                 value={listId}
                 onChange={(e) => setListId(e.target.value)}
               >
@@ -320,12 +320,13 @@ export default function CampaignComposerClient({
 
           {audienceType === "raw" && (
             <div className="space-y-2">
-              <Label>Destinatarios (Separados por coma)</Label>
+              <Label className="text-base">Destinatarios (Separados por coma)</Label>
               <Textarea
                 value={recipientsRaw}
                 onChange={(e) => setRecipientsRaw(e.target.value)}
                 placeholder="cliente1@gmail.com, cliente2@hotmail.com"
                 rows={3}
+                className="bg-gray-50 focus:bg-white transition-colors"
               />
             </div>
           )}
@@ -335,10 +336,10 @@ export default function CampaignComposerClient({
       <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
         <h2 className="text-lg font-semibold border-b pb-2">3. Diseño y Contenido</h2>
         
-        <div className="space-y-2 max-w-md">
-          <Label>Usar una Plantilla (Opcional)</Label>
+        <div className="space-y-2 max-w-3xl">
+          <Label className="text-base">Usar una Plantilla (Opcional)</Label>
           <select 
-            className="w-full border-gray-300 rounded-md shadow-sm"
+            className="w-full border-gray-300 rounded-md shadow-sm h-11 px-4 bg-gray-50 focus:bg-white transition-colors focus:ring-blue-500 focus:border-blue-500"
             value={templateId}
             onChange={handleTemplateChange}
           >
