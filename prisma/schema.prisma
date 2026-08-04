@@ -1022,3 +1022,135 @@ model EmailTemplate {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// ==========================================
+// 13. ANALÍTICA Y ENTREGABILIDAD (V4)
+// ==========================================
+
+model CampaignMetricDaily {
+  id             String   @id @default(uuid())
+  campaignId     String
+  date           DateTime @db.Date
+  sentCount      Int      @default(0)
+  deliveredCount Int      @default(0)
+  bouncedCount   Int      @default(0)
+  deferredCount  Int      @default(0)
+  openedCount    Int      @default(0)
+  clickedCount   Int      @default(0)
+  unsubCount     Int      @default(0)
+  complaintCount Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([campaignId, date])
+  @@index([campaignId])
+  @@index([date])
+}
+
+model CampaignMetricHourly {
+  id             String   @id @default(uuid())
+  campaignId     String
+  hour           DateTime // Timestamp truncado a la hora
+  sentCount      Int      @default(0)
+  deliveredCount Int      @default(0)
+  bouncedCount   Int      @default(0)
+  deferredCount  Int      @default(0)
+  openedCount    Int      @default(0)
+  clickedCount   Int      @default(0)
+  unsubCount     Int      @default(0)
+  complaintCount Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([campaignId, hour])
+  @@index([campaignId])
+  @@index([hour])
+}
+
+model DomainProviderMetric {
+  id             String   @id @default(uuid())
+  campaignId     String
+  provider       String // e.g., "GMAIL", "OUTLOOK", "YAHOO", "OTHER"
+  sentCount      Int      @default(0)
+  deliveredCount Int      @default(0)
+  bouncedCount   Int      @default(0)
+  deferredCount  Int      @default(0)
+  openedCount    Int      @default(0)
+  clickedCount   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([campaignId, provider])
+  @@index([campaignId])
+}
+
+model AudienceMetricDaily {
+  id             String   @id @default(uuid())
+  date           DateTime @db.Date
+  totalContacts  Int      @default(0)
+  activeContacts Int      @default(0)
+  newSubscribers Int      @default(0)
+  unsubscribes   Int      @default(0)
+  hardBounces    Int      @default(0)
+  complaints     Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([date])
+}
+
+model LinkMetric {
+  id           String   @id @default(uuid())
+  campaignId   String
+  url          String   @db.Text
+  clickedCount Int      @default(0)
+  uniqueClicks Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([campaignId, url])
+  @@index([campaignId])
+}
+
+model DeliverabilityAlert {
+  id         String    @id @default(uuid())
+  type       String // e.g., "HIGH_BOUNCE_RATE", "SPAM_COMPLAINT"
+  severity   String // e.g., "WARNING", "CRITICAL"
+  message    String    @db.Text
+  campaignId String?
+  provider   String?
+  isResolved Boolean   @default(false)
+  resolvedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([isResolved])
+  @@index([createdAt])
+}
+
+model MtaNode {
+  id         String    @id @default(uuid())
+  hostname   String    @unique
+  ipAddress  String?
+  region     String?
+  status     String    @default("ACTIVE") // ACTIVE, MAINTENANCE, OFFLINE
+  lastSeenAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model MtaProviderState {
+  id                   String    @id @default(uuid())
+  mtaNodeId            String
+  provider             String // e.g., "GMAIL", "OUTLOOK"
+  rateLimitPerMinute   Int       @default(0) // Límite dinámico, 0 significa usar global
+  concurrency          Int       @default(0)
+  pausedUntil          DateTime?
+  consecutiveDeferrals Int       @default(0)
+  lastEnhancedCode     String?
+  lastDiagnostic       String?   @db.Text
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@unique([mtaNodeId, provider])
+}
