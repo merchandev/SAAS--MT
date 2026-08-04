@@ -7,11 +7,12 @@ export const dynamic = "force-dynamic";
 export default async function NewCampaignPage({
   searchParams,
 }: {
-  searchParams: { draftId?: string };
+  searchParams: Promise<{ draftId?: string }>;
 }) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
   
-  const draftId = searchParams.draftId;
+  const params = await searchParams;
+  const draftId = params.draftId;
 
   let initialData = null;
 

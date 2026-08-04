@@ -46,6 +46,7 @@ export default function CampaignComposerClient({
   const [body, setBody] = useState(initialData?.body || "");
   const [contactPhone, setContactPhone] = useState(initialData?.contactPhone || "+34 662 02 41 36");
   const [sendingRate, setSendingRate] = useState<number>(initialData?.sendingRate || 30);
+  const [maxDailySends, setMaxDailySends] = useState<number>(initialData?.maxDailySends || 5000);
   const [sendFromHour, setSendFromHour] = useState(initialData?.sendFromHour || "");
   const [sendToHour, setSendToHour] = useState(initialData?.sendToHour || "");
 
@@ -119,6 +120,7 @@ export default function CampaignComposerClient({
       emailTemplateId: templateId || null,
       contactPhone,
       sendingRate,
+      maxDailySends,
       sendFromHour,
       sendToHour,
     };
@@ -244,6 +246,28 @@ export default function CampaignComposerClient({
               onChange={(e) => setContactPhone(e.target.value)}
               placeholder="+34 662 02 41 36"
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="maxDailySends">Límite Máximo de Envíos Diarios</Label>
+            <Input
+              id="maxDailySends"
+              type="number"
+              min="1"
+              max="5000"
+              value={maxDailySends}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                if (!isNaN(val) && val <= 5000) {
+                  setMaxDailySends(val);
+                } else if (e.target.value === "") {
+                  setMaxDailySends("" as any);
+                }
+              }}
+              placeholder="Ej: 5000"
+            />
+            <p className="text-xs text-gray-500">
+              Límite máximo diario permitido: 5000. Si la audiencia es mayor, los envíos se repartirán en los siguientes días.
+            </p>
           </div>
         </div>
       </div>

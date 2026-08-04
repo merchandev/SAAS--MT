@@ -59,12 +59,16 @@ export async function materializeCampaign(campaignId: string) {
     }
 
     const batchSize = 500;
+    const dailyLimit = campaign.maxDailySends || 5000;
+    const sendingRate = campaign.sendingRate || 50;
+    let overallIndex = 0;
     
     for (let i = 0; i < contacts.length; i += batchSize) {
       const chunk = contacts.slice(i, i + batchSize);
       
       await prisma.$transaction(async (tx) => {
         for (const contact of chunk) {
+          const currentIndex = overallIndex++;
           const emailTrimmed = contact.normalizedEmail || contact.email.trim().toLowerCase();
           const token = randomBytes(32).toString('hex');
           
@@ -98,7 +102,6 @@ export async function materializeCampaign(campaignId: string) {
           // Render Template (merge tags)
           let finalHtml = templateHtml;
           let finalSubject = templateSubject;
-
           if (contact.id) { // Real MarketingContact
             const rendered = renderTemplate(templateHtml, templateSubject, contact);
             finalHtml = rendered.html;
@@ -112,6 +115,31 @@ export async function materializeCampaign(campaignId: string) {
              finalHtml = finalHtml.replace(/{{unsubscribeLink}}/g, unsubscribeLink);
           } else {
              finalHtml += `<br><br><p style="font-size:12px;color:#666;">Para dejar de recibir estos correos, <a href="${unsubscribeLink}">haz clic aquí para cancelar tu suscripción</a>.</p>`;
+          }
+
+          // Calculate availableAt based on daily limit and hourly rate
+          const dayOffset = Math.floor(currentIndex / dailyLimit);
+          const indexWithinDay = currentIndex % dailyLimit;
+          const minutesDelayWithinDay = Math.floor(indexWithinDay / sendingRate) * 60;
+          
+          const availableAt = new Date();
+          availableAt.setDate(availableAt.getDate() + dayOffset);
+          availableAt.setMinutes(availableAt.getMinutes() + minutesDelayWithinDay);
+          
+          // Adjust for sendFromHour / sendToHour if needed (simplified, we just ensure it starts at the right time)
+          if (campaign.sendFromHour) {
+            const [fromH, fromM] = campaign.sendFromHour.split(':').map(Number);
+            const currentH = availableAt.getHours();
+            if (currentH < fromH) {
+               availableAt.setHours(fromH, fromM || 0, 0, 0);
+            } else if (campaign.sendToHour) {
+               const [toH, toM] = campaign.sendToHour.split(':').map(Number);
+               if (currentH >= toH) {
+                  // Push to next day
+                  availableAt.setDate(availableAt.getDate() + 1);
+                  availableAt.setHours(fromH, fromM || 0, 0, 0);
+               }
+            }
           }
 
           const recipient = await tx.campaignRecipient.create({
@@ -141,6 +169,7 @@ export async function materializeCampaign(campaignId: string) {
               html: finalHtml,
               campaignId: campaign.id,
               campaignRecipientId: recipient.id,
+              availableAt: availableAt,
             }
           });
         }

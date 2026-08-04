@@ -18,8 +18,9 @@ export default async function CampaignDetailsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
+  
+  const { id } = await params;
 
   const campaign = await prisma.emailCampaign.findUnique({
     where: { id },

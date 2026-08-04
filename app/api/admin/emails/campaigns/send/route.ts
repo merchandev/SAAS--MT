@@ -27,6 +27,7 @@ export async function POST(req: Request) {
         sendingRate: data.sendingRate || emailConfig.limits.maxCampaignRatePerHour,
         sendFromHour: data.sendFromHour || null,
         sendToHour: data.sendToHour || null,
+        maxDailySends: data.maxDailySends ? parseInt(data.maxDailySends, 10) : 5000,
         status: "QUEUING", // It will be materializing in the background
         startedAt: new Date(),
       },

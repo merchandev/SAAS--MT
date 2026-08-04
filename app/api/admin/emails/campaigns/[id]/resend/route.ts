@@ -33,6 +33,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         sendingRate: original.sendingRate,
         sendFromHour: original.sendFromHour,
         sendToHour: original.sendToHour,
+        maxDailySends: original.maxDailySends,
         status: "QUEUING", // Must start as QUEUING for materializer
         startedAt: new Date(),
       },

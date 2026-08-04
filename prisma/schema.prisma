@@ -495,6 +495,7 @@ model EmailCampaign {
   completedAt  DateTime?
   contactPhone String?   @default("+34 662 02 41 36")
   sendingRate  Int       @default(50)
+  maxDailySends Int      @default(5000) // Límite diario de envíos para esta campaña
   sendFromHour String? // Ej. "09:00"
   sendToHour   String? // Ej. "18:00"
   timezone     String    @default("Europe/Madrid")
