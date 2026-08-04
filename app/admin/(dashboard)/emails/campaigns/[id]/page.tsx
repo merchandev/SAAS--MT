@@ -32,7 +32,7 @@ export default async function CampaignDetailsPage({
     orderBy: { sentAt: 'desc' }
   });
 
-  const recipients = (Array.isArray(campaign.recipients) ? campaign.recipients : []) as string[];
+  const recipients = (Array.isArray(campaign.legacyRecipients) ? campaign.legacyRecipients : []) as string[];
 
   // Dynamic stats calculated from real logs
   const sentCount = logs.filter(l => l.status === "SENT").length;
