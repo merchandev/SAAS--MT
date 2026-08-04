@@ -68,7 +68,7 @@ export default async function CampaignsPage() {
             </tr>
           ) : (
             campaignsList.map((camp) => {
-              const recipients = Array.isArray(camp.recipients) ? camp.recipients : [];
+              const recipients = Array.isArray(camp.legacyRecipients) ? camp.legacyRecipients : [];
               return (
                 <tr key={camp.id} className="hover:bg-gray-50/50">
                   <td className="px-6 py-4">

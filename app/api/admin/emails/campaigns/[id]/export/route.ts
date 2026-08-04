@@ -25,7 +25,7 @@ export async function GET(
       orderBy: { sentAt: "desc" },
     });
 
-    const recipients = (Array.isArray(campaign.recipients) ? campaign.recipients : []) as string[];
+    const recipients = (Array.isArray(campaign.legacyRecipients) ? campaign.legacyRecipients : []) as string[];
     
     // Create CSV header
     let csvContent = "Destinatario,Estado,Fecha de Envio,Razon de Error\n";
