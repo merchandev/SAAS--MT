@@ -1,6 +1,6 @@
 import { requireRole } from "@/modules/auth/permissions";
 import { prisma } from "@/lib/prisma";
-import { Header } from "@/components/admin/Header";
+
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -27,7 +27,9 @@ export default async function SystemEmailDashboard() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <Header title="Estado del Sistema de Correo" />
+      <div className="px-6 py-4 bg-white border-b border-gray-200">
+        <h1 className="text-2xl font-bold text-gray-900">Estado del Sistema de Correo</h1>
+      </div>
       
       <main className="flex-1 p-6">
         <div className="max-w-7xl mx-auto space-y-8">

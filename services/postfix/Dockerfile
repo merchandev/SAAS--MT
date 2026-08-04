@@ -11,7 +11,8 @@ RUN chown -R postfix:postfix /var/spool/mail-events
 # Copy scripts
 COPY entrypoint.sh /entrypoint.sh
 COPY save-mail-event.sh /usr/local/bin/save-mail-event.sh
-RUN chmod +x /entrypoint.sh /usr/local/bin/save-mail-event.sh
+RUN dos2unix /entrypoint.sh /usr/local/bin/save-mail-event.sh && \
+    chmod +x /entrypoint.sh /usr/local/bin/save-mail-event.sh
 
 # Copy default configs (will be overridden/templated in entrypoint)
 COPY master.cf /etc/postfix/master.cf

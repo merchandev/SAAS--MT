@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRoleApi } from "@/modules/auth/permissions";
-import { runCampaign } from "@/lib/campaign-runner";
+import { materializeCampaign } from "@/lib/email/campaign-materializer";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -20,29 +20,26 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       return NextResponse.json({ error: "Campaña original no encontrada" }, { status: 404 });
     }
 
-    const recipientsArray = Array.isArray(original.recipients) 
-      ? original.recipients 
-      : typeof original.recipients === "string"
-      ? [original.recipients]
-      : [];
-
     const newCampaign = await prisma.emailCampaign.create({
       data: {
         name: `${original.name} (Reenvío)`,
         subject: original.subject,
         content: original.content,
-        recipients: recipientsArray,
+        legacyRecipients: original.legacyRecipients,
+        marketingSegmentId: original.marketingSegmentId,
+        marketingListId: original.marketingListId,
+        emailTemplateId: original.emailTemplateId,
         contactPhone: original.contactPhone,
         sendingRate: original.sendingRate,
         sendFromHour: original.sendFromHour,
         sendToHour: original.sendToHour,
-        status: "SENDING",
+        status: "QUEUING", // Must start as QUEUING for materializer
         startedAt: new Date(),
       },
     });
 
     // Fire and forget
-    runCampaign(newCampaign.id).catch(console.error);
+    materializeCampaign(newCampaign.id).catch(console.error);
 
     return NextResponse.json({ success: true, id: newCampaign.id });
   } catch (error: any) {
