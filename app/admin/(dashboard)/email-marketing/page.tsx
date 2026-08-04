@@ -8,7 +8,7 @@ import {
   MailWarning
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function EmailMarketingDashboard() {
@@ -20,12 +20,12 @@ export default function EmailMarketingDashboard() {
           <p className="text-gray-500 mt-1">Resumen del rendimiento de email marketing.</p>
         </div>
         <div className="mt-4 sm:mt-0 flex gap-3">
-          <Button variant="outline" asChild>
-            <Link href="/admin/email-marketing/contacts">Añadir Contactos</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/admin/email-marketing/campaigns/new">Crear Campaña</Link>
-          </Button>
+          <Link href="/admin/email-marketing/contacts" className={buttonVariants({ variant: "outline" })}>
+            Añadir Contactos
+          </Link>
+          <Link href="/admin/email-marketing/campaigns/new" className={buttonVariants()}>
+            Crear Campaña
+          </Link>
         </div>
       </div>
 
