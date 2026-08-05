@@ -43,7 +43,8 @@ export default async function CampaignsPage() {
     }
   });
 
-  const activeCampaigns = allCampaigns.filter((c) => c.deletedAt === null);
+  const activeCampaigns = allCampaigns.filter((c) => c.deletedAt === null && c.status !== "DRAFT");
+  const draftCampaigns = allCampaigns.filter((c) => c.deletedAt === null && c.status === "DRAFT");
   const trashedCampaigns = allCampaigns.filter((c) => c.deletedAt !== null);
 
   const renderTable = (campaignsList: typeof allCampaigns, isTrash = false) => (
@@ -163,11 +164,16 @@ export default async function CampaignsPage() {
       <Tabs defaultValue="active" className="w-full">
         <TabsList className="mb-4">
           <TabsTrigger value="active">Activas ({activeCampaigns.length})</TabsTrigger>
+          <TabsTrigger value="drafts">Borradores ({draftCampaigns.length})</TabsTrigger>
           <TabsTrigger value="trash">Papelera ({trashedCampaigns.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="active">
           {renderTable(activeCampaigns, false)}
+        </TabsContent>
+
+        <TabsContent value="drafts">
+          {renderTable(draftCampaigns, false)}
         </TabsContent>
 
         <TabsContent value="trash">
