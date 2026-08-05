@@ -24,30 +24,18 @@ export default async function CampaignDetailsPage({
 
   const campaign = await prisma.emailCampaign.findUnique({
     where: { id },
+    include: {
+      campaignRecipients: {
+        orderBy: { updatedAt: 'desc' }
+      }
+    }
   });
 
   if (!campaign) notFound();
 
-  const logs = await prisma.notificationLog.findMany({
-    where: { campaignId: id },
-    orderBy: { sentAt: 'desc' }
-  });
-
-  const recipientStats = await prisma.campaignRecipient.groupBy({
-    by: ['status'],
-    where: { campaignId: id },
-    _count: { id: true }
-  });
-
-  const recipients = Array.isArray(campaign.legacyRecipients)
-    ? campaign.legacyRecipients.filter(
-        (value): value is string => typeof value === "string",
-      )
-    : [];
-
   // Dynamic stats calculated from real logs
-  const sentCount = recipientStats.filter(s => s.status === "ACCEPTED" || s.status === "DELIVERED").reduce((acc, curr) => acc + curr._count.id, 0);
-  const failedCount = recipientStats.filter(s => s.status === "FAILED" || s.status === "BOUNCED").reduce((acc, curr) => acc + curr._count.id, 0);
+  const sentCount = campaign.campaignRecipients.filter(s => s.status === "ACCEPTED" || s.status === "DELIVERED").length;
+  const failedCount = campaign.campaignRecipients.filter(s => s.status === "FAILED" || s.status === "BOUNCED").length;
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -151,8 +139,7 @@ export default async function CampaignDetailsPage({
         {/* Inferior: Lista de Destinatarios y Logs */}
         <CampaignLogTable 
           campaignId={campaign.id} 
-          recipients={recipients} 
-          logs={logs} 
+          recipients={campaign.campaignRecipients} 
         />
       </div>
     </div>

@@ -14,11 +14,9 @@ interface LogItem {
 export default function CampaignLogTable({
   campaignId,
   recipients,
-  logs,
 }: {
   campaignId: string;
-  recipients: string[];
-  logs: LogItem[];
+  recipients: any[];
 }) {
   const [selectedError, setSelectedError] = useState<{ recipient: string; reason: string } | null>(null);
 
@@ -56,21 +54,21 @@ export default function CampaignLogTable({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 bg-white">
-              {recipients.map((email: string, i: number) => {
-                const log = logs.find((l) => l.recipient === email);
+              {recipients.map((recipient: any, i: number) => {
+                const status = recipient.status;
                 
                 return (
                   <tr key={i} className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-gray-900 font-medium">
-                      {email}
+                      {recipient.email}
                     </td>
                     <td className="px-6 py-4">
-                      {!log ? (
+                      {status === "QUEUED" ? (
                         <span className="inline-flex items-center text-gray-500 text-xs">
                           <span className="w-2 h-2 rounded-full bg-gray-300 mr-1.5"></span>
                           Pendiente
                         </span>
-                      ) : log.status === "SENT" ? (
+                      ) : (status === "ACCEPTED" || status === "DELIVERED") ? (
                         <span className="inline-flex items-center text-green-700 text-xs">
                           <span className="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span>
                           Enviado
@@ -78,7 +76,7 @@ export default function CampaignLogTable({
                       ) : (
                         <div className="flex flex-col items-start">
                           <button 
-                            onClick={() => setSelectedError({ recipient: email, reason: log.errorReason || "Error desconocido" })}
+                            onClick={() => setSelectedError({ recipient: recipient.email, reason: recipient.lastError || "Error desconocido" })}
                             className="inline-flex items-center text-red-700 text-xs hover:underline cursor-pointer focus:outline-none"
                           >
                             <span className="w-2 h-2 rounded-full bg-red-500 mr-1.5"></span>
@@ -88,7 +86,7 @@ export default function CampaignLogTable({
                       )}
                     </td>
                     <td className="px-6 py-4 text-gray-500 text-xs whitespace-nowrap">
-                      {log ? new Date(log.sentAt).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "medium" }) : "-"}
+                      {recipient.acceptedAt || recipient.updatedAt ? new Date(recipient.acceptedAt || recipient.updatedAt).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "medium" }) : "-"}
                     </td>
                   </tr>
                 );
