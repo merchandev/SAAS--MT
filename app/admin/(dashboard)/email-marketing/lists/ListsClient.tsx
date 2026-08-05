@@ -14,6 +14,7 @@ export function ListsClient({ initialLists }: { initialLists: List[] }) {
   const [lists, setLists] = useState(initialLists);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [selectedList, setSelectedList] = useState<List | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,6 +52,11 @@ export function ListsClient({ initialLists }: { initialLists: List[] }) {
   const handleOpenDelete = (list: List) => {
     setSelectedList(list);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleOpenImport = (list: List) => {
+    setSelectedList(list);
+    setIsImportModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -177,10 +183,13 @@ export function ListsClient({ initialLists }: { initialLists: List[] }) {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(l)} className="text-blue-600 hover:text-blue-900 px-2">
+                        <Button variant="ghost" size="sm" onClick={() => handleOpenImport(l)} className="text-green-600 hover:text-green-900 px-2" title="Importar Excel">
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(l)} className="text-blue-600 hover:text-blue-900 px-2" title="Editar">
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenDelete(l)} className="text-red-600 hover:text-red-900 px-2">
+                        <Button variant="ghost" size="sm" onClick={() => handleOpenDelete(l)} className="text-red-600 hover:text-red-900 px-2" title="Eliminar">
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
@@ -269,6 +278,76 @@ export function ListsClient({ initialLists }: { initialLists: List[] }) {
               {isLoading ? "Eliminando..." : "Eliminar"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Import Excel Modal */}
+      <Dialog open={isImportModalOpen} onOpenChange={setIsImportModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Importar Contactos (Excel)</DialogTitle>
+            <DialogDescription>
+              Sube un archivo Excel (.xlsx, .csv) con los correos que deseas agregar a la lista <strong>{selectedList?.name}</strong>.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={async (e) => {
+            e.preventDefault();
+            if (!selectedList) return;
+            const fileInput = (e.target as HTMLFormElement).elements.namedItem("file") as HTMLInputElement;
+            const file = fileInput?.files?.[0];
+            if (!file) {
+              alert("Por favor selecciona un archivo.");
+              return;
+            }
+
+            setIsLoading(true);
+            try {
+              const form = new FormData();
+              form.append("file", file);
+              
+              const res = await fetch(`/api/admin/email-marketing/lists/${selectedList.id}/import`, {
+                method: "POST",
+                body: form
+              });
+              
+              const data = await res.json();
+              
+              if (data.success) {
+                alert(data.message);
+                setIsImportModalOpen(false);
+                // Update count in UI optionally
+                setLists(lists.map(l => l.id === selectedList.id ? { ...l, _count: { contacts: (l._count?.contacts || 0) + data.count } } : l));
+              } else {
+                alert(data.error || "Ocurrió un error al importar.");
+              }
+            } catch (err) {
+              alert("Error de conexión al importar.");
+            } finally {
+              setIsLoading(false);
+            }
+          }} className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="file">Archivo Excel</Label>
+              <Input
+                id="file"
+                name="file"
+                type="file"
+                accept=".xlsx, .xls, .csv"
+                required
+              />
+              <p className="text-xs text-gray-500">
+                El sistema detectará automáticamente los correos válidos en cualquier columna del archivo.
+              </p>
+            </div>
+            <DialogFooter className="pt-4">
+              <Button type="button" variant="outline" onClick={() => setIsImportModalOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={isLoading} className="bg-green-600 hover:bg-green-700">
+                {isLoading ? "Importando..." : "Importar"}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </>

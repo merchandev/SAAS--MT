@@ -70,6 +70,7 @@ export default async function CampaignsPage() {
           ) : (
             campaignsList.map((camp) => {
               const recipients = Array.isArray(camp.legacyRecipients) ? camp.legacyRecipients : [];
+              const recipientsCount = camp.totalCount > 0 ? camp.totalCount : recipients.length;
               return (
                 <tr key={camp.id} className="hover:bg-gray-50/50">
                   <td className="px-6 py-4">
@@ -86,7 +87,7 @@ export default async function CampaignsPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center text-gray-600">
                       <Users className="h-4 w-4 mr-1.5 text-gray-400" />
-                      {recipients.length} contactos
+                      {recipientsCount} contactos
                     </div>
                   </td>
                   <td className="px-6 py-4">
