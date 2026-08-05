@@ -45,7 +45,7 @@ export default function CampaignComposerClient({
   const [subject, setSubject] = useState(initialData?.subject || "");
   const [body, setBody] = useState(initialData?.body || "");
   const [contactPhone, setContactPhone] = useState(initialData?.contactPhone || "+34 662 02 41 36");
-  const [sendingRate, setSendingRate] = useState<number>(initialData?.sendingRate || 30);
+  const [sendingRate, setSendingRate] = useState<number>(initialData?.sendingRate || 490);
   const [maxDailySends, setMaxDailySends] = useState<number>(initialData?.maxDailySends || 5000);
   const [sendFromHour, setSendFromHour] = useState(initialData?.sendFromHour || "");
   const [sendToHour, setSendToHour] = useState(initialData?.sendToHour || "");
@@ -246,6 +246,28 @@ export default function CampaignComposerClient({
               onChange={(e) => setContactPhone(e.target.value)}
               placeholder="+34 662 02 41 36"
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="sendingRate">Correos por Hora (Tasa de Envío)</Label>
+            <Input
+              id="sendingRate"
+              type="number"
+              min="1"
+              max="5000"
+              value={sendingRate}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                if (!isNaN(val) && val > 0) {
+                  setSendingRate(val);
+                } else if (e.target.value === "") {
+                  setSendingRate("" as any);
+                }
+              }}
+              placeholder="Ej: 490"
+            />
+            <p className="text-xs text-gray-500">
+              Controla la velocidad a la que se envían los correos. Un valor más bajo protege tu reputación.
+            </p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="maxDailySends">Límite Máximo de Envíos Diarios</Label>

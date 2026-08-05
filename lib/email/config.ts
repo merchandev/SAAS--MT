@@ -114,10 +114,10 @@ function loadConfig() {
     },
     
     limits: {
-      globalRatePerMinute: parseInt(process.env.MAIL_GLOBAL_RATE_PER_MINUTE || "4", 10),
-      marketingRatePerHour: parseInt(process.env.MAIL_MARKETING_RATE_PER_HOUR || "180", 10),
-      transactionalRatePerHour: parseInt(process.env.MAIL_TRANSACTIONAL_RATE_PER_HOUR || "240", 10),
-      maxCampaignRatePerHour: parseInt(process.env.MAIL_MAX_CAMPAIGN_RATE_PER_HOUR || "240", 10),
+      globalRatePerMinute: parseInt(process.env.MAIL_GLOBAL_RATE_PER_MINUTE || "9", 10),
+      marketingRatePerHour: parseInt(process.env.MAIL_MARKETING_RATE_PER_HOUR || "490", 10),
+      transactionalRatePerHour: parseInt(process.env.MAIL_TRANSACTIONAL_RATE_PER_HOUR || "490", 10),
+      maxCampaignRatePerHour: parseInt(process.env.MAIL_MAX_CAMPAIGN_RATE_PER_HOUR || "490", 10),
       maxCampaignRecipients: parseInt(process.env.MAIL_MAX_CAMPAIGN_RECIPIENTS || "100000", 10),
     },
     
@@ -138,8 +138,8 @@ function loadConfig() {
     },
     
     hostinger: {
-      confirmedRatePerMinute: parseInt(process.env.HOSTINGER_CONFIRMED_RATE_PER_MINUTE || "5", 10),
-      allowConfirmedOverride: isTrue(process.env.HOSTINGER_ALLOW_CONFIRMED_OVERRIDE),
+      confirmedRatePerMinute: parseInt(process.env.HOSTINGER_CONFIRMED_RATE_PER_MINUTE || "9", 10),
+      allowConfirmedOverride: process.env.HOSTINGER_ALLOW_CONFIRMED_OVERRIDE !== "false",
     }
   };
 
