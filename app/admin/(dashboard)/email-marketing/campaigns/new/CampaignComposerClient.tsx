@@ -207,14 +207,14 @@ export default function CampaignComposerClient({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{draftId ? "Editar Borrador" : "Nueva Campaña"}</h1>
           <p className="text-sm text-gray-500 mt-1">
             Configura la audiencia, el diseño y programa el envío de tu campaña.
           </p>
         </div>
-        <Button onClick={handlePreview} variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+        <Button onClick={handlePreview} variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50 w-full sm:w-auto">
           <Eye className="h-4 w-4 mr-2" />
           Previsualizar Correo
         </Button>
@@ -275,7 +275,7 @@ export default function CampaignComposerClient({
       <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
         <h2 className="text-lg font-semibold border-b pb-2">2. Audiencia</h2>
         <div className="space-y-4">
-          <div className="flex space-x-4">
+          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">
             <label className="flex items-center space-x-2">
               <input type="radio" checked={audienceType === "segment"} onChange={() => setAudienceType("segment")} />
               <span>Segmento Dinámico</span>
@@ -359,9 +359,9 @@ export default function CampaignComposerClient({
         </div>
 
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <Label>Cuerpo del correo</Label>
-            <div className="flex bg-gray-100 p-1 rounded-md">
+            <div className="flex bg-gray-100 p-1 rounded-md self-start sm:self-auto">
               <button
                 type="button"
                 onClick={() => setEditorMode("visual")}
@@ -411,19 +411,19 @@ export default function CampaignComposerClient({
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <Link href="/admin/email-marketing/campaigns">
-          <Button variant="ghost">
+      <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 pt-4">
+        <Link href="/admin/email-marketing/campaigns" className="w-full sm:w-auto">
+          <Button variant="ghost" className="w-full sm:w-auto justify-center">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Cancelar
           </Button>
         </Link>
-        <div className="flex items-center gap-3">
-          <Button onClick={handleSaveDraft} disabled={isSaving || isSending} variant="outline">
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <Button onClick={handleSaveDraft} disabled={isSaving || isSending} variant="outline" className="w-full sm:w-auto justify-center">
             {isSaving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
             Guardar Borrador
           </Button>
-          <Button onClick={handleSend} disabled={isSending || isSaving} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={handleSend} disabled={isSending || isSaving} className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto justify-center">
             {isSending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
             Materializar y Enviar
           </Button>
@@ -431,11 +431,11 @@ export default function CampaignComposerClient({
       </div>
 
       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="sm:max-w-4xl w-full h-[90vh] flex flex-col p-0 overflow-hidden">
+        <DialogContent className="sm:max-w-4xl w-[95vw] h-[90vh] flex flex-col p-0 overflow-hidden mx-auto rounded-lg">
           <DialogHeader className="p-4 border-b bg-gray-50/80 backdrop-blur-sm sticky top-0 z-10">
             <DialogTitle>Previsualización del Correo</DialogTitle>
           </DialogHeader>
-          <div className="flex-1 overflow-hidden bg-gray-100 flex items-center justify-center p-4">
+          <div className="flex-1 overflow-hidden bg-gray-100 flex items-center justify-center p-2 sm:p-4">
             {isPreviewLoading ? (
               <div className="flex flex-col items-center text-gray-500">
                 <Loader2 className="h-8 w-8 animate-spin mb-4" />
