@@ -128,6 +128,7 @@ export default async function CampaignsPage() {
                       year: "numeric",
                       hour: "2-digit",
                       minute: "2-digit",
+                      timeZone: "Europe/Madrid"
                     })}
                   </td>
                   <td className="px-6 py-4 text-right">

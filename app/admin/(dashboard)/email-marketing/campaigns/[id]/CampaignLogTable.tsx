@@ -86,7 +86,7 @@ export default function CampaignLogTable({
                       )}
                     </td>
                     <td className="px-6 py-4 text-gray-500 text-xs whitespace-nowrap">
-                      {recipient.acceptedAt || recipient.updatedAt ? new Date(recipient.acceptedAt || recipient.updatedAt).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "medium" }) : "-"}
+                      {recipient.acceptedAt || recipient.updatedAt ? new Date(recipient.acceptedAt || recipient.updatedAt).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "medium", timeZone: "Europe/Madrid" }) : "-"}
                     </td>
                   </tr>
                 );
