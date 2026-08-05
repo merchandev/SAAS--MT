@@ -6,9 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { createContact, updateContact, deleteContact } from "./actions";
-import { toast } from "react-hot-toast";
 
 type Contact = any; // We can type this better later if needed
 
@@ -72,24 +70,24 @@ export function ContactsClient({ initialContacts }: { initialContacts: Contact[]
       if (selectedContact) {
         const res = await updateContact(selectedContact.id, formData);
         if (res.success) {
-          toast.success("Contacto actualizado correctamente");
+          alert("Contacto actualizado correctamente");
           setContacts(contacts.map(c => c.id === selectedContact.id ? { ...c, ...res.contact } : c));
           setIsModalOpen(false);
         } else {
-          toast.error(res.error || "Error al actualizar");
+          alert(res.error || "Error al actualizar");
         }
       } else {
         const res = await createContact(formData);
         if (res.success) {
-          toast.success("Contacto creado correctamente");
+          alert("Contacto creado correctamente");
           setContacts([res.contact, ...contacts]);
           setIsModalOpen(false);
         } else {
-          toast.error(res.error || "Error al crear");
+          alert(res.error || "Error al crear");
         }
       }
     } catch (error) {
-      toast.error("Ocurrió un error inesperado");
+      alert("Ocurrió un error inesperado");
     } finally {
       setIsLoading(false);
     }
@@ -101,14 +99,14 @@ export function ContactsClient({ initialContacts }: { initialContacts: Contact[]
     try {
       const res = await deleteContact(selectedContact.id);
       if (res.success) {
-        toast.success("Contacto eliminado");
+        alert("Contacto eliminado");
         setContacts(contacts.filter(c => c.id !== selectedContact.id));
         setIsDeleteDialogOpen(false);
       } else {
-        toast.error(res.error || "Error al eliminar");
+        alert(res.error || "Error al eliminar");
       }
     } catch (error) {
-      toast.error("Ocurrió un error inesperado");
+      alert("Ocurrió un error inesperado");
     } finally {
       setIsLoading(false);
     }
@@ -288,16 +286,18 @@ export function ContactsClient({ initialContacts }: { initialContacts: Contact[]
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 pt-2">
-              <Checkbox
-                id="hasConsent"
-                checked={formData.hasConsent}
-                onCheckedChange={(checked) => setFormData({ ...formData, hasConsent: checked === true })}
-              />
-              <Label htmlFor="hasConsent" className="text-sm font-normal">
-                El contacto ha dado su consentimiento expreso para recibir emails de marketing.
-              </Label>
-            </div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="hasConsent"
+                  checked={formData.hasConsent}
+                  onChange={(e) => setFormData({ ...formData, hasConsent: e.target.checked })}
+                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                />
+                <Label htmlFor="hasConsent" className="text-sm font-normal cursor-pointer">
+                  El contacto ha dado su consentimiento para recibir correos
+                </Label>
+              </div>
 
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>

@@ -6,9 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { createList, updateList, deleteList } from "./actions";
-import { toast } from "react-hot-toast";
 
 type List = any; 
 
@@ -63,24 +61,24 @@ export function ListsClient({ initialLists }: { initialLists: List[] }) {
       if (selectedList) {
         const res = await updateList(selectedList.id, formData);
         if (res.success) {
-          toast.success("Lista actualizada");
+          alert("Lista actualizada");
           setLists(lists.map(l => l.id === selectedList.id ? { ...l, ...res.list } : l));
           setIsModalOpen(false);
         } else {
-          toast.error(res.error || "Error al actualizar");
+          alert(res.error || "Error al actualizar");
         }
       } else {
         const res = await createList(formData);
         if (res.success) {
-          toast.success("Lista creada");
+          alert("Lista creada");
           setLists([{...res.list, _count: { contacts: 0 }}, ...lists]);
           setIsModalOpen(false);
         } else {
-          toast.error(res.error || "Error al crear");
+          alert(res.error || "Error al crear");
         }
       }
     } catch (error) {
-      toast.error("Ocurrió un error inesperado");
+      alert("Ocurrió un error inesperado");
     } finally {
       setIsLoading(false);
     }
@@ -92,14 +90,14 @@ export function ListsClient({ initialLists }: { initialLists: List[] }) {
     try {
       const res = await deleteList(selectedList.id);
       if (res.success) {
-        toast.success("Lista eliminada");
+        alert("Lista eliminada");
         setLists(lists.filter(l => l.id !== selectedList.id));
         setIsDeleteDialogOpen(false);
       } else {
-        toast.error(res.error || "Error al eliminar");
+        alert(res.error || "Error al eliminar");
       }
     } catch (error) {
-      toast.error("Ocurrió un error inesperado");
+      alert("Ocurrió un error inesperado");
     } finally {
       setIsLoading(false);
     }
@@ -227,12 +225,14 @@ export function ListsClient({ initialLists }: { initialLists: List[] }) {
             </div>
 
             <div className="flex items-center space-x-2 pt-2">
-              <Checkbox
+              <input
+                type="checkbox"
                 id="isActive"
                 checked={formData.isActive}
-                onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked === true })}
+                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
-              <Label htmlFor="isActive" className="text-sm font-normal">
+              <Label htmlFor="isActive" className="text-sm font-normal cursor-pointer">
                 Lista activa (disponible para enviar campañas)
               </Label>
             </div>

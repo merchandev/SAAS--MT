@@ -6,9 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { createSegment, updateSegment, deleteSegment } from "./actions";
-import { toast } from "react-hot-toast";
 
 type Segment = any;
 
@@ -66,7 +64,7 @@ export function SegmentsClient({ initialSegments }: { initialSegments: Segment[]
     try {
       parsedRules = JSON.parse(formData.rules);
     } catch (err) {
-      toast.error("El formato JSON de las reglas es inválido");
+      alert("El formato JSON de las reglas es inválido");
       setIsLoading(false);
       return;
     }
@@ -77,24 +75,24 @@ export function SegmentsClient({ initialSegments }: { initialSegments: Segment[]
       if (selectedSegment) {
         const res = await updateSegment(selectedSegment.id, payload);
         if (res.success) {
-          toast.success("Segmento actualizado");
+          alert("Segmento actualizado");
           setSegments(segments.map(s => s.id === selectedSegment.id ? { ...s, ...res.segment } : s));
           setIsModalOpen(false);
         } else {
-          toast.error(res.error || "Error al actualizar");
+          alert(res.error || "Error al actualizar");
         }
       } else {
         const res = await createSegment(payload);
         if (res.success) {
-          toast.success("Segmento creado");
+          alert("Segmento creado");
           setSegments([res.segment, ...segments]);
           setIsModalOpen(false);
         } else {
-          toast.error(res.error || "Error al crear");
+          alert(res.error || "Error al crear");
         }
       }
     } catch (error) {
-      toast.error("Ocurrió un error inesperado");
+      alert("Ocurrió un error inesperado");
     } finally {
       setIsLoading(false);
     }
@@ -106,14 +104,14 @@ export function SegmentsClient({ initialSegments }: { initialSegments: Segment[]
     try {
       const res = await deleteSegment(selectedSegment.id);
       if (res.success) {
-        toast.success("Segmento eliminado");
+        alert("Segmento eliminado");
         setSegments(segments.filter(s => s.id !== selectedSegment.id));
         setIsDeleteDialogOpen(false);
       } else {
-        toast.error(res.error || "Error al eliminar");
+        alert(res.error || "Error al eliminar");
       }
     } catch (error) {
-      toast.error("Ocurrió un error inesperado");
+      alert("Ocurrió un error inesperado");
     } finally {
       setIsLoading(false);
     }
@@ -252,12 +250,14 @@ export function SegmentsClient({ initialSegments }: { initialSegments: Segment[]
             </div>
 
             <div className="flex items-center space-x-2 pt-2">
-              <Checkbox
+              <input
+                type="checkbox"
                 id="isActive"
                 checked={formData.isActive}
-                onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked === true })}
+                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
-              <Label htmlFor="isActive" className="text-sm font-normal">
+              <Label htmlFor="isActive" className="text-sm font-normal cursor-pointer">
                 Segmento activo
               </Label>
             </div>
