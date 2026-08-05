@@ -14,10 +14,20 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
     const original = await prisma.emailCampaign.findUnique({
       where: { id },
+      include: {
+        campaignRecipients: {
+          select: { email: true }
+        }
+      }
     });
 
     if (!original) {
       return NextResponse.json({ error: "Campaña original no encontrada" }, { status: 404 });
+    }
+
+    let legacyRecipients = original.legacyRecipients;
+    if (!original.marketingListId && !original.marketingSegmentId && (!legacyRecipients || (Array.isArray(legacyRecipients) && legacyRecipients.length === 0))) {
+      legacyRecipients = original.campaignRecipients.map(r => r.email);
     }
 
     const newCampaign = await prisma.emailCampaign.create({
@@ -25,7 +35,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         name: `${original.name} (Reenvío)`,
         subject: original.subject,
         content: original.content,
-        legacyRecipients: original.legacyRecipients ? (original.legacyRecipients as any) : undefined,
+        legacyRecipients: legacyRecipients ? (legacyRecipients as any) : undefined,
         marketingSegmentId: original.marketingSegmentId,
         marketingListId: original.marketingListId,
         emailTemplateId: original.emailTemplateId,
