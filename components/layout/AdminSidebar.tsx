@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Banknote,
   Building2,
@@ -48,6 +48,7 @@ type NavigationItem = {
 
 export function AdminSidebar({ role, companyName = "Transfers in Barcelona", logoUrl, accentColor = "#D4AF37" }: AdminSidebarProps) {
   const pathname = usePathname();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window === "undefined") return false;
     return window.localStorage.getItem("admin-sidebar-collapsed") === "true";
@@ -60,6 +61,12 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
       return next;
     });
   }
+
+  useEffect(() => {
+    const handleToggle = () => setIsMobileOpen(prev => !prev);
+    window.addEventListener('toggle-mobile-sidebar', handleToggle);
+    return () => window.removeEventListener('toggle-mobile-sidebar', handleToggle);
+  }, []);
 
   const allNavigation: NavigationItem[] = [
     { name: "Dashboard", href: "/admin/dashboard", roles: ["SUPER_ADMIN", "ADMIN", "OPERATOR"], icon: Gauge },
@@ -93,12 +100,21 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
   }
 
   return (
-    <aside
-      className={cn(
-        "w-full bg-white border-r border-gray-200 flex flex-col transition-[width] duration-200 ease-in-out relative",
-        isCollapsed ? "md:w-20" : "md:w-64"
+    <>
+      {isMobileOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsMobileOpen(false)}
+        />
       )}
-    >
+      <aside
+        className={cn(
+          "bg-white border-r border-gray-200 flex flex-col transition-all duration-200 ease-in-out relative z-50",
+          "fixed inset-y-0 left-0 transform md:relative md:translate-x-0 h-full",
+          isMobileOpen ? "translate-x-0 w-64" : "-translate-x-full md:w-64",
+          isCollapsed ? "md:w-20" : "md:w-64"
+        )}
+      >
       <div className={cn("flex h-16 items-center border-b border-gray-200", isCollapsed ? "justify-center px-0" : "px-4")}>
         <Link href="/admin/dashboard" className="relative block w-full h-10">
           <img
@@ -139,6 +155,7 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
             <Link
               key={item.name}
               href={item.href}
+              onClick={() => setIsMobileOpen(false)}
               title={isCollapsed ? item.name : undefined}
               className={cn(
                 "group flex h-10 items-center rounded-md px-2 text-sm font-medium transition-colors",
@@ -173,5 +190,6 @@ export function AdminSidebar({ role, companyName = "Transfers in Barcelona", log
         </form>
       </div>
     </aside>
+    </>
   );
 }
