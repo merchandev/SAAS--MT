@@ -45,6 +45,16 @@ export async function materializeCampaign(campaignId: string) {
       return;
     }
 
+    // Deduplicate contacts to avoid CampaignRecipient_campaignId_normalizedEmail_key errors
+    const uniqueContactsMap = new Map();
+    for (const c of contacts) {
+      const emailTrimmed = c.normalizedEmail || c.email.trim().toLowerCase();
+      if (!uniqueContactsMap.has(emailTrimmed)) {
+        uniqueContactsMap.set(emailTrimmed, c);
+      }
+    }
+    contacts = Array.from(uniqueContactsMap.values());
+
     // Load Template if linked
     let templateHtml = campaign.content || "";
     let templateSubject = campaign.subject;
