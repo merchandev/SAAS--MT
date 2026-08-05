@@ -18,7 +18,7 @@ export default async function CampaignsPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const logs = await prisma.notificationLog.groupBy({
+  const recipientStats = await prisma.campaignRecipient.groupBy({
     by: ['campaignId', 'status'],
     where: {
       campaignId: { in: allCampaigns.map(c => c.id) }
@@ -33,12 +33,12 @@ export default async function CampaignsPage() {
     return acc;
   }, {} as Record<string, { sent: number; failed: number }>);
 
-  logs.forEach(log => {
-    if (log.campaignId && campaignStats[log.campaignId]) {
-      if (log.status === 'SENT' || log.status === 'DELIVERED' || log.status === 'OPENED' || log.status === 'CLICKED') {
-        campaignStats[log.campaignId].sent += log._count.id;
-      } else if (log.status === 'FAILED' || log.status === 'BOUNCED') {
-        campaignStats[log.campaignId].failed += log._count.id;
+  recipientStats.forEach(stat => {
+    if (stat.campaignId && campaignStats[stat.campaignId]) {
+      if (stat.status === 'ACCEPTED' || stat.status === 'DELIVERED') {
+        campaignStats[stat.campaignId].sent += stat._count.id;
+      } else if (stat.status === 'FAILED' || stat.status === 'BOUNCED') {
+        campaignStats[stat.campaignId].failed += stat._count.id;
       }
     }
   });

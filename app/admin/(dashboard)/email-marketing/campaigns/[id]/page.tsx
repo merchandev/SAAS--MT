@@ -33,6 +33,12 @@ export default async function CampaignDetailsPage({
     orderBy: { sentAt: 'desc' }
   });
 
+  const recipientStats = await prisma.campaignRecipient.groupBy({
+    by: ['status'],
+    where: { campaignId: id },
+    _count: { id: true }
+  });
+
   const recipients = Array.isArray(campaign.legacyRecipients)
     ? campaign.legacyRecipients.filter(
         (value): value is string => typeof value === "string",
@@ -40,8 +46,8 @@ export default async function CampaignDetailsPage({
     : [];
 
   // Dynamic stats calculated from real logs
-  const sentCount = logs.filter(l => l.status === "SENT").length;
-  const failedCount = logs.filter(l => l.status === "FAILED").length;
+  const sentCount = recipientStats.filter(s => s.status === "ACCEPTED" || s.status === "DELIVERED").reduce((acc, curr) => acc + curr._count.id, 0);
+  const failedCount = recipientStats.filter(s => s.status === "FAILED" || s.status === "BOUNCED").reduce((acc, curr) => acc + curr._count.id, 0);
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
