@@ -130,7 +130,7 @@ export async function materializeCampaign(campaignId: string) {
           // Calculate availableAt based on daily limit and hourly rate
           const dayOffset = Math.floor(currentIndex / dailyLimit);
           const indexWithinDay = currentIndex % dailyLimit;
-          const minutesDelayWithinDay = Math.floor(indexWithinDay / sendingRate) * 60;
+          const minutesDelayWithinDay = (indexWithinDay / sendingRate) * 60;
           
           const availableAt = new Date();
           availableAt.setDate(availableAt.getDate() + dayOffset);
