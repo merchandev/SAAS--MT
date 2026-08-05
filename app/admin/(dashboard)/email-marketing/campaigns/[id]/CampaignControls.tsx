@@ -28,22 +28,21 @@ export default function CampaignControls({
   const handlePause = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/email-marketing/campaigns/${campaignId}/pause`, { method: "POST" });
-      if (res.ok) {
-        router.refresh();
-      } else {
-        const data = await res.json();
-        alert(data.error || "Error al pausar");
-      }
+      const res = await fetch(`/api/admin/emails/campaigns/${campaignId}/pause`, { method: "POST" });
+      if (!res.ok) throw new Error("Error al pausar");
+      router.refresh();
+    } catch (err: any) {
+      alert(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleResume = async () => {
+    if (!confirm("¿Reanudar la campaña?")) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/email-marketing/campaigns/${campaignId}/resume`, { method: "POST" });
+      const res = await fetch(`/api/admin/emails/campaigns/${campaignId}/resume`, { method: "POST" });
       if (res.ok) {
         router.refresh();
       } else {

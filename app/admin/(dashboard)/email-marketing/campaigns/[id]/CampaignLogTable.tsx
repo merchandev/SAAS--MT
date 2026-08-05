@@ -23,7 +23,7 @@ export default function CampaignLogTable({
   const [selectedError, setSelectedError] = useState<{ recipient: string; reason: string } | null>(null);
 
   const handleExportCSV = () => {
-    window.location.href = `/api/admin/email-marketing/campaigns/${campaignId}/export`;
+    window.location.href = `/api/admin/emails/campaigns/${campaignId}/export`;
   };
 
   return (

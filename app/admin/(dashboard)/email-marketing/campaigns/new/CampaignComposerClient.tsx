@@ -87,7 +87,7 @@ export default function CampaignComposerClient({
     setIsPreviewLoading(true);
     setIsPreviewOpen(true);
     try {
-      const res = await fetch("/api/admin/email-marketing/preview", {
+      const res = await fetch("/api/admin/emails/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subject, body, contactPhone }),
@@ -131,7 +131,7 @@ export default function CampaignComposerClient({
     setMessage(null);
     try {
       const payload = getPayload();
-      const res = await fetch("/api/admin/email-marketing/campaigns/draft", {
+      const res = await fetch("/api/admin/emails/campaigns/draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: draftId, ...payload }),
@@ -183,7 +183,7 @@ export default function CampaignComposerClient({
 
     try {
       const payload = getPayload();
-      const res = await fetch("/api/admin/email-marketing/campaigns/send", {
+      const res = await fetch("/api/admin/emails/campaigns/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
