@@ -23,7 +23,7 @@ export default function ResendButton({ campaignId }: { campaignId: string }) {
         alert(data.error || "Error al reenviar");
       } else {
         alert("Campaña reenviada / encolada");
-        router.refresh();
+        router.push(`/admin/email-marketing/campaigns/${data.id}`);
       }
     } catch (err) {
       alert("Error de conexión");

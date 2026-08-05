@@ -1,0 +1,1 @@
+import { prisma } from './lib/prisma'; async function main() { const campaign = await prisma.emailCampaign.findFirst({ select: { id: true, status: true, lastError: true, _count: { select: { campaignRecipients: true, emails: true } } } }); console.log(JSON.stringify(campaign, null, 2)); } main();
