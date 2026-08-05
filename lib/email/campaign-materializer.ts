@@ -152,36 +152,52 @@ export async function materializeCampaign(campaignId: string) {
             }
           }
 
-          const recipient = await tx.campaignRecipient.create({
-            data: {
+          const recipient = await tx.campaignRecipient.upsert({
+            where: {
+              campaignId_normalizedEmail: {
+                campaignId: campaign.id,
+                normalizedEmail: emailTrimmed
+              }
+            },
+            create: {
               campaignId: campaign.id,
               email: contact.email.trim(),
               normalizedEmail: emailTrimmed,
               status: "QUEUED",
               unsubscribeToken: token,
-            }
+            },
+            update: {}
           });
 
           // Queue in OutboundEmail
-          await tx.outboundEmail.create({
-            data: {
-              idempotencyKey: `${campaign.id}-${recipient.id}`,
-              kind: "MARKETING",
-              priority: 50,
-              status: "QUEUED",
-              toEmail: contact.email.trim(),
-              normalizedToEmail: emailTrimmed,
-              fromEmail: emailConfig.fromMarketing,
-              fromName: campaign.fromName || emailConfig.fromName,
-              replyTo: campaign.replyTo || emailConfig.replyTo,
-              envelopeFrom: `bounces+${randomBytes(8).toString('hex')}@${emailConfig.bounceDomain}`,
-              subject: finalSubject,
-              html: finalHtml,
+          const existingEmail = await tx.outboundEmail.findFirst({
+            where: {
               campaignId: campaign.id,
-              campaignRecipientId: recipient.id,
-              availableAt: availableAt,
+              normalizedToEmail: emailTrimmed
             }
           });
+
+          if (!existingEmail) {
+            await tx.outboundEmail.create({
+              data: {
+                idempotencyKey: `${campaign.id}-${recipient.id}`,
+                kind: "MARKETING",
+                priority: 50,
+                status: "QUEUED",
+                toEmail: contact.email.trim(),
+                normalizedToEmail: emailTrimmed,
+                fromEmail: emailConfig.fromMarketing,
+                fromName: campaign.fromName || emailConfig.fromName,
+                replyTo: campaign.replyTo || emailConfig.replyTo,
+                envelopeFrom: `bounces+${randomBytes(8).toString('hex')}@${emailConfig.bounceDomain}`,
+                subject: finalSubject,
+                html: finalHtml,
+                campaignId: campaign.id,
+                campaignRecipientId: recipient.id,
+                availableAt: availableAt,
+              }
+            });
+          }
         }
       });
     }
