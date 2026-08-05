@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireRoleApi } from "@/modules/auth/permissions";
 import * as xlsx from "xlsx";
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requireRoleApi(["SUPER_ADMIN", "ADMIN"]);
     if (!auth.ok) {
