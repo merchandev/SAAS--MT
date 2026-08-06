@@ -11,15 +11,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: auth.error }, { status: auth.status });
     }
 
-    const { subject, body, contactPhone } = await req.json();
+    const { subject, body, contactPhone, isRawHtml } = await req.json();
 
-    const html = await render(
-      React.createElement(DynamicLayoutEmail, {
-        previewText: subject,
-        dynamicHtml: body,
-        contactPhone: contactPhone || "+34 662 02 41 36",
-      })
-    );
+    let html = body;
+
+    if (!isRawHtml) {
+      html = await render(
+        React.createElement(DynamicLayoutEmail, {
+          previewText: subject,
+          dynamicHtml: body,
+          contactPhone: contactPhone || "+34 662 02 41 36",
+        })
+      );
+    }
 
     return NextResponse.json({ success: true, html });
   } catch (error: any) {

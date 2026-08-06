@@ -3,6 +3,9 @@ import { randomBytes, randomUUID } from "crypto";
 import { emailConfig } from "./config";
 import { evaluateSegment } from "../marketing/segment-evaluator";
 import { renderTemplate } from "./template-renderer";
+import { DynamicLayoutEmail } from "@/components/emails/DynamicLayoutEmail";
+import { render } from "@react-email/render";
+import React from "react";
 
 export async function materializeCampaign(campaignId: string) {
   try {
@@ -66,6 +69,18 @@ export async function materializeCampaign(campaignId: string) {
         templateHtml = template.html;
         templateSubject = template.subject;
       }
+    }
+
+    if (templateHtml.startsWith("<!--RAW-->")) {
+      templateHtml = templateHtml.replace("<!--RAW-->", "");
+    } else {
+      templateHtml = await render(
+        React.createElement(DynamicLayoutEmail, {
+          previewText: templateSubject,
+          dynamicHtml: templateHtml,
+          contactPhone: campaign.contactPhone || "+34 662 02 41 36",
+        })
+      );
     }
 
     const batchSize = 500;

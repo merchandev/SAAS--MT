@@ -43,7 +43,10 @@ export default function CampaignComposerClient({
   const [draftId, setDraftId] = useState<string | null>(initialData?.id || null);
   const [name, setName] = useState(initialData?.name || "");
   const [subject, setSubject] = useState(initialData?.subject || "");
-  const [body, setBody] = useState(initialData?.body || "");
+  const initialBody = initialData?.body || "";
+  const isInitialRaw = initialBody.startsWith("<!--RAW-->");
+
+  const [body, setBody] = useState(isInitialRaw ? initialBody.substring(10) : initialBody);
   const [contactPhone, setContactPhone] = useState(initialData?.contactPhone || "+34 662 02 41 36");
   const [sendingRate, setSendingRate] = useState<number>(initialData?.sendingRate || 490);
   const [maxDailySends, setMaxDailySends] = useState<number>(initialData?.maxDailySends || 5000);
@@ -62,7 +65,7 @@ export default function CampaignComposerClient({
   // Template
   const [templateId, setTemplateId] = useState(initialData?.emailTemplateId || "");
 
-  const [editorMode, setEditorMode] = useState<"visual" | "html">("visual");
+  const [editorMode, setEditorMode] = useState<"visual" | "html">(isInitialRaw ? "html" : "visual");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
@@ -90,7 +93,7 @@ export default function CampaignComposerClient({
       const res = await fetch("/api/admin/emails/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, body, contactPhone }),
+        body: JSON.stringify({ subject, body, contactPhone, isRawHtml: editorMode === "html" }),
       });
       const data = await res.json();
       if (data.success && data.html) {
@@ -113,7 +116,7 @@ export default function CampaignComposerClient({
     return {
       name,
       subject,
-      body,
+      body: editorMode === "html" ? `<!--RAW-->${body}` : body,
       recipients: audienceType === "raw" ? recipients : null,
       marketingSegmentId: audienceType === "segment" ? segmentId : null,
       marketingListId: audienceType === "list" ? listId : null,
