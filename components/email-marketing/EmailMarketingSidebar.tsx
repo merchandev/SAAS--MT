@@ -62,16 +62,7 @@ const navigation: MenuItem[] = [
     href: "/admin/email-marketing/templates",
     icon: LayoutTemplate,
   },
-  {
-    name: "Informes",
-    icon: BarChart,
-    items: [
-      { name: "Resumen", href: "/admin/email-marketing/reports" },
-      { name: "Campañas", href: "/admin/email-marketing/reports/campaigns" },
-      { name: "Audiencia", href: "/admin/email-marketing/reports/audience" },
-      { name: "Entregabilidad", href: "/admin/email-marketing/reports/deliverability" },
-    ],
-  },
+
   {
     name: "Configuración del Canal",
     icon: Settings,
