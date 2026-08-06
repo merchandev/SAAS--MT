@@ -83,7 +83,17 @@ export async function materializeCampaign(campaignId: string) {
       );
     }
 
-    const batchSize = 500;
+    const lastEmail = await prisma.outboundEmail.findFirst({
+      where: { status: "QUEUED" },
+      orderBy: { availableAt: "desc" },
+    });
+    
+    let baseDate = campaign.scheduledAt ? new Date(campaign.scheduledAt) : new Date();
+    if (lastEmail && lastEmail.availableAt > baseDate) {
+      baseDate = new Date(lastEmail.availableAt.getTime() + 60000); // Start 1 minute after the last queued email finishes
+    }
+
+    const batchSize = 200;
     const dailyLimit = campaign.maxDailySends || 5000;
     const sendingRate = campaign.sendingRate || 50;
     let overallIndex = 0;
@@ -169,7 +179,7 @@ export async function materializeCampaign(campaignId: string) {
           const indexWithinDay = currentIndex % dailyLimit;
           const minutesDelayWithinDay = (indexWithinDay / sendingRate) * 60;
           
-          const availableAt = campaign.scheduledAt ? new Date(campaign.scheduledAt) : new Date();
+          const availableAt = new Date(baseDate.getTime());
           availableAt.setDate(availableAt.getDate() + dayOffset);
           availableAt.setMinutes(availableAt.getMinutes() + minutesDelayWithinDay);
           
@@ -237,7 +247,7 @@ export async function materializeCampaign(campaignId: string) {
             });
           }
         }
-      });
+      }, { timeout: 300000 });
     }
 
     // Set status to SENDING
