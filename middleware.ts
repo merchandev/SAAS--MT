@@ -36,7 +36,21 @@ async function getSessionPayload(token: string) {
       audience: AUTH_AUDIENCE
     });
     return payload as { userId: string; role: string; email: string };
-  } catch {
+  } catch (err: any) {
+    const prevSecret = process.env.JWT_PREVIOUS_SECRET;
+    if (prevSecret && (err.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED' || err.code === 'ERR_JWS_INVALID')) {
+      try {
+        const prevKey = new TextEncoder().encode(prevSecret);
+        const { payload } = await jwtVerify(token, prevKey, { 
+          algorithms: ['HS256'],
+          issuer: AUTH_ISSUER,
+          audience: AUTH_AUDIENCE
+        });
+        return payload as { userId: string; role: string; email: string };
+      } catch {
+        return null;
+      }
+    }
     return null;
   }
 }

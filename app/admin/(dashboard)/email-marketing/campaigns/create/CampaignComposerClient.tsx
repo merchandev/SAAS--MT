@@ -143,7 +143,7 @@ export default function CampaignComposerClient({
         setMessage({ text: "Borrador guardado exitosamente", type: "success" });
         if (data.id && data.id !== draftId) {
           setDraftId(data.id);
-          window.history.replaceState(null, "", `/admin/email-marketing/campaigns/new?draftId=${data.id}`);
+          window.history.replaceState(null, "", `/admin/email-marketing/campaigns/create?draftId=${data.id}`);
         }
       }
     } catch (err) {

@@ -304,8 +304,9 @@ export function ListsClient({ initialLists }: { initialLists: List[] }) {
             try {
               const form = new FormData();
               form.append("file", file);
+              form.append("listId", selectedList.id);
               
-              const res = await fetch(`/api/admin/email-marketing/lists/${selectedList.id}/import`, {
+              const res = await fetch(`/api/admin/email-marketing/contacts/import`, {
                 method: "POST",
                 body: form
               });
@@ -313,10 +314,10 @@ export function ListsClient({ initialLists }: { initialLists: List[] }) {
               const data = await res.json();
               
               if (data.success) {
-                alert(data.message);
+                alert(`Importación completada. Se importaron ${data.importedCount} contactos.`);
                 setIsImportModalOpen(false);
                 // Update count in UI optionally
-                setLists(lists.map(l => l.id === selectedList.id ? { ...l, _count: { contacts: (l._count?.contacts || 0) + data.count } } : l));
+                setLists(lists.map(l => l.id === selectedList.id ? { ...l, _count: { contacts: (l._count?.contacts || 0) + data.importedCount } } : l));
               } else {
                 alert(data.error || "Ocurrió un error al importar.");
               }

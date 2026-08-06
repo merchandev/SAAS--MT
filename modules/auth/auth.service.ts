@@ -41,19 +41,32 @@ export const authService = {
       .sign(key);
   },
 
-  async verifyToken(token: string): Promise<SessionPayload | null> {
+  async verifyToken(token: string): Promise<{ payload: SessionPayload | null, needsRotation: boolean }> {
     try {
       const { payload } = await jwtVerify(token, key, {
         algorithms: ["HS256"],
         issuer: "metransfers:auth",
         audience: "metransfers:app",
       });
-      return payload as unknown as SessionPayload;
-    } catch (error) {
+      return { payload: payload as unknown as SessionPayload, needsRotation: false };
+    } catch (error: any) {
+      const prevSecret = process.env.JWT_PREVIOUS_SECRET;
+      if (prevSecret && (error.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED' || error.code === 'ERR_JWS_INVALID')) {
+        try {
+          const { payload } = await jwtVerify(token, new TextEncoder().encode(prevSecret), {
+            algorithms: ["HS256"],
+            issuer: "metransfers:auth",
+            audience: "metransfers:app",
+          });
+          return { payload: payload as unknown as SessionPayload, needsRotation: true };
+        } catch {
+          return { payload: null, needsRotation: false };
+        }
+      }
       if (process.env.NODE_ENV !== "production") {
         console.error("[verifyToken] JWT verification failed:", error);
       }
-      return null;
+      return { payload: null, needsRotation: false };
     }
   },
 
@@ -84,7 +97,7 @@ export const authService = {
       return null;
     }
     
-    const payload = await this.verifyToken(token);
+    const { payload, needsRotation } = await this.verifyToken(token);
     if (!payload) return null;
 
     try {
@@ -100,6 +113,12 @@ export const authService = {
       if (!user || !user.isActive || user.sessionVersion !== payloadVersion) {
         await this.deleteSessionCookie();
         return null;
+      }
+      
+      // Rotate token if needed
+      if (needsRotation) {
+        const newToken = await this.createToken(payload);
+        await this.setSessionCookie(newToken);
       }
     } catch (error) {
       console.error("[getSession] Database validation failed:", error);

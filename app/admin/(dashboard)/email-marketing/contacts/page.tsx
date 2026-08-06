@@ -16,9 +16,14 @@ export default async function ContactsPage() {
     take: 100,
   });
 
+  const lists = await prisma.marketingList.findMany({
+    where: { isActive: true },
+    select: { id: true, name: true }
+  });
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <ContactsClient initialContacts={contacts} />
+      <ContactsClient initialContacts={contacts} availableLists={lists} />
     </div>
   );
 }

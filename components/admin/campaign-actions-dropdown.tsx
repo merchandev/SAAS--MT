@@ -15,7 +15,7 @@ import {
   softDeleteCampaignAction, 
   restoreCampaignAction, 
   hardDeleteCampaignAction
-} from "@/app/admin/(dashboard)/email-marketing/campaigns/new/campaign.actions";
+} from "@/app/admin/(dashboard)/email-marketing/campaigns/create/campaign.actions";
 
 interface CampaignActionsDropdownProps {
   campaignId: string;

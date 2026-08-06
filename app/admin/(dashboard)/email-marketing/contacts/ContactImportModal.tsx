@@ -10,10 +10,12 @@ interface ContactImportModalProps {
   onClose: () => void;
   onImportSuccess: (count: number) => void;
   listId?: string; // If provided, contacts will be added to this list
+  availableLists?: { id: string, name: string }[];
 }
 
-export function ContactImportModal({ isOpen, onClose, onImportSuccess, listId }: ContactImportModalProps) {
+export function ContactImportModal({ isOpen, onClose, onImportSuccess, listId, availableLists = [] }: ContactImportModalProps) {
   const [file, setFile] = useState<File | null>(null);
+  const [selectedListId, setSelectedListId] = useState<string>(listId || "");
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,8 +37,8 @@ export function ContactImportModal({ isOpen, onClose, onImportSuccess, listId }:
 
     const formData = new FormData();
     formData.append("file", file);
-    if (listId) {
-      formData.append("listId", listId);
+    if (selectedListId) {
+      formData.append("listId", selectedListId);
     }
 
     try {
@@ -119,6 +121,23 @@ export function ContactImportModal({ isOpen, onClose, onImportSuccess, listId }:
               <li><strong>Pais</strong> (opcional)</li>
             </ul>
           </div>
+
+          {availableLists.length > 0 && (
+            <div className="mt-4 space-y-2">
+              <label htmlFor="listSelector" className="text-sm font-medium text-gray-700">Añadir a lista (Opcional)</label>
+              <select
+                id="listSelector"
+                value={selectedListId}
+                onChange={(e) => setSelectedListId(e.target.value)}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              >
+                <option value="">-- No añadir a ninguna lista --</option>
+                {availableLists.map(list => (
+                  <option key={list.id} value={list.id}>{list.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         <DialogFooter>

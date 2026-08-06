@@ -54,7 +54,7 @@ const navigation: MenuItem[] = [
     icon: Send,
     items: [
       { name: "Todas", href: "/admin/email-marketing/campaigns" },
-      { name: "Nueva Campaña", href: "/admin/email-marketing/campaigns/new" },
+      { name: "Nueva Campaña", href: "/admin/email-marketing/campaigns/create" },
     ],
   },
   {

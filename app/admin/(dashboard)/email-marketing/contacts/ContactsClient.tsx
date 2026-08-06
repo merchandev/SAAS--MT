@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 
 type Contact = any; // We can type this better later if needed
 
-export function ContactsClient({ initialContacts }: { initialContacts: Contact[] }) {
+export function ContactsClient({ initialContacts, availableLists = [] }: { initialContacts: Contact[], availableLists?: any[] }) {
   const [contacts, setContacts] = useState(initialContacts);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -355,6 +355,7 @@ export function ContactsClient({ initialContacts }: { initialContacts: Contact[]
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
         onImportSuccess={handleImportSuccess}
+        availableLists={availableLists}
       />
     </>
   );
