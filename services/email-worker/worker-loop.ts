@@ -97,6 +97,35 @@ export async function runWorker() {
                data: { status: "ACCEPTED", acceptedAt: new Date() }
              });
            }
+
+           if (email.campaignId) {
+             const today = new Date();
+             today.setUTCHours(0, 0, 0, 0);
+
+             // Update campaign counts
+             const updatedCampaign = await prisma.emailCampaign.update({
+               where: { id: email.campaignId },
+               data: {
+                 sentCount: { increment: 1 },
+                 deliveredCount: { increment: 1 },
+               }
+             });
+
+             // Mark completed if all processed
+             if (updatedCampaign.sentCount + updatedCampaign.failedCount >= updatedCampaign.totalCount && updatedCampaign.status !== "COMPLETED") {
+               await prisma.emailCampaign.update({
+                 where: { id: email.campaignId },
+                 data: { status: "COMPLETED", completedAt: new Date() }
+               });
+             }
+
+             // Update daily metric
+             await prisma.campaignMetricDaily.upsert({
+               where: { campaignId_date: { campaignId: email.campaignId, date: today } },
+               update: { deliveredCount: { increment: 1 } },
+               create: { campaignId: email.campaignId, date: today, deliveredCount: 1 }
+             });
+           }
         } else {
            console.error(`[WORKER] Error al enviar email ${email.id}:`, result.error);
            
@@ -107,6 +136,20 @@ export async function runWorker() {
                   where: { id: email.campaignRecipientId },
                   data: { status: "FAILED", lastError: result.error?.message }
                 });
+              }
+
+              if (email.campaignId) {
+                const updatedCampaign = await prisma.emailCampaign.update({
+                  where: { id: email.campaignId },
+                  data: { failedCount: { increment: 1 } }
+                });
+
+                if (updatedCampaign.sentCount + updatedCampaign.failedCount >= updatedCampaign.totalCount && updatedCampaign.status !== "COMPLETED") {
+                  await prisma.emailCampaign.update({
+                    where: { id: email.campaignId },
+                    data: { status: "COMPLETED", completedAt: new Date() }
+                  });
+                }
               }
            } else {
               const retrySeconds = email.attempts * 5 * 60; 

@@ -28,7 +28,7 @@ export async function claimEmails(batchSize: number = emailConfig.worker.batchSi
       SELECT oe."id" FROM "OutboundEmail" oe
       LEFT JOIN "EmailCampaign" c ON c."id" = oe."campaignId"
       WHERE
-        oe."status" IN ('QUEUED', 'DEFERRED')
+        oe."status" IN ('QUEUED', 'DEFERRED', 'PROCESSING')
         AND oe."availableAt" <= NOW()
         AND (oe."lockedUntil" IS NULL OR oe."lockedUntil" < NOW())
         AND oe."attempts" < oe."maxAttempts"
