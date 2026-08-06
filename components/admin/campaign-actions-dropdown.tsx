@@ -88,7 +88,7 @@ export function CampaignActionsDropdown({ campaignId, isDeleted, isDraft }: Camp
           // Acciones para campañas Activas
           <>
             {isDraft ? (
-              <DropdownMenuItem onClick={() => router.push(`/admin/email-marketing/campaigns/new?draftId=${campaignId}`)}>
+              <DropdownMenuItem onClick={() => router.push(`/admin/email-marketing/campaigns/create?draftId=${campaignId}`)}>
                 <Eye className="mr-2 h-4 w-4" /> Editar Borrador
               </DropdownMenuItem>
             ) : (
