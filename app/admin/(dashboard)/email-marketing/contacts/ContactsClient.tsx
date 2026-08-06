@@ -1,18 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Users, Mail, Phone, Globe, Calendar, Plus, Trash2, Edit, Check, X } from "lucide-react";
+import { Users, Mail, Phone, Globe, Calendar, Plus, Trash2, Edit, Check, X, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createContact, updateContact, deleteContact } from "./actions";
+import { ContactImportModal } from "./ContactImportModal";
+import { useRouter } from "next/navigation";
 
 type Contact = any; // We can type this better later if needed
 
 export function ContactsClient({ initialContacts }: { initialContacts: Contact[] }) {
   const [contacts, setContacts] = useState(initialContacts);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +40,14 @@ export function ContactsClient({ initialContacts }: { initialContacts: Contact[]
       hasConsent: false
     });
     setSelectedContact(null);
+  };
+
+  const router = useRouter();
+
+  const handleImportSuccess = (count: number) => {
+    alert(`Se importaron ${count} contactos exitosamente.`);
+    // Refresh page to see new contacts
+    router.refresh();
   };
 
   const handleOpenCreate = () => {
@@ -121,10 +132,16 @@ export function ContactsClient({ initialContacts }: { initialContacts: Contact[]
             Gestiona tu base de datos de suscriptores y clientes
           </p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleOpenCreate}>
-          <Plus className="w-4 h-4 mr-2" />
-          Añadir Contacto
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" onClick={() => setIsImportModalOpen(true)}>
+            <FileSpreadsheet className="w-4 h-4 mr-2" />
+            Importar Excel
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleOpenCreate}>
+            <Plus className="w-4 h-4 mr-2" />
+            Añadir Contacto
+          </Button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -333,6 +350,12 @@ export function ContactsClient({ initialContacts }: { initialContacts: Contact[]
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ContactImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImportSuccess={handleImportSuccess}
+      />
     </>
   );
 }

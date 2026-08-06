@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { randomBytes } from "crypto";
+import { randomBytes, randomUUID } from "crypto";
 import { emailConfig } from "./config";
 import { evaluateSegment } from "../marketing/segment-evaluator";
 import { renderTemplate } from "./template-renderer";
@@ -127,6 +127,28 @@ export async function materializeCampaign(campaignId: string) {
              finalHtml += `<br><br><p style="font-size:12px;color:#666;">Para dejar de recibir estos correos, <a href="${unsubscribeLink}">haz clic aquí para cancelar tu suscripción</a>.</p>`;
           }
 
+          // Generate OutboundEmail ID beforehand for tracking
+          const outboundEmailId = randomUUID();
+
+          // Inject open tracking pixel
+          const trackingPixel = `<img src="${emailConfig.appUrl}/api/email/track/${outboundEmailId}" width="1" height="1" alt="" style="display:none;" />`;
+          if (finalHtml.includes("</body>")) {
+            finalHtml = finalHtml.replace("</body>", `${trackingPixel}\n</body>`);
+          } else {
+            finalHtml += `\n${trackingPixel}`;
+          }
+
+          // Inject click tracking for all links
+          // Regex to find href="something"
+          finalHtml = finalHtml.replace(/href\s*=\s*["']([^"']+)["']/g, (match, url) => {
+            // Don't track mailto:, tel:, or the unsubscribe link itself
+            if (url.startsWith("mailto:") || url.startsWith("tel:") || url.includes("/unsubscribe/")) {
+              return match;
+            }
+            const encodedUrl = encodeURIComponent(url);
+            return `href="${emailConfig.appUrl}/api/email/click/${outboundEmailId}?url=${encodedUrl}"`;
+          });
+
           // Calculate availableAt based on daily limit and hourly rate
           const dayOffset = Math.floor(currentIndex / dailyLimit);
           const indexWithinDay = currentIndex % dailyLimit;
@@ -180,6 +202,7 @@ export async function materializeCampaign(campaignId: string) {
           if (!existingEmail) {
             await tx.outboundEmail.create({
               data: {
+                id: outboundEmailId,
                 idempotencyKey: `${campaign.id}-${recipient.id}`,
                 kind: "MARKETING",
                 priority: 50,
