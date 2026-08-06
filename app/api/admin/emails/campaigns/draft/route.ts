@@ -9,15 +9,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: auth.error }, { status: auth.status });
     }
 
-    const { id, name, subject, body, recipients, contactPhone, sendingRate, sendFromHour, sendToHour } = await req.json();
+    const { 
+      id, name, subject, body, recipients, 
+      contactPhone, sendingRate, sendFromHour, sendToHour,
+      marketingSegmentId, marketingListId, emailTemplateId, maxDailySends
+    } = await req.json();
 
     const data = {
       name: name || "Campaña sin nombre",
       subject: subject || "",
       content: body || "",
-      recipients: recipients || [],
+      legacyRecipients: recipients || [],
+      marketingSegmentId: marketingSegmentId || null,
+      marketingListId: marketingListId || null,
+      emailTemplateId: emailTemplateId || null,
       contactPhone: contactPhone || "+34 662 02 41 36",
       sendingRate: sendingRate || 30,
+      maxDailySends: maxDailySends ? parseInt(maxDailySends, 10) : 5000,
       sendFromHour: sendFromHour || null,
       sendToHour: sendToHour || null,
       status: "DRAFT",
