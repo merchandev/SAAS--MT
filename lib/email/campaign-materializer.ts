@@ -169,7 +169,7 @@ export async function materializeCampaign(campaignId: string) {
           const indexWithinDay = currentIndex % dailyLimit;
           const minutesDelayWithinDay = (indexWithinDay / sendingRate) * 60;
           
-          const availableAt = new Date();
+          const availableAt = campaign.scheduledAt ? new Date(campaign.scheduledAt) : new Date();
           availableAt.setDate(availableAt.getDate() + dayOffset);
           availableAt.setMinutes(availableAt.getMinutes() + minutesDelayWithinDay);
           

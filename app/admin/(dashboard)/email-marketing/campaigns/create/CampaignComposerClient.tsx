@@ -43,6 +43,9 @@ export default function CampaignComposerClient({
   const [draftId, setDraftId] = useState<string | null>(initialData?.id || null);
   const [name, setName] = useState(initialData?.name || "");
   const [subject, setSubject] = useState(initialData?.subject || "");
+  const [scheduledAt, setScheduledAt] = useState<string>(
+    initialData?.scheduledAt ? new Date(initialData.scheduledAt).toISOString().slice(0, 16) : ""
+  );
   const initialBody = initialData?.body || "";
   const isInitialRaw = initialBody.startsWith("<!--RAW-->");
 
@@ -124,6 +127,7 @@ export default function CampaignComposerClient({
       contactPhone,
       sendingRate,
       maxDailySends,
+      scheduledAt: scheduledAt ? new Date(scheduledAt).toISOString() : null,
       sendFromHour,
       sendToHour,
     };
@@ -270,6 +274,18 @@ export default function CampaignComposerClient({
             />
             <p className="text-xs text-gray-500">
               Controla la velocidad a la que se envían los correos. Un valor más bajo protege tu reputación.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="scheduledAt">Fecha y Hora de Envío (Opcional)</Label>
+            <Input
+              id="scheduledAt"
+              type="datetime-local"
+              value={scheduledAt}
+              onChange={(e) => setScheduledAt(e.target.value)}
+            />
+            <p className="text-xs text-gray-500">
+              Déjalo en blanco para enviar inmediatamente.
             </p>
           </div>
           <div className="space-y-2">

@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     const { 
       id, name, subject, body, recipients, 
       contactPhone, sendingRate, sendFromHour, sendToHour,
-      marketingSegmentId, marketingListId, emailTemplateId, maxDailySends
+      marketingSegmentId, marketingListId, emailTemplateId, maxDailySends, scheduledAt
     } = await req.json();
 
     const data = {
@@ -28,6 +28,7 @@ export async function POST(req: Request) {
       maxDailySends: maxDailySends ? parseInt(maxDailySends, 10) : 5000,
       sendFromHour: sendFromHour || null,
       sendToHour: sendToHour || null,
+      scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
       status: "DRAFT",
     };
 

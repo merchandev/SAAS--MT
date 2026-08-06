@@ -28,6 +28,7 @@ export async function POST(req: Request) {
         sendFromHour: data.sendFromHour || null,
         sendToHour: data.sendToHour || null,
         maxDailySends: data.maxDailySends ? parseInt(data.maxDailySends, 10) : 5000,
+        scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
         status: "QUEUING", // It will be materializing in the background
         startedAt: new Date(),
       },
