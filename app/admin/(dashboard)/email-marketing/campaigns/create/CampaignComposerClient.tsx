@@ -190,6 +190,9 @@ export default function CampaignComposerClient({
 
     try {
       const payload = getPayload();
+      if (draftId) {
+        (payload as any).id = draftId;
+      }
       const res = await fetch("/api/admin/emails/campaigns/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

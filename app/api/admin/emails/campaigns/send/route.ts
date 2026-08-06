@@ -13,26 +13,35 @@ export async function POST(req: Request) {
 
     const data = await req.json();
     
-    // Create Campaign in DB
-    const campaign = await prisma.emailCampaign.create({
-      data: {
-        name: data.name,
-        subject: data.subject,
-        content: data.body,
-        legacyRecipients: data.recipients ? (data.recipients as any) : undefined,
-        marketingSegmentId: data.marketingSegmentId,
-        marketingListId: data.marketingListId,
-        emailTemplateId: data.emailTemplateId,
-        contactPhone: data.contactPhone || "+34 662 02 41 36",
-        sendingRate: data.sendingRate || emailConfig.limits.maxCampaignRatePerHour,
-        sendFromHour: data.sendFromHour || null,
-        sendToHour: data.sendToHour || null,
-        maxDailySends: data.maxDailySends ? parseInt(data.maxDailySends, 10) : 5000,
-        scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
-        status: "QUEUING", // It will be materializing in the background
-        startedAt: new Date(),
-      },
-    });
+    const campaignData = {
+      name: data.name,
+      subject: data.subject,
+      content: data.body,
+      legacyRecipients: data.recipients ? (data.recipients as any) : undefined,
+      marketingSegmentId: data.marketingSegmentId,
+      marketingListId: data.marketingListId,
+      emailTemplateId: data.emailTemplateId,
+      contactPhone: data.contactPhone || "+34 662 02 41 36",
+      sendingRate: data.sendingRate || emailConfig.limits.maxCampaignRatePerHour,
+      sendFromHour: data.sendFromHour || null,
+      sendToHour: data.sendToHour || null,
+      maxDailySends: data.maxDailySends ? parseInt(data.maxDailySends, 10) : 5000,
+      scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
+      status: "QUEUING", // It will be materializing in the background
+      startedAt: new Date(),
+    };
+    
+    let campaign;
+    if (data.id) {
+      campaign = await prisma.emailCampaign.update({
+        where: { id: data.id },
+        data: campaignData,
+      });
+    } else {
+      campaign = await prisma.emailCampaign.create({
+        data: campaignData,
+      });
+    }
 
     // Fire and forget materialization processing
     materializeCampaign(campaign.id).catch(console.error);
