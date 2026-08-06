@@ -64,6 +64,15 @@ const navigation: MenuItem[] = [
   },
 
   {
+    name: "Informes",
+    icon: BarChart,
+    items: [
+      { name: "Campañas", href: "/admin/email-marketing/reports/campaigns" },
+      { name: "Audiencia", href: "/admin/email-marketing/reports/audience" },
+      { name: "Entregabilidad", href: "/admin/email-marketing/reports/deliverability" },
+    ],
+  },
+  {
     name: "Configuración del Canal",
     icon: Settings,
     items: [
