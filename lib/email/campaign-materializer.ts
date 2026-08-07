@@ -61,7 +61,7 @@ export async function materializeCampaign(campaignId: string) {
     // Load Template if linked
     let templateHtml = campaign.content || "";
     let templateSubject = campaign.subject;
-    if (campaign.emailTemplateId) {
+    if (campaign.emailTemplateId && !campaign.content?.startsWith("<!--RAW-->")) {
       const template = await prisma.emailTemplate.findUnique({
         where: { id: campaign.emailTemplateId }
       });
