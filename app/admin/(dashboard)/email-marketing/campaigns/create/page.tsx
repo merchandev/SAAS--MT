@@ -34,6 +34,8 @@ export default async function NewCampaignPage({
         emailTemplateId: draft.emailTemplateId || "",
         contactPhone: draft.contactPhone || "+34 662 02 41 36",
         sendingRate: draft.sendingRate,
+        maxDailySends: draft.maxDailySends,
+        scheduledAt: draft.scheduledAt?.toISOString() || null,
         sendFromHour: draft.sendFromHour || "",
         sendToHour: draft.sendToHour || "",
       };

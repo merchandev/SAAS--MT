@@ -84,7 +84,12 @@ export async function materializeCampaign(campaignId: string) {
     }
 
     const lastEmail = await prisma.outboundEmail.findFirst({
-      where: { status: "QUEUED" },
+      where: { 
+        status: "QUEUED",
+        campaign: {
+          status: { in: ["SENDING", "QUEUING"] }
+        }
+      },
       orderBy: { availableAt: "desc" },
     });
     
@@ -97,6 +102,9 @@ export async function materializeCampaign(campaignId: string) {
     const dailyLimit = campaign.maxDailySends || 5000;
     const sendingRate = campaign.sendingRate || 50;
     let overallIndex = 0;
+    let emailsSentToday = 0;
+    let currentAvailableAt = new Date(baseDate.getTime());
+    const minutesPerEmail = 60 / sendingRate;
     
     for (let i = 0; i < contacts.length; i += batchSize) {
       const chunk = contacts.slice(i, i + batchSize);
@@ -174,29 +182,37 @@ export async function materializeCampaign(campaignId: string) {
             return `href="${emailConfig.appUrl}/api/email/click/${outboundEmailId}?url=${encodedUrl}"`;
           });
 
-          // Calculate availableAt based on daily limit and hourly rate
-          const dayOffset = Math.floor(currentIndex / dailyLimit);
-          const indexWithinDay = currentIndex % dailyLimit;
-          const minutesDelayWithinDay = (indexWithinDay / sendingRate) * 60;
-          
-          const availableAt = new Date(baseDate.getTime());
-          availableAt.setDate(availableAt.getDate() + dayOffset);
-          availableAt.setMinutes(availableAt.getMinutes() + minutesDelayWithinDay);
-          
-          // Adjust for sendFromHour / sendToHour if needed (simplified, we just ensure it starts at the right time)
+          // Adjust currentAvailableAt to be within the allowed time window
           if (campaign.sendFromHour) {
             const [fromH, fromM] = campaign.sendFromHour.split(':').map(Number);
-            const currentH = availableAt.getHours();
-            if (currentH < fromH) {
-               availableAt.setHours(fromH, fromM || 0, 0, 0);
+            const currentH = currentAvailableAt.getHours();
+            const currentMin = currentAvailableAt.getMinutes();
+
+            if (currentH < fromH || (currentH === fromH && currentMin < fromM)) {
+               currentAvailableAt.setHours(fromH, fromM || 0, 0, 0);
             } else if (campaign.sendToHour) {
                const [toH, toM] = campaign.sendToHour.split(':').map(Number);
-               if (currentH >= toH) {
-                  // Push to next day
-                  availableAt.setDate(availableAt.getDate() + 1);
-                  availableAt.setHours(fromH, fromM || 0, 0, 0);
+               if (currentH > toH || (currentH === toH && currentMin >= toM)) {
+                  currentAvailableAt.setDate(currentAvailableAt.getDate() + 1);
+                  currentAvailableAt.setHours(fromH, fromM || 0, 0, 0);
+                  emailsSentToday = 0; // Reset daily limit when pushed to next day by time window
                }
             }
+          }
+
+          const availableAt = new Date(currentAvailableAt.getTime());
+
+          // Advance currentAvailableAt for the next email
+          currentAvailableAt = new Date(currentAvailableAt.getTime() + minutesPerEmail * 60000);
+          emailsSentToday++;
+
+          if (emailsSentToday >= dailyLimit) {
+            currentAvailableAt.setDate(currentAvailableAt.getDate() + 1);
+            if (campaign.sendFromHour) {
+               const [fromH, fromM] = campaign.sendFromHour.split(':').map(Number);
+               currentAvailableAt.setHours(fromH, fromM || 0, 0, 0);
+            }
+            emailsSentToday = 0;
           }
 
           const recipient = await tx.campaignRecipient.upsert({
