@@ -7,6 +7,56 @@ datasource db {
   provider = "postgresql"
 }
 
+
+// ==========================================
+// 0. MULTI-TENANT (SAAS)
+// ==========================================
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  domain    String?  @unique
+  logo      String?
+  favicon   String?
+  active    Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships       CompanyMembership[]
+  customers         Customer[]
+  drivers           Driver[]
+  vehicles          Vehicle[]
+  vehicleCategories VehicleCategory[]
+  bookings          Booking[]
+  agencies          Agency[]
+  hotels            Hotel[]
+  invoices          Invoice[]
+  reviews           Review[]
+  routePages        RoutePage[]
+  systemSettings    SystemSetting[]
+  emailCampaigns    EmailCampaign[]
+  contactMessages   ContactMessage[]
+}
+
+model CompanyMembership {
+  id        String @id @default(cuid())
+  companyId String
+  userId    String
+  role      String // e.g., 'COMPANY_ADMIN', 'OPERATOR', 'DRIVER'
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, userId])
+  @@index([companyId])
+  @@index([userId])
+}
+
+
 // ==========================================
 // 1. ROLES Y USUARIOS
 // ==========================================
@@ -41,6 +91,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  memberships CompanyMembership[]
 }
 
 // ==========================================
@@ -69,6 +120,10 @@ model Customer {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 model CustomerAddress {
@@ -92,6 +147,10 @@ model VehicleCategory {
   slug        String    @unique
   description String?
   vehicles    Vehicle[]
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 model Vehicle {
@@ -122,6 +181,10 @@ model Vehicle {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 // ==========================================
@@ -152,6 +215,10 @@ model Hotel {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 model Agency {
@@ -175,6 +242,10 @@ model Agency {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 // ==========================================
@@ -207,6 +278,10 @@ model Driver {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 model DriverAvailability {
@@ -409,6 +484,10 @@ model Booking {
   @@index([bookingStatus, serviceDate])
   @@index([driverId, serviceDate])
   @@index([createdAt, bookingStatus])
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 // ==========================================
@@ -513,6 +592,10 @@ model EmailCampaign {
   @@index([status, scheduledAt])
   @@index([deletedAt])
   @@index([createdAt])
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 enum EmailMessageKind {
@@ -764,10 +847,15 @@ model MapsDistanceCache {
 // ==========================================
 model SystemSetting {
   id          String   @id @default(uuid())
-  key         String   @unique
+  key       String
   value       String   @db.Text
   description String?
   updatedAt   DateTime @updatedAt
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+  @@unique([companyId, key])
+
 }
 
 // ==========================================
@@ -811,6 +899,10 @@ model Invoice {
 
   issuedAt DateTime @default(now())
   pdfUrl   String?
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 model Review {
@@ -825,6 +917,10 @@ model Review {
   isPublished Boolean @default(false)
 
   createdAt DateTime @default(now())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 model CustomerSuggestion {
@@ -857,7 +953,7 @@ model PasswordResetToken {
 
 model RoutePage {
   id              String  @id @default(uuid())
-  slug            String  @unique // Ejemplo: traslados-aeropuerto-mallorca-alcudia
+  slug        String   @unique // Ejemplo: traslados-aeropuerto-mallorca-alcudia
   originName      String
   destinationName String
   h1Title         String
@@ -879,6 +975,10 @@ model RoutePage {
 
   @@index([scheduledAt])
   @@index([isActive])
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 model Post {
@@ -915,6 +1015,10 @@ model ContactMessage {
   status    String   @default("NEW") // NEW, READ, REPLIED, ARCHIVED
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId])
+
 }
 
 model StaticPage {
