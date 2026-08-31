@@ -1,5 +1,5 @@
-import { getTenantId } from "@/modules/auth/tenant.service";
 "use server";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";

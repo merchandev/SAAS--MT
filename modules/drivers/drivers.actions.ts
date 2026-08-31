@@ -1,6 +1,6 @@
+"use server";
 import { getTenantId } from "@/modules/auth/tenant.service";
-﻿"use server";
-
+﻿
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { driverCreationSchema, DriverCreationInput } from "./drivers.schemas";

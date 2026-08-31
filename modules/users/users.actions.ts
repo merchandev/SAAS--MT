@@ -1,6 +1,6 @@
+"use server";
 import { getTenantId } from "@/modules/auth/tenant.service";
-﻿"use server";
-
+﻿
 import bcrypt from "bcryptjs";
 import type { Prisma, Role, User } from "@prisma/client";
 import { revalidatePath } from "next/cache";

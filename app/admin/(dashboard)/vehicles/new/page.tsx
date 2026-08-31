@@ -16,8 +16,7 @@ export default async function NewVehiclePage() {
       </div>
 
       <form action={async (formData) => {
-        "use server";
-        
+                
         const data = {
           name: formData.get("name") as string,
           slug: formData.get("slug") as string,

@@ -1,5 +1,5 @@
-﻿"use server";
-
+"use server";
+﻿
 import { prisma } from "@/lib/prisma";
 import { requireRoleAction as requireRole } from "@/modules/auth/permissions";
 import { sendEmail } from "@/lib/mailer";
