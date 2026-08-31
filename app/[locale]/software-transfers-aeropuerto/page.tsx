@@ -4,11 +4,11 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
 export const metadata: Metadata = {
-  title: "Traslados Corporativos en Barcelona | Transfers in Barcelona",
-  description: "Servicio de transporte privado para empresas, congresos, ferias y eventos corporativos en Barcelona. Vehículos ejecutivos y máxima puntualidad.",
+  title: "Transfer Aeropuerto España | Merchan.Dev SaaS",
+  description: "Reserva tu traslado privado desde o hacia el Aeropuerto de España (El Prat). Precio cerrado, conductor profesional y puntualidad garantizada.",
 };
 
-export default function TrasladosCorporativosPage() {
+export default function TransferAeropuertoPage() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-950 selection:bg-[var(--brand-accent)] selection:text-white" style={{ "--brand-accent": "#D4AF37" } as any}>
       <MarketingHeader />
@@ -16,9 +16,9 @@ export default function TrasladosCorporativosPage() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Traslados Corporativos en Barcelona</h1>
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Transfer Aeropuerto España</h1>
               <p className="mt-6 text-lg leading-8 text-gray-600">
-                Soluciones de movilidad ejecutiva para congresos, MWC, ferias, y reuniones de negocios. Garantizamos puntualidad, discreción y la mejor imagen profesional para ti o para tus invitados VIP.
+                Llega a tu destino sin complicaciones. Nuestro servicio de transfer privado te recoge en la terminal de llegadas del Aeropuerto Josep Tarradellas España-El Prat (BCN) y te lleva directamente a tu hotel, reunión o evento.
               </p>
             </div>
             <div>

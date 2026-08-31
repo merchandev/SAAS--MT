@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/modules/auth/permissions";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 function money(value: unknown) {
   return Number(value || 0);
@@ -78,12 +79,16 @@ export const usersQueries = {
 
     const [hotels, agencies] = await Promise.all([
       prisma.hotel.findMany({
-        where: { isActive: true },
+        where: {
+            companyId: await getTenantId(),
+            isActive: true },
         select: { id: true, name: true },
         orderBy: { name: "asc" },
       }),
       prisma.agency.findMany({
-        where: { isActive: true },
+        where: {
+            companyId: await getTenantId(),
+            isActive: true },
         select: { id: true, name: true },
         orderBy: { name: "asc" },
       }),

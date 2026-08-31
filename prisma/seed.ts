@@ -62,11 +62,13 @@ async function main() {
   const economicCategory = await prisma.vehicleCategory.upsert({
     where: { slug: "economic" },
     update: {
-      name: "Economic",
+        companyId: "legacy-metransfers",
+        name: "Economic",
       description: "Berlina Mercedes para traslados privados eficientes.",
     },
     create: {
-      name: "Economic",
+        companyId: "legacy-metransfers",
+        name: "Economic",
       slug: "economic",
       description: "Berlina Mercedes para traslados privados eficientes.",
     },
@@ -75,11 +77,13 @@ async function main() {
   const businessCategory = await prisma.vehicleCategory.upsert({
     where: { slug: "business" },
     update: {
-      name: "Business",
+        companyId: "legacy-metransfers",
+        name: "Business",
       description: "Berlina Mercedes ejecutiva para servicios premium.",
     },
     create: {
-      name: "Business",
+        companyId: "legacy-metransfers",
+        name: "Business",
       slug: "business",
       description: "Berlina Mercedes ejecutiva para servicios premium.",
     },
@@ -88,11 +92,13 @@ async function main() {
   const vanCategory = await prisma.vehicleCategory.upsert({
     where: { slug: "minivan" },
     update: {
-      name: "Mini Van",
+        companyId: "legacy-metransfers",
+        name: "Mini Van",
       description: "Mercedes Vito y Clase V para grupos, familias y equipaje.",
     },
     create: {
-      name: "Mini Van",
+        companyId: "legacy-metransfers",
+        name: "Mini Van",
       slug: "minivan",
       description: "Mercedes Vito y Clase V para grupos, familias y equipaje.",
     },
@@ -101,7 +107,8 @@ async function main() {
   await prisma.vehicle.upsert({
     where: { slug: "mercedes-e-class" },
     update: {
-      name: "ECONOMIC CLASS",
+        companyId: "legacy-metransfers",
+        name: "ECONOMIC CLASS",
       categoryId: economicCategory.id,
       imageUrl: "/images/vehicles/economic-class.png",
       passengerCapacity: 3,
@@ -110,7 +117,8 @@ async function main() {
       isActive: true,
     },
     create: {
-      name: "ECONOMIC CLASS",
+        companyId: "legacy-metransfers",
+        name: "ECONOMIC CLASS",
       slug: "mercedes-e-class",
       imageUrl: "/images/vehicles/economic-class.png",
       categoryId: economicCategory.id,
@@ -127,7 +135,8 @@ async function main() {
   await prisma.vehicle.upsert({
     where: { slug: "business-class" },
     update: {
-      name: "BUSINESS CLASS",
+        companyId: "legacy-metransfers",
+        name: "BUSINESS CLASS",
       categoryId: businessCategory.id,
       imageUrl: "/images/vehicles/business-class.png",
       passengerCapacity: 3,
@@ -136,7 +145,8 @@ async function main() {
       isActive: true,
     },
     create: {
-      name: "BUSINESS CLASS",
+        companyId: "legacy-metransfers",
+        name: "BUSINESS CLASS",
       slug: "business-class",
       imageUrl: "/images/vehicles/business-class.png",
       categoryId: businessCategory.id,
@@ -153,7 +163,8 @@ async function main() {
   await prisma.vehicle.upsert({
     where: { slug: "mini-van-economic" },
     update: {
-      name: "MINI VAN ECONOMIC",
+        companyId: "legacy-metransfers",
+        name: "MINI VAN ECONOMIC",
       categoryId: vanCategory.id,
       imageUrl: "/images/vehicles/mini-van-economic.png",
       passengerCapacity: 7,
@@ -162,7 +173,8 @@ async function main() {
       isActive: true,
     },
     create: {
-      name: "MINI VAN ECONOMIC",
+        companyId: "legacy-metransfers",
+        name: "MINI VAN ECONOMIC",
       slug: "mini-van-economic",
       imageUrl: "/images/vehicles/mini-van-economic.png",
       categoryId: vanCategory.id,
@@ -179,7 +191,8 @@ async function main() {
   await prisma.vehicle.upsert({
     where: { slug: "mercedes-v-class" },
     update: {
-      name: "MINI VAN «V» CLASS",
+        companyId: "legacy-metransfers",
+        name: "MINI VAN «V» CLASS",
       categoryId: vanCategory.id,
       imageUrl: "/images/vehicles/mini-van-v-class.png",
       passengerCapacity: 7,
@@ -188,7 +201,8 @@ async function main() {
       isActive: true,
     },
     create: {
-      name: "MINI VAN «V» CLASS",
+        companyId: "legacy-metransfers",
+        name: "MINI VAN «V» CLASS",
       slug: "mercedes-v-class",
       imageUrl: "/images/vehicles/mini-van-v-class.png",
       categoryId: vanCategory.id,

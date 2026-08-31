@@ -9,7 +9,7 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  return NextResponse.redirect("https://transfersinbarcelona.com/sitemap.xml", {
+  return NextResponse.redirect("https://saas.merchan.dev/sitemap.xml", {
     status: 301,
   });
 }

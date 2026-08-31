@@ -1,8 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
+
 export const b2bQueries = {
   async getAllHotels() {
     const hotels = await prisma.hotel.findMany({
-      orderBy: { name: "asc" },
+        where: {
+            companyId: await getTenantId() },
+        orderBy: { name: "asc" },
       include: {
         _count: {
           select: { bookings: true, users: true }
@@ -20,7 +24,9 @@ export const b2bQueries = {
 
   async getAllAgencies() {
     const agencies = await prisma.agency.findMany({
-      orderBy: { name: "asc" },
+        where: {
+            companyId: await getTenantId() },
+        orderBy: { name: "asc" },
       include: {
         _count: {
           select: { bookings: true, users: true }

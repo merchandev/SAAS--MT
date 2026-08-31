@@ -3,8 +3,8 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Aviso Legal | Transfers in Barcelona",
-  description: "Aviso Legal de Transfers in Barcelona GESTION SL.",
+  title: "Aviso Legal | Merchan.Dev SaaS",
+  description: "Aviso Legal de Merchan.Dev SaaS GESTION SL.",
 };
 
 export default function LegalNoticePage() {
@@ -28,8 +28,8 @@ export default function LegalNoticePage() {
               <ul className="list-none space-y-2 text-gray-600">
                 <li><strong className="text-gray-900">Titular del sitio web:</strong> METRANSFERS GESTION SL</li>
                 <li><strong className="text-gray-900">NIF:</strong> B22522353</li>
-                <li><strong className="text-gray-900">Domicilio Social:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ – (BARCELONA)</li>
-                <li><strong className="text-gray-900">Correo electrónico de contacto:</strong> <a href="mailto:info@transfersinbarcelona.com" className="text-[#D4AF37] hover:underline font-medium">info@transfersinbarcelona.com</a></li>
+                <li><strong className="text-gray-900">Domicilio Social:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ – (España)</li>
+                <li><strong className="text-gray-900">Correo electrónico de contacto:</strong> <a href="mailto:info@saas.merchan.dev" className="text-[#D4AF37] hover:underline font-medium">info@saas.merchan.dev</a></li>
                 <li><strong className="text-gray-900">Actividad:</strong> Transporte de viajeros y gestión de servicios turísticos.</li>
               </ul>
             </section>
@@ -92,7 +92,7 @@ export default function LegalNoticePage() {
             <section>
               <h2 className="text-xl font-bold text-gray-950 mb-4">9. LEGISLACIÓN APLICABLE Y JURISDICCIÓN</h2>
               <p className="text-gray-600">
-                La relación entre METRANSFERS GESTION SL y el USUARIO se regirá por la normativa española vigente y cualquier controversia se someterá a los Juzgados y Tribunales de la ciudad de Barcelona.
+                La relación entre METRANSFERS GESTION SL y el USUARIO se regirá por la normativa española vigente y cualquier controversia se someterá a los Juzgados y Tribunales de la ciudad de España.
               </p>
             </section>
           </div>

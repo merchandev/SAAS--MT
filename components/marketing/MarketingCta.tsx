@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 export default function MarketingCta({
   eyebrow = "Reserva ahora",
   title = "Reserva online, rápido y con pago seguro",
-  description = "Organiza tu traslado privado, tour o coche con chófer en Barcelona con una experiencia de reserva clara y confirmación del servicio.",
+  description = "Organiza tu traslado privado, tour o coche con chófer en España con una experiencia de reserva clara y confirmación del servicio.",
   href = "/booking",
   label = "Reservar ahora",
 }: {

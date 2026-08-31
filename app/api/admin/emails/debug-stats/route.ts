@@ -11,7 +11,9 @@ export async function GET() {
   });
   
   const emails = await prisma.outboundEmail.findMany({
-    where: { campaignId },
+    where: {
+        
+        campaignId },
     take: 10,
     orderBy: { updatedAt: 'desc' }
   });

@@ -1,3 +1,4 @@
+import { getTenantId } from "@/modules/auth/tenant.service";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -14,7 +15,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, locale } = await params;
   const routePage = await prisma.routePage.findUnique({
-    where: { slug },
+    where: { companyId_slug: { companyId: await getTenantId(), slug } },
   });
 
   if (!routePage || !routePage.isActive) {
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const languages = ["es", "en", "fr", "ca"];
   const alternates: Record<string, string> = {};
   languages.forEach((lang) => {
-    alternates[lang] = `https://transfersinbarcelona.com/${lang}/${routePage.slug}`;
+    alternates[lang] = `https://saas.merchan.dev/${lang}/${routePage.slug}`;
   });
 
   return {
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: metaDesc,
     keywords: seoKw ? seoKw.split(',') : [],
     alternates: {
-      canonical: `https://transfersinbarcelona.com/${locale}/${routePage.slug}`,
+      canonical: `https://saas.merchan.dev/${locale}/${routePage.slug}`,
       languages: alternates,
     },
     openGraph: {
@@ -50,7 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function DynamicSEOLandingPage({ params }: PageProps) {
   const { slug, locale } = await params;
   const routePage = await prisma.routePage.findUnique({
-    where: { slug },
+    where: { companyId_slug: { companyId: await getTenantId(), slug } },
   });
 
   if (!routePage || !routePage.isActive) {

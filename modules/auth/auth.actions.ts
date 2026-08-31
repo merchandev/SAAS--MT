@@ -9,6 +9,7 @@ import bcrypt from "bcryptjs";
 
 import { loginRateLimiter } from "@/lib/rate-limit";
 import { buildRateLimitKey, getRequestMeta } from "@/lib/request-meta";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function loginAction(data: LoginInput) {
   // 1. Validar input
@@ -155,7 +156,8 @@ export async function registerAction(data: RegisterInput) {
       // Crear nuevo perfil
       await tx.customer.create({
         data: {
-          userId: user.id,
+            companyId: await getTenantId(),
+            userId: user.id,
           email: lowerEmail,
           fullName,
           phone,

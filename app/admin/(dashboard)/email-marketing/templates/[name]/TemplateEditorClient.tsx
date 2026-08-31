@@ -66,7 +66,7 @@ export function TemplateEditorClient({ initialData, defaultBody }: { initialData
     if (res.error) {
       setMessage({ text: res.error, type: "error" });
     } else {
-      setMessage({ text: "Correo de prueba enviado a info@transfersinbarcelona.com", type: "success" });
+      setMessage({ text: "Correo de prueba enviado a info@saas.merchan.dev", type: "success" });
     }
   };
 
@@ -163,7 +163,7 @@ export function TemplateEditorClient({ initialData, defaultBody }: { initialData
             <div className="bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] p-8 text-center">
               <img 
                 src="/images/MeTransfers-exp.png" 
-                alt="Transfers in Barcelona"
+                alt="Merchan.Dev SaaS"
                 className="h-10 mx-auto object-contain"
               />
               <p className="text-[#888888] text-[12px] tracking-[2px] mt-2 uppercase">
@@ -182,8 +182,8 @@ export function TemplateEditorClient({ initialData, defaultBody }: { initialData
             {/* Footer */}
             <div className="border-t border-gray-200 p-6 text-center bg-gray-50">
               <p className="text-gray-500 text-sm">¿Necesitas modificar tu reserva?</p>
-              <p className="text-[#D4AF37] text-sm mt-1">info@transfersinbarcelona.com · +34 662 02 41 36</p>
-              <p className="text-gray-400 text-xs mt-4">© {new Date().getFullYear()} Transfers in Barcelona</p>
+              <p className="text-[#D4AF37] text-sm mt-1">info@saas.merchan.dev · +34 662 02 41 36</p>
+              <p className="text-gray-400 text-xs mt-4">© {new Date().getFullYear()} Merchan.Dev SaaS</p>
             </div>
           </div>
         </div>

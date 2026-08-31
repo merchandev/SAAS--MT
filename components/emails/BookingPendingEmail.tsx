@@ -33,10 +33,10 @@ export const BookingPendingEmail = ({
         {/* Header */}
         <Section style={header}>
           <Img
-            src="https://transfersinbarcelona.com/images/MeTransfers-exp.png"
+            src="https://saas.merchan.dev/images/MeTransfers-exp.png"
             width="176"
             height="41"
-            alt="Transfers in Barcelona"
+            alt="Merchan.Dev SaaS"
             style={logo}
           />
           <Text style={headerTagline}>Traslados Privados de Lujo</Text>
@@ -97,9 +97,9 @@ export const BookingPendingEmail = ({
 
         <Hr style={hr} />
         <Section style={footer}>
-          <Text style={footerText}>¿Necesitas ayuda? Escríbenos a <Link href="mailto:info@transfersinbarcelona.com" style={link}>info@transfersinbarcelona.com</Link></Text>
+          <Text style={footerText}>¿Necesitas ayuda? Escríbenos a <Link href="mailto:info@saas.merchan.dev" style={link}>info@saas.merchan.dev</Link></Text>
           <Text style={footerText}>o llámanos al <Link href="tel:+34662024136" style={link}>+34 662 02 41 36</Link></Text>
-          <Text style={footerSmall}>© {new Date().getFullYear()} Transfers in Barcelona · Barcelona, España</Text>
+          <Text style={footerSmall}>© {new Date().getFullYear()} Merchan.Dev SaaS · España, España</Text>
         </Section>
       </Container>
     </Body>

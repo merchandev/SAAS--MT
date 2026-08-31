@@ -12,6 +12,7 @@ import {
   type CustomerReviewInput,
   type CustomerSuggestionInput,
 } from "./customer.schemas";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function updateCustomerProfileAction(input: CustomerProfileInput) {
   const { session, customer } = await requireCustomerProfile();
@@ -74,7 +75,8 @@ export async function submitCustomerReviewAction(input: CustomerReviewInput) {
 
   await prisma.review.create({
     data: {
-      bookingId: booking.id,
+        companyId: await getTenantId(),
+        bookingId: booking.id,
       customerId: customer.id,
       rating: parsed.data.rating,
       comment: parsed.data.comment,
@@ -96,7 +98,7 @@ export async function createCustomerSuggestionAction(input: CustomerSuggestionIn
 
   await prisma.customerSuggestion.create({
     data: {
-      customerId: customer.id,
+        customerId: customer.id,
       subject: parsed.data.subject,
       message: parsed.data.message,
     },
@@ -110,7 +112,9 @@ export async function getSavedAddressesAction() {
   try {
     const { customer } = await requireCustomerProfile();
     const addresses = await prisma.customerAddress.findMany({
-      where: { customerId: customer.id },
+      where: {
+          
+        customerId: customer.id },
       orderBy: { createdAt: "desc" },
     });
     return { success: true, data: addresses };
@@ -130,7 +134,9 @@ export async function getOptionalSavedAddressesAction() {
     if (!customer) return { success: true, data: [] };
 
     const addresses = await prisma.customerAddress.findMany({
-      where: { customerId: customer.id },
+      where: {
+          
+        customerId: customer.id },
       orderBy: { createdAt: "desc" },
     });
     return { success: true, data: addresses };
@@ -144,7 +150,7 @@ export async function addSavedAddressAction(input: { label: string; address: str
     const { customer } = await requireCustomerProfile();
     await prisma.customerAddress.create({
       data: {
-        customerId: customer.id,
+          customerId: customer.id,
         label: input.label,
         address: input.address,
         placeId: input.placeId,

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRoleApi } from "@/modules/auth/permissions";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -17,7 +18,9 @@ export async function GET() {
   }
 
   const bookings = await prisma.booking.findMany({
-    where: { deletedAt: null },
+    where: {
+        companyId: await getTenantId(),
+        deletedAt: null },
     orderBy: { createdAt: "desc" },
     include: {
       customer: true,

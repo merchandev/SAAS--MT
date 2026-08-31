@@ -43,6 +43,7 @@ export async function POST(req: Request) {
         const contact = await prisma.marketingContact.upsert({
           where: { normalizedEmail: email },
           update: {
+              
             firstName: firstName || undefined,
             lastName: lastName || undefined,
             phone: phone || undefined,
@@ -50,6 +51,7 @@ export async function POST(req: Request) {
             hasConsent: true,
           },
           create: {
+              
             email: email,
             normalizedEmail: email,
             firstName,
@@ -71,9 +73,12 @@ export async function POST(req: Request) {
                 listId: listId
               }
             },
-            update: {},
+            update: {
+                
+            },
             create: {
-              contactId: contact.id,
+                
+                contactId: contact.id,
               listId: listId
             }
           });

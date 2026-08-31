@@ -71,7 +71,7 @@ export default function ReviewPageClient({
         {/* Header */}
         <div className="text-center mb-8">
           <p className="text-[#D4AF37] text-xs font-bold tracking-[4px] uppercase mb-3">
-            TRANSFERS IN BARCELONA
+            Merchan.Dev SaaS
           </p>
           <h1 className="text-3xl font-bold text-white mb-2">
             ¿Cómo fue tu traslado?
@@ -161,7 +161,7 @@ export default function ReviewPageClient({
         </form>
 
         <p className="text-center text-gray-600 text-xs mt-6">
-          © {new Date().getFullYear()} Transfers in Barcelona · Todos los derechos reservados
+          © {new Date().getFullYear()} Merchan.Dev SaaS · Todos los derechos reservados
         </p>
       </div>
     </div>
@@ -176,7 +176,7 @@ function ThankYouCard({ message }: { message: string }) {
         <h1 className="text-3xl font-bold text-white mb-4">¡Gracias!</h1>
         <p className="text-gray-400 leading-relaxed">{message}</p>
         <p className="text-[#D4AF37] text-xs font-bold tracking-[4px] uppercase mt-8">
-          TRANSFERS IN BARCELONA
+          Merchan.Dev SaaS
         </p>
       </div>
     </div>

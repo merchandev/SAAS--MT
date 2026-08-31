@@ -55,20 +55,25 @@ async function main() {
   console.log("Seeding routes...");
   for (const route of routes) {
     const existing = await prisma.routePage.findUnique({
-      where: { slug: route.slug }
+      where: {
+          companyId_slug: { companyId: "legacy-metransfers", slug: route.slug } }
     });
     if (!existing) {
       await prisma.routePage.create({
         data: {
-          ...route,
+            companyId: "legacy-metransfers",
+            ...route,
           isActive: true
         }
       });
       console.log(`Created route: ${route.slug}`);
     } else {
       await prisma.routePage.update({
-        where: { slug: route.slug },
-        data: route
+        where: {
+            companyId_slug: { companyId: "legacy-metransfers", slug: route.slug } },
+        data: {
+            companyId: "legacy-metransfers",
+            ...route }
       });
       console.log(`Updated route: ${route.slug}`);
     }

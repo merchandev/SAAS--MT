@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "../auth/permissions";
 import { requireCustomerProfile } from "./customer.auth";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 const completedStatuses = ["COMPLETADA"] as const;
 const billablePaymentStatuses = ["PAID", "REFUNDED"] as const;
@@ -10,7 +11,9 @@ export async function getCustomerDashboard() {
   const { customer } = await requireCustomerProfile();
 
   const bookings = await prisma.booking.findMany({
-    where: { customerId: customer.id, deletedAt: null },
+    where: {
+        companyId: await getTenantId(),
+        customerId: customer.id, deletedAt: null },
     orderBy: [{ serviceDate: "desc" }, { serviceTime: "desc" }],
     include: {
       vehicle: true,
@@ -24,7 +27,9 @@ export async function getCustomerDashboard() {
   });
 
   const suggestions = await prisma.customerSuggestion.findMany({
-    where: { customerId: customer.id },
+    where: {
+        
+        customerId: customer.id },
     orderBy: { createdAt: "desc" },
     take: 8,
   });
@@ -76,6 +81,8 @@ export async function getAdminCustomersDirectory() {
   await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]);
 
   const customers = await prisma.customer.findMany({
+      where: {
+          companyId: await getTenantId() },
     orderBy: { updatedAt: "desc" },
     take: 150,
     include: {

@@ -109,13 +109,13 @@ export default async function MarketingFooter() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-[18px] w-[18px] text-gray-400" aria-hidden="true" />
-                <a href="mailto:info@transfersinbarcelona.com" className="transition hover:text-gray-900">
-                  info@transfersinbarcelona.com
+                <a href="mailto:info@saas.merchan.dev" className="transition hover:text-gray-900">
+                  info@saas.merchan.dev
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <MapPin className="h-[18px] w-[18px] text-gray-400" aria-hidden="true" />
-                Barcelona, España
+                España, España
               </li>
             </ul>
             <div className="flex gap-2 mt-2">
@@ -130,7 +130,7 @@ export default async function MarketingFooter() {
 
       <div className="border-t border-gray-200 bg-gray-100">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-8 text-sm font-semibold text-gray-500 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Transfers in Barcelona. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} Merchan.Dev SaaS. Todos los derechos reservados.</p>
           <nav className="flex flex-wrap gap-x-8 gap-y-3">
             {legalLinks.map((item) => (
               <Link key={item.label} href={localizedPath(item.href, currentLocale)} className="transition hover:text-gray-900">

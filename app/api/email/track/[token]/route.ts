@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 const PIXEL = Buffer.from(
   "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
@@ -32,9 +33,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
             }
           },
           update: {
+              
             openedCount: { increment: 1 }
           },
           create: {
+              
             campaignId: email.campaignId,
             date: today,
             openedCount: 1
@@ -50,10 +53,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
             }
           },
           update: {
-            openedCount: { increment: 1 }
+              openedCount: { increment: 1 }
           },
           create: {
-            campaignId: email.campaignId,
+              campaignId: email.campaignId,
             hour: hour,
             openedCount: 1
           }

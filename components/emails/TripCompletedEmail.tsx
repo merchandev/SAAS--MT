@@ -21,15 +21,15 @@ export const TripCompletedEmail = ({
 }: TripCompletedEmailProps) => (
   <Html>
     <Head />
-    <Preview>✅ Viaje completado — Gracias por elegir Transfers in Barcelona</Preview>
+    <Preview>✅ Viaje completado — Gracias por elegir Merchan.Dev SaaS</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={header}>
           <Img
-            src="https://transfersinbarcelona.com/images/MeTransfers-exp.png"
+            src="https://saas.merchan.dev/images/MeTransfers-exp.png"
             width="176"
             height="41"
-            alt="Transfers in Barcelona"
+            alt="Merchan.Dev SaaS"
             style={logo}
           />
           <Text style={headerTagline}>Traslados Privados de Lujo</Text>
@@ -73,7 +73,7 @@ export const TripCompletedEmail = ({
           </Section>
 
           <Section style={{ textAlign: "center" as const, margin: "24px 0" }}>
-            <Link href="https://transfersinbarcelona.com/booking" style={button}>
+            <Link href="https://saas.merchan.dev/booking" style={button}>
               Reservar para tu próximo viaje →
             </Link>
           </Section>
@@ -82,11 +82,11 @@ export const TripCompletedEmail = ({
         <Hr style={hr} />
         <Section style={footer}>
           <Text style={footerText}>
-            <Link href="mailto:info@transfersinbarcelona.com" style={link}>info@transfersinbarcelona.com</Link>
+            <Link href="mailto:info@saas.merchan.dev" style={link}>info@saas.merchan.dev</Link>
             {" · "}
             <Link href="tel:+34662024136" style={link}>+34 662 02 41 36</Link>
           </Text>
-          <Text style={footerSmall}>© {new Date().getFullYear()} Transfers in Barcelona · Barcelona, España</Text>
+          <Text style={footerSmall}>© {new Date().getFullYear()} Merchan.Dev SaaS · España, España</Text>
         </Section>
       </Container>
     </Body>

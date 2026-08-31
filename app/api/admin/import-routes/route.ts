@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import xml2js from "xml2js";
 import DOMPurify from "isomorphic-dompurify";
 import { authService } from "@/modules/auth/auth.service";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function POST(request: Request) {
   try {
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
 
     // 4. Procesar y guardar en BD
     for (const page of pages) {
-      // Extraer campos (asegurarnos de mapear según la estructura del XML de transfersinbarcelona)
+      // Extraer campos (asegurarnos de mapear según la estructura del XML de transfersinEspaña)
       const slug = page.slug || page.url?.split('/').pop() || "";
       if (!slug) continue;
 
@@ -76,9 +77,11 @@ export async function POST(request: Request) {
 
       // Usar upsert para no duplicar si ya existe
       await prisma.routePage.upsert({
-        where: { slug: slug.toLowerCase() },
+        where: {
+            companyId_slug: { companyId: await getTenantId(), slug: slug.toLowerCase() } },
         update: {
-          originName,
+            companyId: await getTenantId(),
+            originName,
           destinationName,
           h1Title,
           seoTitle,
@@ -90,7 +93,8 @@ export async function POST(request: Request) {
           // No actualizamos isActive para no pisar borradores/publicados si ya existen
         },
         create: {
-          slug: slug.toLowerCase(),
+            companyId: await getTenantId(),
+            slug: slug.toLowerCase(),
           originName,
           destinationName,
           h1Title,

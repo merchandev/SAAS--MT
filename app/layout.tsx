@@ -16,20 +16,20 @@ const inter = Inter({
 });
 
 const fallbackMetadata: Metadata = {
-  metadataBase: new URL("https://transfersinbarcelona.com"),
-  title: "Private Transfers in Barcelona | Airport, Cruise Port & Chauffeur",
-  description: "Book private transfers in Barcelona with fixed price, professional chauffeur, airport pickup, cruise port transfers and secure online payment.",
+  metadataBase: new URL("https://saas.merchan.dev"),
+  title: "Private Merchan.Dev SaaS | Airport, Cruise Port & Chauffeur",
+  description: "Book private Merchan.Dev SaaS with fixed price, professional chauffeur, airport pickup, cruise port transfers and secure online payment.",
 };
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const settings = await settingsQueries.getAllSettings();
-    const siteName = settings.SITE_NAME || settings.COMPANY_NAME || "Transfers in Barcelona";
-    const title = settings.SITE_TITLE || `Traslados privados y chófer en Barcelona | ${siteName}`;
+    const siteName = settings.SITE_NAME || settings.COMPANY_NAME || "Merchan.Dev SaaS";
+    const title = settings.SITE_TITLE || `Software SaaS de Traslados B2B2C | ${siteName}`;
     const description = settings.SITE_META_DESCRIPTION || fallbackMetadata.description;
     const logoUrl = settings.SITE_LOGO_URL?.trim();
     const faviconUrl = settings.SITE_FAVICON_URL?.trim();
-    const siteUrl = settings.SITE_URL?.trim() || "https://transfersinbarcelona.com";
+    const siteUrl = settings.SITE_URL?.trim() || "https://saas.merchan.dev";
 
     return {
       metadataBase: new URL(siteUrl),

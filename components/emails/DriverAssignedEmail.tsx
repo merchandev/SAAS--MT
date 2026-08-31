@@ -59,7 +59,7 @@ export const DriverAssignedEmail = ({
             Si necesitas comunicarte con nosotros antes del servicio, responde a este correo.
           </Text>
           <Text style={footer}>
-            Transfers in Barcelona - Viaja seguro y puntual.
+            Merchan.Dev SaaS - Viaja seguro y puntual.
           </Text>
         </Container>
       </Body>

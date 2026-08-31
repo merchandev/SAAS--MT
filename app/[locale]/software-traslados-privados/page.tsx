@@ -4,8 +4,8 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
 export const metadata: Metadata = {
-  title: "Traslados Privados en Barcelona | Transfers in Barcelona",
-  description: "Servicio premium de traslados privados en Barcelona. Vehículos de alta gama, precio cerrado y conductores profesionales para cualquier desplazamiento.",
+  title: "Traslados Privados en España | Merchan.Dev SaaS",
+  description: "Servicio premium de traslados privados en España. Vehículos de alta gama, precio cerrado y conductores profesionales para cualquier desplazamiento.",
 };
 
 export default function TrasladosPrivadosPage() {
@@ -16,9 +16,9 @@ export default function TrasladosPrivadosPage() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Traslados Privados en Barcelona</h1>
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Traslados Privados en España</h1>
               <p className="mt-6 text-lg leading-8 text-gray-600">
-                La forma más exclusiva y segura de moverte por Barcelona. Ponemos a tu disposición una flota de vehículos premium para traslados punto a punto, con la máxima discreción y confort.
+                La forma más exclusiva y segura de moverte por España. Ponemos a tu disposición una flota de vehículos premium para traslados punto a punto, con la máxima discreción y confort.
               </p>
             </div>
             <div>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -76,6 +77,7 @@ export async function POST(req: NextRequest) {
     // Create review
     await prisma.review.create({
       data: {
+          companyId: await getTenantId(),
         bookingId,
         customerId: booking.customerId,
         rating,

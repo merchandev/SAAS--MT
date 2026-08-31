@@ -40,10 +40,10 @@ export const AdminNewBookingEmail = ({
       <Container style={container}>
         <Section style={header}>
           <Img
-            src="https://transfersinbarcelona.com/images/MeTransfers-exp.png"
+            src="https://saas.merchan.dev/images/MeTransfers-exp.png"
             width="176"
             height="41"
-            alt="Transfers in Barcelona"
+            alt="Merchan.Dev SaaS"
             style={logo}
           />
           <Text style={headerTagline}>Panel de Administración</Text>
@@ -125,7 +125,7 @@ export const AdminNewBookingEmail = ({
 
         <Hr style={hr} />
         <Section style={footer}>
-          <Text style={footerSmall}>Este email es solo para uso interno del equipo de Transfers in Barcelona.</Text>
+          <Text style={footerSmall}>Este email es solo para uso interno del equipo de Merchan.Dev SaaS.</Text>
         </Section>
       </Container>
     </Body>

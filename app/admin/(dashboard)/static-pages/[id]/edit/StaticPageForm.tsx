@@ -50,7 +50,7 @@ export default function StaticPageForm({ page }: { page: any }) {
             id="title"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            placeholder="Ej: Tours Privados en Barcelona | Transfers in Barcelona"
+            placeholder="Ej: Tours Privados en España | Merchan.Dev SaaS"
             required
             className="mt-1"
           />
@@ -76,7 +76,7 @@ export default function StaticPageForm({ page }: { page: any }) {
             id="seoKeywords"
             value={formData.seoKeywords}
             onChange={(e) => setFormData({ ...formData, seoKeywords: e.target.value })}
-            placeholder="ej: tours privados, excursiones barcelona, chofer"
+            placeholder="ej: tours privados, excursiones España, chofer"
             className="mt-1"
           />
           <p className="text-xs text-gray-500 mt-1">Opcional. Separadas por comas.</p>

@@ -78,7 +78,8 @@ export async function GET() {
       const result = await prisma.emailTemplate.upsert({
         where: { name: template.name },
         update: {
-          description: template.description,
+            
+            description: template.description,
           subject: template.subject,
           html: template.html,
         },

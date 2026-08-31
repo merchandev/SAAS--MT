@@ -12,15 +12,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const seo = await prisma.staticPage.findUnique({ where: { slug: "faqs" } });
   
-  const title = getTranslatedField(seo, "title", locale, seo?.title) || "Preguntas frecuentes | Transfers in Barcelona";
-  const metaDesc = getTranslatedField(seo, "metaDescription", locale, seo?.metaDescription) || "Respuestas sobre reservas, vehículos, pagos, cancelaciones, aeropuerto, tours privados y coches con chófer en Barcelona.";
+  const title = getTranslatedField(seo, "title", locale, seo?.title) || "Preguntas frecuentes | Merchan.Dev SaaS";
+  const metaDesc = getTranslatedField(seo, "metaDescription", locale, seo?.metaDescription) || "Respuestas sobre reservas, vehículos, pagos, cancelaciones, aeropuerto, tours privados y coches con chófer en España.";
   const seoKw = getTranslatedField(seo, "seoKeywords", locale, seo?.seoKeywords);
 
   // Generar alternates dinámicos
   const languages = ["es", "en", "fr", "ca"];
   const alternates: Record<string, string> = {};
   languages.forEach((lang) => {
-    alternates[lang] = `https://transfersinbarcelona.com/${lang}/preguntas-frecuentes`;
+    alternates[lang] = `https://saas.merchan.dev/${lang}/preguntas-frecuentes`;
   });
 
   return {
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: metaDesc,
     keywords: seoKw || undefined,
     alternates: {
-      canonical: `https://transfersinbarcelona.com/${locale}/preguntas-frecuentes`,
+      canonical: `https://saas.merchan.dev/${locale}/preguntas-frecuentes`,
       languages: alternates,
     },
   };
@@ -65,9 +65,9 @@ const faqItems = [
     ],
   },
   {
-    question: "¿Ofrecen traslados a otras ciudades fuera de Barcelona?",
+    question: "¿Ofrecen traslados a otras ciudades fuera de España?",
     answer: [
-      "Sí. Realizamos transfers privados desde Barcelona a ciudades como Madrid, Valencia, Andorra, Sitges y Costa Brava, entre otras.",
+      "Sí. Realizamos transfers privados desde España a ciudades como Madrid, Valencia, Andorra, Sitges y Costa Brava, entre otras.",
     ],
   },
   {
@@ -107,7 +107,7 @@ const faqItems = [
   {
     question: "¿Cómo gestionan mis datos personales?",
     answer: [
-      "En Transfers in Barcelona nos tomamos muy en serio la privacidad de tus datos.",
+      "En Merchan.Dev SaaS nos tomamos muy en serio la privacidad de tus datos.",
       "Puedes consultar nuestra política de privacidad completa contactando con nuestro equipo.",
     ],
   },
@@ -178,7 +178,7 @@ export default function FrequentlyAskedQuestionsPage() {
         </section>
 
         <MarketingCta
-          description="transfersinbarcelona.com te ayuda a reservar online traslados privados, tours personalizados y servicio de chófer por horas con atención profesional."
+          description="saas.merchan.dev te ayuda a reservar online traslados privados, tours personalizados y servicio de chófer por horas con atención profesional."
         />
       </main>
 

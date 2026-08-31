@@ -19,12 +19,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!post || !post.isActive) {
     return {
-      title: "Artículo no encontrado | Transfers in Barcelona",
+      title: "Artículo no encontrado | Merchan.Dev SaaS",
     };
   }
 
   const title = getTranslatedField(post, "title", resolvedParams.locale, post.title);
-  const metaTitle = getTranslatedField(post, "metaTitle", resolvedParams.locale, post.metaTitle) || `${title} | Blog Transfers in Barcelona`;
+  const metaTitle = getTranslatedField(post, "metaTitle", resolvedParams.locale, post.metaTitle) || `${title} | Blog Merchan.Dev SaaS`;
   const metaDesc = getTranslatedField(post, "metaDescription", resolvedParams.locale, post.metaDescription) || getTranslatedField(post, "excerpt", resolvedParams.locale, post.excerpt);
 
   // mock image object for seo
@@ -34,14 +34,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const languages = ["es", "en", "fr", "ca"];
   const alternates: Record<string, string> = {};
   languages.forEach((lang) => {
-    alternates[lang] = `https://transfersinbarcelona.com/${lang}/blog/${post.slug}`;
+    alternates[lang] = `https://saas.merchan.dev/${lang}/blog/${post.slug}`;
   });
 
   return {
     title: metaTitle,
     description: metaDesc,
     alternates: {
-      canonical: `https://transfersinbarcelona.com/${resolvedParams.locale}/blog/${post.slug}`,
+      canonical: `https://saas.merchan.dev/${resolvedParams.locale}/blog/${post.slug}`,
       languages: alternates,
     },
     openGraph: {
@@ -99,7 +99,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           <header className="mb-12">
             <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-gray-500 mb-6">
               <span className="inline-flex items-center rounded-full bg-[#D4AF37]/10 px-3 py-1 text-[#D4AF37] uppercase tracking-wider text-xs font-black">
-                {"Transfersinbarcelona-Blog"}
+                {"TransfersinEspaña-Blog"}
               </span>
               <span className="flex items-center gap-1.5">
                 <Calendar className="h-4 w-4" />
@@ -133,7 +133,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
         <div className="mt-20">
           <MarketingCta
             title="¿Listo para disfrutar de un traslado premium?"
-            description="Reserva ahora mismo y asegura tu transporte privado en Barcelona con Transfers in Barcelona."
+            description="Reserva ahora mismo y asegura tu transporte privado en España con Merchan.Dev SaaS."
           />
         </div>
       </main>

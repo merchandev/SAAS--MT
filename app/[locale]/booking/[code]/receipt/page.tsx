@@ -90,7 +90,7 @@ export default async function ReceiptPage({
             <p className="font-bold text-gray-800">METRANSFERS GESTION SL</p>
             <p className="text-xs text-gray-500">NIF: B22522353</p>
             <p className="text-xs text-gray-500">AVDA MARE DE DEU DE MONTSERRAT, NUM 18</p>
-            <p className="text-xs text-gray-500">08970 SANT JOAN DESPÍ – (BARCELONA)</p>
+            <p className="text-xs text-gray-500">08970 SANT JOAN DESPÍ – (España)</p>
             <p className="text-xs text-gray-500 mt-1">info@metransfers.es</p>
           </div>
         </div>

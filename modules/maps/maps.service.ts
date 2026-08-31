@@ -1,3 +1,4 @@
+import { getTenantId } from "@/modules/auth/tenant.service";
 import crypto from "crypto";
 
 export interface DistanceDurationResult {
@@ -91,7 +92,7 @@ async function setCachedDistance(
     await prisma.mapsDistanceCache.upsert({
       where: { key },
       create: {
-        key,
+          key,
         origin,
         destination,
         distanceKm: value.distanceKm,
@@ -99,7 +100,7 @@ async function setCachedDistance(
         expiresAt: new Date(Date.now() + getCacheTtlMs()),
       },
       update: {
-        distanceKm: value.distanceKm,
+          distanceKm: value.distanceKm,
         durationMinutes: value.durationMinutes,
         expiresAt: new Date(Date.now() + getCacheTtlMs()),
       },

@@ -14,7 +14,8 @@ async function main() {
     if (!exists) {
       await prisma.post.create({
         data: {
-          title: post.title,
+            
+            title: post.title,
           slug: post.slug,
           excerpt: post.excerpt,
           contentHtml: post.content,

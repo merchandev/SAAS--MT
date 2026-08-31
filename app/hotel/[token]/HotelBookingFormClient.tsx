@@ -459,7 +459,7 @@ export default function HotelBookingFormClient({
                         <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-gray-100">
                           <Image
                             src={vehicleImage}
-                            alt={`${v.name} de Transfers in Barcelona`}
+                            alt={`${v.name} de Merchan.Dev SaaS`}
                             fill
                             sizes="112px"
                             className="object-cover"

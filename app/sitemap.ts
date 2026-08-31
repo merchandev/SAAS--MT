@@ -16,7 +16,7 @@ import { prisma } from "@/lib/prisma";
 // Cache the sitemap for 1 hour to avoid DB timeouts on crawl
 export const revalidate = 3600;
 
-const BASE_URL = "https://transfersinbarcelona.com";
+const BASE_URL = "https://saas.merchan.dev";
 
 // Static pages included in every sitemap build
 const STATIC_ROUTES = [
@@ -27,12 +27,12 @@ const STATIC_ROUTES = [
   { url: `${BASE_URL}/es/contacto`, priority: 0.9, changeFrequency: "monthly" as const },
   { url: `${BASE_URL}/es/preguntas-frecuentes`, priority: 0.7, changeFrequency: "monthly" as const },
   { url: `${BASE_URL}/es/blog`, priority: 0.7, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/transfer-aeropuerto-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/traslados-privados-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/coche-con-chofer-barcelona`, priority: 0.7, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/traslados-puerto-barcelona`, priority: 0.7, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/tours-privados-barcelona`, priority: 0.7, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/traslados-corporativos-barcelona`, priority: 0.7, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/software-transfers-aeropuerto`, priority: 0.8, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/software-traslados-privados`, priority: 0.8, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/software-chofer-privado`, priority: 0.7, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/software-traslados-puerto`, priority: 0.7, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/software-tours-privados`, priority: 0.7, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/software-traslados-corporativos`, priority: 0.7, changeFrequency: "weekly" as const },
   { url: `${BASE_URL}/es/aviso-legal`, priority: 0.2, changeFrequency: "yearly" as const },
   { url: `${BASE_URL}/es/politica-de-privacidad`, priority: 0.2, changeFrequency: "yearly" as const },
   { url: `${BASE_URL}/es/terminos-y-condiciones`, priority: 0.2, changeFrequency: "yearly" as const },

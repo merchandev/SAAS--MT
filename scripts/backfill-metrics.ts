@@ -27,6 +27,7 @@ async function backfill() {
     // Instead of querying recipients, we can just use the counts stored in the campaign
     await prisma.campaignMetricDaily.create({
       data: {
+          
         campaignId: campaign.id,
         date: date,
         sentCount: campaign.totalCount,

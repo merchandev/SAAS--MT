@@ -39,7 +39,7 @@ export async function forgotPasswordAction(email: string) {
     } else {
       // Fallback solo para desarrollo si no hay env var
       const headersList = await headers();
-      const host = headersList.get("host") || "transfersinbarcelona.com";
+      const host = headersList.get("host") || "saas.merchan.dev";
       const protocol = headersList.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
       baseUrl = `${protocol}://${host}`;
     }
@@ -49,11 +49,11 @@ export async function forgotPasswordAction(email: string) {
     // Send email
     await sendEmail({
       to: email,
-      subject: "Recuperación de Contraseña - Transfers in Barcelona",
+      subject: "Recuperación de Contraseña - Merchan.Dev SaaS",
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #000000; color: #ffffff; padding: 40px; border-radius: 8px; border: 1px solid #222;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://transfersinbarcelona.com/images/MeTransfers-exp.png" alt="MeTransfers Barcelona" style="max-width: 180px; height: auto; margin: 0 auto; display: block;" />
+            <img src="https://saas.merchan.dev/images/MeTransfers-exp.png" alt="MeTransfers Barcelona" style="max-width: 180px; height: auto; margin: 0 auto; display: block;" />
           </div>
           
           <div style="background-color: #111111; padding: 30px; border-radius: 6px; border: 1px solid #1a1a1a;">
@@ -71,7 +71,7 @@ export async function forgotPasswordAction(email: string) {
           </div>
           
           <div style="text-align: center; margin-top: 30px;">
-            <p style="color: #444; font-size: 12px;">&copy; ${new Date().getFullYear()} Transfers in Barcelona. Todos los derechos reservados.</p>
+            <p style="color: #444; font-size: 12px;">&copy; ${new Date().getFullYear()} Merchan.Dev SaaS. Todos los derechos reservados.</p>
           </div>
         </div>
       `,

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export default function DomainsSettingsPage() {
   const [domains] = useState([
-    { id: "1", name: "transfersinbarcelona.com", status: "verified", addedOn: "2026-01-15" }
+    { id: "1", name: "saas.merchan.dev", status: "verified", addedOn: "2026-01-15" }
   ]);
 
   return (

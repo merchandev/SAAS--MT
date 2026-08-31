@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function POST(req: Request, { params }: { params: Promise<{ token: string }> }) {
   try {
@@ -26,13 +27,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
         }
       },
       update: {
-        reason: "UNSUBSCRIBED",
+          reason: "UNSUBSCRIBED",
         source: "User click",
         campaignId: recipient.campaignId,
         updatedAt: new Date()
       },
       create: {
-        email: recipient.email,
+          email: recipient.email,
         normalizedEmail: recipient.normalizedEmail,
         reason: "UNSUBSCRIBED",
         scope: "MARKETING",
@@ -45,7 +46,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     await prisma.campaignRecipient.update({
       where: { id: recipient.id },
       data: {
-        status: "SUPPRESSED",
+          status: "SUPPRESSED",
         suppressedAt: new Date(),
         lastError: "User unsubscribed"
       }

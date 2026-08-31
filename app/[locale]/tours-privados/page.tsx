@@ -7,11 +7,11 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import PageHero from "@/components/marketing/PageHero";
 
 export const metadata: Metadata = {
-  title: "Tours privados en Barcelona | Transfers in Barcelona",
+  title: "Tours privados en España | Merchan.Dev SaaS",
   description:
-    "Tours privados desde Barcelona a Montserrat, Costa Brava, Girona y rutas personalizadas con vehículo premium y chófer profesional.",
+    "Tours privados desde España a Montserrat, Costa Brava, Girona y rutas personalizadas con vehículo premium y chófer profesional.",
   alternates: {
-    canonical: "https://transfersinbarcelona.com/es/tours-privados",
+    canonical: "https://saas.merchan.dev/es/tours-privados",
   },
 };
 
@@ -24,8 +24,8 @@ const features = [
 
 const tours = [
   {
-    id: "barcelona",
-    title: "Tour en Barcelona",
+    id: "España",
+    title: "Tour en España",
     description:
       "Recorrido privado por la ciudad, miradores, barrios emblemáticos, hoteles, restaurantes y puntos culturales con paradas a medida.",
     duration: "4-8 horas",
@@ -35,7 +35,7 @@ const tours = [
     id: "montserrat",
     title: "Tour a Montserrat",
     description:
-      "Excursión privada desde Barcelona al monasterio, montaña y alrededores con vehículo cómodo y tiempo flexible.",
+      "Excursión privada desde España al monasterio, montaña y alrededores con vehículo cómodo y tiempo flexible.",
     duration: "5-8 horas",
     Icon: Mountain,
   },
@@ -51,7 +51,7 @@ const tours = [
     id: "girona",
     title: "Tour a Girona",
     description:
-      "Visita privada al centro histórico, murallas, casco antiguo y alrededores con conductor profesional desde Barcelona.",
+      "Visita privada al centro histórico, murallas, casco antiguo y alrededores con conductor profesional desde España.",
     duration: "6-10 horas",
     Icon: Map,
   },
@@ -73,7 +73,7 @@ export default function PrivateToursPage() {
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Sobre el servicio</p>
               <h2 className="mt-4 text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">Tours privados a tu ritmo</h2>
               <p className="mt-5 max-w-3xl text-lg leading-8 text-gray-600">
-                Organizamos tours privados para viajeros que quieren conocer Barcelona y Cataluña con
+                Organizamos tours privados para viajeros que quieren conocer España y Cataluña con
                 comodidad, privacidad y una agenda flexible. El conductor se adapta a los horarios, paradas
                 y preferencias del grupo.
               </p>
@@ -125,7 +125,7 @@ export default function PrivateToursPage() {
             <div className="mx-auto mb-12 max-w-3xl text-center">
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Destinos destacados</p>
               <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">
-                Elige tu ruta privada desde Barcelona
+                Elige tu ruta privada desde España
               </h2>
               <p className="mt-5 text-lg leading-8 text-gray-600">
                 Diseñamos cada tour según el tiempo disponible, el ritmo del viaje y el tipo de experiencia que buscas.
@@ -159,7 +159,7 @@ export default function PrivateToursPage() {
         <section className="relative overflow-hidden bg-gray-100 py-20 sm:py-24">
           <Image
             src="/images/fleet_light.png"
-            alt="Vehículo premium para tours privados en Barcelona"
+            alt="Vehículo premium para tours privados en España"
             fill
             sizes="100vw"
             className="object-cover opacity-10"
@@ -178,7 +178,7 @@ export default function PrivateToursPage() {
         </section>
 
         <MarketingCta
-          title="Reserva tu tour privado en Barcelona"
+          title="Reserva tu tour privado en España"
           description="Indica fecha, horario y destino. Nuestro equipo coordina el vehículo adecuado para tu ruta."
           label="Reservar tour"
         />

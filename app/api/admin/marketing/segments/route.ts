@@ -6,7 +6,9 @@ export async function GET(req: Request) {
   try {
     await requireRoleApi(["ADMIN", "SUPER_ADMIN"]);
     const segments = await prisma.marketingSegment.findMany({
-      orderBy: { createdAt: "desc" },
+        where: {
+             },
+        orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(segments);
   } catch (error) {
@@ -31,6 +33,7 @@ export async function POST(req: Request) {
 
     const segment = await prisma.marketingSegment.create({
       data: {
+          
         name,
         description,
         rules,

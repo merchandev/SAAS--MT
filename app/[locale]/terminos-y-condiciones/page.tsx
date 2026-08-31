@@ -2,8 +2,8 @@ import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 
 export const metadata = {
-  title: "Términos y Condiciones | Transfers in Barcelona",
-  description: "Términos y Condiciones de Transfers in Barcelona GESTION SL.",
+  title: "Términos y Condiciones | Merchan.Dev SaaS",
+  description: "Términos y Condiciones de Merchan.Dev SaaS GESTION SL.",
 };
 
 export default function TermsAndConditionsPage() {
@@ -33,7 +33,7 @@ export default function TermsAndConditionsPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-950 mb-4">2. IDENTIFICACIÓN DE LAS PARTES</h2>
               <ul className="list-none space-y-2 text-gray-600">
-                <li><strong className="text-gray-900">El Prestador:</strong> METRANSFERS GESTION SL, con NIF B22522353 y domicilio social en AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ (BARCELONA).</li>
+                <li><strong className="text-gray-900">El Prestador:</strong> METRANSFERS GESTION SL, con NIF B22522353 y domicilio social en AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ (España).</li>
                 <li><strong className="text-gray-900">El Cliente:</strong> Persona física o jurídica que formaliza la reserva y garantiza tener capacidad legal para contratar.</li>
               </ul>
             </section>
@@ -105,7 +105,7 @@ export default function TermsAndConditionsPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-950 mb-4">7. JURISDICCIÓN Y LEY APLICABLE</h2>
               <p className="text-gray-600">
-                Para la resolución de cualquier litigio derivado de la interpretación o ejecución de este contrato, las partes se someten a la legislación española. En caso de controversia, se recurrirá a los Juzgados y Tribunales de Barcelona, salvo que el cliente ostente la condición de consumidor, en cuyo caso se atenderá a la competencia territorial establecida por ley.
+                Para la resolución de cualquier litigio derivado de la interpretación o ejecución de este contrato, las partes se someten a la legislación española. En caso de controversia, se recurrirá a los Juzgados y Tribunales de España, salvo que el cliente ostente la condición de consumidor, en cuyo caso se atenderá a la competencia territorial establecida por ley.
               </p>
             </section>
           </div>

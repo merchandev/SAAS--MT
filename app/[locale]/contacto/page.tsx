@@ -14,14 +14,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const seo = await prisma.staticPage.findUnique({ where: { slug: "contacto" } });
 
-  const title = getTranslatedField(seo, "title", locale, seo?.title) || "Contacto | Software de Traslados — Transfers in Barcelona";
+  const title = getTranslatedField(seo, "title", locale, seo?.title) || "Contacto | Software de Traslados — Merchan.Dev SaaS";
   const metaDesc = getTranslatedField(seo, "metaDescription", locale, seo?.metaDescription) || "Solicita una demo gratuita de nuestra plataforma SaaS para empresas de traslados privados. Nuestro equipo te muestra el sistema en menos de 24 horas.";
   const seoKw = getTranslatedField(seo, "seoKeywords", locale, seo?.seoKeywords);
 
   const languages = ["es", "en", "fr", "ca"];
   const alternates: Record<string, string> = {};
   languages.forEach((lang) => {
-    alternates[lang] = `https://transfersinbarcelona.com/${lang}/contacto`;
+    alternates[lang] = `https://saas.merchan.dev/${lang}/contacto`;
   });
 
   return {
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: metaDesc,
     keywords: seoKw || undefined,
     alternates: {
-      canonical: `https://transfersinbarcelona.com/${locale}/contacto`,
+      canonical: `https://saas.merchan.dev/${locale}/contacto`,
       languages: alternates,
     },
   };
@@ -44,8 +44,8 @@ const contactCards = [
   },
   {
     title: "Email",
-    value: "info@transfersinbarcelona.com",
-    href: "mailto:info@transfersinbarcelona.com",
+    value: "info@saas.merchan.dev",
+    href: "mailto:info@saas.merchan.dev",
     Icon: Mail,
   },
   {
@@ -135,7 +135,7 @@ export default function ContactPage() {
                 Si necesitas una integración específica, una tarificación personalizada, gestión de múltiples empresas o un acuerdo de distribución, podemos diseñar una solución adaptada a tu volumen de operaciones.
               </p>
               <Link
-                href="mailto:info@transfersinbarcelona.com?subject=Solicitud%20corporativa%20SaaS%20Transfers%20in%20Barcelona"
+                href="mailto:info@saas.merchan.dev?subject=Solicitud%20corporativa%20SaaS%20Transfers%20in%20España"
                 className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[#D4AF37] px-7 text-sm font-black text-gray-900 shadow-md transition hover:bg-[#C5A059]"
               >
                 Solicitar propuesta empresarial

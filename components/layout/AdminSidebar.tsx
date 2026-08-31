@@ -46,7 +46,7 @@ type NavigationItem = {
   icon: LucideIcon;
 };
 
-export function AdminSidebar({ role, companyName = "Transfers in Barcelona", logoUrl, accentColor = "#D4AF37" }: AdminSidebarProps) {
+export function AdminSidebar({ role, companyName = "Merchan.Dev SaaS", logoUrl, accentColor = "#D4AF37" }: AdminSidebarProps) {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {

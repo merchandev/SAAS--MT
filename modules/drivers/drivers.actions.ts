@@ -1,3 +1,4 @@
+import { getTenantId } from "@/modules/auth/tenant.service";
 ﻿"use server";
 
 import { prisma } from "@/lib/prisma";
@@ -31,7 +32,8 @@ export async function createDriverAction(data: DriverCreationInput) {
 
       return await tx.driver.create({
         data: {
-          userId: user.id,
+            companyId: await getTenantId(),
+            userId: user.id,
           licenseNumber: parsed.data.licenseNumber,
           status: "ACTIVE",
         },
@@ -98,14 +100,15 @@ export async function updateDriverBookingStatusAction(bookingId: string, driverI
       await tx.booking.update({
         where: { id: bookingId },
         data: {
-          driverStatus: newDriverStatus,
+            companyId: await getTenantId(),
+            driverStatus: newDriverStatus,
           bookingStatus: newBookingStatus
         }
       });
       
       await tx.bookingStatusHistory.create({
         data: {
-          bookingId,
+            bookingId,
           oldStatus: booking.bookingStatus,
           newStatus: newBookingStatus,
           changedBy: "DRIVER_SYSTEM",

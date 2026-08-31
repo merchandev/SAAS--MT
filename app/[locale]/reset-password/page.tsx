@@ -4,7 +4,7 @@ import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "Nueva Contraseña | Transfers in Barcelona Premium Mobility",
+  title: "Nueva Contraseña | Merchan.Dev SaaS Premium Mobility",
   description: "Crea una nueva contraseña para tu cuenta.",
 };
 
@@ -16,7 +16,7 @@ export default function ResetPasswordPage() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/chauffeur_day.png"
-            alt="Transfers in Barcelona Chauffeur"
+            alt="Merchan.Dev SaaS Chauffeur"
             fill
             className="object-cover opacity-60"
             priority
@@ -48,7 +48,7 @@ export default function ResetPasswordPage() {
         <div className="lg:hidden absolute inset-0 z-0 opacity-20">
           <Image
             src="/images/hero_light.png"
-            alt="Transfers in Barcelona Background"
+            alt="Merchan.Dev SaaS Background"
             fill
             className="object-cover"
           />

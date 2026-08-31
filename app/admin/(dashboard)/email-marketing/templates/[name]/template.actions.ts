@@ -56,10 +56,10 @@ export async function testTemplateAction(data: {
       serviceDate: "SÃ¡bado, 15 de julio de 2026",
       serviceTime: "14:30",
       originAddress: "Aeropuerto BCN",
-      destinationAddress: "Hotel W Barcelona",
+      destinationAddress: "Hotel W España",
       passengers: 2,
       totalPrice: "â‚¬45.00",
-      receiptUrl: "https://transfersinbarcelona.com",
+      receiptUrl: "https://saas.merchan.dev",
     };
 
     // Override the DB fetch by passing it directly to our templating logic?
@@ -87,7 +87,7 @@ export async function testTemplateAction(data: {
       })
     );
 
-    const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || "info@transfersinbarcelona.com";
+    const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || "info@saas.merchan.dev";
 
     const sent = await sendEmail({
       to: adminEmail,

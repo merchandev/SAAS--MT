@@ -297,7 +297,7 @@ export function CustomerAddressesForm({ addresses }: { addresses: any[] }) {
           </label>
           <label className="block space-y-1">
             <span className="text-xs font-semibold uppercase text-gray-500">Dirección completa</span>
-            <Input name="address" required placeholder="Carrer de Mallorca 401, Barcelona" />
+            <Input name="address" required placeholder="Carrer de Mallorca 401, España" />
           </label>
         </div>
         <label className="flex items-center gap-2">

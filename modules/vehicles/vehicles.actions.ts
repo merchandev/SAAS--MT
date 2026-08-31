@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { vehicleSchema, type VehicleInput } from "./vehicles.schemas";
 import { requireRoleAction as requireRole } from "@/modules/auth/permissions";
 import { authService } from "@/modules/auth/auth.service";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function createVehicleAction(data: VehicleInput) {
   const session = await authService.getSession();
@@ -15,7 +16,9 @@ export async function createVehicleAction(data: VehicleInput) {
 
   try {
     const vehicle = await prisma.vehicle.create({
-      data: parsed.data,
+      data: {
+          companyId: await getTenantId(),
+        ...parsed.data },
     });
     await prisma.auditLog.create({
       data: {
@@ -46,7 +49,9 @@ export async function updateVehicleAction(id: string, data: VehicleInput) {
   try {
     const vehicle = await prisma.vehicle.update({
       where: { id },
-      data: parsed.data,
+      data: {
+          companyId: await getTenantId(),
+        ...parsed.data },
     });
     await prisma.auditLog.create({
       data: {
@@ -73,7 +78,9 @@ export async function toggleVehicleStatusAction(id: string, currentStatus: boole
   try {
     const vehicle = await prisma.vehicle.update({
       where: { id },
-      data: { isActive: !currentStatus },
+      data: {
+          companyId: await getTenantId(),
+        isActive: !currentStatus },
     });
     await prisma.auditLog.create({
       data: {

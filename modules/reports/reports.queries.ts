@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export const reportsQueries = {
   /**
@@ -23,7 +24,8 @@ export const reportsQueries = {
 
     // 3. Comisiones estimadas a pagar (B2B)
     const b2bBookings = await prisma.booking.findMany({
-      where: { 
+      where: {
+          companyId: await getTenantId(),
         deletedAt: null,
         hotelId: { not: null },
         paymentStatus: 'PAID'
@@ -49,7 +51,9 @@ export const reportsQueries = {
    */
   async getRecentBookings(limit: number = 5) {
     return await prisma.booking.findMany({
-      where: { deletedAt: null },
+      where: {
+          companyId: await getTenantId(),
+        deletedAt: null },
       orderBy: { createdAt: 'desc' },
       take: limit,
       include: {
@@ -69,6 +73,7 @@ export const reportsQueries = {
 
     const bookings = await prisma.booking.findMany({
       where: {
+          companyId: await getTenantId(),
         deletedAt: null,
         paymentStatus: 'PAID',
         createdAt: { gte: sixMonthsAgo }

@@ -1,8 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
+
 export const vehiclesQueries = {
   async getAllVehicles() {
     return prisma.vehicle.findMany({
-      include: { category: true },
+        where: {
+            companyId: await getTenantId() },
+        include: { category: true },
       orderBy: { sortOrder: "asc" },
     });
   },
@@ -16,7 +20,9 @@ export const vehiclesQueries = {
 
   async getActiveVehicles() {
     return prisma.vehicle.findMany({
-      where: { isActive: true },
+      where: {
+          companyId: await getTenantId(),
+        isActive: true },
       include: { category: true },
       orderBy: { sortOrder: "asc" },
     });
@@ -24,7 +30,9 @@ export const vehiclesQueries = {
 
   async getAllCategories() {
     return prisma.vehicleCategory.findMany({
-      orderBy: { name: "asc" },
+        where: {
+            companyId: await getTenantId() },
+        orderBy: { name: "asc" },
     });
   }
 };

@@ -27,10 +27,10 @@ export const AccountCreatedEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Bienvenido a Transfers in Barcelona - Datos de acceso a tu cuenta</Preview>
+      <Preview>Bienvenido a Merchan.Dev SaaS - Datos de acceso a tu cuenta</Preview>
       <Body style={main}>
         <Container style={container}>
-          <Heading style={h1}>¡Bienvenido a Transfers in Barcelona, {customerName}!</Heading>
+          <Heading style={h1}>¡Bienvenido a Merchan.Dev SaaS, {customerName}!</Heading>
           
           <Text style={text}>
             Gracias por confiar en nosotros para tu traslado. Hemos creado automáticamente una cuenta para ti para que puedas gestionar tus reservas más fácilmente.
@@ -59,7 +59,7 @@ export const AccountCreatedEmail = ({
           <Text style={footer}>
             Si tienes alguna pregunta, no dudes en responder a este correo.
             <br />
-            El equipo de Transfers in Barcelona
+            El equipo de Merchan.Dev SaaS
           </Text>
         </Container>
       </Body>

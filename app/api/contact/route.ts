@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { contactRateLimiter } from "@/lib/rate-limit";
 import { getRequestMeta, buildRateLimitKey } from "@/lib/request-meta";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name is too short").max(100, "Name is too long"),
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
 
     const contactMessage = await prisma.contactMessage.create({
       data: {
+          companyId: await getTenantId(),
         name: validatedData.name,
         email: validatedData.email,
         phone: validatedData.phone || null,
@@ -49,7 +51,7 @@ export async function POST(req: Request) {
 
     try {
       const { sendEmail } = await import("@/lib/mailer");
-      const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || "info@transfersinbarcelona.com";
+      const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || "info@saas.merchan.dev";
       
       // Función para escapar HTML y prevenir inyección
       const escapeHTML = (str: string) => {

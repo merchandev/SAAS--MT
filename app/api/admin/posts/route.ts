@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
 
     const newPost = await prisma.post.create({
       data: {
+          
         slug: body.slug,
         title: body.title,
         excerpt: body.excerpt,
@@ -69,6 +70,7 @@ export async function PUT(request: NextRequest) {
     const updatedPost = await prisma.post.update({
       where: { id },
       data: {
+          
         slug: data.slug,
         title: data.title,
         excerpt: data.excerpt,

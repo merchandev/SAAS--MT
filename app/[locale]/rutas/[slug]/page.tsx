@@ -1,3 +1,4 @@
+import { getTenantId } from "@/modules/auth/tenant.service";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   
   const route = await prisma.routePage.findUnique({
-    where: { slug },
+    where: { companyId_slug: { companyId: await getTenantId(), slug } },
   });
 
   if (!route || !route.isActive) {
@@ -34,14 +35,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const languages = ["es", "en", "fr", "ca"];
   const alternates: Record<string, string> = {};
   languages.forEach((lang) => {
-    alternates[lang] = `https://transfersinbarcelona.com/${lang}/rutas/${route.slug}`;
+    alternates[lang] = `https://saas.merchan.dev/${lang}/rutas/${route.slug}`;
   });
 
   return {
-    title: `${seoTitle} | Transfers in Barcelona`,
+    title: `${seoTitle} | Merchan.Dev SaaS`,
     description: metaDesc,
     alternates: {
-      canonical: `https://transfersinbarcelona.com/${locale}/rutas/${route.slug}`,
+      canonical: `https://saas.merchan.dev/${locale}/rutas/${route.slug}`,
       languages: alternates,
     },
     keywords: seoKw || undefined,
@@ -57,7 +58,7 @@ export default async function RouteDynamicPage({ params }: Props) {
   const { slug, locale } = await params;
   
   const route = await prisma.routePage.findUnique({
-    where: { slug },
+    where: { companyId_slug: { companyId: await getTenantId(), slug } },
   });
 
   // 404 if not found OR if it's a draft/scheduled page
@@ -66,7 +67,7 @@ export default async function RouteDynamicPage({ params }: Props) {
   }
 
   const title = getTranslatedField(route, "h1Title", locale, route.h1Title) || getTranslatedField(route, "seoTitle", locale, route.seoTitle) || route.slug;
-  const origin = route.originName || "Barcelona";
+  const origin = route.originName || "España";
   const destination = route.destinationName || "";
   const metaDesc = getTranslatedField(route, "metaDescription", locale, route.metaDescription);
 

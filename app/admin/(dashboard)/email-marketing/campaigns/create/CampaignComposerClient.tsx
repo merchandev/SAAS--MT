@@ -398,7 +398,7 @@ export default function CampaignComposerClient({
             id="subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            placeholder="Ej: Oferta especial en tus traslados en Barcelona"
+            placeholder="Ej: Oferta especial en tus traslados en España"
           />
         </div>
 

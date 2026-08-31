@@ -16,10 +16,10 @@ export default function MarketingLogo({
   // Evitar url con doble barra si el locale no está definido
   const href = locale ? `/${locale}` : "/";
   return (
-    <Link href={href} className={`inline-flex items-center gap-3 ${className}`} aria-label="Transfers in Barcelona inicio">
+    <Link href={href} className={`inline-flex items-center gap-3 ${className}`} aria-label="Merchan.Dev SaaS inicio">
       <Image 
         src={logoSrc}
-        alt="Transfers in Barcelona" 
+        alt="Merchan.Dev SaaS" 
         width={140}
         height={32}
         className="object-contain object-left" 

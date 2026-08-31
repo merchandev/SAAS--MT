@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export const driversQueries = {
   async getDriverBookings(userId: string) {
@@ -10,6 +11,7 @@ export const driversQueries = {
 
     const bookings = await prisma.booking.findMany({
       where: {
+          companyId: await getTenantId(),
         driverId: driver.id,
         deletedAt: null,
       },

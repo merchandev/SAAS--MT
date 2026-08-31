@@ -10,8 +10,8 @@ import { sendEmail } from "@/lib/mailer";
 import { createReceiptAccessToken } from "@/modules/bookings/receipt-access";
 import { getDynamicEmailHtml } from "@/lib/email-templating";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://transfersinbarcelona.com";
-const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "info@transfersinbarcelona.com";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://saas.merchan.dev";
+const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "info@saas.merchan.dev";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -157,7 +157,7 @@ export const emailsService = {
 
       return sendEmail({
         to: email,
-        subject: subject || `✅ Reserva Confirmada #${publicCode} — Transfers in Barcelona`,
+        subject: subject || `✅ Reserva Confirmada #${publicCode} — Merchan.Dev SaaS`,
         html,
         eventType: "BOOKING_CONFIRMED",
         bookingId: booking?.id,
@@ -519,14 +519,14 @@ export const emailsService = {
           </div>
           
           <div style="text-align: center; margin-top: 30px;">
-            <p style="color: #444; font-size: 12px;">&copy; ${new Date().getFullYear()} Transfers in Barcelona. Todos los derechos reservados.</p>
+            <p style="color: #444; font-size: 12px;">&copy; ${new Date().getFullYear()} Merchan.Dev SaaS. Todos los derechos reservados.</p>
           </div>
         </div>
       `;
 
       return sendEmail({
         to: email,
-        subject: `Bienvenido/a a Transfers in Barcelona — Establece tu contraseña`,
+        subject: `Bienvenido/a a Merchan.Dev SaaS — Establece tu contraseña`,
         html,
       });
     } catch (err) {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export const dynamic = 'force-dynamic';
 
@@ -11,12 +12,16 @@ export async function GET() {
   });
 
   const campaigns = await prisma.emailCampaign.findMany({
-    where: { id: { in: queuedEmails.map(q => q.campaignId).filter(Boolean) as string[] } },
+    where: {
+        companyId: await getTenantId(),
+        id: { in: queuedEmails.map(q => q.campaignId).filter(Boolean) as string[] } },
     select: { id: true, subject: true }
   });
 
   const workerLogs = await prisma.outboundEmail.findMany({
-    where: { status: 'ACCEPTED' },
+    where: {
+        
+        status: 'ACCEPTED' },
     orderBy: { updatedAt: 'desc' },
     take: 5,
     select: { id: true, campaignId: true, toEmail: true, updatedAt: true }

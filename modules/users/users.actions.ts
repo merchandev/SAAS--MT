@@ -1,3 +1,4 @@
+import { getTenantId } from "@/modules/auth/tenant.service";
 ﻿"use server";
 
 import bcrypt from "bcryptjs";
@@ -112,7 +113,7 @@ async function attachOrCreateCustomerProfile(
   if (existingByUser) {
     await tx.customer.update({
       where: { id: existingByUser.id },
-      data: profileData,
+      data: { ...profileData, companyId: await getTenantId() },
     });
     return;
   }
@@ -125,12 +126,12 @@ async function attachOrCreateCustomerProfile(
   if (existingByEmail) {
     await tx.customer.update({
       where: { id: existingByEmail.id },
-      data: profileData,
+      data: { ...profileData, companyId: await getTenantId() },
     });
     return;
   }
 
-  await tx.customer.create({ data: profileData });
+  await tx.customer.create({ data: { ...profileData, companyId: await getTenantId() } });
 }
 
 async function syncRoleProfile(
@@ -147,10 +148,12 @@ async function syncRoleProfile(
     await tx.driver.upsert({
       where: { userId },
       update: {
+          companyId: await getTenantId(),
         licenseNumber: data.licenseNumber,
         status: normalizeText(data.driverStatus) || "ACTIVE",
       },
       create: {
+          companyId: await getTenantId(),
         userId,
         licenseNumber: data.licenseNumber,
         status: normalizeText(data.driverStatus) || "ACTIVE",

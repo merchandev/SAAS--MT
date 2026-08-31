@@ -1,10 +1,11 @@
-﻿"use server";
+"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath, updateTag } from "next/cache";
 import { updateSettingsSchema, UpdateSettingsInput } from "./settings.schemas";
 import { requireRoleAction as requireRole } from "../auth/permissions";
 import { authService } from "../auth/auth.service";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function upsertSettingsAction(data: UpdateSettingsInput) {
   await requireRole(["SUPER_ADMIN", "ADMIN"]);
@@ -15,11 +16,17 @@ export async function upsertSettingsAction(data: UpdateSettingsInput) {
   }
 
   try {
+    const companyId = await getTenantId();
     const operations = Object.entries(parsed.data).map(([key, value]) => {
       return prisma.systemSetting.upsert({
-        where: { key },
-        update: { value },
-        create: { key, value },
+        where: {
+            companyId_key: { companyId: companyId, key } },
+        update: {
+            companyId: companyId,
+            value },
+        create: {
+            companyId: companyId,
+            key, value },
       });
     });
 

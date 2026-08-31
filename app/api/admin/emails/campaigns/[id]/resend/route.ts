@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRoleApi } from "@/modules/auth/permissions";
 import { materializeCampaign } from "@/lib/email/campaign-materializer";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -31,8 +32,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     }
 
     const newCampaign = await prisma.emailCampaign.create({
-      data: {
-        name: `${original.name} (Reenvío)`,
+      data: { companyId: await getTenantId(), name: `{original.name} (Reenvío)`,
         subject: original.subject,
         content: original.content,
         legacyRecipients: legacyRecipients ? (legacyRecipients as any) : undefined,

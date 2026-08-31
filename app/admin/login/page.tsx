@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
           Acceso Exclusivo
         </h2>
         <p className="mt-3 text-center text-sm font-medium tracking-[0.2em] uppercase text-[#D4AF37]">
-          Transfers in Barcelona Partners
+          Merchan.Dev SaaS Partners
         </p>
       </div>
 
@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none block w-full h-12 px-4 bg-[#0B0C10] border border-white/10 text-white rounded-sm placeholder-gray-600 focus:outline-none focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all"
-                  placeholder="admin@transfersinbarcelona.com"
+                  placeholder="admin@saas.merchan.dev"
                 />
               </div>
             </div>

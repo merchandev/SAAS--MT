@@ -1,3 +1,4 @@
+import { getTenantId } from "@/modules/auth/tenant.service";
 import { prisma } from "@/lib/prisma";
 
 export const invoicesService = {
@@ -106,7 +107,8 @@ export const invoicesService = {
 
       const newInvoice = await tx.invoice.create({
         data: {
-          invoiceNumber,
+            companyId: await getTenantId(),
+            invoiceNumber,
           bookingId: booking.id,
           customerId: booking.customerId,
           subtotal: subtotal,

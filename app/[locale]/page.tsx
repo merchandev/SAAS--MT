@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "software gestión traslados",
     "saas traslados privados",
     "plataforma reservas transfer",
-    "software empresa traslados barcelona",
+    "software empresa traslados espana",
     "gestión conductores privados",
     "sistema reservas transfer aeropuerto",
     "software chófer privado",
@@ -43,12 +43,12 @@ export const metadata: Metadata = {
     "plataforma traslados corporativos",
   ],
   alternates: {
-    canonical: "https://transfersinbarcelona.com/es",
+    canonical: "https://saas.merchan.dev/es",
     languages: {
-      es: "https://transfersinbarcelona.com/es",
-      en: "https://transfersinbarcelona.com/en",
-      fr: "https://transfersinbarcelona.com/fr",
-      ca: "https://transfersinbarcelona.com/ca",
+      es: "https://saas.merchan.dev/es",
+      en: "https://saas.merchan.dev/en",
+      fr: "https://saas.merchan.dev/fr",
+      ca: "https://saas.merchan.dev/ca",
     },
   },
   openGraph: {
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
       "Plataforma SaaS para empresas de traslados: reservas online, gestión de conductores, pagos automáticos y panel de control.",
     locale: "es_ES",
     type: "website",
-    url: "https://transfersinbarcelona.com/es",
+    url: "https://saas.merchan.dev/es",
   },
   twitter: {
     card: "summary_large_image",
@@ -212,8 +212,8 @@ const getHomeSettings = unstable_cache(
       return await settingsQueries.getAllSettings();
     } catch {
       return {
-        SITE_NAME: "Transfers in Barcelona",
-        COMPANY_NAME: "Transfers in Barcelona",
+        SITE_NAME: "Merchan.Dev SaaS",
+        COMPANY_NAME: "Merchan.Dev SaaS",
         SITE_LOGO_URL: "",
         BRAND_ACCENT_COLOR: "#D4AF37",
       };
@@ -243,7 +243,7 @@ function SectionIntro({
 
 export default async function HomePage() {
   const settings = await getHomeSettings();
-  const brandName = settings.SITE_NAME || settings.COMPANY_NAME || "Transfers in Barcelona";
+  const brandName = settings.SITE_NAME || settings.COMPANY_NAME || "Merchan.Dev SaaS";
   const accentColor = settings.BRAND_ACCENT_COLOR || "#D4AF37";
   const brandAccentStyle = {
     "--brand-accent": accentColor,
@@ -252,10 +252,10 @@ export default async function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Transfers in Barcelona — SaaS de Gestión de Traslados",
+    name: "Merchan.Dev SaaS — SaaS de Gestión de Traslados",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
-    url: "https://transfersinbarcelona.com",
+    url: "https://saas.merchan.dev",
     description:
       "Plataforma SaaS para empresas de traslados privados: reservas online, gestión de conductores, pagos automáticos, widget embebible y panel de control.",
     offers: {
@@ -275,7 +275,7 @@ export default async function HomePage() {
     provider: {
       "@type": "Organization",
       name: brandName,
-      url: "https://transfersinbarcelona.com",
+      url: "https://saas.merchan.dev",
     },
   };
 
@@ -297,7 +297,7 @@ export default async function HomePage() {
         {/* Hero */}
         <section className="relative flex min-h-[92svh] items-center overflow-hidden pt-32 pb-14 sm:pt-36 lg:pt-40">
           <Image
-            src="/images/blog/articles/la-mejor-opcion-de-mejores-empresas-de-traslados-en-barcelona-y-espana-top-10-ranking-2026-3795.jpg"
+            src="/images/blog/articles/la-mejor-opcion-de-mejores-empresas-de-traslados-en-espana-y-espana-top-10-ranking-2026-3795.jpg"
             alt="Panel de gestión de traslados privados para empresas"
             fill
             priority
@@ -508,7 +508,7 @@ export default async function HomePage() {
                 El widget que ya usan operadores como MeTransfers
               </h2>
               <p className="mt-5 leading-8 text-gray-600">
-                MeTransfers, uno de los operadores de traslados privados de referencia en Barcelona, utiliza nuestra infraestructura para gestionar reservas online, asignar conductores y procesar pagos de forma automática.
+                MeTransfers, uno de los operadores de traslados privados de referencia en España, utiliza nuestra infraestructura para gestionar reservas online, asignar conductores y procesar pagos de forma automática.
               </p>
               <p className="mt-4 leading-8 text-gray-600">
                 El formulario que viste en la parte superior de esta página es exactamente el widget que tus clientes verían en tu web — funcional, rápido y conectado a tu operación en tiempo real.
@@ -527,7 +527,7 @@ export default async function HomePage() {
 
             <div className="relative aspect-[5/4] overflow-hidden rounded-lg shadow-2xl">
               <Image
-                src="/images/blog/articles/guia-completa-conoce-nuestra-flota-los-vehiculos-de-alta-gama-para-tus-tours-por-barcelona-5020.jpg"
+                src="/images/blog/articles/guia-completa-conoce-nuestra-flota-los-vehiculos-de-alta-gama-para-tus-tours-por-espana-5020.jpg"
                 alt="Flota de traslados gestionada con la plataforma SaaS"
                 fill
                 sizes="(min-width: 1024px) 45vw, 100vw"

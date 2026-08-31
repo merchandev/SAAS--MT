@@ -1,8 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
+
 export const bookingsQueries = {
   async getAllBookings() {
     return prisma.booking.findMany({
-      where: { deletedAt: null },
+      where: {
+          companyId: await getTenantId(),
+        deletedAt: null },
       include: {
         customer: true,
         vehicle: true,
@@ -15,7 +19,9 @@ export const bookingsQueries = {
 
   async getDeletedBookings() {
     return prisma.booking.findMany({
-      where: { deletedAt: { not: null } },
+      where: {
+          companyId: await getTenantId(),
+        deletedAt: { not: null } },
       include: {
         customer: true,
         vehicle: true,
@@ -44,7 +50,8 @@ export const bookingsQueries = {
 
   async getAbandonedBookings() {
     return prisma.booking.findMany({
-      where: { 
+      where: {
+          companyId: await getTenantId(),
         deletedAt: null,
         bookingStatus: {
           in: ["DRAFT", "PENDING_PAYMENT", "FALLIDA"]

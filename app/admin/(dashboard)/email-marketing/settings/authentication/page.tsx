@@ -12,10 +12,10 @@ export default function AuthenticationSettingsPage() {
     // Simulated DNS check for demo purposes. In a real scenario, call an API that uses `dns` module
     setTimeout(() => {
       setDnsStatus({
-        spf: { ok: true, value: "v=spf1 mx a include:_spf.transfersinbarcelona.com ~all" },
+        spf: { ok: true, value: "v=spf1 mx a include:_spf.saas.merchan.dev ~all" },
         dkim: { ok: true, value: "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG..." },
         dmarc: { ok: false, value: "Not found", message: "Missing _dmarc TXT record" },
-        mx: { ok: true, value: "mail.transfersinbarcelona.com" },
+        mx: { ok: true, value: "mail.saas.merchan.dev" },
       });
       setIsChecking(false);
     }, 1500);
@@ -32,7 +32,7 @@ export default function AuthenticationSettingsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 gap-4">
           <div>
             <h2 className="text-lg font-semibold">Estado de Registros</h2>
-            <p className="text-sm text-gray-500">Dominio principal: <span className="font-medium text-gray-800">transfersinbarcelona.com</span></p>
+            <p className="text-sm text-gray-500">Dominio principal: <span className="font-medium text-gray-800">saas.merchan.dev</span></p>
           </div>
           <button 
             onClick={handleCheckDns}

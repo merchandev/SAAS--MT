@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     await prisma.redsysLog.create({
       data: {
-        orderId,
+          orderId,
         transactionType: "NOTIFICATION",
         rawPayload: dsMerchantParameters,
         responseCode: decodedParams.Ds_Response,
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
       await tx.payment.update({
         where: { id: payment.id },
         data: {
-          status: isSuccess ? "PAID" : "FAILED",
+            status: isSuccess ? "PAID" : "FAILED",
           responseCode: decodedParams.Ds_Response,
           signatureValid: true,
           paidAt: isSuccess ? new Date() : null,
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
       await tx.booking.update({
         where: { id: payment.bookingId },
         data: {
-          paymentStatus: isSuccess ? "PAID" : "FAILED",
+            paymentStatus: isSuccess ? "PAID" : "FAILED",
           bookingStatus: newBookingStatus,
         }
       });
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
       // Audit and History tracking
       await tx.bookingStatusHistory.create({
         data: {
-          bookingId: payment.bookingId,
+            bookingId: payment.bookingId,
           oldStatus: payment.booking.bookingStatus,
           newStatus: newBookingStatus,
           changedBy: "REDSYS_CALLBACK",

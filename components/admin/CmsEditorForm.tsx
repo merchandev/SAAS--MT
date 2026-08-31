@@ -156,7 +156,7 @@ export function CmsEditorForm({
               <Input 
                 value={isPage ? (formData.h1Title || "") : (formData.title || "")}
                 onChange={(e) => handleChange(isPage ? "h1Title" : "title", e.target.value)}
-                placeholder="Ej. Traslado desde el aeropuerto de Barcelona"
+                placeholder="Ej. Traslado desde el aeropuerto de España"
                 className="text-lg font-medium"
               />
             </div>
@@ -169,7 +169,7 @@ export function CmsEditorForm({
                   <Input 
                     value={formData.originName || ""}
                     onChange={(e) => handleChange("originName", e.target.value)}
-                    placeholder="Ej. Aeropuerto de Barcelona"
+                    placeholder="Ej. Aeropuerto de España"
                   />
                 </div>
                 <div>
@@ -307,7 +307,7 @@ export function CmsEditorForm({
                 <Input 
                   value={formData.seoKeywords || ""}
                   onChange={(e) => handleChange("seoKeywords", e.target.value)}
-                  placeholder="traslado barcelona, chofer sitges, etc (separado por comas)"
+                  placeholder="traslado España, chofer sitges, etc (separado por comas)"
                 />
               </div>
 

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
 import { requireRoleApi } from "@/modules/auth/permissions";
 import { materializeCampaign } from "@/lib/email/campaign-materializer";
 import { emailConfig } from "@/lib/email/config";
@@ -14,6 +15,7 @@ export async function POST(req: Request) {
     const data = await req.json();
     
     const campaignData = {
+      companyId: await getTenantId(),
       name: data.name,
       subject: data.subject,
       content: data.body,

@@ -73,12 +73,15 @@ async function seedRoutes() {
   console.log("Seeding SEO routes...");
   for (const route of routesToSeed) {
     const existing = await prisma.routePage.findUnique({
-      where: { slug: route.slug }
+      where: {
+          companyId_slug: { companyId: "legacy-metransfers", slug: route.slug } }
     });
     
     if (!existing) {
       await prisma.routePage.create({
-        data: route
+        data: {
+            companyId: "legacy-metransfers",
+            ...route }
       });
       console.log(`Created route: ${route.slug}`);
     } else {

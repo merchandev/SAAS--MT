@@ -11,11 +11,11 @@ import { getTranslatedField } from "@/lib/i18n-utils";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "Blog de traslados privados en Barcelona | Transfers in Barcelona",
+  title: "Blog de traslados privados en España | Merchan.Dev SaaS",
   description:
-    "Consejos sobre traslados privados, aeropuerto de Barcelona, tours, eventos corporativos y coches con chofer.",
+    "Consejos sobre traslados privados, aeropuerto de España, tours, eventos corporativos y coches con chofer.",
   alternates: {
-    canonical: "https://transfersinbarcelona.com/es/blog",
+    canonical: "https://saas.merchan.dev/es/blog",
   },
 };
 
@@ -41,7 +41,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
     title: getTranslatedField(post, "title", locale, post.title),
     slug: post.slug,
     excerpt: getTranslatedField(post, "excerpt", locale, post.excerpt || ""),
-    category: "Transfersinbarcelona-Blog",
+    category: "TransfersinEspaña-Blog",
     pubDate: post.publishedAt ? post.publishedAt.toISOString() : post.createdAt.toISOString()
   }));
   return (
@@ -49,7 +49,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
       <PageHero
         eyebrow="Blog"
         title="Guias de movilidad premium"
-        description="Informacion practica para planificar traslados privados, tours, servicios de aeropuerto y coches con chofer en Barcelona."
+        description="Informacion practica para planificar traslados privados, tours, servicios de aeropuerto y coches con chofer en España."
       />
 
       <main>

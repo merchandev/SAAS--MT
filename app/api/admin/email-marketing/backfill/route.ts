@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function GET() {
   try {
-    const campaigns = await prisma.emailCampaign.findMany();
+    const campaigns = await prisma.emailCampaign.findMany({ where: {
+        companyId: await getTenantId() } });
     let count = 0;
     
     for (const campaign of campaigns) {
@@ -20,7 +22,8 @@ export async function GET() {
       
       await prisma.campaignMetricDaily.create({
         data: {
-          campaignId: campaign.id,
+            
+            campaignId: campaign.id,
           date: date,
           sentCount: campaign.totalCount,
           deliveredCount: campaign.deliveredCount,

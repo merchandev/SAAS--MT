@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const metadata = {
-  title: "Valora tu traslado | Transfers in Barcelona",
+  title: "Valora tu traslado | Merchan.Dev SaaS",
   description: "Comparte tu experiencia y ayúdanos a seguir mejorando.",
   robots: "noindex",
 };

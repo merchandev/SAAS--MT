@@ -48,7 +48,7 @@ export default function SystemSettingsPage() {
             <div className="text-sm text-gray-600 space-y-2">
               <p><span className="font-medium text-gray-900">Host:</span> smtp.hostinger.com</p>
               <p><span className="font-medium text-gray-900">Puerto:</span> 465 (SSL)</p>
-              <p><span className="font-medium text-gray-900">Usuario:</span> info@transfersinbarcelona.com</p>
+              <p><span className="font-medium text-gray-900">Usuario:</span> info@saas.merchan.dev</p>
             </div>
           </div>
         </div>

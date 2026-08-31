@@ -181,7 +181,7 @@ export function HotelEditForm({ hotel, vehicles }: { hotel: any, vehicles: any[]
                     <Input 
                       value={dest.name} 
                       onChange={(e) => updateDestination(dest.id, "name", e.target.value)} 
-                      placeholder="Ej: Aeropuerto de Barcelona"
+                      placeholder="Ej: Aeropuerto de España"
                       required
                     />
                   </div>

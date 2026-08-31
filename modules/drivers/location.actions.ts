@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireRoleAction as requireRole } from "@/modules/auth/permissions";
 import { authService } from "@/modules/auth/auth.service";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 /**
  * Guarda la posiciÃ³n actual del conductor autenticado en la base de datos
@@ -28,6 +29,7 @@ export async function updateDriverLocationAction(lat: number, lng: number) {
     await prisma.driver.update({
       where: { id: driver.id },
       data: {
+          companyId: await getTenantId(),
         currentLat: lat,
         currentLng: lng,
         lastLocationUpdate: new Date(),

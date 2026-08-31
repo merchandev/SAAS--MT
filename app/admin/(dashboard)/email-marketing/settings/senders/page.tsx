@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export default function SendersSettingsPage() {
   const [senders] = useState([
-    { id: "1", name: "Transfers in Barcelona", email: "info@transfersinbarcelona.com", isDefault: true }
+    { id: "1", name: "Merchan.Dev SaaS", email: "info@saas.merchan.dev", isDefault: true }
   ]);
 
   return (

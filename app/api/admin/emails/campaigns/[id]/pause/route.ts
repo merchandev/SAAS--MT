@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRoleApi } from "@/modules/auth/permissions";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -25,7 +26,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
     await prisma.emailCampaign.update({
       where: { id },
-      data: { status: "PAUSED" }
+      data: {
+          status: "PAUSED" }
     });
 
     return NextResponse.json({ success: true });

@@ -18,6 +18,7 @@ export interface SessionPayload {
   role: string;
   email: string;
   sessionVersion?: number;
+  companyId?: string;
 }
 
 export const authService = {

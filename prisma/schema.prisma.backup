@@ -1,0 +1,1157 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// 1. ROLES Y USUARIOS
+// ==========================================
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  OPERATOR
+  HOTEL
+  AGENCY
+  DRIVER
+  CUSTOMER
+}
+
+model User {
+  id             String  @id @default(uuid())
+  email          String  @unique
+  passwordHash   String
+  fullName       String
+  role           Role    @default(CUSTOMER)
+  phone          String?
+  isActive       Boolean @default(true)
+  sessionVersion Int     @default(0)
+
+  // Relaciones
+  driverProfile   Driver?
+  customerProfile Customer?
+
+  hotelId  String?
+  hotel    Hotel?  @relation(fields: [hotelId], references: [id])
+  agencyId String?
+  agency   Agency? @relation(fields: [agencyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// 2. CLIENTES (Usuarios Finales)
+// ==========================================
+model Customer {
+  id     String  @id @default(uuid())
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
+  email             String  @unique
+  fullName          String
+  phone             String?
+  country           String?
+  preferredLanguage String? @default("en")
+
+  bookings         Booking[]
+  invoices         Invoice[]
+  reviews          Review[]
+  suggestions      CustomerSuggestion[]
+  addresses        CustomerAddress[]
+  marketingContact MarketingContact?
+
+  totalSpent    Decimal @default(0) @db.Decimal(10, 2)
+  totalBookings Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CustomerAddress {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  label      String
+  address    String
+  placeId    String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ==========================================
+// 3. FLOTA Y VEHÍCULOS
+// ==========================================
+model VehicleCategory {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  vehicles    Vehicle[]
+}
+
+model Vehicle {
+  id         String          @id @default(uuid())
+  categoryId String
+  category   VehicleCategory @relation(fields: [categoryId], references: [id])
+
+  name     String
+  slug     String  @unique
+  imageUrl String?
+
+  passengerCapacity Int
+  luggageCapacity   Int
+
+  pricePerKmOneWay    Decimal @db.Decimal(10, 2)
+  pricePerKmRoundTrip Decimal @db.Decimal(10, 2)
+  pricePerHour        Decimal @db.Decimal(10, 2)
+  minimumPrice        Decimal @db.Decimal(10, 2)
+
+  airportSurcharge Decimal @default(0) @db.Decimal(10, 2)
+  nightSurcharge   Decimal @default(0) @db.Decimal(10, 2)
+
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  bookings     Booking[]
+  availability VehicleAvailability[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// 4. B2B: HOTELES Y AGENCIAS
+// ==========================================
+model Hotel {
+  id    String @id @default(uuid())
+  name  String
+  slug  String @unique
+  token String @unique
+
+  contactName String?
+  email       String?
+  phone       String?
+
+  address        String?
+  placeId        String?
+  routesSettings Json? // Stores predefined destinations and prices
+
+  commissionValue Decimal @default(0) @db.Decimal(10, 2)
+  discountValue   Decimal @default(0) @db.Decimal(10, 2)
+
+  isActive Boolean @default(true)
+
+  bookings Booking[]
+  users    User[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Agency {
+  id    String @id @default(uuid())
+  name  String
+  slug  String @unique
+  token String @unique
+
+  contactName String?
+  email       String?
+  phone       String?
+
+  commissionValue Decimal @default(0) @db.Decimal(10, 2)
+  discountValue   Decimal @default(0) @db.Decimal(10, 2)
+
+  isActive Boolean @default(true)
+
+  bookings Booking[]
+  users    User[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+// ==========================================
+// 5. CONDUCTORES
+// ==========================================
+enum DriverAssignmentStatus {
+  ASIGNADO
+  EN_CAMINO
+  EN_PUNTO_DE_RECOGIDA
+  CLIENTE_RECOGIDO
+  SERVICIO_FINALIZADO
+  INCIDENCIA
+}
+
+model Driver {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  licenseNumber String?
+  status        String  @default("ACTIVE")
+
+  // Tracking en tiempo real
+  currentLat         Float?
+  currentLng         Float?
+  lastLocationUpdate DateTime?
+
+  bookings     Booking[]
+  availability DriverAvailability[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DriverAvailability {
+  id       String @id @default(uuid())
+  driverId String
+  driver   Driver @relation(fields: [driverId], references: [id])
+
+  startsAt DateTime
+  endsAt   DateTime
+  status   String
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([driverId, startsAt, endsAt])
+}
+
+model VehicleAvailability {
+  id        String  @id @default(uuid())
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  startsAt DateTime
+  endsAt   DateTime
+  status   String
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vehicleId, startsAt, endsAt])
+}
+
+// ==========================================
+// 6. MOTOR DE PRECIOS Y REGLAS
+// ==========================================
+model PriceRule {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  type        String // Ejemplo: NIGHT_SURCHARGE, WEEKEND_SURCHARGE, AIRPORT_FEE
+  valueType   String // PERCENTAGE, FIXED
+  value       Decimal  @db.Decimal(10, 2)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DiscountCode {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  description String?
+  valueType   String // PERCENTAGE, FIXED
+  value       Decimal   @db.Decimal(10, 2)
+  maxUses     Int?
+  usedCount   Int       @default(0)
+  validFrom   DateTime?
+  validUntil  DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum ZoneType {
+  AIRPORT
+  PORT
+  TRAIN_STATION
+  CITY
+  HOTEL_AREA
+}
+
+model Zone {
+  id        String   @id @default(uuid())
+  name      String
+  type      ZoneType
+  placeId   String?  @unique
+  keywords  String[]
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// 7. MOTOR DE RESERVAS
+// ==========================================
+enum BookingStatus {
+  DRAFT
+  PENDING_PAYMENT
+  PAID
+  POR_CONFIRMAR
+  CONFIRMADA
+  ASIGNADA
+  EN_CURSO
+  COMPLETADA
+  CANCELADA
+  NO_SHOW
+  REEMBOLSADA
+  FALLIDA
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum SourceType {
+  WEB_DIRECT
+  HOTEL_QR
+  AGENCY_LINK
+  MANUAL_ADMIN
+}
+
+enum TripType {
+  ONE_WAY
+  ROUND_TRIP
+}
+
+model Booking {
+  id         String @id @default(uuid())
+  publicCode String @unique
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  originAddress      String
+  originPlaceId      String?
+  originLat          Float?
+  originLng          Float?
+  destinationAddress String
+  destinationPlaceId String?
+  destinationLat     Float?
+  destinationLng     Float?
+  distanceKm         Decimal @db.Decimal(10, 2)
+  durationMinutes    Int
+
+  serviceDate        DateTime
+  serviceTime        String
+  tripType           TripType  @default(ONE_WAY)
+  returnDate         DateTime?
+  returnTime         String?
+  returnFlightNumber String?
+
+  passengers   Int
+  luggage      Int
+  flightNumber String?
+  pickupSign   String?
+  babySeats    Int     @default(0)
+  wheelchair   Boolean @default(false)
+
+  basePrice       Decimal @db.Decimal(10, 2)
+  discountAmount  Decimal @default(0) @db.Decimal(10, 2)
+  surchargeAmount Decimal @default(0) @db.Decimal(10, 2)
+  finalPrice      Decimal @db.Decimal(10, 2)
+  currency        String  @default("EUR")
+  priceBreakdown  Json?
+
+  sourceType SourceType @default(WEB_DIRECT)
+  hotelId    String?
+  hotel      Hotel?     @relation(fields: [hotelId], references: [id])
+  agencyId   String?
+  agency     Agency?    @relation(fields: [agencyId], references: [id])
+
+  driverId     String?
+  driver       Driver?                 @relation(fields: [driverId], references: [id])
+  driverStatus DriverAssignmentStatus?
+
+  bookingStatus BookingStatus @default(PENDING_PAYMENT)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  customerNotes String?   @db.Text
+  internalNotes String?   @db.Text
+  deletedAt     DateTime?
+  deletedBy     String?
+  deletedReason String?   @db.Text
+
+  payments      Payment[]
+  statusHistory BookingStatusHistory[]
+  invoice       Invoice?
+  review        Review?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([deletedAt])
+  @@index([bookingStatus])
+  @@index([serviceDate])
+  @@index([driverId])
+  @@index([hotelId])
+  @@index([agencyId])
+  @@index([customerId])
+  @@index([createdAt])
+  @@index([bookingStatus, serviceDate])
+  @@index([driverId, serviceDate])
+  @@index([createdAt, bookingStatus])
+}
+
+// ==========================================
+// 8. PAGOS (Redsys)
+// ==========================================
+model Payment {
+  id        String  @id @default(uuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+
+  provider        String  @default("REDSYS")
+  providerOrderId String? @unique
+
+  amount   Decimal @db.Decimal(10, 2)
+  currency String  @default("EUR")
+
+  status         PaymentStatus @default(PENDING)
+  responseCode   String?
+  signatureValid Boolean       @default(false)
+
+  rawRequest  String? @db.Text
+  rawResponse String? @db.Text
+
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// 9. AUDITORÍA Y NOTIFICACIONES
+// ==========================================
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String? // UUID del administrador o sistema
+  entityType String // Ejemplo: Booking, Vehicle
+  entityId   String // ID del registro modificado
+  action     String // CREATE, UPDATE, DELETE
+  oldValue   String?  @db.Text // JSON stringificado
+  newValue   String?  @db.Text // JSON stringificado
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+}
+
+model NotificationTemplate {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  subject   String
+  body      String   @db.Text
+  type      String // EMAIL, WHATSAPP
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EmailCampaign {
+  id      String @id @default(uuid())
+  name    String // Nombre interno de la campaña
+  subject String
+  content String @db.Text // Contenido HTML
+  status  String @default("DRAFT") // DRAFT, SCHEDULED, QUEUING, SENDING, PAUSED, COMPLETED, FAILED, CANCELLED
+
+  // Mapea la columna JSONB existente. Solo se usa como entrada temporal
+  // durante DRAFT/QUEUING y se vacía al materializar destinatarios.
+  legacyRecipients Json? @map("recipients")
+
+  sentCount       Int @default(0)
+  failedCount     Int @default(0)
+  deliveredCount  Int @default(0)
+  bouncedCount    Int @default(0)
+  deferredCount   Int @default(0)
+  suppressedCount Int @default(0)
+  totalCount      Int @default(0)
+
+  marketingListId    String?
+  marketingSegmentId String?
+  emailTemplateId    String?
+
+  createdBy    String?
+  scheduledAt  DateTime?
+  startedAt    DateTime?
+  completedAt  DateTime?
+  contactPhone String?   @default("+34 662 02 41 36")
+  sendingRate  Int       @default(50)
+  maxDailySends Int      @default(5000) // Límite diario de envíos para esta campaña
+  sendFromHour String? // Ej. "09:00"
+  sendToHour   String? // Ej. "18:00"
+  timezone     String    @default("Europe/Madrid")
+  fromName     String?
+  fromAddress  String?
+  replyTo      String?
+  lastError    String?   @db.Text
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  campaignRecipients CampaignRecipient[]
+  outboundEmails     OutboundEmail[]
+
+  @@index([status, scheduledAt])
+  @@index([deletedAt])
+  @@index([createdAt])
+}
+
+enum EmailMessageKind {
+  TRANSACTIONAL
+  MARKETING
+}
+
+enum OutboundEmailStatus {
+  QUEUED
+  PROCESSING
+  ACCEPTED
+  DEFERRED
+  DELIVERED
+  BOUNCED
+  SUPPRESSED
+  FAILED
+  CANCELLED
+}
+
+enum CampaignRecipientStatus {
+  QUEUED
+  PROCESSING
+  ACCEPTED
+  DEFERRED
+  DELIVERED
+  BOUNCED
+  SUPPRESSED
+  FAILED
+  CANCELLED
+}
+
+enum EmailEventType {
+  CREATED
+  QUEUED
+  PROCESSING
+  ACCEPTED
+  DEFERRED
+  DELIVERED
+  BOUNCED
+  SUPPRESSED
+  FAILED
+  CANCELLED
+  UNSUBSCRIBED
+}
+
+enum EmailSuppressionReason {
+  UNSUBSCRIBED
+  HARD_BOUNCE
+  SPAM_COMPLAINT
+  MANUAL_BLOCK
+  INVALID_ADDRESS
+}
+
+enum EmailSuppressionScope {
+  MARKETING
+  ALL
+}
+
+model CampaignRecipient {
+  id               String                  @id @default(uuid())
+  campaignId       String
+  campaign         EmailCampaign           @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  email            String
+  normalizedEmail  String
+  status           CampaignRecipientStatus @default(QUEUED)
+  unsubscribeToken String                  @unique
+  attempts         Int                     @default(0)
+  acceptedAt       DateTime?
+  deliveredAt      DateTime?
+  bouncedAt        DateTime?
+  suppressedAt     DateTime?
+  lastSmtpCode     Int?
+  lastEnhancedCode String?
+  lastError        String?                 @db.Text
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  outboundEmail OutboundEmail?
+
+  @@unique([campaignId, normalizedEmail])
+  @@index([campaignId, status])
+  @@index([normalizedEmail])
+  @@index([status, updatedAt])
+}
+
+model OutboundEmail {
+  id             String              @id @default(uuid())
+  idempotencyKey String              @unique
+  kind           EmailMessageKind
+  priority       Int                 @default(50)
+  status         OutboundEmailStatus @default(QUEUED)
+
+  toEmail           String
+  normalizedToEmail String
+  fromEmail         String
+  fromName          String?
+  replyTo           String?
+  envelopeFrom      String
+  subject           String
+
+  // Para transaccionales se guarda el snapshot.
+  // Para campañas puede ser null y renderizarse desde EmailCampaign.
+  html    String? @db.Text
+  text    String? @db.Text
+  headers Json?
+  payload Json?
+
+  eventType           String?
+  bookingId           String?
+  campaignId          String?
+  campaign            EmailCampaign?     @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  campaignRecipientId String?            @unique
+  campaignRecipient   CampaignRecipient? @relation(fields: [campaignRecipientId], references: [id], onDelete: SetNull)
+
+  availableAt DateTime  @default(now())
+  lockedAt    DateTime?
+  lockedUntil DateTime?
+  lockedBy    String?
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(6)
+
+  messageId        String?
+  postfixQueueId   String?
+  smtpResponse     String? @db.Text
+  lastSmtpCode     Int?
+  lastEnhancedCode String?
+  lastError        String? @db.Text
+
+  acceptedAt  DateTime?
+  deliveredAt DateTime?
+  deferredAt  DateTime?
+  bouncedAt   DateTime?
+  failedAt    DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  events EmailEvent[]
+
+  @@index([status, availableAt, priority])
+  @@index([lockedUntil])
+  @@index([campaignId, status])
+  @@index([normalizedToEmail])
+  @@index([postfixQueueId])
+  @@index([acceptedAt])
+}
+
+model EmailEvent {
+  id              String         @id @default(uuid())
+  outboundEmailId String
+  outboundEmail   OutboundEmail  @relation(fields: [outboundEmailId], references: [id], onDelete: Cascade)
+  type            EmailEventType
+  smtpCode        Int?
+  enhancedCode    String?
+  action          String?
+  diagnostic      String?        @db.Text
+  remoteMta       String?
+  raw             Json?
+  occurredAt      DateTime       @default(now())
+
+  @@index([outboundEmailId, occurredAt])
+  @@index([type, occurredAt])
+}
+
+model EmailSuppression {
+  id              String                 @id @default(uuid())
+  email           String
+  normalizedEmail String
+  reason          EmailSuppressionReason
+  scope           EmailSuppressionScope  @default(MARKETING)
+  source          String?
+  campaignId      String?
+  outboundEmailId String?
+  notes           String?                @db.Text
+  expiresAt       DateTime?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  @@unique([normalizedEmail, scope])
+  @@index([reason])
+  @@index([expiresAt])
+}
+
+model EmailDomainState {
+  key                  String    @id
+  pausedUntil          DateTime?
+  lastSubmittedAt      DateTime?
+  consecutiveDeferrals Int       @default(0)
+  lastEnhancedCode     String?
+  lastDiagnostic       String?   @db.Text
+  updatedAt            DateTime  @updatedAt
+}
+
+model EmailWorkerHeartbeat {
+  workerId       String   @id
+  hostname       String
+  pid            Int
+  version        String?
+  lastSeenAt     DateTime
+  lastError      String?  @db.Text
+  processedCount BigInt   @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model NotificationLog {
+  id          String   @id @default(uuid())
+  bookingId   String?
+  campaignId  String? // Relación opcional con EmailCampaign
+  recipient   String // Email o Teléfono
+  type        String // EMAIL, WHATSAPP
+  eventType   String? // BOOKING_PENDING, BOOKING_CONFIRMED, BOOKING_CANCELLED, etc.
+  subject     String? // Asunto del email
+  status      String // SENT, FAILED
+  errorReason String?  @db.Text
+  sentAt      DateTime @default(now())
+
+  @@index([sentAt])
+  @@index([status])
+  @@index([eventType])
+  @@index([bookingId])
+  @@index([campaignId])
+}
+
+model RateLimitBucket {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
+}
+
+model MapsDistanceCache {
+  key             String   @id
+  origin          String
+  destination     String
+  distanceKm      Float
+  durationMinutes Int
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([expiresAt])
+}
+
+// ==========================================
+// 10. CONFIGURACIÓN DEL SISTEMA
+// ==========================================
+model SystemSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String   @db.Text
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
+// 11. MODELOS ADICIONALES (Facturación, Reseñas, Logs)
+// ==========================================
+
+model BookingStatusHistory {
+  id        String        @id @default(uuid())
+  bookingId String
+  booking   Booking       @relation(fields: [bookingId], references: [id])
+  oldStatus BookingStatus
+  newStatus BookingStatus
+  changedBy String? // userId del admin/sistema
+  notes     String?       @db.Text
+  createdAt DateTime      @default(now())
+}
+
+model RedsysLog {
+  id               String   @id @default(uuid())
+  bookingId        String?
+  orderId          String?
+  transactionType  String // NOTIFICATION, SUCCESS, ERROR
+  rawPayload       String   @db.Text
+  responseCode     String?
+  isSignatureValid Boolean  @default(false)
+  createdAt        DateTime @default(now())
+}
+
+model Invoice {
+  id            String   @id @default(uuid())
+  invoiceNumber String   @unique
+  bookingId     String   @unique
+  booking       Booking  @relation(fields: [bookingId], references: [id])
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id])
+
+  subtotal    Decimal @db.Decimal(10, 2)
+  taxAmount   Decimal @default(0) @db.Decimal(10, 2)
+  totalAmount Decimal @db.Decimal(10, 2)
+  currency    String  @default("EUR")
+
+  issuedAt DateTime @default(now())
+  pdfUrl   String?
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  bookingId  String   @unique
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  rating      Int // 1-5
+  comment     String? @db.Text
+  isPublished Boolean @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model CustomerSuggestion {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  subject String
+  message String @db.Text
+  status  String @default("NEW")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([email])
+  @@index([expiresAt])
+}
+
+model RoutePage {
+  id              String  @id @default(uuid())
+  slug            String  @unique // Ejemplo: traslados-aeropuerto-mallorca-alcudia
+  originName      String
+  destinationName String
+  h1Title         String
+  metaDescription String? @db.Text
+  contentHtml     String? @db.Text
+
+  seoTitle    String?
+  seoKeywords String?
+  seoImage    String?
+
+  translations Json? // { "en": { "h1Title": "...", "contentHtml": "...", "metaDescription": "...", "seoTitle": "...", "seoKeywords": "..." }, "fr": { ... } }
+
+  basePriceCache Decimal? @db.Decimal(10, 2) // Cacheo para pintar "Desde X €" rápido
+
+  isActive    Boolean   @default(true)
+  scheduledAt DateTime? // Si tiene fecha futura, se publicará automáticamente en esa fecha
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([scheduledAt])
+  @@index([isActive])
+}
+
+model Post {
+  id          String  @id @default(uuid())
+  slug        String  @unique
+  title       String
+  excerpt     String? @db.Text
+  contentHtml String? @db.Text
+
+  metaTitle       String?
+  metaDescription String? @db.Text
+  seoKeywords     String?
+  imageUrl        String?
+
+  translations Json? // { "en": { "title": "...", "excerpt": "...", "contentHtml": "...", "metaTitle": "...", "metaDescription": "..." }, "fr": { ... } }
+
+  isActive    Boolean   @default(true)
+  publishedAt DateTime?
+  scheduledAt DateTime? // Si tiene fecha futura, se publicará automáticamente en esa fecha
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([scheduledAt])
+  @@index([isActive])
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String   @db.Text
+  status    String   @default("NEW") // NEW, READ, REPLIED, ARCHIVED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StaticPage {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  title           String?
+  metaDescription String?
+  seoKeywords     String?
+  translations    Json? // { "en": { "title": "...", "metaDescription": "...", "seoKeywords": "..." }, "fr": { ... } }
+  isActive        Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+}
+
+// ==========================================
+// 12. MARKETING Y AUDIENCIAS (V3)
+// ==========================================
+
+model MarketingContact {
+  id              String  @id @default(uuid())
+  email           String  @unique
+  normalizedEmail String  @unique
+  firstName       String?
+  lastName        String?
+  phone           String?
+  country         String?
+  language        String? @default("en")
+
+  customerId String?   @unique
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  hasConsent    Boolean   @default(false)
+  consentDate   DateTime?
+  consentSource String?
+
+  customFields Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lists MarketingContactList[]
+  tags  MarketingContactTag[]
+}
+
+model MarketingList {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contacts MarketingContactList[]
+}
+
+model MarketingContactList {
+  contactId String
+  listId    String
+  contact   MarketingContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  list      MarketingList    @relation(fields: [listId], references: [id], onDelete: Cascade)
+  addedAt   DateTime         @default(now())
+
+  @@id([contactId, listId])
+  @@index([listId])
+}
+
+model MarketingTag {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  color     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contacts MarketingContactTag[]
+}
+
+model MarketingContactTag {
+  contactId String
+  tagId     String
+  contact   MarketingContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tag       MarketingTag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  addedAt   DateTime         @default(now())
+
+  @@id([contactId, tagId])
+  @@index([tagId])
+}
+
+model MarketingSegment {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  rules       Json
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model EmailTemplate {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  subject     String
+  html        String   @db.Text
+  designJson  Json?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
+// 13. ANALÍTICA Y ENTREGABILIDAD (V4)
+// ==========================================
+
+model CampaignMetricDaily {
+  id             String   @id @default(uuid())
+  campaignId     String
+  date           DateTime @db.Date
+  sentCount      Int      @default(0)
+  deliveredCount Int      @default(0)
+  bouncedCount   Int      @default(0)
+  deferredCount  Int      @default(0)
+  openedCount    Int      @default(0)
+  clickedCount   Int      @default(0)
+  unsubCount     Int      @default(0)
+  complaintCount Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([campaignId, date])
+  @@index([campaignId])
+  @@index([date])
+}
+
+model CampaignMetricHourly {
+  id             String   @id @default(uuid())
+  campaignId     String
+  hour           DateTime // Timestamp truncado a la hora
+  sentCount      Int      @default(0)
+  deliveredCount Int      @default(0)
+  bouncedCount   Int      @default(0)
+  deferredCount  Int      @default(0)
+  openedCount    Int      @default(0)
+  clickedCount   Int      @default(0)
+  unsubCount     Int      @default(0)
+  complaintCount Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([campaignId, hour])
+  @@index([campaignId])
+  @@index([hour])
+}
+
+model DomainProviderMetric {
+  id             String   @id @default(uuid())
+  campaignId     String
+  provider       String // e.g., "GMAIL", "OUTLOOK", "YAHOO", "OTHER"
+  sentCount      Int      @default(0)
+  deliveredCount Int      @default(0)
+  bouncedCount   Int      @default(0)
+  deferredCount  Int      @default(0)
+  openedCount    Int      @default(0)
+  clickedCount   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([campaignId, provider])
+  @@index([campaignId])
+}
+
+model AudienceMetricDaily {
+  id             String   @id @default(uuid())
+  date           DateTime @db.Date
+  totalContacts  Int      @default(0)
+  activeContacts Int      @default(0)
+  newSubscribers Int      @default(0)
+  unsubscribes   Int      @default(0)
+  hardBounces    Int      @default(0)
+  complaints     Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([date])
+}
+
+model LinkMetric {
+  id           String   @id @default(uuid())
+  campaignId   String
+  url          String   @db.Text
+  clickedCount Int      @default(0)
+  uniqueClicks Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([campaignId, url])
+  @@index([campaignId])
+}
+
+model DeliverabilityAlert {
+  id         String    @id @default(uuid())
+  type       String // e.g., "HIGH_BOUNCE_RATE", "SPAM_COMPLAINT"
+  severity   String // e.g., "WARNING", "CRITICAL"
+  message    String    @db.Text
+  campaignId String?
+  provider   String?
+  isResolved Boolean   @default(false)
+  resolvedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([isResolved])
+  @@index([createdAt])
+}
+
+model MtaNode {
+  id         String    @id @default(uuid())
+  hostname   String    @unique
+  ipAddress  String?
+  region     String?
+  status     String    @default("ACTIVE") // ACTIVE, MAINTENANCE, OFFLINE
+  lastSeenAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model MtaProviderState {
+  id                   String    @id @default(uuid())
+  mtaNodeId            String
+  provider             String // e.g., "GMAIL", "OUTLOOK"
+  rateLimitPerMinute   Int       @default(0) // Límite dinámico, 0 significa usar global
+  concurrency          Int       @default(0)
+  pausedUntil          DateTime?
+  consecutiveDeferrals Int       @default(0)
+  lastEnhancedCode     String?
+  lastDiagnostic       String?   @db.Text
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@unique([mtaNodeId, provider])
+}

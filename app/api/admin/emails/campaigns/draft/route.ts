@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
 import { requireRoleApi } from "@/modules/auth/permissions";
 
 export async function POST(req: Request) {
@@ -16,6 +17,7 @@ export async function POST(req: Request) {
     } = await req.json();
 
     const data = {
+      companyId: await getTenantId(),
       name: name || "Campaña sin nombre",
       subject: subject || "",
       content: body || "",

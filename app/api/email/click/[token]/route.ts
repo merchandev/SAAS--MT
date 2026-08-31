@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function GET(req: Request, { params }: { params: Promise<{ token: string }> }) {
   try {
@@ -16,7 +17,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
     let isValidRedirect = false;
     try {
       const parsedRedirect = new URL(redirectUrl, req.url);
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "https://transfersinbarcelona.com";
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "https://saas.merchan.dev";
       const trustedHost = new URL(appUrl).host;
       
       if (redirectUrl.startsWith("/") && !redirectUrl.startsWith("//")) {
@@ -54,9 +55,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
             }
           },
           update: {
+              
             clickedCount: { increment: 1 }
           },
           create: {
+              
             campaignId: email.campaignId,
             date: today,
             clickedCount: 1
@@ -72,10 +75,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
             }
           },
           update: {
-            clickedCount: { increment: 1 }
+              clickedCount: { increment: 1 }
           },
           create: {
-            campaignId: email.campaignId,
+              campaignId: email.campaignId,
             hour: hour,
             clickedCount: 1
           }
@@ -90,10 +93,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
             }
           },
           update: {
-            clickedCount: { increment: 1 }
+              clickedCount: { increment: 1 }
           },
           create: {
-            campaignId: email.campaignId,
+              campaignId: email.campaignId,
             url: redirectUrl,
             clickedCount: 1,
             uniqueClicks: 1

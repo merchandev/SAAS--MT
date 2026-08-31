@@ -4,11 +4,11 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 
 export const metadata: Metadata = {
-  title: "Coche con Chófer en Barcelona | Transfers in Barcelona",
-  description: "Alquiler de coche con conductor por horas en Barcelona. Ideal para reuniones, eventos, compras o agendas flexibles con varias paradas.",
+  title: "Traslados Corporativos en España | Merchan.Dev SaaS",
+  description: "Servicio de transporte privado para empresas, congresos, ferias y eventos corporativos en España. Vehículos ejecutivos y máxima puntualidad.",
 };
 
-export default function CocheConChoferPage() {
+export default function TrasladosCorporativosPage() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-950 selection:bg-[var(--brand-accent)] selection:text-white" style={{ "--brand-accent": "#D4AF37" } as any}>
       <MarketingHeader />
@@ -16,9 +16,9 @@ export default function CocheConChoferPage() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Coche con Chófer en Barcelona</h1>
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Traslados Corporativos en España</h1>
               <p className="mt-6 text-lg leading-8 text-gray-600">
-                Disfruta de la máxima flexibilidad alquilando un coche con chófer privado por horas. Nuestro conductor estará a tu disposición para llevarte a tus reuniones, eventos o donde necesites, esperando por ti el tiempo que sea necesario.
+                Soluciones de movilidad ejecutiva para congresos, MWC, ferias, y reuniones de negocios. Garantizamos puntualidad, discreción y la mejor imagen profesional para ti o para tus invitados VIP.
               </p>
             </div>
             <div>

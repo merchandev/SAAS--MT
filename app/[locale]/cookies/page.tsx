@@ -3,8 +3,8 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Política de Cookies | Transfers in Barcelona",
-  description: "Política de Cookies de Transfers in Barcelona GESTION SL.",
+  title: "Política de Cookies | Merchan.Dev SaaS",
+  description: "Política de Cookies de Merchan.Dev SaaS GESTION SL.",
 };
 
 export default function CookiesPolicyPage() {
@@ -25,8 +25,8 @@ export default function CookiesPolicyPage() {
               <ul className="list-none space-y-2 text-gray-600">
                 <li><strong className="text-gray-900">Razón social:</strong> METRANSFERS GESTION SL</li>
                 <li><strong className="text-gray-900">NIF:</strong> B22522353</li>
-                <li><strong className="text-gray-900">Domicilio:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ (BARCELONA)</li>
-                <li><strong className="text-gray-900">Correo electrónico:</strong> <a href="mailto:info@transfersinbarcelona.com" className="text-[#D4AF37] hover:underline font-medium">info@transfersinbarcelona.com</a></li>
+                <li><strong className="text-gray-900">Domicilio:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ (España)</li>
+                <li><strong className="text-gray-900">Correo electrónico:</strong> <a href="mailto:info@saas.merchan.dev" className="text-[#D4AF37] hover:underline font-medium">info@saas.merchan.dev</a></li>
               </ul>
             </section>
 
@@ -48,7 +48,7 @@ export default function CookiesPolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-gray-950 mb-4">4. Cookies utilizadas en transfersinbarcelona.com</h2>
+              <h2 className="text-xl font-bold text-gray-950 mb-4">4. Cookies utilizadas en saas.merchan.dev</h2>
               <p className="mb-3 text-gray-600">
                 Con carácter general, este sitio utiliza o puede utilizar cookies técnicas, de sesión y de preferencia estrictamente relacionadas con el funcionamiento de la web y la prestación del servicio solicitado por el usuario. Entre ellas se incluyen, cuando proceda:
               </p>
@@ -100,7 +100,7 @@ export default function CookiesPolicyPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-950 mb-4">9. Información adicional y contacto</h2>
               <p className="mb-4 text-gray-600">
-                Para obtener más información sobre el tratamiento de datos personales, puede consultar nuestra <Link href="/politica-de-privacidad" className="text-[#D4AF37] hover:underline font-medium">Política de Privacidad</Link>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@transfersinbarcelona.com" className="text-[#D4AF37] hover:underline font-medium">info@transfersinbarcelona.com</a>.
+                Para obtener más información sobre el tratamiento de datos personales, puede consultar nuestra <Link href="/politica-de-privacidad" className="text-[#D4AF37] hover:underline font-medium">Política de Privacidad</Link>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@saas.merchan.dev" className="text-[#D4AF37] hover:underline font-medium">info@saas.merchan.dev</a>.
               </p>
               <p className="text-gray-600">
                 La presente Política de Cookies podrá actualizarse cuando se produzcan cambios normativos, técnicos o funcionales en el sitio web. Se recomienda revisarla periódicamente.

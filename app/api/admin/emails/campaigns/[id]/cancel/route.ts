@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRoleApi } from "@/modules/auth/permissions";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -26,7 +27,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     // Cancelar la campaña
     await prisma.emailCampaign.update({
       where: { id },
-      data: { status: "CANCELLED", completedAt: new Date() }
+      data: {
+          status: "CANCELLED", completedAt: new Date() }
     });
     
     // Marcar como cancelados los correos en la cola

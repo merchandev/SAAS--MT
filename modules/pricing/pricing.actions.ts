@@ -10,6 +10,8 @@ import { discountCodeSchema, priceRuleSchema } from "./pricing.schemas";
 
 export async function getDiscountCodes() {
   return await prisma.discountCode.findMany({
+      where: {
+           },
     orderBy: { createdAt: 'desc' }
   });
 }
@@ -34,6 +36,7 @@ export async function createDiscountCode(data: {
   try {
     const code = await prisma.discountCode.create({
       data: {
+          
         ...parsed.data,
         code: parsed.data.code.toUpperCase().trim(),
       }
@@ -76,6 +79,7 @@ export async function updateDiscountCode(id: string, data: {
     await prisma.discountCode.update({
       where: { id },
       data: {
+          
         ...parsed.data,
         code: parsed.data.code.toUpperCase().trim(),
       }
@@ -106,7 +110,9 @@ export async function toggleDiscountCodeStatus(id: string) {
 
     await prisma.discountCode.update({
       where: { id },
-      data: { isActive: !current.isActive }
+      data: {
+          
+        isActive: !current.isActive }
     });
     await prisma.auditLog.create({
       data: {
@@ -148,6 +154,8 @@ export async function deleteDiscountCode(id: string) {
 
 export async function getPriceRules() {
   return await prisma.priceRule.findMany({
+      where: {
+           },
     orderBy: { createdAt: 'desc' }
   });
 }
@@ -168,7 +176,9 @@ export async function createPriceRule(data: {
   }
 
   try {
-    const rule = await prisma.priceRule.create({ data: parsed.data });
+    const rule = await prisma.priceRule.create({ data: {
+        
+        ...parsed.data } });
     await prisma.auditLog.create({
       data: {
         userId: session?.userId,
@@ -204,7 +214,9 @@ export async function updatePriceRule(id: string, data: {
   try {
     await prisma.priceRule.update({
       where: { id },
-      data: parsed.data
+      data: {
+          
+        ...parsed.data }
     });
     await prisma.auditLog.create({
       data: {
@@ -232,7 +244,9 @@ export async function togglePriceRuleStatus(id: string) {
 
     await prisma.priceRule.update({
       where: { id },
-      data: { isActive: !current.isActive }
+      data: {
+          
+        isActive: !current.isActive }
     });
     await prisma.auditLog.create({
       data: {

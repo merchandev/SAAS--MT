@@ -11,7 +11,7 @@ interface DynamicLayoutEmailProps {
 }
 
 export const DynamicLayoutEmail = ({
-  previewText = "Novedades de Transfers in Barcelona",
+  previewText = "Novedades de Merchan.Dev SaaS",
   dynamicHtml,
   contactPhone = "+34 662 02 41 36"
 }: DynamicLayoutEmailProps) => {
@@ -24,10 +24,10 @@ export const DynamicLayoutEmail = ({
           {/* HEADER */}
           <Section style={header}>
             <Img
-              src="https://transfersinbarcelona.com/images/MeTransfers-exp.png"
+              src="https://saas.merchan.dev/images/MeTransfers-exp.png"
               width="176"
               height="41"
-              alt="Transfers in Barcelona"
+              alt="Merchan.Dev SaaS"
               style={logo}
             />
           </Section>
@@ -46,8 +46,8 @@ export const DynamicLayoutEmail = ({
               <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} style={link}>{contactPhone}</a>
             </Text>
             <Text style={footerAddress}>
-              Transfers in Barcelona<br />
-              Passeig de Gràcia, 1, 08007 Barcelona, España
+              Merchan.Dev SaaS<br />
+              Passeig de Gràcia, 1, 08007 España, España
             </Text>
           </Section>
         </Container>

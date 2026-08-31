@@ -68,6 +68,7 @@ export async function POST(req: Request) {
 
     const contact = await prisma.marketingContact.create({
       data: {
+          
         email: email.trim(),
         normalizedEmail,
         firstName,

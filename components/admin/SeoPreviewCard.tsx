@@ -15,10 +15,10 @@ export function SeoPreviewCard({
   title, 
   description, 
   slug, 
-  baseUrl = "https://transfersinbarcelona.com" 
+  baseUrl = "https://saas.merchan.dev" 
 }: SeoPreviewCardProps) {
   // Truncate text as Google does
-  const displayTitle = title || "Ejemplo de Título SEO para la Página | Transfers in Barcelona";
+  const displayTitle = title || "Ejemplo de Título SEO para la Página | Merchan.Dev SaaS";
   const truncatedTitle = displayTitle.length > 60 ? displayTitle.substring(0, 60) + "..." : displayTitle;
   
   const displayDesc = description || "Proporciona una meta descripción detallada que resuma el contenido de esta página. Intenta mantenerla entre 120 y 160 caracteres para un SEO óptimo.";

@@ -74,7 +74,7 @@ export async function PATCH(
     if (parsed.data.bookingStatus && parsed.data.bookingStatus !== currentBooking.bookingStatus) {
       await tx.bookingStatusHistory.create({
         data: {
-          bookingId: id,
+            bookingId: id,
           oldStatus: currentBooking.bookingStatus,
           newStatus: parsed.data.bookingStatus,
           changedBy: session.userId,

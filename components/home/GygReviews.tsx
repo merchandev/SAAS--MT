@@ -29,7 +29,7 @@ const reviews: Review[] = [
     color: 'bg-slate-800',
     date: 'Abril 2026',
     rating: 5,
-    description: 'Contratamos el transfer para ir desde nuestro hotel en Barcelona al puerto de cruceros. Puntualidad británica y un trato exquisito. Repetiremos sin duda.'
+    description: 'Contratamos el transfer para ir desde nuestro hotel en España al puerto de cruceros. Puntualidad británica y un trato exquisito. Repetiremos sin duda.'
   },
   {
     id: '3',

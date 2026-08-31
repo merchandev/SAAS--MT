@@ -1,3 +1,4 @@
+import { getTenantId } from "@/modules/auth/tenant.service";
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -200,8 +201,12 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
       // Upsert Customer and link to User
       const customer = await tx.customer.upsert({
         where: { email: customerEmail },
-        update: { fullName: customerName, phone: customerPhone, userId: user.id },
-        create: { email: customerEmail, fullName: customerName, phone: customerPhone, userId: user.id },
+        update: {
+            companyId: await getTenantId(),
+            fullName: customerName, phone: customerPhone, userId: user.id },
+        create: {
+            companyId: await getTenantId(),
+            email: customerEmail, fullName: customerName, phone: customerPhone, userId: user.id },
       });
 
       // Generar cÃ³digo pÃºblico Ãºnico para seguimiento y pagos
@@ -210,7 +215,8 @@ export async function createAdminBookingAction(data: AdminBookingInput) {
       // Crear Booking
       const newBooking = await tx.booking.create({
         data: {
-          publicCode,
+            companyId: await getTenantId(),
+            publicCode,
           customerId: customer.id,
           vehicleId,
           originAddress,
@@ -404,15 +410,20 @@ export async function createPublicBookingAction(data: import("./bookings.schemas
 
       const customer = await tx.customer.upsert({
         where: { email: customerEmail },
-        update: { fullName: customerName, phone: customerPhone, userId: user.id },
-        create: { email: customerEmail, fullName: customerName, phone: customerPhone, userId: user.id },
+        update: {
+            companyId: await getTenantId(),
+            fullName: customerName, phone: customerPhone, userId: user.id },
+        create: {
+            companyId: await getTenantId(),
+            email: customerEmail, fullName: customerName, phone: customerPhone, userId: user.id },
       });
 
       const publicCode = await generateUniquePublicCode(tx);
 
       const newBooking = await tx.booking.create({
         data: {
-          publicCode,
+            companyId: await getTenantId(),
+            publicCode,
           customerId: customer.id,
           vehicleId,
           hotelId, // B2B
@@ -520,10 +531,12 @@ export async function updateBookingStatusAction(id: string, newStatus: any) {
     if (!booking) return { error: "Reserva no encontrada" };
 
     await prisma.$transaction(async (tx) => {
-      await tx.booking.update({ where: { id }, data: { bookingStatus: validatedStatus } });
+      await tx.booking.update({ where: { id }, data: {
+          companyId: await getTenantId(),
+        bookingStatus: validatedStatus } });
       await tx.bookingStatusHistory.create({
         data: {
-          bookingId: id,
+            bookingId: id,
           oldStatus: booking.bookingStatus,
           newStatus: validatedStatus,
           changedBy: "ADMIN_SYSTEM",
@@ -606,7 +619,8 @@ export async function assignDriverToBookingAction(id: string, driverId: string |
       await tx.booking.update({
         where: { id },
         data: {
-          driverId,
+            companyId: await getTenantId(),
+            driverId,
           driverStatus: driverId ? "ASIGNADO" : null,
         }
       });
@@ -659,7 +673,9 @@ export async function updateInternalNotesAction(id: string, internalNotes: strin
     await prisma.$transaction(async (tx) => {
       await tx.booking.update({
         where: { id },
-        data: { internalNotes }
+        data: {
+            companyId: await getTenantId(),
+            internalNotes }
       });
       await tx.auditLog.create({
         data: {
@@ -707,7 +723,8 @@ export async function moveBookingToTrashAction(id: string) {
       await tx.booking.update({
         where: { id },
         data: {
-          deletedAt,
+            companyId: await getTenantId(),
+            deletedAt,
           deletedBy: session.userId,
           deletedReason: "Movida a la papelera desde el panel de administraciÃ³n",
         },
@@ -770,7 +787,8 @@ export async function restoreBookingFromTrashAction(id: string) {
       await tx.booking.update({
         where: { id },
         data: {
-          deletedAt: null,
+            companyId: await getTenantId(),
+            deletedAt: null,
           deletedBy: null,
           deletedReason: null,
         },

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authService } from "@/modules/auth/auth.service";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 function resolveScheduledStatus(body: any) {
   const scheduledAt = body.scheduledAt ? new Date(body.scheduledAt) : null;
@@ -28,6 +29,7 @@ export async function POST(request: NextRequest) {
 
     const newPage = await prisma.routePage.create({
       data: {
+          companyId: await getTenantId(),
         slug: body.slug,
         originName: body.originName,
         destinationName: body.destinationName,
@@ -64,6 +66,7 @@ export async function PUT(request: NextRequest) {
     const updatedPage = await prisma.routePage.update({
       where: { id },
       data: {
+          companyId: await getTenantId(),
         slug: data.slug,
         originName: data.originName,
         destinationName: data.destinationName,

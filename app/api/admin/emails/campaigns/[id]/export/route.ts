@@ -21,7 +21,9 @@ export async function GET(
     }
 
     const logs = await prisma.notificationLog.findMany({
-      where: { campaignId: id },
+      where: {
+          
+        campaignId: id },
       orderBy: { sentAt: "desc" },
     });
 

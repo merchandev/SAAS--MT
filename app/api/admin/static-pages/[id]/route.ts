@@ -13,7 +13,7 @@ export async function PUT(
     const page = await prisma.staticPage.update({
       where: { id },
       data: {
-        title,
+          title,
         metaDescription,
         seoKeywords,
         translations: typeof body.translations === 'string' && body.translations ? JSON.parse(body.translations) : body.translations,

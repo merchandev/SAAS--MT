@@ -20,6 +20,7 @@ import {
   type HotelUpdateInput,
   type HotelUserCreationInput,
 } from "./b2b.schemas";
+import { getTenantId } from "@/modules/auth/tenant.service";
 
 function buildSlug(name: string) {
   return name
@@ -58,6 +59,7 @@ export async function createHotelAction(data: HotelCreationInput) {
   try {
     const hotel = await prisma.hotel.create({
       data: {
+          companyId: await getTenantId(),
         ...parsed.data,
         slug: buildSlug(parsed.data.name),
         token: buildToken(),
@@ -87,6 +89,7 @@ export async function updateHotelAction(hotelId: string, data: HotelUpdateInput)
     const hotel = await prisma.hotel.update({
       where: { id: hotelId },
       data: {
+          companyId: await getTenantId(),
         ...parsed.data,
         slug: buildSlug(parsed.data.name),
       },
@@ -110,7 +113,9 @@ export async function regenerateHotelTokenAction(hotelId: string) {
   try {
     const hotel = await prisma.hotel.update({
       where: { id: hotelId },
-      data: { token: buildToken() },
+      data: {
+          companyId: await getTenantId(),
+        token: buildToken() },
     });
 
     await audit("Hotel", hotel.id, "REGENERATE_TOKEN");
@@ -167,6 +172,7 @@ export async function createAgencyAction(data: AgencyCreationInput) {
   try {
     const agency = await prisma.agency.create({
       data: {
+          companyId: await getTenantId(),
         ...parsed.data,
         slug: buildSlug(parsed.data.name),
         token: buildToken(),
@@ -196,6 +202,7 @@ export async function updateAgencyAction(agencyId: string, data: AgencyUpdateInp
     const agency = await prisma.agency.update({
       where: { id: agencyId },
       data: {
+          companyId: await getTenantId(),
         ...parsed.data,
         slug: buildSlug(parsed.data.name),
       },
@@ -221,7 +228,9 @@ export async function toggleAgencyStatusAction(agencyId: string) {
 
     const agency = await prisma.agency.update({
       where: { id: agencyId },
-      data: { isActive: !current.isActive },
+      data: {
+          companyId: await getTenantId(),
+        isActive: !current.isActive },
     });
 
     await audit("Agency", agency.id, "TOGGLE_STATUS", { isActive: agency.isActive });
@@ -238,7 +247,9 @@ export async function regenerateAgencyTokenAction(agencyId: string) {
   try {
     const agency = await prisma.agency.update({
       where: { id: agencyId },
-      data: { token: buildToken() },
+      data: {
+          companyId: await getTenantId(),
+        token: buildToken() },
     });
 
     await audit("Agency", agency.id, "REGENERATE_TOKEN");
@@ -293,7 +304,9 @@ export async function toggleHotelStatusAction(hotelId: string) {
 
     const hotel = await prisma.hotel.update({
       where: { id: hotelId },
-      data: { isActive: !current.isActive },
+      data: {
+          companyId: await getTenantId(),
+        isActive: !current.isActive },
     });
 
     await audit('Hotel', hotel.id, 'TOGGLE_STATUS', { isActive: hotel.isActive });
@@ -309,7 +322,9 @@ export async function softDeleteHotelAction(hotelId: string) {
   try {
     const hotel = await prisma.hotel.update({
       where: { id: hotelId },
-      data: { deletedAt: new Date(), isActive: false },
+      data: {
+          companyId: await getTenantId(),
+        deletedAt: new Date(), isActive: false },
     });
     await audit('Hotel', hotel.id, 'SOFT_DELETE');
     revalidatePath('/admin/hotels');
@@ -324,7 +339,9 @@ export async function restoreHotelAction(hotelId: string) {
   try {
     const hotel = await prisma.hotel.update({
       where: { id: hotelId },
-      data: { deletedAt: null, isActive: true },
+      data: {
+          companyId: await getTenantId(),
+        deletedAt: null, isActive: true },
     });
     await audit('Hotel', hotel.id, 'RESTORE');
     revalidatePath('/admin/hotels');
@@ -357,7 +374,9 @@ export async function softDeleteAgencyAction(agencyId: string) {
   try {
     const agency = await prisma.agency.update({
       where: { id: agencyId },
-      data: { deletedAt: new Date(), isActive: false },
+      data: {
+          companyId: await getTenantId(),
+        deletedAt: new Date(), isActive: false },
     });
     await audit('Agency', agency.id, 'SOFT_DELETE');
     revalidatePath('/admin/agencies');
@@ -372,7 +391,9 @@ export async function restoreAgencyAction(agencyId: string) {
   try {
     const agency = await prisma.agency.update({
       where: { id: agencyId },
-      data: { deletedAt: null, isActive: true },
+      data: {
+          companyId: await getTenantId(),
+        deletedAt: null, isActive: true },
     });
     await audit('Agency', agency.id, 'RESTORE');
     revalidatePath('/admin/agencies');
