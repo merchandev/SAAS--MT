@@ -1,83 +1,99 @@
-﻿# MeTransfers SaaS Platform
+# Plataforma SaaS para Gestión de Traslados Privados
+**Powered by Merchan.Dev**
 
-SaaS B2B/B2C Platform for Private Transfer Bookings, Vehicle Fleet, Hotel QR Referrals, and Payment Management.
+Plataforma SaaS B2B2C multi-tenant diseñada para empresas de transfers, VTC, chóferes privados, agencias de viajes y hoteles. Permite a múltiples operadores gestionar de forma independiente reservas, clientes, conductores, vehículos, tarifas, agencias colaboradoras y pagos desde un único panel centralizado.
 
-## Stack Overview
+> **Repositorio**: [merchandev/SAAS--MT](https://github.com/merchandev/SAAS--MT)
+
+---
+
+## 🚀 Características Principales (SaaS B2B2C)
+
+- **Motor de Reservas Integrado:** Cálculo dinámico de tarifas por distancia/zonas, suplementos nocturnos, gestión de equipaje y selección de vehículos.
+- **Gestión Operativa Integral:** Asignación de conductores, control de flota de vehículos, estados de reserva en tiempo real y seguimiento.
+- **Facturación y Pagos:** Emisión automática de facturas y recibos. Integración con pasarela de pagos (Redsys).
+- **Portal de Colaboradores (B2B):** Áreas exclusivas para Hoteles y Agencias, con gestión de comisiones, reservas por referidos y QR codes.
+- **Arquitectura Multi-tenant (En desarrollo):** Preparado para aislar datos por `Company`, permitiendo configuraciones personalizadas (branding, monedas, correos) por cada cliente del software.
+- **Sistema de Roles:** SUPER_ADMIN (Merchan.Dev), COMPANY_ADMIN, OPERATOR, DRIVER, HOTEL, AGENCY, CUSTOMER.
+
+## 🛠️ Stack Tecnológico
+
 - **Framework**: Next.js 16.2.9 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4, shadcn/ui
-- **Database**: PostgreSQL
+- **Lenguaje**: TypeScript
+- **Estilos**: Tailwind CSS v4, shadcn/ui
+- **Base de Datos**: PostgreSQL
 - **ORM**: Prisma
-- **Payments**: Redsys Gateway
-- **Auth**: JWT (jose), bcryptjs
+- **Pagos**: Pasarela Redsys
+- **Seguridad y Auth**: JWT (jose), bcryptjs, validación estricta de variables y sanitización (prevención P0).
 
-## Prerequisites
-- Node.js 20.19+ (Node 22 recommended)
-- Docker & Docker Compose (for local database)
+---
 
-## Quick Start
+## 💻 Inicio Rápido (Desarrollo Local)
 
-1. **Clone & Install**
-   ```bash
-   npm install
-   ```
+### Prerrequisitos
+- Node.js 20.19+ (Node 22 recomendado)
+- Docker & Docker Compose (para base de datos local)
 
-2. **Environment Variables**
-   Copy `.env.example` to `.env` and fill in your credentials:
-   ```bash
-   cp .env.example .env
-   ```
+### 1. Instalación
+Clona el repositorio e instala las dependencias:
+```bash
+git clone https://github.com/merchandev/SAAS--MT.git
+cd SAAS--MT
+npm install
+```
 
-3. **Start Local Database**
-   ```bash
-   docker compose up -d postgres
-   ```
+### 2. Variables de Entorno
+Copia el archivo de ejemplo y rellena tus credenciales (URL de la base de datos, Secret JWT, credenciales SMTP, etc.):
+```bash
+cp .env.example .env
+```
 
-   PgAdmin is optional and bound to localhost through the development profile:
-   ```bash
-   docker compose --profile dev up -d pgadmin
-   ```
+### 3. Base de Datos (Local)
+Inicia la base de datos PostgreSQL mediante Docker:
+```bash
+docker compose up -d postgres
+```
+*(Opcional: PgAdmin está disponible vinculando el perfil de desarrollo)*
+```bash
+docker compose --profile dev up -d pgadmin
+```
 
-4. **Initialize Database Schema**
-   ```bash
-   npx prisma migrate dev --name init
-   npx prisma generate
-   ```
+### 4. Prisma & Migraciones
+Aplica el esquema a la base de datos y genera el cliente de Prisma:
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
 
-5. **Run Development Server**
-   ```bash
-   npm run dev
-   ```
+### 5. Iniciar Servidor
+```bash
+npm run dev
+```
+La plataforma estará disponible en `http://localhost:3000`.
 
-Visit `http://localhost:3000` to see the application.
-PgAdmin is available at `http://localhost:5051` when started with the `dev` profile.
+---
 
-## Production Docker
+## 📦 Despliegue en Producción (Docker VPS)
 
-Build and start the full stack:
+El proyecto incluye un `docker-compose.yml` optimizado para entornos de producción (como Hostinger VPS) que levanta la base de datos y la aplicación Next.js de forma aislada.
 
+1. Configura tu `.env` (asegurándote de que `NEXT_PUBLIC_APP_URL` apunte a tu dominio real).
+2. Construye y levanta los servicios:
 ```bash
 docker compose up -d --build
 ```
+La web expone por defecto el puerto `3100` (configura tu NGINX/Proxy Inverso para apuntar a este puerto localmente).
 
-The web app is exposed on `http://localhost:3100` by default. On the Hostinger VPS, set `NEXT_PUBLIC_APP_URL` to the public URL, for example `http://72.61.77.167:3100` or your domain. PostgreSQL is internal to the Compose network and is not published to the host. PgAdmin is not started by default in production; if enabled with `--profile dev`, it binds to `127.0.0.1:${PGADMIN_PORT:-5051}` only.
-
-For Hostinger Docker Manager, deploy from the GitHub repository:
-
-```text
-https://github.com/merchandev/SAAS--MT
-```
-
-This Compose file builds the `app` image from this repository with the included `Dockerfile`. The running container only applies Prisma migrations and starts the standalone Next.js server. It does not clone the repository, install dependencies, build Next.js, or run database seeds on every restart.
-
-Run the seed only for first setup or manual recovery:
-
+*(Nota: El contenedor de producción aplica automáticamente `npx prisma migrate deploy` al arrancar. Para poblar datos iniciales, ejecuta manualmente el seed).*
 ```bash
 docker compose run --rm app node node_modules/ts-node/dist/bin.js prisma/seed.ts
 ```
 
-## Documentation
-- [Architecture Guide](docs/architecture.md)
+---
+
+## 🔒 Seguridad
+Se han mitigado vulnerabilidades críticas (P0) en las áreas de autenticación, Host Header Poisoning, Open Redirects e Inyecciones HTML. El acceso de roles administrativos y de GPS requiere tokens JWT fuertemente validados.
+
 - [Database Schema](docs/database.md)
 
 ## Development Workflow
