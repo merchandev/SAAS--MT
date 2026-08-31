@@ -11,7 +11,7 @@ Plataforma SaaS B2B2C multi-tenant diseñada para empresas de transfers, VTC, ch
 
 - **Motor de Reservas Integrado:** Cálculo dinámico de tarifas por distancia/zonas, suplementos nocturnos, gestión de equipaje y selección de vehículos.
 - **Gestión Operativa Integral:** Asignación de conductores, control de flota de vehículos, estados de reserva en tiempo real y seguimiento.
-- **Facturación y Pagos:** Emisión automática de facturas y recibos. Integración con pasarela de pagos (Redsys).
+- **Facturación y Pagos Multigateway:** Emisión automática de facturas y recibos. Se integra con cualquier pasarela de pagos del mercado (Redsys, Getnet, PayPal, Stripe, etc).
 - **Portal de Colaboradores (B2B):** Áreas exclusivas para Hoteles y Agencias, con gestión de comisiones, reservas por referidos y QR codes.
 - **Arquitectura Multi-tenant (En desarrollo):** Preparado para aislar datos por `Company`, permitiendo configuraciones personalizadas (branding, monedas, correos) por cada cliente del software.
 

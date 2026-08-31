@@ -87,7 +87,7 @@ const features = [
   {
     title: "Pagos online automáticos",
     description:
-      "Cobra al momento de la reserva con pasarela integrada. Facturación automática, reembolsos gestionados y precios fijos sin sorpresas.",
+      "Cobra al momento de la reserva integrando cualquier pasarela de pagos (Redsys, Getnet, PayPal, Stripe, etc). Facturación automática y precios fijos sin sorpresas.",
     Icon: CreditCard,
   },
   {
