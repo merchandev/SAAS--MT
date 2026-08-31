@@ -297,7 +297,7 @@ export default async function HomePage() {
         {/* Hero */}
         <section className="relative flex min-h-[92svh] items-center overflow-hidden pt-32 pb-14 sm:pt-36 lg:pt-40">
           <Image
-            src="/images/hero_light.png"
+            src="/images/blog/articles/la-mejor-opcion-de-mejores-empresas-de-traslados-en-barcelona-y-espana-top-10-ranking-2026-3795.jpg"
             alt="Panel de gestión de traslados privados para empresas"
             fill
             priority
@@ -471,7 +471,7 @@ export default async function HomePage() {
           <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-2xl">
               <Image
-                src="/images/chauffeur_day.png"
+                src="/images/blog/articles/la-mejor-opcion-de-la-ventaja-de-un-conductor-local-rutas-sin-trafico-y-puntualidad-en-tu-tour-6197.jpg"
                 alt="Plataforma de gestión de traslados privados para empresas"
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
@@ -527,7 +527,7 @@ export default async function HomePage() {
 
             <div className="relative aspect-[5/4] overflow-hidden rounded-lg shadow-2xl">
               <Image
-                src="/images/fleet_light.png"
+                src="/images/blog/articles/guia-completa-conoce-nuestra-flota-los-vehiculos-de-alta-gama-para-tus-tours-por-barcelona-5020.jpg"
                 alt="Flota de traslados gestionada con la plataforma SaaS"
                 fill
                 sizes="(min-width: 1024px) 45vw, 100vw"
