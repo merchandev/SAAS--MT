@@ -11,6 +11,27 @@ export async function GET(req: Request, { params }: { params: Promise<{ token: s
       return NextResponse.redirect(new URL("/", req.url));
     }
 
+    // P0 - Seguridad: Prevenir Open Redirect
+    // Solo permitir rutas relativas o dominios confiables
+    let isValidRedirect = false;
+    try {
+      const parsedRedirect = new URL(redirectUrl, req.url);
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "https://transfersinbarcelona.com";
+      const trustedHost = new URL(appUrl).host;
+      
+      if (redirectUrl.startsWith("/") && !redirectUrl.startsWith("//")) {
+        isValidRedirect = true;
+      } else if (parsedRedirect.host === trustedHost) {
+        isValidRedirect = true;
+      }
+    } catch (e) {
+      // Invalid URL format
+    }
+
+    if (!isValidRedirect) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+
     if (token) {
       const email = await prisma.outboundEmail.findUnique({
         where: { id: token },

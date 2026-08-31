@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Clock } from "lucide-react";
 import { getSpainToday } from "@/lib/utils";
 import PlaceAutocompleteInput from "@/components/maps/PlaceAutocompleteInput";
-import { localizedPath } from "@/lib/i18n-utils";
 
 const timeOptions = Array.from({ length: 24 * 4 }).map((_, i) => {
   const hours = Math.floor(i / 4).toString().padStart(2, '0');
@@ -21,9 +20,9 @@ interface BookingFormProps {
 }
 
 export default function HomeBookingFormClient({ variant = "hero" }: BookingFormProps) {
-  const router = useRouter();
   const urlParams = useParams();
   const currentLocale = (urlParams.locale as string) || "es";
+
   const [formData, setFormData] = useState({
     originAddress: "",
     originPlaceId: "",
@@ -38,16 +37,18 @@ export default function HomeBookingFormClient({ variant = "hero" }: BookingFormP
   };
 
   const handleSearch = () => {
-    // Redirigir a /booking con los parámetros en la URL
+    // Build MeTransfers search URL with the form parameters for live demo
     const params = new URLSearchParams();
-    if (formData.originAddress) params.append("origin", formData.originAddress);
-    if (formData.originPlaceId) params.append("originId", formData.originPlaceId);
-    if (formData.destinationAddress) params.append("destination", formData.destinationAddress);
-    if (formData.destinationPlaceId) params.append("destinationId", formData.destinationPlaceId);
+    if (formData.originAddress) params.append("from", formData.originAddress);
+    if (formData.destinationAddress) params.append("to", formData.destinationAddress);
     if (formData.date) params.append("date", formData.date);
-    if (formData.time) params.append("time", formData.time);
+    params.append("passengers", "1");
 
-    router.push(localizedPath(`/booking?${params.toString()}`, currentLocale));
+    window.open(
+      `https://www.metransfers.com/?${params.toString()}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   const isClean = variant === "clean";
@@ -87,7 +88,7 @@ export default function HomeBookingFormClient({ variant = "hero" }: BookingFormP
         />
       </div>
 
-      {/* Date and Time (Full width like the design) */}
+      {/* Date and Time */}
       <div className="space-y-1">
         <Label htmlFor="booking-date" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Fecha</Label>
         <input
@@ -124,14 +125,26 @@ export default function HomeBookingFormClient({ variant = "hero" }: BookingFormP
 
       {/* Search Button */}
       <div className="pt-2">
-        <Button 
-          onClick={handleSearch} 
+        <Button
+          onClick={handleSearch}
           className="w-full h-14 bg-gradient-to-r from-[#D4AF37] to-[#AA8B2C] hover:from-[#AA8B2C] hover:to-[#8E7321] text-white font-bold text-base rounded-2xl shadow-md active:scale-[0.98] transition-all"
         >
-          Buscar vehículos
+          Ver precio en MeTransfers →
         </Button>
       </div>
 
+      {/* Powered by badge */}
+      <p className="text-center text-[11px] text-gray-400 font-medium">
+        Demo en vivo · Operado por{" "}
+        <a
+          href="https://www.metransfers.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#9B7B26] hover:underline"
+        >
+          MeTransfers
+        </a>
+      </p>
     </div>
   );
 

@@ -30,11 +30,20 @@ export async function forgotPasswordAction(email: string) {
       },
     });
 
-    // Detect domain dynamically to avoid localhost in production if NEXT_PUBLIC_APP_URL is baked
-    const headersList = await headers();
-    const host = headersList.get("host") || "transfersinbarcelona.com";
-    const protocol = headersList.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
-    const baseUrl = `${protocol}://${host}`;
+    // Evitar Host Header Poisoning (P0 - Seguridad)
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
+    let baseUrl = "";
+
+    if (appUrl) {
+      baseUrl = appUrl.endsWith("/") ? appUrl.slice(0, -1) : appUrl;
+    } else {
+      // Fallback solo para desarrollo si no hay env var
+      const headersList = await headers();
+      const host = headersList.get("host") || "transfersinbarcelona.com";
+      const protocol = headersList.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
+      baseUrl = `${protocol}://${host}`;
+    }
+
     const resetUrl = `${baseUrl}/es/reset-password?token=${token}`;
 
     // Send email

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Building2, Clock, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck } from "lucide-react";
+import { Building2, Clock, Mail, MessageCircle, Phone, Send, ShieldCheck, Zap } from "lucide-react";
 import MarketingCta from "@/components/marketing/MarketingCta";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import PageHero from "@/components/marketing/PageHero";
@@ -13,12 +13,11 @@ import { getTranslatedField } from "@/lib/i18n-utils";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const seo = await prisma.staticPage.findUnique({ where: { slug: "contacto" } });
-  
-  const title = getTranslatedField(seo, "title", locale, seo?.title) || "Contacto | Transfers in Barcelona";
-  const metaDesc = getTranslatedField(seo, "metaDescription", locale, seo?.metaDescription) || "Contacta con Transfers in Barcelona para traslados privados, tours, eventos corporativos y coches con chófer en Barcelona.";
+
+  const title = getTranslatedField(seo, "title", locale, seo?.title) || "Contacto | Software de Traslados — Transfers in Barcelona";
+  const metaDesc = getTranslatedField(seo, "metaDescription", locale, seo?.metaDescription) || "Solicita una demo gratuita de nuestra plataforma SaaS para empresas de traslados privados. Nuestro equipo te muestra el sistema en menos de 24 horas.";
   const seoKw = getTranslatedField(seo, "seoKeywords", locale, seo?.seoKeywords);
 
-  // Generar alternates dinámicos
   const languages = ["es", "en", "fr", "ca"];
   const alternates: Record<string, string> = {};
   languages.forEach((lang) => {
@@ -51,18 +50,10 @@ const contactCards = [
   },
   {
     title: "WhatsApp",
-    value: "Respuesta rápida para reservas",
+    value: "Respuesta rápida en horario laboral",
     href: "https://wa.me/34662024136",
     Icon: MessageCircle,
   },
-];
-
-const requestDetails = [
-  "Dirección de recogida y destino",
-  "Fecha, hora y número de pasajeros",
-  "Equipaje aproximado y necesidades especiales",
-  "Número de vuelo si es un traslado de aeropuerto",
-  "Tipo de servicio: transfer, tour, evento o chófer por horas",
 ];
 
 export default function ContactPage() {
@@ -70,39 +61,36 @@ export default function ContactPage() {
     <div className="min-h-screen bg-white text-gray-900">
       <PageHero
         eyebrow="Contacto"
-        title="Hablemos de tu próximo traslado"
-        description="Nuestro equipo te ayuda a organizar transfers privados, tours, servicios por horas y transporte corporativo en Barcelona."
+        title="Solicita una demo para tu empresa"
+        description="Nuestro equipo te muestra la plataforma en vivo con tus rutas y tu flota. Sin compromiso, en menos de 24 horas."
       />
 
       <main>
         <section className="bg-white py-20 sm:py-24">
           <div className="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Atención personalizada</p>
-              <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">Contacta con Transfers in Barcelona</h2>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Te acompañamos desde el primer día</p>
+              <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">¿Hablamos sobre tu empresa de traslados?</h2>
               <p className="mt-5 text-lg leading-8 text-gray-600">
-                Cuéntanos qué tipo de servicio necesitas y te orientaremos con la opción más adecuada
-                según ruta, pasajeros, equipaje, horario y nivel de vehículo.
+                Cuéntanos cómo funciona tu operación actual: número de vehículos, conductores, volumen de reservas y qué quieres automatizar. Te preparamos una demo personalizada.
               </p>
 
               <div className="mt-8 grid gap-4">
                 <div className="flex gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5">
-                  <MapPin className="mt-1 h-6 w-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
+                  <Zap className="mt-1 h-6 w-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
                   <div>
-                    <h3 className="font-black">Área de servicio</h3>
+                    <h3 className="font-black">Demo en 24 horas</h3>
                     <p className="mt-2 leading-7 text-gray-600">
-                      Barcelona, aeropuerto, puerto, hoteles, Costa Brava, Girona, Tarragona, Sitges,
-                      Andorra y rutas nacionales bajo petición.
+                      Agenda una sesión guiada con nuestro equipo. Te mostramos el panel, el widget de reservas, la app de conductor y el flujo de pagos con datos reales.
                     </p>
                   </div>
                 </div>
                 <div className="flex gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5">
                   <Clock className="mt-1 h-6 w-6 shrink-0 text-[#D4AF37]" aria-hidden="true" />
                   <div>
-                    <h3 className="font-black">Reservas y atención</h3>
+                    <h3 className="font-black">Activación en 48 horas</h3>
                     <p className="mt-2 leading-7 text-gray-600">
-                      Gestión online con confirmación rápida. Para servicios especiales, grupos o eventos,
-                      contacta con antelación para coordinar disponibilidad.
+                      Una vez tomada la decisión, nuestro equipo de onboarding configura tu cuenta, importa tu flota y activa el widget en tu web. Sin tiempos de espera.
                     </p>
                   </div>
                 </div>
@@ -141,25 +129,24 @@ export default function ContactPage() {
             <ContactForm />
 
             <div className="rounded-3xl bg-gray-900 p-8 text-white shadow-xl">
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Respuesta profesional</p>
-              <h2 className="mt-4 text-3xl font-black tracking-tight">Servicios para empresas, hoteles y eventos</h2>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#D4AF37]">Soluciones a medida</p>
+              <h2 className="mt-4 text-3xl font-black tracking-tight">Para empresas, hoteles y operadores de flota</h2>
               <p className="mt-5 leading-8 text-gray-300">
-                Si necesitas coordinar varios vehículos, traslados recurrentes, recepción de clientes
-                internacionales o transporte para congresos, podemos preparar una solución adaptada.
+                Si necesitas una integración específica, una tarificación personalizada, gestión de múltiples empresas o un acuerdo de distribución, podemos diseñar una solución adaptada a tu volumen de operaciones.
               </p>
               <Link
-                href="mailto:info@transfersinbarcelona.com?subject=Solicitud%20corporativa%20Transfers in Barcelona"
+                href="mailto:info@transfersinbarcelona.com?subject=Solicitud%20corporativa%20SaaS%20Transfers%20in%20Barcelona"
                 className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[#D4AF37] px-7 text-sm font-black text-gray-900 shadow-md transition hover:bg-[#C5A059]"
               >
-                Solicitar propuesta
+                Solicitar propuesta empresarial
               </Link>
             </div>
           </div>
         </section>
 
         <MarketingCta
-          title="¿Prefieres reservar directamente?"
-          description="Puedes comprobar disponibilidad online para traslados punto a punto, aeropuerto, tours y servicios por horas."
+          title="¿Quieres ver la demo antes de hablar con nosotros?"
+          description="El widget de reservas está activo en nuestra página de inicio. Pruébalo con cualquier ruta y comprueba cómo funciona en tiempo real."
         />
       </main>
 
@@ -167,3 +154,4 @@ export default function ContactPage() {
     </div>
   );
 }
+

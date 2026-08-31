@@ -21,21 +21,24 @@ const BASE_URL = "https://transfersinbarcelona.com";
 // Static pages included in every sitemap build
 const STATIC_ROUTES = [
   { url: `${BASE_URL}/es`, priority: 1.0, changeFrequency: "daily" as const },
-  { url: `${BASE_URL}/es/transfer-aeropuerto-barcelona`, priority: 0.9, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/traslados-privados-barcelona`, priority: 0.9, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/coche-con-chofer-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/traslados-puerto-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/tours-privados-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/traslados-corporativos-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/faqs`, priority: 0.6, changeFrequency: "monthly" as const },
+  { url: `${BASE_URL}/en`, priority: 0.9, changeFrequency: "daily" as const },
+  { url: `${BASE_URL}/fr`, priority: 0.8, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/ca`, priority: 0.7, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/contacto`, priority: 0.9, changeFrequency: "monthly" as const },
+  { url: `${BASE_URL}/es/preguntas-frecuentes`, priority: 0.7, changeFrequency: "monthly" as const },
   { url: `${BASE_URL}/es/blog`, priority: 0.7, changeFrequency: "weekly" as const },
-  { url: `${BASE_URL}/es/contacto`, priority: 0.5, changeFrequency: "monthly" as const },
-  { url: `${BASE_URL}/es/booking`, priority: 0.7, changeFrequency: "monthly" as const },
+  { url: `${BASE_URL}/es/transfer-aeropuerto-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/traslados-privados-barcelona`, priority: 0.8, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/coche-con-chofer-barcelona`, priority: 0.7, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/traslados-puerto-barcelona`, priority: 0.7, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/tours-privados-barcelona`, priority: 0.7, changeFrequency: "weekly" as const },
+  { url: `${BASE_URL}/es/traslados-corporativos-barcelona`, priority: 0.7, changeFrequency: "weekly" as const },
   { url: `${BASE_URL}/es/aviso-legal`, priority: 0.2, changeFrequency: "yearly" as const },
   { url: `${BASE_URL}/es/politica-de-privacidad`, priority: 0.2, changeFrequency: "yearly" as const },
   { url: `${BASE_URL}/es/terminos-y-condiciones`, priority: 0.2, changeFrequency: "yearly" as const },
   { url: `${BASE_URL}/es/cookies`, priority: 0.2, changeFrequency: "yearly" as const },
 ];
+
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();

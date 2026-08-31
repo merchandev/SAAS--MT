@@ -146,25 +146,23 @@ export async function registerAction(data: RegisterInput) {
         }
       });
 
+      // P0 Seguridad: No enlazar automáticamente perfiles de Customer existentes
+      // sin una verificación real de email, para evitar Account Takeover (lectura de reservas ajenas).
       if (existingCustomer) {
-        // Enlazar perfil existente
-        await tx.customer.update({
-          where: { id: existingCustomer.id },
-          data: { userId: user.id, fullName, phone, country, preferredLanguage }
-        });
-      } else {
-        // Crear nuevo perfil
-        await tx.customer.create({
-          data: {
-            userId: user.id,
-            email: lowerEmail,
-            fullName,
-            phone,
-            country,
-            preferredLanguage,
-          }
-        });
+        throw new Error("GUEST_CUSTOMER_EXISTS");
       }
+
+      // Crear nuevo perfil
+      await tx.customer.create({
+        data: {
+          userId: user.id,
+          email: lowerEmail,
+          fullName,
+          phone,
+          country,
+          preferredLanguage,
+        }
+      });
 
       return user;
     });
@@ -179,8 +177,11 @@ export async function registerAction(data: RegisterInput) {
 
     await authService.setSessionCookie(token);
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error en registro:", error);
+    if (error.message === "GUEST_CUSTOMER_EXISTS") {
+      return { error: "Por motivos de seguridad, si ya has realizado reservas previas como invitado, contacta con nosotros para activar tu cuenta, o utiliza un correo electrónico distinto." };
+    }
     return { error: "Ocurrió un error inesperado durante el registro." };
   }
 

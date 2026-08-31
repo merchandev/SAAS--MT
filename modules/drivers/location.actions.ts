@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { prisma } from "@/lib/prisma";
 import { requireRoleAction as requireRole } from "@/modules/auth/permissions";
@@ -46,9 +46,9 @@ export async function updateDriverLocationAction(lat: number, lng: number) {
  * (Utilizado por el Administrador o Cliente para ver el mapa en vivo)
  */
 export async function getDriverLocationAction(driverId: string) {
-  // Idealmente, requerimos algÃºn rol o validamos si es el cliente asociado al viaje
-  // Por ahora lo permitimos a ADMIN y OPERATOR. (Si lo quieres abrir al cliente pÃºblico habrÃ­a que revisar)
-  // await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]); 
+  // Solo administradores y operadores pueden consultar la ubicación de cualquier conductor.
+  // Futuro: permitir al pasajero con token de reserva ver a su conductor asignado.
+  await requireRole(["SUPER_ADMIN", "ADMIN", "OPERATOR"]); 
   
   try {
     const driver = await prisma.driver.findUnique({

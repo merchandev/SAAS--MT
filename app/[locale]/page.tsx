@@ -2,10 +2,23 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Plane, Route, BriefcaseBusiness, Clock, CalendarCheck, Users, ChevronRight, MapPin, CheckCircle, Car } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  CreditCard,
+  Globe,
+  BarChart3,
+  Smartphone,
+  ChevronRight,
+  CheckCircle,
+  Building2,
+  Hotel,
+  Plane,
+  Ship,
+  ArrowRight,
+} from "lucide-react";
 import { unstable_cache } from "next/cache";
 
-import MarketingLogo from "@/components/marketing/MarketingLogo";
 import HomeBookingFormClient from "@/components/home/HomeBookingFormClient";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
@@ -15,31 +28,42 @@ import GygReviews from "@/components/home/GygReviews";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Traslados Privados en Barcelona | Aeropuerto, Puerto y Chófer",
+  title: "Software de Gestión de Traslados Privados | SaaS para Empresas",
   description:
-    "Reserve traslados privados en Barcelona con precio fijo, chófer profesional, recogida en aeropuerto, traslados al puerto de cruceros y pago online seguro.",
+    "Plataforma SaaS para empresas de traslados: reservas online, gestión de conductores, pagos automáticos y panel de control. Digitaliza tu operación y crece con tecnología probada.",
   keywords: [
-    "traslado aeropuerto barcelona",
-    "traslado privado aeropuerto barcelona",
-    "traslado aeropuerto barcelona centro",
-    "traslado puerto cruceros barcelona",
-    "servicio de chofer barcelona",
-    "conductor privado barcelona",
-    "traslados corporativos barcelona",
-    "traslado privado barcelona andorra",
+    "software gestión traslados",
+    "saas traslados privados",
+    "plataforma reservas transfer",
+    "software empresa traslados barcelona",
+    "gestión conductores privados",
+    "sistema reservas transfer aeropuerto",
+    "software chófer privado",
+    "digitalización empresa traslados",
+    "plataforma traslados corporativos",
   ],
+  alternates: {
+    canonical: "https://transfersinbarcelona.com/es",
+    languages: {
+      es: "https://transfersinbarcelona.com/es",
+      en: "https://transfersinbarcelona.com/en",
+      fr: "https://transfersinbarcelona.com/fr",
+      ca: "https://transfersinbarcelona.com/ca",
+    },
+  },
   openGraph: {
-    title: "Traslados Privados en Barcelona",
+    title: "Software de Gestión de Traslados Privados | SaaS para Empresas",
     description:
-      "Reserve traslados privados en Barcelona con precio fijo, chófer profesional, recogida en aeropuerto, traslados al puerto de cruceros y pago online seguro.",
+      "Plataforma SaaS para empresas de traslados: reservas online, gestión de conductores, pagos automáticos y panel de control.",
     locale: "es_ES",
     type: "website",
+    url: "https://transfersinbarcelona.com/es",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Traslados Privados en Barcelona | Aeropuerto, Puerto y Chófer",
+    title: "Software de Gestión de Traslados | SaaS para Empresas",
     description:
-      "Reserve traslados privados en Barcelona con precio fijo, chófer profesional, recogida en aeropuerto.",
+      "Plataforma SaaS para empresas de traslados: reservas online, gestión de conductores, pagos automáticos.",
   },
   robots: {
     index: true,
@@ -47,129 +71,127 @@ export const metadata: Metadata = {
   },
 };
 
-const services = [
+const features = [
   {
-    title: "Traslados al Aeropuerto de Barcelona",
+    title: "Panel de reservas en tiempo real",
     description:
-      "Traslados privados desde y hacia el Aeropuerto de Barcelona-El Prat, estaciones, hoteles y terminales de cruceros.",
-    Icon: Plane,
+      "Gestiona todas las reservas desde un único panel: estado, conductor asignado, ruta, cliente y pago. Sin hojas de cálculo, sin caos.",
+    Icon: LayoutDashboard,
   },
   {
-    title: "Tours Privados con Conductor",
+    title: "Gestión de conductores y flota",
     description:
-      "Servicio de chófer por horas para visitas panorámicas, rutas culturales, excursiones privadas y planes a medida.",
-    Icon: Route,
-  },
-  {
-    title: "Traslados Corporativos",
-    description:
-      "Movilidad ejecutiva para congresos, reuniones, roadshows, cenas de negocios, ferias y clientes internacionales.",
-    Icon: BriefcaseBusiness,
-  },
-  {
-    title: "Servicio de Chófer en Barcelona",
-    description:
-      "Alquile un conductor privado por el tiempo contratado, con flexibilidad para paradas y cambios de horario.",
-    Icon: Clock,
-  },
-  {
-    title: "Bodas y celebraciones",
-    description:
-      "Vehículos con chófer para novios, invitados, hoteles, fincas, restaurantes y traslados coordinados de grupos.",
-    Icon: CalendarCheck,
-  },
-  {
-    title: "Servicios para grupos",
-    description:
-      "Minivans, minibuses y vehículos amplios para familias, equipos de trabajo, equipaje voluminoso y viajes compartidos.",
+      "Asigna servicios a conductores, controla disponibilidad, envía instrucciones y recibe confirmaciones desde la app de conductor.",
     Icon: Users,
+  },
+  {
+    title: "Pagos online automáticos",
+    description:
+      "Cobra al momento de la reserva con pasarela integrada. Facturación automática, reembolsos gestionados y precios fijos sin sorpresas.",
+    Icon: CreditCard,
+  },
+  {
+    title: "Widget embebible en tu web",
+    description:
+      "Añade el motor de reservas a tu web actual en minutos. Tus clientes reservan en tu dominio, con tu marca y tu precio.",
+    Icon: Globe,
+  },
+  {
+    title: "Informes y analítica",
+    description:
+      "Ingresos por período, rutas más reservadas, tasa de ocupación y conversión. Datos para tomar decisiones con información real.",
+    Icon: BarChart3,
+  },
+  {
+    title: "App de conductor",
+    description:
+      "El conductor ve sus servicios del día, recibe el detalle del viaje y puede actualizar el estado en tiempo real desde el móvil.",
+    Icon: Smartphone,
   },
 ];
 
 const steps = [
   {
-    title: "Indique su ruta",
+    title: "Crea tu cuenta",
     description:
-      "Añada dirección de recogida, destino, fecha y hora para calcular la disponibilidad del servicio.",
+      "Regístrate, configura tu empresa, añade tus vehículos y conductores. En menos de 30 minutos estás operativo.",
   },
   {
-    title: "Elija vehículo",
+    title: "Define tus rutas y precios",
     description:
-      "Seleccione la opción que encaje con pasajeros, equipaje, imagen del viaje y nivel de confort esperado.",
+      "Establece tarifas por zona, precio fijo o tarifa horaria. El sistema calcula y muestra el precio al cliente automáticamente.",
   },
   {
-    title: "Confirme online",
+    title: "Activa el widget en tu web",
     description:
-      "Revise las condiciones y reserve con precio claro, sin llamadas ni esperas innecesarias.",
+      "Copia una línea de código y el formulario de reservas aparece en tu sitio. Tus clientes ya pueden reservar online.",
   },
   {
-    title: "Su chófer le espera",
+    title: "Gestiona y crece",
     description:
-      "El conductor estará preparado en el punto acordado para asistirle y realizar el trayecto con puntualidad.",
+      "Las reservas llegan al panel, el conductor recibe la asignación y tú cobras online. Escala sin añadir administración.",
   },
 ];
 
-const fleet = [
-  "ECONOMIC CLASS: berlina Mercedes para traslados urbanos y aeropuerto",
-  "BUSINESS CLASS: berlina Mercedes ejecutiva para reuniones, congresos y clientes premium",
-  "MINI VAN ECONOMIC: Mercedes para familias, grupos y equipaje amplio",
-  "MINI VAN «V» CLASS: Mercedes Clase V para servicios VIP, grupos y máxima comodidad",
-];
-
-const routes = [
+const targetAudiences = [
   {
-    label: "Barcelona - Aeropuerto Josep Tarradellas Barcelona-El Prat",
-    origin: "",
-    destination: "Aeropuerto Josep Tarradellas Barcelona-El Prat",
+    title: "Empresas de traslados privados",
+    description:
+      "Digitaliza tu operación, capta reservas online 24/7 y gestiona tu flota sin depender de llamadas y WhatsApp.",
+    Icon: Plane,
   },
   {
-    label: "Barcelona - Puerto de cruceros y terminales marítimas",
-    origin: "",
-    destination: "Puerto de Barcelona, Terminal de Cruceros",
+    title: "Operadores de traslados al aeropuerto",
+    description:
+      "Especialízate en transfers aeropuerto con seguimiento de vuelos, coordinación de llegadas y confirmaciones automáticas.",
+    Icon: Building2,
   },
   {
-    label: "Barcelona - Sitges, Tarragona y Costa Brava",
-    origin: "",
-    destination: "Sitges, España",
+    title: "Hoteles y alojamientos turísticos",
+    description:
+      "Ofrece traslados a tus huéspedes como servicio adicional. El hotel gestiona, el sistema cobra y el conductor ejecuta.",
+    Icon: Hotel,
   },
   {
-    label: "Barcelona - Andorra y traslados de larga distancia",
-    origin: "",
-    destination: "Andorra la Vella, Andorra",
+    title: "Operadores de cruceros y puerto",
+    description:
+      "Gestiona la demanda en temporada alta con asignación inteligente de vehículos para grupos y pasajeros de crucero.",
+    Icon: Ship,
   },
 ];
 
 const advantages = [
-  "Precio cerrado antes de reservar",
-  "Conductores profesionales y discretos",
-  "Vehículos seleccionados para cada viaje",
-  "Atención antes, durante y después del servicio",
-  "Opciones para empresas, turismo, eventos y grupos",
-  "Servicios adicionales bajo petición: sillas infantiles, agua, paradas, bienvenida y equipaje especial",
+  "Sin comisiones por reserva — pagas solo la suscripción mensual",
+  "Tu marca, tu dominio, tus precios",
+  "Onboarding guiado en menos de 48 horas",
+  "Soporte técnico en español incluido",
+  "Integración con Google Maps para rutas y distancias",
+  "Cumplimiento RGPD y pagos PCI-DSS seguros",
 ];
 
 const faqs = [
   {
-    question: "¿Puedo reservar un traslado desde el aeropuerto de Barcelona?",
+    question: "¿Necesito conocimientos técnicos para instalar el software?",
     answer:
-      "Sí. Puede reservar transfers privados desde y hacia Barcelona-El Prat e indicar los datos del vuelo para facilitar la coordinación de la recogida.",
+      "No. La plataforma está diseñada para ser operada por el equipo de la empresa, no por un departamento de IT. El widget de reservas se instala copiando una línea de código en tu web y el panel de gestión es intuitivo desde el primer día.",
   },
   {
-    question: "¿El precio del traslado es cerrado?",
+    question: "¿Puedo probar el sistema antes de suscribirme?",
     answer:
-      "El precio y las condiciones principales se muestran antes de confirmar la reserva, para que sepa qué servicio está contratando.",
+      "Sí. Ofrecemos una demo guiada con nuestro equipo donde configuramos tu cuenta de prueba con datos reales. Contacta con nosotros y agendamos una sesión en menos de 24 horas.",
   },
   {
-    question: "¿Puedo contratar un coche con chófer por horas?",
+    question: "¿El formulario de reservas funciona en mi web actual?",
     answer:
-      "Sí. El servicio por horas es adecuado para reuniones, tours privados, eventos, visitas o agendas con varias paradas en Barcelona.",
+      "El widget es compatible con cualquier web: WordPress, Wix, Squarespace, HTML puro o cualquier plataforma. Solo necesitas pegar el código de integración en tu página.",
   },
   {
-    question: "¿Transfers in Barcelona ofrece vehículos para grupos?",
+    question: "¿Qué pasa con mis reservas actuales?",
     answer:
-      "Sí. Según disponibilidad, se pueden reservar minivans, minibuses y vehículos amplios para familias, grupos, eventos o viajes corporativos.",
+      "Podemos importar tus reservas existentes durante el proceso de onboarding. Nuestro equipo te acompaña en la migración para que no pierdas ninguna reserva ni información de cliente.",
   },
 ];
+
 
 type HomeSettings = {
   SITE_NAME?: string;
@@ -216,45 +238,38 @@ function SectionIntro({
 export default async function HomePage() {
   const settings = await getHomeSettings();
   const brandName = settings.SITE_NAME || settings.COMPANY_NAME || "Transfers in Barcelona";
-  const logoUrl = settings.SITE_LOGO_URL?.trim();
   const accentColor = settings.BRAND_ACCENT_COLOR || "#D4AF37";
   const brandAccentStyle = {
     "--brand-accent": accentColor,
   } as CSSProperties & Record<"--brand-accent", string>;
-  const logoBackgroundImage = logoUrl ? `url("${logoUrl.replace(/"/g, '\\"')}")` : undefined;
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: brandName,
+    "@type": "SoftwareApplication",
+    name: "Transfers in Barcelona — SaaS de Gestión de Traslados",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
     url: "https://transfersinbarcelona.com",
     description:
-      "Private transfers, airport transfers, tours and chauffeur service in Barcelona. Book online with fixed price and personalized attention.",
-    areaServed: [
-      { "@type": "City", name: "Barcelona" },
-      { "@type": "City", name: "Sitges" },
-      { "@type": "City", name: "Costa Brava" },
-      { "@type": "City", name: "Andorra" },
+      "Plataforma SaaS para empresas de traslados privados: reservas online, gestión de conductores, pagos automáticos, widget embebible y panel de control.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "EUR",
+      description: "Demo gratuita disponible. Solicita acceso.",
+    },
+    featureList: [
+      "Panel de reservas en tiempo real",
+      "Gestión de conductores y flota",
+      "Pagos online integrados",
+      "Widget embebible en cualquier web",
+      "App de conductor",
+      "Informes y analítica de negocio",
     ],
-    serviceType: [
-      "Transfer aeropuerto Barcelona",
-      "Traslados privados Barcelona",
-      "Coche con chófer Barcelona",
-      "Traslados corporativos Barcelona",
-      "Tours privados Barcelona",
-      "Traslados puerto de Barcelona",
-    ],
-    makesOffer: {
-      "@type": "OfferCatalog",
-      name: "Servicios de transporte privado Transfers in Barcelona",
-      itemListElement: services.map(({ title, description }) => ({
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: title,
-          description,
-        },
-      })),
+    provider: {
+      "@type": "Organization",
+      name: brandName,
+      url: "https://transfersinbarcelona.com",
     },
   };
 
@@ -273,10 +288,11 @@ export default async function HomePage() {
       <MarketingHeader />
 
       <main>
+        {/* Hero */}
         <section className="relative flex min-h-[92svh] items-center overflow-hidden pt-32 pb-14 sm:pt-36 lg:pt-40">
           <Image
             src="/images/hero_light.png"
-            alt="Chófer privado de Transfers in Barcelona en Barcelona"
+            alt="Panel de gestión de traslados privados para empresas"
             fill
             priority
             fetchPriority="high"
@@ -291,78 +307,84 @@ export default async function HomePage() {
             <div className="max-w-3xl text-white contents lg:block">
               <div className="order-1 lg:order-none">
                 <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
-                  Traslados privados en Barcelona con precio cerrado
+                  El software que digitaliza tu empresa de traslados privados
                 </h1>
               </div>
               <div className="order-3 lg:order-none">
                 <p className="mt-6 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
-                  Recogida en aeropuerto, puerto, hoteles y eventos. Reserva online, conductor profesional y asistencia por WhatsApp.
-              </p>
+                  Reservas online 24/7, gestión de conductores, pagos automáticos y panel de control. Todo en una plataforma SaaS lista para usar en menos de 48 horas.
+                </p>
 
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <Link
-                  href="/booking"
-                  className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-gray-900 shadow-lg transition hover:-translate-y-1"
-                  style={{ backgroundColor: accentColor }}
-                >
-                  Reservar Traslado
-                  <ChevronRight className="h-[22px] w-[22px]" aria-hidden="true" />
-                </Link>
-                <a
-                  href="#servicios"
-                  className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-7 py-3 font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:border-white/40"
-                >
-                  Nuestros Servicios
-                  <MapPin className="h-[20px] w-[20px]" aria-hidden="true" />
-                </a>
-              </div>
+                <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                  <Link
+                    href="/contacto?tipo=demo"
+                    className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-gray-900 shadow-lg transition hover:-translate-y-1"
+                    style={{ backgroundColor: accentColor }}
+                  >
+                    Solicitar demo gratuita
+                    <ChevronRight className="h-[22px] w-[22px]" aria-hidden="true" />
+                  </Link>
+                  <a
+                    href="#caracteristicas"
+                    className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-7 py-3 font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:border-white/40"
+                  >
+                    Ver características
+                    <ArrowRight className="h-[20px] w-[20px]" aria-hidden="true" />
+                  </a>
+                </div>
 
-              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-white/90">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-[#D4AF37]" aria-hidden="true" />
-                  Precio cerrado
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-[#D4AF37]" aria-hidden="true" />
-                  Cancelación hasta 24h
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-[#D4AF37]" aria-hidden="true" />
-                  WhatsApp +34 662 02 41 36
-                </div>
-              </div>
-
-              <div className="mt-10 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
-                {[
-                  ["Online", "Reserva rápida"],
-                  ["24/7", "Reservas anticipadas"],
-                  ["BCN", "Aeropuerto, puerto y hoteles"],
-                ].map(([value, label]) => (
-                  <div key={value} className="rounded-lg border border-white/15 bg-black/25 p-4 backdrop-blur">
-                    <p className="text-2xl font-semibold text-white">{value}</p>
-                    <p className="mt-1 text-sm text-white/70">{label}</p>
+                <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-white/90">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-[#D4AF37]" aria-hidden="true" />
+                    Sin comisiones por reserva
                   </div>
-                ))}
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-[#D4AF37]" aria-hidden="true" />
+                    Tu marca y tu dominio
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-[#D4AF37]" aria-hidden="true" />
+                    Demo guiada en 24h
+                  </div>
+                </div>
+
+                <div className="mt-10 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
+                  {[
+                    ["48h", "Tiempo de activación"],
+                    ["24/7", "Reservas automáticas"],
+                    ["100%", "Tu marca, tus precios"],
+                  ].map(([value, label]) => (
+                    <div key={value} className="rounded-lg border border-white/15 bg-black/25 p-4 backdrop-blur">
+                      <p className="text-2xl font-semibold text-white">{value}</p>
+                      <p className="mt-1 text-sm text-white/70">{label}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-            </div>
 
-            <aside className="w-full justify-self-end order-2 lg:order-none" aria-label="Formulario de reserva">
+            <aside className="w-full justify-self-end order-2 lg:order-none" aria-label="Demo del widget de reservas">
+              <div className="mb-3 text-center">
+                <span className="inline-block rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white/90 backdrop-blur">
+                  🚀 Prueba el widget de reservas en vivo
+                </span>
+              </div>
               <HomeBookingFormClient />
             </aside>
           </div>
         </section>
 
-        <section id="servicios" className="bg-white py-20 sm:py-24">
+        {/* Características */}
+        <section id="caracteristicas" className="bg-white py-20 sm:py-24">
           <div className="mx-auto max-w-7xl px-6">
             <SectionIntro
-              eyebrow="Servicios premium"
-              title="Transporte privado con conductor para cada tipo de viaje"
-              description="Reserve transfers privados, coches con chófer por horas, transporte ejecutivo, tours privados y vehículos para eventos con una experiencia clara desde el primer clic."
+              eyebrow="Plataforma completa"
+              title="Todo lo que necesita tu empresa de traslados"
+              description="Una sola plataforma reemplaza el teléfono, el WhatsApp, las hojas de cálculo y el caos operativo. Gestiona reservas, conductores y cobros desde un panel unificado."
             />
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {services.map(({ title, description, Icon }) => (
+              {features.map(({ title, description, Icon }) => (
                 <article
                   key={title}
                   className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#D4AF37] hover:shadow-lg"
@@ -378,16 +400,24 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Cómo funciona */}
         <section id="como-funciona" className="bg-gray-50 py-20 text-gray-900 sm:py-28 relative">
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
               <div>
-                <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B26]">Cómo funciona</p>
-                <h2 className="text-3xl font-semibold sm:text-4xl">Reserve su chófer privado en Barcelona sin complicaciones</h2>
+                <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B26]">Puesta en marcha</p>
+                <h2 className="text-3xl font-semibold sm:text-4xl">De cero a operativo en menos de 48 horas</h2>
                 <p className="mt-5 leading-8 text-gray-600">
-                  Transfers in Barcelona organiza cada servicio con información clara: ruta, horario, tipo de
-                  vehículo, pasajeros, equipaje y condiciones aplicables antes de confirmar.
+                  Nuestro equipo te acompaña en la configuración inicial: vehículos, zonas de servicio, tarifas y widget en tu web. Sin dependencia de IT externa ni semanas de implantación.
                 </p>
+                <Link
+                  href="/contacto?tipo=demo"
+                  className="mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-gray-900 shadow-md transition hover:-translate-y-0.5"
+                  style={{ backgroundColor: accentColor }}
+                >
+                  Hablar con el equipo
+                  <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -405,12 +435,38 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Para quién es */}
+        <section className="bg-white py-20 sm:py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            <SectionIntro
+              eyebrow="Para tu sector"
+              title="Diseñado para cada tipo de operador de traslados"
+              description="Tanto si eres una empresa de traslados privados, un operador de aeropuerto, un hotel o un operador de cruceros, la plataforma se adapta a tu modelo de negocio."
+            />
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {targetAudiences.map(({ title, description, Icon }) => (
+                <article
+                  key={title}
+                  className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#D4AF37] hover:shadow-lg"
+                >
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#D4AF37]/10 text-[#9B7B26]">
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-950">{title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-gray-600">{description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Ventajas */}
         <section className="bg-gray-50 py-20 sm:py-24">
           <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-2xl">
               <Image
                 src="/images/chauffeur_day.png"
-                alt="Conductor privado profesional para traslados premium"
+                alt="Plataforma de gestión de traslados privados para empresas"
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover"
@@ -418,13 +474,12 @@ export default async function HomePage() {
             </div>
 
             <div>
-              <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B20]">Ventajas Transfers in Barcelona</p>
+              <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B20]">Por qué elegirnos</p>
               <h2 className="text-3xl font-semibold text-gray-950 sm:text-4xl">
-                Puntualidad, discreción y precio claro desde la reserva
+                Tecnología de traslados sin complicaciones ni comisiones
               </h2>
               <p className="mt-5 leading-8 text-gray-600">
-                El servicio está pensado para viajeros que necesitan algo más que un desplazamiento:
-                comodidad, coordinación y una experiencia cuidada desde la recogida hasta el destino.
+                A diferencia de los marketplaces que cobran comisión por cada viaje, nuestra plataforma tiene tarifa mensual fija. Tú conservas el 100% de tus ingresos.
               </p>
               <div className="mt-8 grid gap-3">
                 {advantages.map((advantage) => (
@@ -438,32 +493,36 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section id="flota" className="bg-white py-20 sm:py-24">
+        {/* En producción — MeTransfers */}
+        <section id="demo" className="bg-white py-20 sm:py-24">
           <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1fr_0.95fr] lg:items-center">
             <div>
-              <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B20]">Flota seleccionada</p>
+              <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B20]">En producción</p>
               <h2 className="text-3xl font-semibold text-gray-950 sm:text-4xl">
-                Vehículos de alta gama para aeropuerto, tours y eventos
+                El widget que ya usan operadores como MeTransfers
               </h2>
               <p className="mt-5 leading-8 text-gray-600">
-                La asignación se adapta a pasajeros, equipaje y tipo de servicio: traslados
-                individuales, familias, grupos, viajes corporativos o reservas premium.
+                MeTransfers, uno de los operadores de traslados privados de referencia en Barcelona, utiliza nuestra infraestructura para gestionar reservas online, asignar conductores y procesar pagos de forma automática.
               </p>
-
-              <div className="mt-8 grid gap-4">
-                {fleet.map((item) => (
-                  <div key={item} className="flex items-start gap-4 rounded-xl border border-gray-200 bg-gray-50/50 p-5 transition hover:bg-white hover:shadow-sm">
-                    <Car className="mt-0.5 h-6 w-6 shrink-0 text-[#9B7B26]" aria-hidden="true" />
-                    <p className="leading-7 text-gray-700 font-medium">{item}</p>
-                  </div>
-                ))}
+              <p className="mt-4 leading-8 text-gray-600">
+                El formulario que viste en la parte superior de esta página es exactamente el widget que tus clientes verían en tu web — funcional, rápido y conectado a tu operación en tiempo real.
+              </p>
+              <div className="mt-8">
+                <Link
+                  href="/contacto?tipo=demo"
+                  className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-gray-900 shadow-lg transition hover:-translate-y-1"
+                  style={{ backgroundColor: accentColor }}
+                >
+                  Quiero una demo para mi empresa
+                  <ChevronRight className="h-5 w-5" aria-hidden="true" />
+                </Link>
               </div>
             </div>
 
             <div className="relative aspect-[5/4] overflow-hidden rounded-lg shadow-2xl">
               <Image
                 src="/images/fleet_light.png"
-                alt="Flota premium de vehículos con chófer"
+                alt="Flota de traslados gestionada con la plataforma SaaS"
                 fill
                 sizes="(min-width: 1024px) 45vw, 100vw"
                 className="object-cover"
@@ -472,42 +531,15 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section id="rutas" className="bg-gray-50 py-20 text-gray-900 sm:py-28">
-          <div className="mx-auto max-w-7xl px-6">
-            <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-              <div>
-                <p className="mb-3 text-sm font-semibold uppercase text-[#9B7B26]">Rutas destacadas</p>
-                <h2 className="text-3xl font-semibold sm:text-4xl">Traslados privados desde Barcelona</h2>
-                <p className="mt-5 leading-8 text-gray-600">
-                  Reserve transporte privado desde aeropuertos, estaciones, hoteles, puertos, oficinas,
-                  domicilios particulares o cualquier dirección que necesite.
-                </p>
-              </div>
-
-              <div className="grid gap-4">
-                {routes.map((route) => (
-                  <Link 
-                    key={route.label} 
-                    href={`/booking?origin=${encodeURIComponent(route.origin)}&destination=${encodeURIComponent(route.destination)}`}
-                    className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-[#D4AF37]"
-                  >
-                    <MapPin className="h-6 w-6 shrink-0 text-[#9B7B26]" aria-hidden="true" />
-                    <h3 className="text-lg font-semibold">{route.label}</h3>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
         <GygReviews />
 
+        {/* FAQ */}
         <section id="faq" className="bg-white py-20 sm:py-24">
           <div className="mx-auto max-w-4xl px-6">
             <SectionIntro
               eyebrow="Preguntas frecuentes"
-              title="Dudas habituales antes de reservar"
-              description="Información rápida para contratar su transfer privado, tour o coche con chófer en Barcelona con más tranquilidad."
+              title="Todo lo que necesitas saber antes de empezar"
+              description="Resolvemos las dudas más habituales de empresas de traslados que están evaluando digitalizar su operación."
             />
 
             <div className="space-y-3">
@@ -524,24 +556,24 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* CTA final */}
         <section className="bg-gray-50 py-16">
           <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase text-[#9B7B20]">Reserve ahora</p>
+              <p className="text-sm font-semibold uppercase text-[#9B7B20]">Empieza hoy</p>
               <h2 className="mt-2 text-3xl font-semibold text-gray-950">
-                Organice su próximo traslado privado con Transfers in Barcelona
+                Digitaliza tu empresa de traslados en 48 horas
               </h2>
               <p className="mt-3 max-w-2xl leading-7 text-gray-600">
-                Indique origen, destino, fecha y hora. Le ayudamos a encontrar el transporte privado
-                que mejor se adapta a su viaje.
+                Agenda una demo gratuita con nuestro equipo y te mostramos cómo la plataforma funciona con tus rutas, tus precios y tu flota.
               </p>
             </div>
             <Link
-              href="/booking"
-              className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-gray-900 shadow-lg transition hover:-translate-y-1"
+              href="/contacto?tipo=demo"
+              className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-full px-7 py-3 font-black text-gray-900 shadow-lg transition hover:-translate-y-1 whitespace-nowrap"
               style={{ backgroundColor: accentColor }}
             >
-              Ver disponibilidad
+              Solicitar demo gratuita
               <ChevronRight className="h-5 w-5" aria-hidden="true" />
             </Link>
           </div>
@@ -552,3 +584,4 @@ export default async function HomePage() {
     </div>
   );
 }
+

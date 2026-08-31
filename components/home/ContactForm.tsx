@@ -9,6 +9,7 @@ export default function ContactForm() {
     name: "",
     email: "",
     phone: "",
+    company: "",
     subject: "",
     message: "",
   });
@@ -29,7 +30,7 @@ export default function ContactForm() {
       if (!response.ok) throw new Error("Error submitting form");
 
       setStatus("success");
-      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", company: "", subject: "", message: "" });
     } catch (error) {
       console.error(error);
       setStatus("error");
@@ -42,7 +43,7 @@ export default function ContactForm() {
         <CheckCircle2 className="h-16 w-16 text-green-500 mb-4" />
         <h3 className="text-2xl font-black tracking-tight text-gray-900">¡Mensaje enviado!</h3>
         <p className="mt-4 text-gray-600">
-          Hemos recibido tu solicitud. Nuestro equipo te contactará lo antes posible.
+          Hemos recibido tu solicitud. Nuestro equipo te contactará en menos de 24 horas para agendar la demo.
         </p>
         <button
           onClick={() => setStatus("idle")}
@@ -56,7 +57,7 @@ export default function ContactForm() {
 
   return (
     <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-md">
-      <h2 className="text-2xl font-black tracking-tight mb-6 text-gray-900">Envíanos un mensaje</h2>
+      <h2 className="text-2xl font-black tracking-tight mb-6 text-gray-900">Cuéntanos sobre tu empresa</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -80,12 +81,23 @@ export default function ContactForm() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-shadow outline-none"
-              placeholder="tu@email.com"
+              placeholder="tu@empresa.com"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">Empresa</label>
+            <input
+              id="company"
+              type="text"
+              value={formData.company}
+              onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-shadow outline-none"
+              placeholder="Nombre de tu empresa"
+            />
+          </div>
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
             <input
@@ -97,21 +109,24 @@ export default function ContactForm() {
               placeholder="+34 600 000 000"
             />
           </div>
-          <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">Asunto</label>
-            <select
-              id="subject"
-              value={formData.subject}
-              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-shadow outline-none bg-white"
-            >
-              <option value="">Selecciona una opción</option>
-              <option value="Reserva">Reserva de traslado</option>
-              <option value="Tour">Tours y excursiones</option>
-              <option value="Evento">Evento corporativo</option>
-              <option value="Soporte">Soporte/Otros</option>
-            </select>
-          </div>
+        </div>
+
+        <div>
+          <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">¿En qué te podemos ayudar?</label>
+          <select
+            id="subject"
+            value={formData.subject}
+            onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-shadow outline-none bg-white"
+          >
+            <option value="">Selecciona una opción</option>
+            <option value="Demo">Solicitar demo del software</option>
+            <option value="Precio">Información sobre planes y precios</option>
+            <option value="Integracion">Integración / API</option>
+            <option value="Onboarding">Proceso de alta y onboarding</option>
+            <option value="Soporte">Soporte técnico</option>
+            <option value="Otro">Otro</option>
+          </select>
         </div>
 
         <div>
@@ -123,7 +138,7 @@ export default function ContactForm() {
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-shadow outline-none resize-y"
-            placeholder="¿En qué podemos ayudarte?"
+            placeholder="Cuéntanos cómo funciona tu empresa actualmente (número de vehículos, conductores, volumen de reservas...)"
           ></textarea>
         </div>
 
@@ -140,7 +155,7 @@ export default function ContactForm() {
         >
           {status === "loading" ? "Enviando..." : (
             <>
-              Enviar mensaje <Send className="h-4 w-4" />
+              Enviar solicitud <Send className="h-4 w-4" />
             </>
           )}
         </button>
@@ -148,3 +163,5 @@ export default function ContactForm() {
     </div>
   );
 }
+
+

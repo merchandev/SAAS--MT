@@ -24,18 +24,18 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const services = [
-  { href: "/rutas/airport-transfer-barcelona", label: "Traslados Aeropuerto de Barcelona" },
-  { href: "/rutas/cruise-port-transfer-barcelona", label: "Traslados Puerto de Cruceros" },
-  { href: "/rutas/chauffeur-service-barcelona", label: "Coches con Chófer en Barcelona" },
-  { href: "/rutas/corporate-transfers-barcelona", label: "Traslados Corporativos y Eventos" },
+const productLinks = [
+  { href: "/#caracteristicas", label: "Características del software" },
+  { href: "/#como-funciona", label: "Cómo funciona" },
+  { href: "/#demo", label: "Demo en vivo" },
+  { href: "/blog", label: "Blog y recursos" },
 ];
 
-const tours = [
-  { href: "/rutas/barcelona-to-andorra-transfer", label: "Traslado de Barcelona a Andorra" },
-  { href: "/rutas/barcelona-to-sitges-transfer", label: "Traslado de Barcelona a Sitges" },
-  { href: "/rutas/barcelona-to-costa-brava-transfer", label: "Traslado a la Costa Brava" },
-  { href: "/rutas/montserrat-private-tour", label: "Tour Privado a Montserrat" },
+const forBusinessLinks = [
+  { href: "/contacto?tipo=demo", label: "Solicitar demo gratuita" },
+  { href: "/preguntas-frecuentes", label: "Preguntas frecuentes" },
+  { href: "/contacto?tipo=integracion", label: "Integraciones y API" },
+  { href: "/contacto?tipo=precio", label: "Planes y precios" },
 ];
 
 const legalLinks = [
@@ -55,7 +55,7 @@ export default async function MarketingFooter() {
         <div>
           <MarketingLogo className="mb-5" variant="footer" locale={currentLocale} />
           <p className="max-w-xs text-base leading-7 text-gray-600">
-            Traslados privados y tours de lujo personalizados en Barcelona y toda España. Tu comodidad, nuestra pasión.
+            Plataforma SaaS para empresas de traslados privados. Reservas online, gestión de conductores y pagos automáticos — todo en un panel.
           </p>
           <div className="mt-8 flex gap-3">
             {[
@@ -76,9 +76,9 @@ export default async function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Servicios</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Producto</h2>
           <nav className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
-            {services.map((item) => (
+            {productLinks.map((item) => (
               <Link key={item.label} href={localizedPath(item.href, currentLocale)} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
                 {item.label}
               </Link>
@@ -87,9 +87,9 @@ export default async function MarketingFooter() {
         </div>
 
         <div>
-          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Rutas Destacadas</h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.14em] text-gray-900">Para empresas</h2>
           <nav className="mt-6 grid gap-4 text-sm font-semibold text-gray-600">
-            {tours.map((item) => (
+            {forBusinessLinks.map((item) => (
               <Link key={item.label} href={localizedPath(item.href, currentLocale)} className="transition hover:text-gray-900 hover:translate-x-1 inline-block w-fit">
                 {item.label}
               </Link>

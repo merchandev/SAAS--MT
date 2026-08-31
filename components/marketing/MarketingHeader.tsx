@@ -27,11 +27,11 @@ export default async function MarketingHeader() {
       <MarketingLogo locale={currentLocale} />
 
       <nav className="hidden items-center gap-7 text-sm font-semibold text-white/85 md:flex">
-        <Link href={localizedPath("/#servicios", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
-          Servicios
+        <Link href={localizedPath("/#caracteristicas", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
+          Características
         </Link>
-        <Link href={localizedPath("/tours-privados", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
-          Tours
+        <Link href={localizedPath("/#demo", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
+          Demo
         </Link>
         <Link href={localizedPath("/blog", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
           Blog
@@ -59,21 +59,14 @@ export default async function MarketingHeader() {
               href={localizedPath("/login", currentLocale)}
               className="text-sm font-semibold text-white/90 transition-colors hover:text-[#D4AF37]"
             >
-              Acceder
-            </Link>
-            <span className="text-white/20">|</span>
-            <Link
-              href={localizedPath("/register", currentLocale)}
-              className="text-sm font-semibold text-white/90 transition-colors hover:text-[#D4AF37]"
-            >
-              Registro
+              Portal
             </Link>
             <Link
-              href={localizedPath("/booking", currentLocale)}
+              href={localizedPath("/contacto?tipo=demo", currentLocale)}
               className="inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-bold text-gray-900 shadow-lg transition-transform hover:-translate-y-0.5"
               style={{ backgroundColor: accentColor }}
             >
-              Reservar
+              Solicitar demo
               <ChevronRight className="h-[18px] w-[18px]" aria-hidden="true" />
             </Link>
           </div>

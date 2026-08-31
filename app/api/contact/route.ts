@@ -50,17 +50,28 @@ export async function POST(req: Request) {
     try {
       const { sendEmail } = await import("@/lib/mailer");
       const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || "info@transfersinbarcelona.com";
+      
+      // Función para escapar HTML y prevenir inyección
+      const escapeHTML = (str: string) => {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      };
+
       await sendEmail({
         to: adminEmail,
-        subject: `Nuevo mensaje de contacto de ${validatedData.name}`,
+        subject: `Nuevo mensaje de contacto de ${escapeHTML(validatedData.name)}`,
         html: `
           <h3>Has recibido un nuevo mensaje de contacto</h3>
-          <p><strong>Nombre:</strong> ${validatedData.name}</p>
-          <p><strong>Email:</strong> ${validatedData.email}</p>
-          <p><strong>Teléfono:</strong> ${validatedData.phone || "No proporcionado"}</p>
-          <p><strong>Asunto:</strong> ${validatedData.subject || "Sin asunto"}</p>
+          <p><strong>Nombre:</strong> ${escapeHTML(validatedData.name)}</p>
+          <p><strong>Email:</strong> ${escapeHTML(validatedData.email)}</p>
+          <p><strong>Teléfono:</strong> ${escapeHTML(validatedData.phone || "No proporcionado")}</p>
+          <p><strong>Asunto:</strong> ${escapeHTML(validatedData.subject || "Sin asunto")}</p>
           <p><strong>Mensaje:</strong></p>
-          <p>${validatedData.message.replace(/\\n/g, "<br/>")}</p>
+          <p>${escapeHTML(validatedData.message).replace(/\n/g, "<br/>")}</p>
         `,
       });
     } catch (e) {

@@ -56,12 +56,12 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
           </div>
 
           <div className="flex flex-col px-6 py-8 gap-6 text-lg font-medium text-white/90">
-            <a 
-              href="#servicios" 
+            <a
+              href="#caracteristicas"
               onClick={() => setIsOpen(false)}
               className="hover:text-[#D4AF37] transition-colors duration-300 py-2 border-b border-white/5"
             >
-              Servicios
+              Características
             </a>
             <a
               href="#como-funciona"
@@ -70,13 +70,13 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
             >
               Cómo funciona
             </a>
-            <Link
-              href={localizedPath("/tours-privados", currentLocale)}
+            <a
+              href="#demo"
               onClick={() => setIsOpen(false)}
               className="hover:text-[#D4AF37] transition-colors duration-300 py-2 border-b border-white/5"
             >
-              Tours Privados
-            </Link>
+              Demo
+            </a>
             <Link
               href={localizedPath("/blog", currentLocale)}
               onClick={() => setIsOpen(false)}
@@ -98,7 +98,7 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
             >
               Contacto
             </Link>
-            
+
             <div className="py-4">
               <p className="text-sm text-gray-400 mb-3 uppercase tracking-wider font-bold">Idioma</p>
               <LanguageSwitcher align="left" direction="up" />
@@ -118,30 +118,22 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
               ) : (
                 <>
                   <Link
-                    href={localizedPath("/booking", currentLocale)}
+                    href={localizedPath("/contacto?tipo=demo", currentLocale)}
                     onClick={() => setIsOpen(false)}
                     className="text-black font-bold px-4 py-4 rounded-xl transition-transform active:scale-95 duration-300 text-center text-base shadow-lg"
                     style={{ backgroundColor: accentColor }}
                   >
-                    RESERVAR TRASLADO
+                    SOLICITAR DEMO GRATUITA
                   </Link>
-                  <div className="grid grid-cols-2 gap-3 mt-2">
-                    <Link 
-                      href={localizedPath("/login", currentLocale)}
-                      onClick={() => setIsOpen(false)}
-                      className="text-white font-semibold px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-transparent transition-colors duration-300 text-center"
-                    >
-                      Ingresar
-                    </Link>
-                    <Link 
-                      href={localizedPath("/register", currentLocale)}
-                      onClick={() => setIsOpen(false)}
-                      className="text-white font-semibold px-4 py-3 rounded-xl border border-white/20 hover:bg-white/10 transition-colors duration-300 text-center"
-                    >
-                      Registrarse
-                    </Link>
-                  </div>
+                  <Link
+                    href={localizedPath("/login", currentLocale)}
+                    onClick={() => setIsOpen(false)}
+                    className="text-white font-semibold px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-transparent transition-colors duration-300 text-center"
+                  >
+                    Portal de empresa
+                  </Link>
                 </>
+
               )}
             </div>
           </div>
