@@ -103,6 +103,12 @@ const features = [
     Icon: BarChart3,
   },
   {
+    title: "Integración Universal",
+    description:
+      "Conectable con cualquier plataforma. Plugins nativos para WordPress y Shopify, integración GoHighLevel (GHL), SDKs React/PHP y API REST a medida.",
+    Icon: Globe,
+  },
+  {
     title: "App de conductor",
     description:
       "El conductor ve sus servicios del día, recibe el detalle del viaje y puede actualizar el estado en tiempo real desde el móvil.",

@@ -14,6 +14,8 @@ Plataforma SaaS B2B2C multi-tenant diseñada para empresas de transfers, VTC, ch
 - **Facturación y Pagos:** Emisión automática de facturas y recibos. Integración con pasarela de pagos (Redsys).
 - **Portal de Colaboradores (B2B):** Áreas exclusivas para Hoteles y Agencias, con gestión de comisiones, reservas por referidos y QR codes.
 - **Arquitectura Multi-tenant (En desarrollo):** Preparado para aislar datos por `Company`, permitiendo configuraciones personalizadas (branding, monedas, correos) por cada cliente del software.
+
+- **Integración Universal (API & Plugins):** Conectable con cualquier plataforma. Incluye plugins nativos para WordPress, Shopify, integraciones con GoHighLevel (GHL), SDKs para React/PHP y una API REST completa para sistemas a medida.
 - **Sistema de Roles:** SUPER_ADMIN (Merchan.Dev), COMPANY_ADMIN, OPERATOR, DRIVER, HOTEL, AGENCY, CUSTOMER.
 
 ## 🛠️ Stack Tecnológico
