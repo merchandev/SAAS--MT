@@ -70,13 +70,6 @@ export default function MobileMenu({ accentColor = "#D4AF37", isCustomer = false
             >
               Cómo funciona
             </a>
-            <a
-              href="#demo"
-              onClick={() => setIsOpen(false)}
-              className="hover:text-[#D4AF37] transition-colors duration-300 py-2 border-b border-white/5"
-            >
-              Demo
-            </a>
             <Link
               href={localizedPath("/blog", currentLocale)}
               onClick={() => setIsOpen(false)}

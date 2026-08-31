@@ -30,9 +30,6 @@ export default async function MarketingHeader() {
         <Link href={localizedPath("/#caracteristicas", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
           Características
         </Link>
-        <Link href={localizedPath("/#demo", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
-          Demo
-        </Link>
         <Link href={localizedPath("/blog", currentLocale)} className="transition-colors hover:text-[#D4AF37]">
           Blog
         </Link>
