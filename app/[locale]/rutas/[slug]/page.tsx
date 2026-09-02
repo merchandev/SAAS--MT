@@ -19,8 +19,8 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   
-  const route = await prisma.routePage.findUnique({
-    where: { companyId_slug: { companyId: await getTenantId(), slug } },
+  const route = await prisma.routePage.findFirst({
+    where: { slug },
   });
 
   if (!route || !route.isActive) {
@@ -57,8 +57,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function RouteDynamicPage({ params }: Props) {
   const { slug, locale } = await params;
   
-  const route = await prisma.routePage.findUnique({
-    where: { companyId_slug: { companyId: await getTenantId(), slug } },
+  const route = await prisma.routePage.findFirst({
+    where: { slug },
   });
 
   // 404 if not found OR if it's a draft/scheduled page

@@ -77,8 +77,7 @@ export async function POST(request: Request) {
 
       // Usar upsert para no duplicar si ya existe
       await prisma.routePage.upsert({
-        where: {
-            companyId_slug: { companyId: await getTenantId(), slug: slug.toLowerCase() } },
+        where: { slug: slug.toLowerCase() },
         update: {
             companyId: await getTenantId(),
             originName,

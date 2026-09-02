@@ -14,8 +14,8 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, locale } = await params;
-  const routePage = await prisma.routePage.findUnique({
-    where: { companyId_slug: { companyId: await getTenantId(), slug } },
+  const routePage = await prisma.routePage.findFirst({
+    where: { slug },
   });
 
   if (!routePage || !routePage.isActive) {
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function DynamicSEOLandingPage({ params }: PageProps) {
   const { slug, locale } = await params;
   const routePage = await prisma.routePage.findUnique({
-    where: { companyId_slug: { companyId: await getTenantId(), slug } },
+    where: { slug },
   });
 
   if (!routePage || !routePage.isActive) {

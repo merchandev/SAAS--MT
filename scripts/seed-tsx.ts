@@ -48,8 +48,7 @@ async function main() {
   console.log('Seeding SEO routes...');
   for (const route of routes) {
     await prisma.routePage.upsert({
-      where: {
-          companyId_slug: { companyId: "legacy-metransfers", slug: route.slug } },
+      where: { slug: route.slug },
       update: { ...route, companyId: "legacy-metransfers" },
       create: { ...route, companyId: "legacy-metransfers" },
     });
