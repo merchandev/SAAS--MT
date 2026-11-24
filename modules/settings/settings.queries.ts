@@ -3,10 +3,9 @@ import { SETTINGS_KEYS } from "./settings.schemas";
 import { unstable_cache } from "next/cache";
 import { getTenantId } from "@/modules/auth/tenant.service";
 
-export const settingsQueries = {
-  getAllSettings: unstable_cache(async () => {
+const getCachedSettings = unstable_cache(async (companyId: string) => {
     const settingsList = await prisma.systemSetting.findMany({ where: {
-        companyId: await getTenantId() } });
+        companyId } });
     
     // Convert to key-value map
     const map: Record<string, string> = {};
@@ -32,7 +31,12 @@ export const settingsQueries = {
     };
 
     return { ...defaults, ...map };
-  }, ['all-settings'], { tags: ['settings'] }),
+  }, ['all-settings'], { tags: ['settings'] });
+
+export const settingsQueries = {
+  async getAllSettings() {
+    return getCachedSettings(await getTenantId());
+  },
 
   async getSettingValue(key: typeof SETTINGS_KEYS[number], defaultValue: string) {
     const setting = await prisma.systemSetting.findUnique({
